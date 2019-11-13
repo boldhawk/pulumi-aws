@@ -34,24 +34,24 @@ func LookupBundle(ctx *pulumi.Context, args *GetBundleArgs) (*GetBundleResult, e
 // A collection of arguments for invoking getBundle.
 type GetBundleArgs struct {
 	// The ID of the bundle.
-	BundleId interface{}
+	BundleId pulumi.StringInput `pulumi:"bundleId"`
 }
 
 // A collection of values returned by getBundle.
 type GetBundleResult struct {
-	BundleId interface{}
+	BundleId string `pulumi:"bundleId"`
 	// The compute type. See supported fields below.
-	ComputeTypes interface{}
+	ComputeTypes []interface{} `pulumi:"computeTypes"`
 	// The description of the bundle.
-	Description interface{}
+	Description string `pulumi:"description"`
 	// The name of the compute type.
-	Name interface{}
+	Name string `pulumi:"name"`
 	// The owner of the bundle.
-	Owner interface{}
+	Owner string `pulumi:"owner"`
 	// The root volume. See supported fields below.
-	RootStorages interface{}
+	RootStorages []interface{} `pulumi:"rootStorages"`
 	// The user storage. See supported fields below.
-	UserStorages interface{}
+	UserStorages []interface{} `pulumi:"userStorages"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

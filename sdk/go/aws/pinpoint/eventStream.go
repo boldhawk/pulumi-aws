@@ -12,7 +12,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/pinpoint_event_stream.html.markdown.
 type EventStream struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The application ID.
+	ApplicationId pulumi.StringOutput `pulumi:"applicationId"`
+
+	// The Amazon Resource Name (ARN) of the Amazon Kinesis stream or Firehose delivery stream to which you want to publish events.
+	DestinationStreamArn pulumi.StringOutput `pulumi:"destinationStreamArn"`
+
+	// The IAM role that authorizes Amazon Pinpoint to publish events to the stream in your account.
+	RoleArn pulumi.StringOutput `pulumi:"roleArn"`
 }
 
 // NewEventStream registers a new resource with the given unique name, arguments, and options.
@@ -27,81 +40,63 @@ func NewEventStream(ctx *pulumi.Context,
 	if args == nil || args.RoleArn == nil {
 		return nil, errors.New("missing required argument 'RoleArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["applicationId"] = nil
-		inputs["destinationStreamArn"] = nil
-		inputs["roleArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["applicationId"] = args.ApplicationId
 		inputs["destinationStreamArn"] = args.DestinationStreamArn
 		inputs["roleArn"] = args.RoleArn
 	}
-	s, err := ctx.RegisterResource("aws:pinpoint/eventStream:EventStream", name, true, inputs, opts...)
+	var resource EventStream
+	err := ctx.RegisterResource("aws:pinpoint/eventStream:EventStream", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EventStream{s: s}, nil
+	return &resource, nil
 }
 
 // GetEventStream gets an existing EventStream resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetEventStream(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *EventStreamState, opts ...pulumi.ResourceOpt) (*EventStream, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["applicationId"] = state.ApplicationId
 		inputs["destinationStreamArn"] = state.DestinationStreamArn
 		inputs["roleArn"] = state.RoleArn
 	}
-	s, err := ctx.ReadResource("aws:pinpoint/eventStream:EventStream", name, id, inputs, opts...)
+	var resource EventStream
+	err := ctx.ReadResource("aws:pinpoint/eventStream:EventStream", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EventStream{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *EventStream) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *EventStream) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *EventStream) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *EventStream) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The application ID.
-func (r *EventStream) ApplicationId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["applicationId"])
-}
-
-// The Amazon Resource Name (ARN) of the Amazon Kinesis stream or Firehose delivery stream to which you want to publish events.
-func (r *EventStream) DestinationStreamArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["destinationStreamArn"])
-}
-
-// The IAM role that authorizes Amazon Pinpoint to publish events to the stream in your account.
-func (r *EventStream) RoleArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["roleArn"])
-}
-
 // Input properties used for looking up and filtering EventStream resources.
 type EventStreamState struct {
 	// The application ID.
-	ApplicationId interface{}
+	ApplicationId pulumi.StringInput `pulumi:"applicationId"`
 	// The Amazon Resource Name (ARN) of the Amazon Kinesis stream or Firehose delivery stream to which you want to publish events.
-	DestinationStreamArn interface{}
+	DestinationStreamArn pulumi.StringInput `pulumi:"destinationStreamArn"`
 	// The IAM role that authorizes Amazon Pinpoint to publish events to the stream in your account.
-	RoleArn interface{}
+	RoleArn pulumi.StringInput `pulumi:"roleArn"`
 }
 
 // The set of arguments for constructing a EventStream resource.
 type EventStreamArgs struct {
 	// The application ID.
-	ApplicationId interface{}
+	ApplicationId pulumi.StringInput `pulumi:"applicationId"`
 	// The Amazon Resource Name (ARN) of the Amazon Kinesis stream or Firehose delivery stream to which you want to publish events.
-	DestinationStreamArn interface{}
+	DestinationStreamArn pulumi.StringInput `pulumi:"destinationStreamArn"`
 	// The IAM role that authorizes Amazon Pinpoint to publish events to the stream in your account.
-	RoleArn interface{}
+	RoleArn pulumi.StringInput `pulumi:"roleArn"`
 }

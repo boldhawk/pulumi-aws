@@ -20,7 +20,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/key_pair.html.markdown.
 type KeyPair struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The MD5 public key fingerprint as specified in section 4 of RFC 4716.
+	Fingerprint pulumi.StringOutput `pulumi:"fingerprint"`
+
+	// The name for the key pair.
+	KeyName pulumi.StringOutput `pulumi:"keyName"`
+
+	// Creates a unique name beginning with the specified prefix. Conflicts with `keyName`.
+	KeyNamePrefix pulumi.StringOutput `pulumi:"keyNamePrefix"`
+
+	// The public key material.
+	PublicKey pulumi.StringOutput `pulumi:"publicKey"`
 }
 
 // NewKeyPair registers a new resource with the given unique name, arguments, and options.
@@ -29,90 +45,67 @@ func NewKeyPair(ctx *pulumi.Context,
 	if args == nil || args.PublicKey == nil {
 		return nil, errors.New("missing required argument 'PublicKey'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["keyName"] = nil
-		inputs["keyNamePrefix"] = nil
-		inputs["publicKey"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["keyName"] = pulumi.Any()
+	if args != nil {
 		inputs["keyName"] = args.KeyName
 		inputs["keyNamePrefix"] = args.KeyNamePrefix
 		inputs["publicKey"] = args.PublicKey
 	}
-	inputs["fingerprint"] = nil
-	s, err := ctx.RegisterResource("aws:ec2/keyPair:KeyPair", name, true, inputs, opts...)
+	var resource KeyPair
+	err := ctx.RegisterResource("aws:ec2/keyPair:KeyPair", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &KeyPair{s: s}, nil
+	return &resource, nil
 }
 
 // GetKeyPair gets an existing KeyPair resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetKeyPair(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *KeyPairState, opts ...pulumi.ResourceOpt) (*KeyPair, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["fingerprint"] = state.Fingerprint
 		inputs["keyName"] = state.KeyName
 		inputs["keyNamePrefix"] = state.KeyNamePrefix
 		inputs["publicKey"] = state.PublicKey
 	}
-	s, err := ctx.ReadResource("aws:ec2/keyPair:KeyPair", name, id, inputs, opts...)
+	var resource KeyPair
+	err := ctx.ReadResource("aws:ec2/keyPair:KeyPair", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &KeyPair{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *KeyPair) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *KeyPair) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *KeyPair) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *KeyPair) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The MD5 public key fingerprint as specified in section 4 of RFC 4716.
-func (r *KeyPair) Fingerprint() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["fingerprint"])
-}
-
-// The name for the key pair.
-func (r *KeyPair) KeyName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["keyName"])
-}
-
-// Creates a unique name beginning with the specified prefix. Conflicts with `keyName`.
-func (r *KeyPair) KeyNamePrefix() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["keyNamePrefix"])
-}
-
-// The public key material.
-func (r *KeyPair) PublicKey() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["publicKey"])
-}
-
 // Input properties used for looking up and filtering KeyPair resources.
 type KeyPairState struct {
 	// The MD5 public key fingerprint as specified in section 4 of RFC 4716.
-	Fingerprint interface{}
+	Fingerprint pulumi.StringInput `pulumi:"fingerprint"`
 	// The name for the key pair.
-	KeyName interface{}
+	KeyName pulumi.StringInput `pulumi:"keyName"`
 	// Creates a unique name beginning with the specified prefix. Conflicts with `keyName`.
-	KeyNamePrefix interface{}
+	KeyNamePrefix pulumi.StringInput `pulumi:"keyNamePrefix"`
 	// The public key material.
-	PublicKey interface{}
+	PublicKey pulumi.StringInput `pulumi:"publicKey"`
 }
 
 // The set of arguments for constructing a KeyPair resource.
 type KeyPairArgs struct {
 	// The name for the key pair.
-	KeyName interface{}
+	KeyName pulumi.StringInput `pulumi:"keyName"`
 	// Creates a unique name beginning with the specified prefix. Conflicts with `keyName`.
-	KeyNamePrefix interface{}
+	KeyNamePrefix pulumi.StringInput `pulumi:"keyNamePrefix"`
 	// The public key material.
-	PublicKey interface{}
+	PublicKey pulumi.StringInput `pulumi:"publicKey"`
 }

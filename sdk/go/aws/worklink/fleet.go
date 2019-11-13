@@ -8,22 +8,52 @@ import (
 )
 
 type Fleet struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the created WorkLink Fleet.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The ARN of the Amazon Kinesis data stream that receives the audit events.
+	AuditStreamArn pulumi.StringOutput `pulumi:"auditStreamArn"`
+
+	// The identifier used by users to sign in to the Amazon WorkLink app.
+	CompanyCode pulumi.StringOutput `pulumi:"companyCode"`
+
+	// The time that the fleet was created.
+	CreatedTime pulumi.StringOutput `pulumi:"createdTime"`
+
+	// The certificate chain, including intermediate certificates and the root certificate authority certificate used to issue device certificates.
+	DeviceCaCertificate pulumi.StringOutput `pulumi:"deviceCaCertificate"`
+
+	// The name of the fleet.
+	DisplayName pulumi.StringOutput `pulumi:"displayName"`
+
+	// Provide this to allow manage the identity provider configuration for the fleet. Fields documented below.
+	IdentityProvider pulumi.AnyOutput `pulumi:"identityProvider"`
+
+	// The time that the fleet was last updated.
+	LastUpdatedTime pulumi.StringOutput `pulumi:"lastUpdatedTime"`
+
+	// A region-unique name for the AMI.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Provide this to allow manage the company network configuration for the fleet. Fields documented below.
+	Network pulumi.AnyOutput `pulumi:"network"`
+
+	// The option to optimize for better performance by routing traffic through the closest AWS Region to users, which may be outside of your home Region. Defaults to `true`.
+	OptimizeForEndUserLocation pulumi.BoolOutput `pulumi:"optimizeForEndUserLocation"`
 }
 
 // NewFleet registers a new resource with the given unique name, arguments, and options.
 func NewFleet(ctx *pulumi.Context,
 	name string, args *FleetArgs, opts ...pulumi.ResourceOpt) (*Fleet, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["auditStreamArn"] = nil
-		inputs["deviceCaCertificate"] = nil
-		inputs["displayName"] = nil
-		inputs["identityProvider"] = nil
-		inputs["name"] = nil
-		inputs["network"] = nil
-		inputs["optimizeForEndUserLocation"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["auditStreamArn"] = args.AuditStreamArn
 		inputs["deviceCaCertificate"] = args.DeviceCaCertificate
 		inputs["displayName"] = args.DisplayName
@@ -32,22 +62,19 @@ func NewFleet(ctx *pulumi.Context,
 		inputs["network"] = args.Network
 		inputs["optimizeForEndUserLocation"] = args.OptimizeForEndUserLocation
 	}
-	inputs["arn"] = nil
-	inputs["companyCode"] = nil
-	inputs["createdTime"] = nil
-	inputs["lastUpdatedTime"] = nil
-	s, err := ctx.RegisterResource("aws:worklink/fleet:Fleet", name, true, inputs, opts...)
+	var resource Fleet
+	err := ctx.RegisterResource("aws:worklink/fleet:Fleet", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Fleet{s: s}, nil
+	return &resource, nil
 }
 
 // GetFleet gets an existing Fleet resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetFleet(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *FleetState, opts ...pulumi.ResourceOpt) (*Fleet, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["auditStreamArn"] = state.AuditStreamArn
@@ -61,118 +88,63 @@ func GetFleet(ctx *pulumi.Context,
 		inputs["network"] = state.Network
 		inputs["optimizeForEndUserLocation"] = state.OptimizeForEndUserLocation
 	}
-	s, err := ctx.ReadResource("aws:worklink/fleet:Fleet", name, id, inputs, opts...)
+	var resource Fleet
+	err := ctx.ReadResource("aws:worklink/fleet:Fleet", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Fleet{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Fleet) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Fleet) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Fleet) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Fleet) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the created WorkLink Fleet.
-func (r *Fleet) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The ARN of the Amazon Kinesis data stream that receives the audit events.
-func (r *Fleet) AuditStreamArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["auditStreamArn"])
-}
-
-// The identifier used by users to sign in to the Amazon WorkLink app.
-func (r *Fleet) CompanyCode() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["companyCode"])
-}
-
-// The time that the fleet was created.
-func (r *Fleet) CreatedTime() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["createdTime"])
-}
-
-// The certificate chain, including intermediate certificates and the root certificate authority certificate used to issue device certificates.
-func (r *Fleet) DeviceCaCertificate() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["deviceCaCertificate"])
-}
-
-// The name of the fleet.
-func (r *Fleet) DisplayName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["displayName"])
-}
-
-// Provide this to allow manage the identity provider configuration for the fleet. Fields documented below.
-func (r *Fleet) IdentityProvider() *pulumi.Output {
-	return r.s.State["identityProvider"]
-}
-
-// The time that the fleet was last updated.
-func (r *Fleet) LastUpdatedTime() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["lastUpdatedTime"])
-}
-
-// A region-unique name for the AMI.
-func (r *Fleet) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Provide this to allow manage the company network configuration for the fleet. Fields documented below.
-func (r *Fleet) Network() *pulumi.Output {
-	return r.s.State["network"]
-}
-
-// The option to optimize for better performance by routing traffic through the closest AWS Region to users, which may be outside of your home Region. Defaults to `true`.
-func (r *Fleet) OptimizeForEndUserLocation() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["optimizeForEndUserLocation"])
-}
-
 // Input properties used for looking up and filtering Fleet resources.
 type FleetState struct {
 	// The ARN of the created WorkLink Fleet.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The ARN of the Amazon Kinesis data stream that receives the audit events.
-	AuditStreamArn interface{}
+	AuditStreamArn pulumi.StringInput `pulumi:"auditStreamArn"`
 	// The identifier used by users to sign in to the Amazon WorkLink app.
-	CompanyCode interface{}
+	CompanyCode pulumi.StringInput `pulumi:"companyCode"`
 	// The time that the fleet was created.
-	CreatedTime interface{}
+	CreatedTime pulumi.StringInput `pulumi:"createdTime"`
 	// The certificate chain, including intermediate certificates and the root certificate authority certificate used to issue device certificates.
-	DeviceCaCertificate interface{}
+	DeviceCaCertificate pulumi.StringInput `pulumi:"deviceCaCertificate"`
 	// The name of the fleet.
-	DisplayName interface{}
+	DisplayName pulumi.StringInput `pulumi:"displayName"`
 	// Provide this to allow manage the identity provider configuration for the fleet. Fields documented below.
-	IdentityProvider interface{}
+	IdentityProvider pulumi.AnyInput `pulumi:"identityProvider"`
 	// The time that the fleet was last updated.
-	LastUpdatedTime interface{}
+	LastUpdatedTime pulumi.StringInput `pulumi:"lastUpdatedTime"`
 	// A region-unique name for the AMI.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Provide this to allow manage the company network configuration for the fleet. Fields documented below.
-	Network interface{}
+	Network pulumi.AnyInput `pulumi:"network"`
 	// The option to optimize for better performance by routing traffic through the closest AWS Region to users, which may be outside of your home Region. Defaults to `true`.
-	OptimizeForEndUserLocation interface{}
+	OptimizeForEndUserLocation pulumi.BoolInput `pulumi:"optimizeForEndUserLocation"`
 }
 
 // The set of arguments for constructing a Fleet resource.
 type FleetArgs struct {
 	// The ARN of the Amazon Kinesis data stream that receives the audit events.
-	AuditStreamArn interface{}
+	AuditStreamArn pulumi.StringInput `pulumi:"auditStreamArn"`
 	// The certificate chain, including intermediate certificates and the root certificate authority certificate used to issue device certificates.
-	DeviceCaCertificate interface{}
+	DeviceCaCertificate pulumi.StringInput `pulumi:"deviceCaCertificate"`
 	// The name of the fleet.
-	DisplayName interface{}
+	DisplayName pulumi.StringInput `pulumi:"displayName"`
 	// Provide this to allow manage the identity provider configuration for the fleet. Fields documented below.
-	IdentityProvider interface{}
+	IdentityProvider pulumi.AnyInput `pulumi:"identityProvider"`
 	// A region-unique name for the AMI.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Provide this to allow manage the company network configuration for the fleet. Fields documented below.
-	Network interface{}
+	Network pulumi.AnyInput `pulumi:"network"`
 	// The option to optimize for better performance by routing traffic through the closest AWS Region to users, which may be outside of your home Region. Defaults to `true`.
-	OptimizeForEndUserLocation interface{}
+	OptimizeForEndUserLocation pulumi.BoolInput `pulumi:"optimizeForEndUserLocation"`
 }

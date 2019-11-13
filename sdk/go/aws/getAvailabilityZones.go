@@ -39,25 +39,25 @@ func LookupAvailabilityZones(ctx *pulumi.Context, args *GetAvailabilityZonesArgs
 // A collection of arguments for invoking getAvailabilityZones.
 type GetAvailabilityZonesArgs struct {
 	// List of blacklisted Availability Zone names.
-	BlacklistedNames interface{}
+	BlacklistedNames pulumi.ArrayInput `pulumi:"blacklistedNames"`
 	// List of blacklisted Availability Zone IDs.
-	BlacklistedZoneIds interface{}
+	BlacklistedZoneIds pulumi.ArrayInput `pulumi:"blacklistedZoneIds"`
 	// Allows to filter list of Availability Zones based on their
 	// current state. Can be either `"available"`, `"information"`, `"impaired"` or
 	// `"unavailable"`. By default the list includes a complete set of Availability Zones
 	// to which the underlying AWS account has access, regardless of their state.
-	State interface{}
+	State pulumi.StringInput `pulumi:"state"`
 }
 
 // A collection of values returned by getAvailabilityZones.
 type GetAvailabilityZonesResult struct {
-	BlacklistedNames interface{}
-	BlacklistedZoneIds interface{}
+	BlacklistedNames []interface{} `pulumi:"blacklistedNames"`
+	BlacklistedZoneIds []interface{} `pulumi:"blacklistedZoneIds"`
 	// A list of the Availability Zone names available to the account.
-	Names interface{}
-	State interface{}
+	Names []interface{} `pulumi:"names"`
+	State string `pulumi:"state"`
 	// A list of the Availability Zone IDs available to the account.
-	ZoneIds interface{}
+	ZoneIds []interface{} `pulumi:"zoneIds"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

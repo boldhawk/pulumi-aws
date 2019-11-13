@@ -50,39 +50,39 @@ func LookupRoute(ctx *pulumi.Context, args *GetRouteArgs) (*GetRouteResult, erro
 // A collection of arguments for invoking getRoute.
 type GetRouteArgs struct {
 	// The CIDR block of the Route belonging to the Route Table.
-	DestinationCidrBlock interface{}
+	DestinationCidrBlock pulumi.StringInput `pulumi:"destinationCidrBlock"`
 	// The IPv6 CIDR block of the Route belonging to the Route Table.
-	DestinationIpv6CidrBlock interface{}
+	DestinationIpv6CidrBlock pulumi.StringInput `pulumi:"destinationIpv6CidrBlock"`
 	// The Egress Only Gateway ID of the Route belonging to the Route Table.
-	EgressOnlyGatewayId interface{}
+	EgressOnlyGatewayId pulumi.StringInput `pulumi:"egressOnlyGatewayId"`
 	// The Gateway ID of the Route belonging to the Route Table.
-	GatewayId interface{}
+	GatewayId pulumi.StringInput `pulumi:"gatewayId"`
 	// The Instance ID of the Route belonging to the Route Table.
-	InstanceId interface{}
+	InstanceId pulumi.StringInput `pulumi:"instanceId"`
 	// The NAT Gateway ID of the Route belonging to the Route Table.
-	NatGatewayId interface{}
+	NatGatewayId pulumi.StringInput `pulumi:"natGatewayId"`
 	// The Network Interface ID of the Route belonging to the Route Table.
-	NetworkInterfaceId interface{}
+	NetworkInterfaceId pulumi.StringInput `pulumi:"networkInterfaceId"`
 	// The id of the specific Route Table containing the Route entry.
-	RouteTableId interface{}
+	RouteTableId pulumi.StringInput `pulumi:"routeTableId"`
 	// The EC2 Transit Gateway ID of the Route belonging to the Route Table.
-	TransitGatewayId interface{}
+	TransitGatewayId pulumi.StringInput `pulumi:"transitGatewayId"`
 	// The VPC Peering Connection ID of the Route belonging to the Route Table.
-	VpcPeeringConnectionId interface{}
+	VpcPeeringConnectionId pulumi.StringInput `pulumi:"vpcPeeringConnectionId"`
 }
 
 // A collection of values returned by getRoute.
 type GetRouteResult struct {
-	DestinationCidrBlock interface{}
-	DestinationIpv6CidrBlock interface{}
-	EgressOnlyGatewayId interface{}
-	GatewayId interface{}
-	InstanceId interface{}
-	NatGatewayId interface{}
-	NetworkInterfaceId interface{}
-	RouteTableId interface{}
-	TransitGatewayId interface{}
-	VpcPeeringConnectionId interface{}
+	DestinationCidrBlock string `pulumi:"destinationCidrBlock"`
+	DestinationIpv6CidrBlock string `pulumi:"destinationIpv6CidrBlock"`
+	EgressOnlyGatewayId string `pulumi:"egressOnlyGatewayId"`
+	GatewayId string `pulumi:"gatewayId"`
+	InstanceId string `pulumi:"instanceId"`
+	NatGatewayId string `pulumi:"natGatewayId"`
+	NetworkInterfaceId string `pulumi:"networkInterfaceId"`
+	RouteTableId string `pulumi:"routeTableId"`
+	TransitGatewayId string `pulumi:"transitGatewayId"`
+	VpcPeeringConnectionId string `pulumi:"vpcPeeringConnectionId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

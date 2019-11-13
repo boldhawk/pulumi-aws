@@ -12,7 +12,55 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/glue_crawler.html.markdown.
 type Crawler struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the crawler 
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	CatalogTargets pulumi.ArrayOutput `pulumi:"catalogTargets"`
+
+	// List of custom classifiers. By default, all AWS classifiers are included in a crawl, but these custom classifiers always override the default classifiers for a given classification.
+	Classifiers pulumi.ArrayOutput `pulumi:"classifiers"`
+
+	// JSON string of configuration information.
+	Configuration pulumi.StringOutput `pulumi:"configuration"`
+
+	// The name of the Glue database to be synchronized.
+	DatabaseName pulumi.StringOutput `pulumi:"databaseName"`
+
+	// Description of the crawler.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// List of nested DynamoDB target arguments. See below.
+	DynamodbTargets pulumi.ArrayOutput `pulumi:"dynamodbTargets"`
+
+	// List of nested JBDC target arguments. See below.
+	JdbcTargets pulumi.ArrayOutput `pulumi:"jdbcTargets"`
+
+	// Name of the crawler.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The IAM role friendly name (including path without leading slash), or ARN of an IAM role, used by the crawler to access other resources.
+	Role pulumi.StringOutput `pulumi:"role"`
+
+	// List nested Amazon S3 target arguments. See below.
+	S3Targets pulumi.ArrayOutput `pulumi:"s3Targets"`
+
+	// A cron expression used to specify the schedule. For more information, see [Time-Based Schedules for Jobs and Crawlers](https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html). For example, to run something every day at 12:15 UTC, you would specify: `cron(15 12 * * ? *)`.
+	Schedule pulumi.StringOutput `pulumi:"schedule"`
+
+	// Policy for the crawler's update and deletion behavior.
+	SchemaChangePolicy pulumi.AnyOutput `pulumi:"schemaChangePolicy"`
+
+	// The name of Security Configuration to be used by the crawler
+	SecurityConfiguration pulumi.StringOutput `pulumi:"securityConfiguration"`
+
+	// The table prefix used for catalog tables that are created.
+	TablePrefix pulumi.StringOutput `pulumi:"tablePrefix"`
 }
 
 // NewCrawler registers a new resource with the given unique name, arguments, and options.
@@ -24,23 +72,9 @@ func NewCrawler(ctx *pulumi.Context,
 	if args == nil || args.Role == nil {
 		return nil, errors.New("missing required argument 'Role'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["catalogTargets"] = nil
-		inputs["classifiers"] = nil
-		inputs["configuration"] = nil
-		inputs["databaseName"] = nil
-		inputs["description"] = nil
-		inputs["dynamodbTargets"] = nil
-		inputs["jdbcTargets"] = nil
-		inputs["name"] = nil
-		inputs["role"] = nil
-		inputs["s3Targets"] = nil
-		inputs["schedule"] = nil
-		inputs["schemaChangePolicy"] = nil
-		inputs["securityConfiguration"] = nil
-		inputs["tablePrefix"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["catalogTargets"] = args.CatalogTargets
 		inputs["classifiers"] = args.Classifiers
 		inputs["configuration"] = args.Configuration
@@ -56,19 +90,19 @@ func NewCrawler(ctx *pulumi.Context,
 		inputs["securityConfiguration"] = args.SecurityConfiguration
 		inputs["tablePrefix"] = args.TablePrefix
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:glue/crawler:Crawler", name, true, inputs, opts...)
+	var resource Crawler
+	err := ctx.RegisterResource("aws:glue/crawler:Crawler", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Crawler{s: s}, nil
+	return &resource, nil
 }
 
 // GetCrawler gets an existing Crawler resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetCrawler(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *CrawlerState, opts ...pulumi.ResourceOpt) (*Crawler, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["catalogTargets"] = state.CatalogTargets
@@ -86,157 +120,83 @@ func GetCrawler(ctx *pulumi.Context,
 		inputs["securityConfiguration"] = state.SecurityConfiguration
 		inputs["tablePrefix"] = state.TablePrefix
 	}
-	s, err := ctx.ReadResource("aws:glue/crawler:Crawler", name, id, inputs, opts...)
+	var resource Crawler
+	err := ctx.ReadResource("aws:glue/crawler:Crawler", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Crawler{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Crawler) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Crawler) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Crawler) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Crawler) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the crawler 
-func (r *Crawler) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-func (r *Crawler) CatalogTargets() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["catalogTargets"])
-}
-
-// List of custom classifiers. By default, all AWS classifiers are included in a crawl, but these custom classifiers always override the default classifiers for a given classification.
-func (r *Crawler) Classifiers() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["classifiers"])
-}
-
-// JSON string of configuration information.
-func (r *Crawler) Configuration() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["configuration"])
-}
-
-// The name of the Glue database to be synchronized.
-func (r *Crawler) DatabaseName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["databaseName"])
-}
-
-// Description of the crawler.
-func (r *Crawler) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// List of nested DynamoDB target arguments. See below.
-func (r *Crawler) DynamodbTargets() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["dynamodbTargets"])
-}
-
-// List of nested JBDC target arguments. See below.
-func (r *Crawler) JdbcTargets() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["jdbcTargets"])
-}
-
-// Name of the crawler.
-func (r *Crawler) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The IAM role friendly name (including path without leading slash), or ARN of an IAM role, used by the crawler to access other resources.
-func (r *Crawler) Role() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["role"])
-}
-
-// List nested Amazon S3 target arguments. See below.
-func (r *Crawler) S3Targets() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["s3Targets"])
-}
-
-// A cron expression used to specify the schedule. For more information, see [Time-Based Schedules for Jobs and Crawlers](https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html). For example, to run something every day at 12:15 UTC, you would specify: `cron(15 12 * * ? *)`.
-func (r *Crawler) Schedule() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["schedule"])
-}
-
-// Policy for the crawler's update and deletion behavior.
-func (r *Crawler) SchemaChangePolicy() *pulumi.Output {
-	return r.s.State["schemaChangePolicy"]
-}
-
-// The name of Security Configuration to be used by the crawler
-func (r *Crawler) SecurityConfiguration() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["securityConfiguration"])
-}
-
-// The table prefix used for catalog tables that are created.
-func (r *Crawler) TablePrefix() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["tablePrefix"])
-}
-
 // Input properties used for looking up and filtering Crawler resources.
 type CrawlerState struct {
 	// The ARN of the crawler 
-	Arn interface{}
-	CatalogTargets interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
+	CatalogTargets pulumi.ArrayInput `pulumi:"catalogTargets"`
 	// List of custom classifiers. By default, all AWS classifiers are included in a crawl, but these custom classifiers always override the default classifiers for a given classification.
-	Classifiers interface{}
+	Classifiers pulumi.ArrayInput `pulumi:"classifiers"`
 	// JSON string of configuration information.
-	Configuration interface{}
+	Configuration pulumi.StringInput `pulumi:"configuration"`
 	// The name of the Glue database to be synchronized.
-	DatabaseName interface{}
+	DatabaseName pulumi.StringInput `pulumi:"databaseName"`
 	// Description of the crawler.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// List of nested DynamoDB target arguments. See below.
-	DynamodbTargets interface{}
+	DynamodbTargets pulumi.ArrayInput `pulumi:"dynamodbTargets"`
 	// List of nested JBDC target arguments. See below.
-	JdbcTargets interface{}
+	JdbcTargets pulumi.ArrayInput `pulumi:"jdbcTargets"`
 	// Name of the crawler.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The IAM role friendly name (including path without leading slash), or ARN of an IAM role, used by the crawler to access other resources.
-	Role interface{}
+	Role pulumi.StringInput `pulumi:"role"`
 	// List nested Amazon S3 target arguments. See below.
-	S3Targets interface{}
+	S3Targets pulumi.ArrayInput `pulumi:"s3Targets"`
 	// A cron expression used to specify the schedule. For more information, see [Time-Based Schedules for Jobs and Crawlers](https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html). For example, to run something every day at 12:15 UTC, you would specify: `cron(15 12 * * ? *)`.
-	Schedule interface{}
+	Schedule pulumi.StringInput `pulumi:"schedule"`
 	// Policy for the crawler's update and deletion behavior.
-	SchemaChangePolicy interface{}
+	SchemaChangePolicy pulumi.AnyInput `pulumi:"schemaChangePolicy"`
 	// The name of Security Configuration to be used by the crawler
-	SecurityConfiguration interface{}
+	SecurityConfiguration pulumi.StringInput `pulumi:"securityConfiguration"`
 	// The table prefix used for catalog tables that are created.
-	TablePrefix interface{}
+	TablePrefix pulumi.StringInput `pulumi:"tablePrefix"`
 }
 
 // The set of arguments for constructing a Crawler resource.
 type CrawlerArgs struct {
-	CatalogTargets interface{}
+	CatalogTargets pulumi.ArrayInput `pulumi:"catalogTargets"`
 	// List of custom classifiers. By default, all AWS classifiers are included in a crawl, but these custom classifiers always override the default classifiers for a given classification.
-	Classifiers interface{}
+	Classifiers pulumi.ArrayInput `pulumi:"classifiers"`
 	// JSON string of configuration information.
-	Configuration interface{}
+	Configuration pulumi.StringInput `pulumi:"configuration"`
 	// The name of the Glue database to be synchronized.
-	DatabaseName interface{}
+	DatabaseName pulumi.StringInput `pulumi:"databaseName"`
 	// Description of the crawler.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// List of nested DynamoDB target arguments. See below.
-	DynamodbTargets interface{}
+	DynamodbTargets pulumi.ArrayInput `pulumi:"dynamodbTargets"`
 	// List of nested JBDC target arguments. See below.
-	JdbcTargets interface{}
+	JdbcTargets pulumi.ArrayInput `pulumi:"jdbcTargets"`
 	// Name of the crawler.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The IAM role friendly name (including path without leading slash), or ARN of an IAM role, used by the crawler to access other resources.
-	Role interface{}
+	Role pulumi.StringInput `pulumi:"role"`
 	// List nested Amazon S3 target arguments. See below.
-	S3Targets interface{}
+	S3Targets pulumi.ArrayInput `pulumi:"s3Targets"`
 	// A cron expression used to specify the schedule. For more information, see [Time-Based Schedules for Jobs and Crawlers](https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html). For example, to run something every day at 12:15 UTC, you would specify: `cron(15 12 * * ? *)`.
-	Schedule interface{}
+	Schedule pulumi.StringInput `pulumi:"schedule"`
 	// Policy for the crawler's update and deletion behavior.
-	SchemaChangePolicy interface{}
+	SchemaChangePolicy pulumi.AnyInput `pulumi:"schemaChangePolicy"`
 	// The name of Security Configuration to be used by the crawler
-	SecurityConfiguration interface{}
+	SecurityConfiguration pulumi.StringInput `pulumi:"securityConfiguration"`
 	// The table prefix used for catalog tables that are created.
-	TablePrefix interface{}
+	TablePrefix pulumi.StringInput `pulumi:"tablePrefix"`
 }

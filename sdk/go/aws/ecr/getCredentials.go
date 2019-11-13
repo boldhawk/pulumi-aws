@@ -27,15 +27,15 @@ func LookupCredentials(ctx *pulumi.Context, args *GetCredentialsArgs) (*GetCrede
 
 // A collection of arguments for invoking getCredentials.
 type GetCredentialsArgs struct {
-	RegistryId interface{}
+	RegistryId pulumi.StringInput `pulumi:"registryId"`
 }
 
 // A collection of values returned by getCredentials.
 type GetCredentialsResult struct {
-	AuthorizationToken interface{}
-	ExpiresAt interface{}
-	ProxyEndpoint interface{}
-	RegistryId interface{}
+	AuthorizationToken string `pulumi:"authorizationToken"`
+	ExpiresAt string `pulumi:"expiresAt"`
+	ProxyEndpoint string `pulumi:"proxyEndpoint"`
+	RegistryId string `pulumi:"registryId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

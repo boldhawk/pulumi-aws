@@ -28,12 +28,12 @@ func LookupIpset(ctx *pulumi.Context, args *GetIpsetArgs) (*GetIpsetResult, erro
 // A collection of arguments for invoking getIpset.
 type GetIpsetArgs struct {
 	// The name of the WAF IP set.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getIpset.
 type GetIpsetResult struct {
-	Name interface{}
+	Name string `pulumi:"name"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

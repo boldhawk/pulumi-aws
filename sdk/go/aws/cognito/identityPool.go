@@ -12,7 +12,39 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/cognito_identity_pool.html.markdown.
 type IdentityPool struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Whether the identity pool supports unauthenticated logins or not.
+	AllowUnauthenticatedIdentities pulumi.BoolOutput `pulumi:"allowUnauthenticatedIdentities"`
+
+	// The ARN of the identity pool.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// An array of Amazon Cognito Identity user pools and their client IDs.
+	CognitoIdentityProviders pulumi.ArrayOutput `pulumi:"cognitoIdentityProviders"`
+
+	// The "domain" by which Cognito will refer to your users. This name acts as a placeholder that allows your
+	// backend and the Cognito service to communicate about the developer provider.
+	DeveloperProviderName pulumi.StringOutput `pulumi:"developerProviderName"`
+
+	// The Cognito Identity Pool name.
+	IdentityPoolName pulumi.StringOutput `pulumi:"identityPoolName"`
+
+	// A list of OpendID Connect provider ARNs.
+	OpenidConnectProviderArns pulumi.ArrayOutput `pulumi:"openidConnectProviderArns"`
+
+	// An array of Amazon Resource Names (ARNs) of the SAML provider for your identity.
+	SamlProviderArns pulumi.ArrayOutput `pulumi:"samlProviderArns"`
+
+	// Key-Value pairs mapping provider names to provider app IDs.
+	SupportedLoginProviders pulumi.MapOutput `pulumi:"supportedLoginProviders"`
+
+	// A mapping of tags to assign to the Identity Pool.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewIdentityPool registers a new resource with the given unique name, arguments, and options.
@@ -21,17 +53,8 @@ func NewIdentityPool(ctx *pulumi.Context,
 	if args == nil || args.IdentityPoolName == nil {
 		return nil, errors.New("missing required argument 'IdentityPoolName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["allowUnauthenticatedIdentities"] = nil
-		inputs["cognitoIdentityProviders"] = nil
-		inputs["developerProviderName"] = nil
-		inputs["identityPoolName"] = nil
-		inputs["openidConnectProviderArns"] = nil
-		inputs["samlProviderArns"] = nil
-		inputs["supportedLoginProviders"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["allowUnauthenticatedIdentities"] = args.AllowUnauthenticatedIdentities
 		inputs["cognitoIdentityProviders"] = args.CognitoIdentityProviders
 		inputs["developerProviderName"] = args.DeveloperProviderName
@@ -41,19 +64,19 @@ func NewIdentityPool(ctx *pulumi.Context,
 		inputs["supportedLoginProviders"] = args.SupportedLoginProviders
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:cognito/identityPool:IdentityPool", name, true, inputs, opts...)
+	var resource IdentityPool
+	err := ctx.RegisterResource("aws:cognito/identityPool:IdentityPool", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &IdentityPool{s: s}, nil
+	return &resource, nil
 }
 
 // GetIdentityPool gets an existing IdentityPool resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetIdentityPool(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *IdentityPoolState, opts ...pulumi.ResourceOpt) (*IdentityPool, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["allowUnauthenticatedIdentities"] = state.AllowUnauthenticatedIdentities
 		inputs["arn"] = state.Arn
@@ -65,109 +88,63 @@ func GetIdentityPool(ctx *pulumi.Context,
 		inputs["supportedLoginProviders"] = state.SupportedLoginProviders
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:cognito/identityPool:IdentityPool", name, id, inputs, opts...)
+	var resource IdentityPool
+	err := ctx.ReadResource("aws:cognito/identityPool:IdentityPool", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &IdentityPool{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *IdentityPool) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *IdentityPool) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *IdentityPool) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *IdentityPool) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Whether the identity pool supports unauthenticated logins or not.
-func (r *IdentityPool) AllowUnauthenticatedIdentities() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["allowUnauthenticatedIdentities"])
-}
-
-// The ARN of the identity pool.
-func (r *IdentityPool) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// An array of Amazon Cognito Identity user pools and their client IDs.
-func (r *IdentityPool) CognitoIdentityProviders() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["cognitoIdentityProviders"])
-}
-
-// The "domain" by which Cognito will refer to your users. This name acts as a placeholder that allows your
-// backend and the Cognito service to communicate about the developer provider.
-func (r *IdentityPool) DeveloperProviderName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["developerProviderName"])
-}
-
-// The Cognito Identity Pool name.
-func (r *IdentityPool) IdentityPoolName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["identityPoolName"])
-}
-
-// A list of OpendID Connect provider ARNs.
-func (r *IdentityPool) OpenidConnectProviderArns() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["openidConnectProviderArns"])
-}
-
-// An array of Amazon Resource Names (ARNs) of the SAML provider for your identity.
-func (r *IdentityPool) SamlProviderArns() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["samlProviderArns"])
-}
-
-// Key-Value pairs mapping provider names to provider app IDs.
-func (r *IdentityPool) SupportedLoginProviders() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["supportedLoginProviders"])
-}
-
-// A mapping of tags to assign to the Identity Pool.
-func (r *IdentityPool) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering IdentityPool resources.
 type IdentityPoolState struct {
 	// Whether the identity pool supports unauthenticated logins or not.
-	AllowUnauthenticatedIdentities interface{}
+	AllowUnauthenticatedIdentities pulumi.BoolInput `pulumi:"allowUnauthenticatedIdentities"`
 	// The ARN of the identity pool.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// An array of Amazon Cognito Identity user pools and their client IDs.
-	CognitoIdentityProviders interface{}
+	CognitoIdentityProviders pulumi.ArrayInput `pulumi:"cognitoIdentityProviders"`
 	// The "domain" by which Cognito will refer to your users. This name acts as a placeholder that allows your
 	// backend and the Cognito service to communicate about the developer provider.
-	DeveloperProviderName interface{}
+	DeveloperProviderName pulumi.StringInput `pulumi:"developerProviderName"`
 	// The Cognito Identity Pool name.
-	IdentityPoolName interface{}
+	IdentityPoolName pulumi.StringInput `pulumi:"identityPoolName"`
 	// A list of OpendID Connect provider ARNs.
-	OpenidConnectProviderArns interface{}
+	OpenidConnectProviderArns pulumi.ArrayInput `pulumi:"openidConnectProviderArns"`
 	// An array of Amazon Resource Names (ARNs) of the SAML provider for your identity.
-	SamlProviderArns interface{}
+	SamlProviderArns pulumi.ArrayInput `pulumi:"samlProviderArns"`
 	// Key-Value pairs mapping provider names to provider app IDs.
-	SupportedLoginProviders interface{}
+	SupportedLoginProviders pulumi.MapInput `pulumi:"supportedLoginProviders"`
 	// A mapping of tags to assign to the Identity Pool.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a IdentityPool resource.
 type IdentityPoolArgs struct {
 	// Whether the identity pool supports unauthenticated logins or not.
-	AllowUnauthenticatedIdentities interface{}
+	AllowUnauthenticatedIdentities pulumi.BoolInput `pulumi:"allowUnauthenticatedIdentities"`
 	// An array of Amazon Cognito Identity user pools and their client IDs.
-	CognitoIdentityProviders interface{}
+	CognitoIdentityProviders pulumi.ArrayInput `pulumi:"cognitoIdentityProviders"`
 	// The "domain" by which Cognito will refer to your users. This name acts as a placeholder that allows your
 	// backend and the Cognito service to communicate about the developer provider.
-	DeveloperProviderName interface{}
+	DeveloperProviderName pulumi.StringInput `pulumi:"developerProviderName"`
 	// The Cognito Identity Pool name.
-	IdentityPoolName interface{}
+	IdentityPoolName pulumi.StringInput `pulumi:"identityPoolName"`
 	// A list of OpendID Connect provider ARNs.
-	OpenidConnectProviderArns interface{}
+	OpenidConnectProviderArns pulumi.ArrayInput `pulumi:"openidConnectProviderArns"`
 	// An array of Amazon Resource Names (ARNs) of the SAML provider for your identity.
-	SamlProviderArns interface{}
+	SamlProviderArns pulumi.ArrayInput `pulumi:"samlProviderArns"`
 	// Key-Value pairs mapping provider names to provider app IDs.
-	SupportedLoginProviders interface{}
+	SupportedLoginProviders pulumi.MapInput `pulumi:"supportedLoginProviders"`
 	// A mapping of tags to assign to the Identity Pool.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

@@ -12,7 +12,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ses_domain_identity.html.markdown.
 type DomainIdentity struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the domain identity.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The domain name to assign to SES
+	Domain pulumi.StringOutput `pulumi:"domain"`
+
+	// A code which when added to the domain as a TXT record
+	// will signal to SES that the owner of the domain has authorised SES to act on
+	// their behalf. The domain identity will be in state "verification pending"
+	// until this is done. See below for an example of how this might be achieved
+	// when the domain is hosted in Route 53 and managed by this provider.  Find out
+	// more about verifying domains in Amazon SES in the [AWS SES
+	// docs](http://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-domains.html).
+	VerificationToken pulumi.StringOutput `pulumi:"verificationToken"`
 }
 
 // NewDomainIdentity registers a new resource with the given unique name, arguments, and options.
@@ -21,75 +40,51 @@ func NewDomainIdentity(ctx *pulumi.Context,
 	if args == nil || args.Domain == nil {
 		return nil, errors.New("missing required argument 'Domain'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["domain"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["domain"] = args.Domain
 	}
-	inputs["arn"] = nil
-	inputs["verificationToken"] = nil
-	s, err := ctx.RegisterResource("aws:ses/domainIdentity:DomainIdentity", name, true, inputs, opts...)
+	var resource DomainIdentity
+	err := ctx.RegisterResource("aws:ses/domainIdentity:DomainIdentity", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DomainIdentity{s: s}, nil
+	return &resource, nil
 }
 
 // GetDomainIdentity gets an existing DomainIdentity resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetDomainIdentity(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *DomainIdentityState, opts ...pulumi.ResourceOpt) (*DomainIdentity, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["domain"] = state.Domain
 		inputs["verificationToken"] = state.VerificationToken
 	}
-	s, err := ctx.ReadResource("aws:ses/domainIdentity:DomainIdentity", name, id, inputs, opts...)
+	var resource DomainIdentity
+	err := ctx.ReadResource("aws:ses/domainIdentity:DomainIdentity", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DomainIdentity{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *DomainIdentity) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *DomainIdentity) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *DomainIdentity) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *DomainIdentity) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the domain identity.
-func (r *DomainIdentity) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The domain name to assign to SES
-func (r *DomainIdentity) Domain() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["domain"])
-}
-
-// A code which when added to the domain as a TXT record
-// will signal to SES that the owner of the domain has authorised SES to act on
-// their behalf. The domain identity will be in state "verification pending"
-// until this is done. See below for an example of how this might be achieved
-// when the domain is hosted in Route 53 and managed by this provider.  Find out
-// more about verifying domains in Amazon SES in the [AWS SES
-// docs](http://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-domains.html).
-func (r *DomainIdentity) VerificationToken() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["verificationToken"])
-}
-
 // Input properties used for looking up and filtering DomainIdentity resources.
 type DomainIdentityState struct {
 	// The ARN of the domain identity.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The domain name to assign to SES
-	Domain interface{}
+	Domain pulumi.StringInput `pulumi:"domain"`
 	// A code which when added to the domain as a TXT record
 	// will signal to SES that the owner of the domain has authorised SES to act on
 	// their behalf. The domain identity will be in state "verification pending"
@@ -97,11 +92,11 @@ type DomainIdentityState struct {
 	// when the domain is hosted in Route 53 and managed by this provider.  Find out
 	// more about verifying domains in Amazon SES in the [AWS SES
 	// docs](http://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-domains.html).
-	VerificationToken interface{}
+	VerificationToken pulumi.StringInput `pulumi:"verificationToken"`
 }
 
 // The set of arguments for constructing a DomainIdentity resource.
 type DomainIdentityArgs struct {
 	// The domain name to assign to SES
-	Domain interface{}
+	Domain pulumi.StringInput `pulumi:"domain"`
 }

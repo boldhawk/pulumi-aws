@@ -28,12 +28,12 @@ func LookupRateBasedRule(ctx *pulumi.Context, args *GetRateBasedRuleArgs) (*GetR
 // A collection of arguments for invoking getRateBasedRule.
 type GetRateBasedRuleArgs struct {
 	// The name of the WAF rate based rule.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getRateBasedRule.
 type GetRateBasedRuleResult struct {
-	Name interface{}
+	Name string `pulumi:"name"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

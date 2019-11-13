@@ -8,84 +8,80 @@ import (
 )
 
 type HttpNamespace struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN that Amazon Route 53 assigns to the namespace when you create it.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The description that you specify for the namespace when you create it.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The name of the http namespace.
+	Name pulumi.StringOutput `pulumi:"name"`
 }
 
 // NewHttpNamespace registers a new resource with the given unique name, arguments, and options.
 func NewHttpNamespace(ctx *pulumi.Context,
 	name string, args *HttpNamespaceArgs, opts ...pulumi.ResourceOpt) (*HttpNamespace, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["description"] = nil
-		inputs["name"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:servicediscovery/httpNamespace:HttpNamespace", name, true, inputs, opts...)
+	var resource HttpNamespace
+	err := ctx.RegisterResource("aws:servicediscovery/httpNamespace:HttpNamespace", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &HttpNamespace{s: s}, nil
+	return &resource, nil
 }
 
 // GetHttpNamespace gets an existing HttpNamespace resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetHttpNamespace(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *HttpNamespaceState, opts ...pulumi.ResourceOpt) (*HttpNamespace, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["description"] = state.Description
 		inputs["name"] = state.Name
 	}
-	s, err := ctx.ReadResource("aws:servicediscovery/httpNamespace:HttpNamespace", name, id, inputs, opts...)
+	var resource HttpNamespace
+	err := ctx.ReadResource("aws:servicediscovery/httpNamespace:HttpNamespace", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &HttpNamespace{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *HttpNamespace) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *HttpNamespace) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *HttpNamespace) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *HttpNamespace) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN that Amazon Route 53 assigns to the namespace when you create it.
-func (r *HttpNamespace) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The description that you specify for the namespace when you create it.
-func (r *HttpNamespace) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The name of the http namespace.
-func (r *HttpNamespace) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
 // Input properties used for looking up and filtering HttpNamespace resources.
 type HttpNamespaceState struct {
 	// The ARN that Amazon Route 53 assigns to the namespace when you create it.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The description that you specify for the namespace when you create it.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name of the http namespace.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // The set of arguments for constructing a HttpNamespace resource.
 type HttpNamespaceArgs struct {
 	// The description that you specify for the namespace when you create it.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name of the http namespace.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }

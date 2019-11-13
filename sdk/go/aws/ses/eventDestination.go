@@ -12,7 +12,32 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ses_event_destination.html.markdown.
 type EventDestination struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// CloudWatch destination for the events
+	CloudwatchDestinations pulumi.ArrayOutput `pulumi:"cloudwatchDestinations"`
+
+	// The name of the configuration set
+	ConfigurationSetName pulumi.StringOutput `pulumi:"configurationSetName"`
+
+	// If true, the event destination will be enabled
+	Enabled pulumi.BoolOutput `pulumi:"enabled"`
+
+	// Send the events to a kinesis firehose destination
+	KinesisDestination pulumi.AnyOutput `pulumi:"kinesisDestination"`
+
+	// A list of matching types. May be any of `"send"`, `"reject"`, `"bounce"`, `"complaint"`, `"delivery"`, `"open"`, `"click"`, or `"renderingFailure"`.
+	MatchingTypes pulumi.ArrayOutput `pulumi:"matchingTypes"`
+
+	// The name of the event destination
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Send the events to an SNS Topic destination
+	SnsDestination pulumi.AnyOutput `pulumi:"snsDestination"`
 }
 
 // NewEventDestination registers a new resource with the given unique name, arguments, and options.
@@ -24,16 +49,9 @@ func NewEventDestination(ctx *pulumi.Context,
 	if args == nil || args.MatchingTypes == nil {
 		return nil, errors.New("missing required argument 'MatchingTypes'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["cloudwatchDestinations"] = nil
-		inputs["configurationSetName"] = nil
-		inputs["enabled"] = nil
-		inputs["kinesisDestination"] = nil
-		inputs["matchingTypes"] = nil
-		inputs["name"] = nil
-		inputs["snsDestination"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["cloudwatchDestinations"] = args.CloudwatchDestinations
 		inputs["configurationSetName"] = args.ConfigurationSetName
 		inputs["enabled"] = args.Enabled
@@ -42,18 +60,19 @@ func NewEventDestination(ctx *pulumi.Context,
 		inputs["name"] = args.Name
 		inputs["snsDestination"] = args.SnsDestination
 	}
-	s, err := ctx.RegisterResource("aws:ses/eventDestination:EventDestination", name, true, inputs, opts...)
+	var resource EventDestination
+	err := ctx.RegisterResource("aws:ses/eventDestination:EventDestination", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EventDestination{s: s}, nil
+	return &resource, nil
 }
 
 // GetEventDestination gets an existing EventDestination resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetEventDestination(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *EventDestinationState, opts ...pulumi.ResourceOpt) (*EventDestination, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["cloudwatchDestinations"] = state.CloudwatchDestinations
 		inputs["configurationSetName"] = state.ConfigurationSetName
@@ -63,90 +82,55 @@ func GetEventDestination(ctx *pulumi.Context,
 		inputs["name"] = state.Name
 		inputs["snsDestination"] = state.SnsDestination
 	}
-	s, err := ctx.ReadResource("aws:ses/eventDestination:EventDestination", name, id, inputs, opts...)
+	var resource EventDestination
+	err := ctx.ReadResource("aws:ses/eventDestination:EventDestination", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EventDestination{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *EventDestination) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *EventDestination) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *EventDestination) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *EventDestination) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// CloudWatch destination for the events
-func (r *EventDestination) CloudwatchDestinations() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["cloudwatchDestinations"])
-}
-
-// The name of the configuration set
-func (r *EventDestination) ConfigurationSetName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["configurationSetName"])
-}
-
-// If true, the event destination will be enabled
-func (r *EventDestination) Enabled() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["enabled"])
-}
-
-// Send the events to a kinesis firehose destination
-func (r *EventDestination) KinesisDestination() *pulumi.Output {
-	return r.s.State["kinesisDestination"]
-}
-
-// A list of matching types. May be any of `"send"`, `"reject"`, `"bounce"`, `"complaint"`, `"delivery"`, `"open"`, `"click"`, or `"renderingFailure"`.
-func (r *EventDestination) MatchingTypes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["matchingTypes"])
-}
-
-// The name of the event destination
-func (r *EventDestination) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Send the events to an SNS Topic destination
-func (r *EventDestination) SnsDestination() *pulumi.Output {
-	return r.s.State["snsDestination"]
-}
-
 // Input properties used for looking up and filtering EventDestination resources.
 type EventDestinationState struct {
 	// CloudWatch destination for the events
-	CloudwatchDestinations interface{}
+	CloudwatchDestinations pulumi.ArrayInput `pulumi:"cloudwatchDestinations"`
 	// The name of the configuration set
-	ConfigurationSetName interface{}
+	ConfigurationSetName pulumi.StringInput `pulumi:"configurationSetName"`
 	// If true, the event destination will be enabled
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// Send the events to a kinesis firehose destination
-	KinesisDestination interface{}
+	KinesisDestination pulumi.AnyInput `pulumi:"kinesisDestination"`
 	// A list of matching types. May be any of `"send"`, `"reject"`, `"bounce"`, `"complaint"`, `"delivery"`, `"open"`, `"click"`, or `"renderingFailure"`.
-	MatchingTypes interface{}
+	MatchingTypes pulumi.ArrayInput `pulumi:"matchingTypes"`
 	// The name of the event destination
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Send the events to an SNS Topic destination
-	SnsDestination interface{}
+	SnsDestination pulumi.AnyInput `pulumi:"snsDestination"`
 }
 
 // The set of arguments for constructing a EventDestination resource.
 type EventDestinationArgs struct {
 	// CloudWatch destination for the events
-	CloudwatchDestinations interface{}
+	CloudwatchDestinations pulumi.ArrayInput `pulumi:"cloudwatchDestinations"`
 	// The name of the configuration set
-	ConfigurationSetName interface{}
+	ConfigurationSetName pulumi.StringInput `pulumi:"configurationSetName"`
 	// If true, the event destination will be enabled
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// Send the events to a kinesis firehose destination
-	KinesisDestination interface{}
+	KinesisDestination pulumi.AnyInput `pulumi:"kinesisDestination"`
 	// A list of matching types. May be any of `"send"`, `"reject"`, `"bounce"`, `"complaint"`, `"delivery"`, `"open"`, `"click"`, or `"renderingFailure"`.
-	MatchingTypes interface{}
+	MatchingTypes pulumi.ArrayInput `pulumi:"matchingTypes"`
 	// The name of the event destination
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Send the events to an SNS Topic destination
-	SnsDestination interface{}
+	SnsDestination pulumi.AnyInput `pulumi:"snsDestination"`
 }

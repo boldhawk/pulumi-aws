@@ -31,7 +31,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/route_table.html.markdown.
 type RouteTable struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ID of the AWS account that owns the route table.
+	OwnerId pulumi.StringOutput `pulumi:"ownerId"`
+
+	// A list of virtual gateways for propagation.
+	PropagatingVgws pulumi.ArrayOutput `pulumi:"propagatingVgws"`
+
+	// A list of route objects. Their keys are documented below. This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
+	Routes pulumi.ArrayOutput `pulumi:"routes"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// The VPC ID.
+	VpcId pulumi.StringOutput `pulumi:"vpcId"`
 }
 
 // NewRouteTable registers a new resource with the given unique name, arguments, and options.
@@ -40,31 +59,26 @@ func NewRouteTable(ctx *pulumi.Context,
 	if args == nil || args.VpcId == nil {
 		return nil, errors.New("missing required argument 'VpcId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["propagatingVgws"] = nil
-		inputs["routes"] = nil
-		inputs["tags"] = nil
-		inputs["vpcId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["propagatingVgws"] = args.PropagatingVgws
 		inputs["routes"] = args.Routes
 		inputs["tags"] = args.Tags
 		inputs["vpcId"] = args.VpcId
 	}
-	inputs["ownerId"] = nil
-	s, err := ctx.RegisterResource("aws:ec2/routeTable:RouteTable", name, true, inputs, opts...)
+	var resource RouteTable
+	err := ctx.RegisterResource("aws:ec2/routeTable:RouteTable", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RouteTable{s: s}, nil
+	return &resource, nil
 }
 
 // GetRouteTable gets an existing RouteTable resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRouteTable(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RouteTableState, opts ...pulumi.ResourceOpt) (*RouteTable, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["ownerId"] = state.OwnerId
 		inputs["propagatingVgws"] = state.PropagatingVgws
@@ -72,70 +86,45 @@ func GetRouteTable(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["vpcId"] = state.VpcId
 	}
-	s, err := ctx.ReadResource("aws:ec2/routeTable:RouteTable", name, id, inputs, opts...)
+	var resource RouteTable
+	err := ctx.ReadResource("aws:ec2/routeTable:RouteTable", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RouteTable{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *RouteTable) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *RouteTable) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *RouteTable) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *RouteTable) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ID of the AWS account that owns the route table.
-func (r *RouteTable) OwnerId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ownerId"])
-}
-
-// A list of virtual gateways for propagation.
-func (r *RouteTable) PropagatingVgws() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["propagatingVgws"])
-}
-
-// A list of route objects. Their keys are documented below. This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-func (r *RouteTable) Routes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["routes"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *RouteTable) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// The VPC ID.
-func (r *RouteTable) VpcId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpcId"])
-}
-
 // Input properties used for looking up and filtering RouteTable resources.
 type RouteTableState struct {
 	// The ID of the AWS account that owns the route table.
-	OwnerId interface{}
+	OwnerId pulumi.StringInput `pulumi:"ownerId"`
 	// A list of virtual gateways for propagation.
-	PropagatingVgws interface{}
+	PropagatingVgws pulumi.ArrayInput `pulumi:"propagatingVgws"`
 	// A list of route objects. Their keys are documented below. This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-	Routes interface{}
+	Routes pulumi.ArrayInput `pulumi:"routes"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The VPC ID.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // The set of arguments for constructing a RouteTable resource.
 type RouteTableArgs struct {
 	// A list of virtual gateways for propagation.
-	PropagatingVgws interface{}
+	PropagatingVgws pulumi.ArrayInput `pulumi:"propagatingVgws"`
 	// A list of route objects. Their keys are documented below. This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-	Routes interface{}
+	Routes pulumi.ArrayInput `pulumi:"routes"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The VPC ID.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }

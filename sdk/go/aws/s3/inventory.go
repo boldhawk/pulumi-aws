@@ -12,7 +12,35 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/s3_bucket_inventory.html.markdown.
 type Inventory struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The S3 bucket configuration where inventory results are published (documented below).
+	Bucket pulumi.StringOutput `pulumi:"bucket"`
+
+	// Destination bucket where inventory list files are written (documented below).
+	Destination pulumi.AnyOutput `pulumi:"destination"`
+
+	// Specifies whether the inventory is enabled or disabled.
+	Enabled pulumi.BoolOutput `pulumi:"enabled"`
+
+	// Object filtering that accepts a prefix (documented below).
+	Filter pulumi.AnyOutput `pulumi:"filter"`
+
+	// Object filtering that accepts a prefix (documented below). Can be `All` or `Current`.
+	IncludedObjectVersions pulumi.StringOutput `pulumi:"includedObjectVersions"`
+
+	// Unique identifier of the inventory configuration for the bucket.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Contains the optional fields that are included in the inventory results.
+	OptionalFields pulumi.ArrayOutput `pulumi:"optionalFields"`
+
+	// Contains the frequency for generating inventory results (documented below).
+	Schedule pulumi.AnyOutput `pulumi:"schedule"`
 }
 
 // NewInventory registers a new resource with the given unique name, arguments, and options.
@@ -30,17 +58,9 @@ func NewInventory(ctx *pulumi.Context,
 	if args == nil || args.Schedule == nil {
 		return nil, errors.New("missing required argument 'Schedule'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["bucket"] = nil
-		inputs["destination"] = nil
-		inputs["enabled"] = nil
-		inputs["filter"] = nil
-		inputs["includedObjectVersions"] = nil
-		inputs["name"] = nil
-		inputs["optionalFields"] = nil
-		inputs["schedule"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["bucket"] = args.Bucket
 		inputs["destination"] = args.Destination
 		inputs["enabled"] = args.Enabled
@@ -50,18 +70,19 @@ func NewInventory(ctx *pulumi.Context,
 		inputs["optionalFields"] = args.OptionalFields
 		inputs["schedule"] = args.Schedule
 	}
-	s, err := ctx.RegisterResource("aws:s3/inventory:Inventory", name, true, inputs, opts...)
+	var resource Inventory
+	err := ctx.RegisterResource("aws:s3/inventory:Inventory", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Inventory{s: s}, nil
+	return &resource, nil
 }
 
 // GetInventory gets an existing Inventory resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetInventory(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *InventoryState, opts ...pulumi.ResourceOpt) (*Inventory, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["bucket"] = state.Bucket
 		inputs["destination"] = state.Destination
@@ -72,99 +93,59 @@ func GetInventory(ctx *pulumi.Context,
 		inputs["optionalFields"] = state.OptionalFields
 		inputs["schedule"] = state.Schedule
 	}
-	s, err := ctx.ReadResource("aws:s3/inventory:Inventory", name, id, inputs, opts...)
+	var resource Inventory
+	err := ctx.ReadResource("aws:s3/inventory:Inventory", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Inventory{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Inventory) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Inventory) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Inventory) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Inventory) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The S3 bucket configuration where inventory results are published (documented below).
-func (r *Inventory) Bucket() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["bucket"])
-}
-
-// Destination bucket where inventory list files are written (documented below).
-func (r *Inventory) Destination() *pulumi.Output {
-	return r.s.State["destination"]
-}
-
-// Specifies whether the inventory is enabled or disabled.
-func (r *Inventory) Enabled() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["enabled"])
-}
-
-// Object filtering that accepts a prefix (documented below).
-func (r *Inventory) Filter() *pulumi.Output {
-	return r.s.State["filter"]
-}
-
-// Object filtering that accepts a prefix (documented below). Can be `All` or `Current`.
-func (r *Inventory) IncludedObjectVersions() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["includedObjectVersions"])
-}
-
-// Unique identifier of the inventory configuration for the bucket.
-func (r *Inventory) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Contains the optional fields that are included in the inventory results.
-func (r *Inventory) OptionalFields() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["optionalFields"])
-}
-
-// Contains the frequency for generating inventory results (documented below).
-func (r *Inventory) Schedule() *pulumi.Output {
-	return r.s.State["schedule"]
-}
-
 // Input properties used for looking up and filtering Inventory resources.
 type InventoryState struct {
 	// The S3 bucket configuration where inventory results are published (documented below).
-	Bucket interface{}
+	Bucket pulumi.StringInput `pulumi:"bucket"`
 	// Destination bucket where inventory list files are written (documented below).
-	Destination interface{}
+	Destination pulumi.AnyInput `pulumi:"destination"`
 	// Specifies whether the inventory is enabled or disabled.
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// Object filtering that accepts a prefix (documented below).
-	Filter interface{}
+	Filter pulumi.AnyInput `pulumi:"filter"`
 	// Object filtering that accepts a prefix (documented below). Can be `All` or `Current`.
-	IncludedObjectVersions interface{}
+	IncludedObjectVersions pulumi.StringInput `pulumi:"includedObjectVersions"`
 	// Unique identifier of the inventory configuration for the bucket.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Contains the optional fields that are included in the inventory results.
-	OptionalFields interface{}
+	OptionalFields pulumi.ArrayInput `pulumi:"optionalFields"`
 	// Contains the frequency for generating inventory results (documented below).
-	Schedule interface{}
+	Schedule pulumi.AnyInput `pulumi:"schedule"`
 }
 
 // The set of arguments for constructing a Inventory resource.
 type InventoryArgs struct {
 	// The S3 bucket configuration where inventory results are published (documented below).
-	Bucket interface{}
+	Bucket pulumi.StringInput `pulumi:"bucket"`
 	// Destination bucket where inventory list files are written (documented below).
-	Destination interface{}
+	Destination pulumi.AnyInput `pulumi:"destination"`
 	// Specifies whether the inventory is enabled or disabled.
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// Object filtering that accepts a prefix (documented below).
-	Filter interface{}
+	Filter pulumi.AnyInput `pulumi:"filter"`
 	// Object filtering that accepts a prefix (documented below). Can be `All` or `Current`.
-	IncludedObjectVersions interface{}
+	IncludedObjectVersions pulumi.StringInput `pulumi:"includedObjectVersions"`
 	// Unique identifier of the inventory configuration for the bucket.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Contains the optional fields that are included in the inventory results.
-	OptionalFields interface{}
+	OptionalFields pulumi.ArrayInput `pulumi:"optionalFields"`
 	// Contains the frequency for generating inventory results (documented below).
-	Schedule interface{}
+	Schedule pulumi.AnyInput `pulumi:"schedule"`
 }

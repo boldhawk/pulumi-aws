@@ -12,7 +12,32 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/cognito_user_pool_domain.html.markdown.
 type UserPoolDomain struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The AWS account ID for the user pool owner.
+	AwsAccountId pulumi.StringOutput `pulumi:"awsAccountId"`
+
+	// The ARN of an ISSUED ACM certificate in us-east-1 for a custom domain.
+	CertificateArn pulumi.StringOutput `pulumi:"certificateArn"`
+
+	// The ARN of the CloudFront distribution.
+	CloudfrontDistributionArn pulumi.StringOutput `pulumi:"cloudfrontDistributionArn"`
+
+	// The domain string.
+	Domain pulumi.StringOutput `pulumi:"domain"`
+
+	// The S3 bucket where the static files for this domain are stored.
+	S3Bucket pulumi.StringOutput `pulumi:"s3Bucket"`
+
+	// The user pool ID.
+	UserPoolId pulumi.StringOutput `pulumi:"userPoolId"`
+
+	// The app version.
+	Version pulumi.StringOutput `pulumi:"version"`
 }
 
 // NewUserPoolDomain registers a new resource with the given unique name, arguments, and options.
@@ -24,32 +49,25 @@ func NewUserPoolDomain(ctx *pulumi.Context,
 	if args == nil || args.UserPoolId == nil {
 		return nil, errors.New("missing required argument 'UserPoolId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["certificateArn"] = nil
-		inputs["domain"] = nil
-		inputs["userPoolId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["certificateArn"] = args.CertificateArn
 		inputs["domain"] = args.Domain
 		inputs["userPoolId"] = args.UserPoolId
 	}
-	inputs["awsAccountId"] = nil
-	inputs["cloudfrontDistributionArn"] = nil
-	inputs["s3Bucket"] = nil
-	inputs["version"] = nil
-	s, err := ctx.RegisterResource("aws:cognito/userPoolDomain:UserPoolDomain", name, true, inputs, opts...)
+	var resource UserPoolDomain
+	err := ctx.RegisterResource("aws:cognito/userPoolDomain:UserPoolDomain", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &UserPoolDomain{s: s}, nil
+	return &resource, nil
 }
 
 // GetUserPoolDomain gets an existing UserPoolDomain resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetUserPoolDomain(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *UserPoolDomainState, opts ...pulumi.ResourceOpt) (*UserPoolDomain, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["awsAccountId"] = state.AwsAccountId
 		inputs["certificateArn"] = state.CertificateArn
@@ -59,82 +77,47 @@ func GetUserPoolDomain(ctx *pulumi.Context,
 		inputs["userPoolId"] = state.UserPoolId
 		inputs["version"] = state.Version
 	}
-	s, err := ctx.ReadResource("aws:cognito/userPoolDomain:UserPoolDomain", name, id, inputs, opts...)
+	var resource UserPoolDomain
+	err := ctx.ReadResource("aws:cognito/userPoolDomain:UserPoolDomain", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &UserPoolDomain{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *UserPoolDomain) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *UserPoolDomain) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *UserPoolDomain) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *UserPoolDomain) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The AWS account ID for the user pool owner.
-func (r *UserPoolDomain) AwsAccountId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["awsAccountId"])
-}
-
-// The ARN of an ISSUED ACM certificate in us-east-1 for a custom domain.
-func (r *UserPoolDomain) CertificateArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["certificateArn"])
-}
-
-// The ARN of the CloudFront distribution.
-func (r *UserPoolDomain) CloudfrontDistributionArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["cloudfrontDistributionArn"])
-}
-
-// The domain string.
-func (r *UserPoolDomain) Domain() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["domain"])
-}
-
-// The S3 bucket where the static files for this domain are stored.
-func (r *UserPoolDomain) S3Bucket() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["s3Bucket"])
-}
-
-// The user pool ID.
-func (r *UserPoolDomain) UserPoolId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["userPoolId"])
-}
-
-// The app version.
-func (r *UserPoolDomain) Version() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["version"])
-}
-
 // Input properties used for looking up and filtering UserPoolDomain resources.
 type UserPoolDomainState struct {
 	// The AWS account ID for the user pool owner.
-	AwsAccountId interface{}
+	AwsAccountId pulumi.StringInput `pulumi:"awsAccountId"`
 	// The ARN of an ISSUED ACM certificate in us-east-1 for a custom domain.
-	CertificateArn interface{}
+	CertificateArn pulumi.StringInput `pulumi:"certificateArn"`
 	// The ARN of the CloudFront distribution.
-	CloudfrontDistributionArn interface{}
+	CloudfrontDistributionArn pulumi.StringInput `pulumi:"cloudfrontDistributionArn"`
 	// The domain string.
-	Domain interface{}
+	Domain pulumi.StringInput `pulumi:"domain"`
 	// The S3 bucket where the static files for this domain are stored.
-	S3Bucket interface{}
+	S3Bucket pulumi.StringInput `pulumi:"s3Bucket"`
 	// The user pool ID.
-	UserPoolId interface{}
+	UserPoolId pulumi.StringInput `pulumi:"userPoolId"`
 	// The app version.
-	Version interface{}
+	Version pulumi.StringInput `pulumi:"version"`
 }
 
 // The set of arguments for constructing a UserPoolDomain resource.
 type UserPoolDomainArgs struct {
 	// The ARN of an ISSUED ACM certificate in us-east-1 for a custom domain.
-	CertificateArn interface{}
+	CertificateArn pulumi.StringInput `pulumi:"certificateArn"`
 	// The domain string.
-	Domain interface{}
+	Domain pulumi.StringInput `pulumi:"domain"`
 	// The user pool ID.
-	UserPoolId interface{}
+	UserPoolId pulumi.StringInput `pulumi:"userPoolId"`
 }

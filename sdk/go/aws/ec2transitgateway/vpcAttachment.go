@@ -12,7 +12,38 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ec2_transit_gateway_vpc_attachment.html.markdown.
 type VpcAttachment struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Whether DNS support is enabled. Valid values: `disable`, `enable`. Default value: `enable`.
+	DnsSupport pulumi.StringOutput `pulumi:"dnsSupport"`
+
+	// Whether IPv6 support is enabled. Valid values: `disable`, `enable`. Default value: `disable`.
+	Ipv6Support pulumi.StringOutput `pulumi:"ipv6Support"`
+
+	// Identifiers of EC2 Subnets.
+	SubnetIds pulumi.ArrayOutput `pulumi:"subnetIds"`
+
+	// Key-value tags for the EC2 Transit Gateway VPC Attachment.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// Boolean whether the VPC Attachment should be associated with the EC2 Transit Gateway association default route table. This cannot be configured or perform drift detection with Resource Access Manager shared EC2 Transit Gateways. Default value: `true`.
+	TransitGatewayDefaultRouteTableAssociation pulumi.BoolOutput `pulumi:"transitGatewayDefaultRouteTableAssociation"`
+
+	// Boolean whether the VPC Attachment should propagate routes with the EC2 Transit Gateway propagation default route table. This cannot be configured or perform drift detection with Resource Access Manager shared EC2 Transit Gateways. Default value: `true`.
+	TransitGatewayDefaultRouteTablePropagation pulumi.BoolOutput `pulumi:"transitGatewayDefaultRouteTablePropagation"`
+
+	// Identifier of EC2 Transit Gateway.
+	TransitGatewayId pulumi.StringOutput `pulumi:"transitGatewayId"`
+
+	// Identifier of EC2 VPC.
+	VpcId pulumi.StringOutput `pulumi:"vpcId"`
+
+	// Identifier of the AWS account that owns the EC2 VPC.
+	VpcOwnerId pulumi.StringOutput `pulumi:"vpcOwnerId"`
 }
 
 // NewVpcAttachment registers a new resource with the given unique name, arguments, and options.
@@ -27,17 +58,8 @@ func NewVpcAttachment(ctx *pulumi.Context,
 	if args == nil || args.VpcId == nil {
 		return nil, errors.New("missing required argument 'VpcId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["dnsSupport"] = nil
-		inputs["ipv6Support"] = nil
-		inputs["subnetIds"] = nil
-		inputs["tags"] = nil
-		inputs["transitGatewayDefaultRouteTableAssociation"] = nil
-		inputs["transitGatewayDefaultRouteTablePropagation"] = nil
-		inputs["transitGatewayId"] = nil
-		inputs["vpcId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["dnsSupport"] = args.DnsSupport
 		inputs["ipv6Support"] = args.Ipv6Support
 		inputs["subnetIds"] = args.SubnetIds
@@ -47,19 +69,19 @@ func NewVpcAttachment(ctx *pulumi.Context,
 		inputs["transitGatewayId"] = args.TransitGatewayId
 		inputs["vpcId"] = args.VpcId
 	}
-	inputs["vpcOwnerId"] = nil
-	s, err := ctx.RegisterResource("aws:ec2transitgateway/vpcAttachment:VpcAttachment", name, true, inputs, opts...)
+	var resource VpcAttachment
+	err := ctx.RegisterResource("aws:ec2transitgateway/vpcAttachment:VpcAttachment", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &VpcAttachment{s: s}, nil
+	return &resource, nil
 }
 
 // GetVpcAttachment gets an existing VpcAttachment resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetVpcAttachment(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *VpcAttachmentState, opts ...pulumi.ResourceOpt) (*VpcAttachment, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["dnsSupport"] = state.DnsSupport
 		inputs["ipv6Support"] = state.Ipv6Support
@@ -71,106 +93,61 @@ func GetVpcAttachment(ctx *pulumi.Context,
 		inputs["vpcId"] = state.VpcId
 		inputs["vpcOwnerId"] = state.VpcOwnerId
 	}
-	s, err := ctx.ReadResource("aws:ec2transitgateway/vpcAttachment:VpcAttachment", name, id, inputs, opts...)
+	var resource VpcAttachment
+	err := ctx.ReadResource("aws:ec2transitgateway/vpcAttachment:VpcAttachment", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &VpcAttachment{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *VpcAttachment) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *VpcAttachment) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *VpcAttachment) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *VpcAttachment) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Whether DNS support is enabled. Valid values: `disable`, `enable`. Default value: `enable`.
-func (r *VpcAttachment) DnsSupport() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["dnsSupport"])
-}
-
-// Whether IPv6 support is enabled. Valid values: `disable`, `enable`. Default value: `disable`.
-func (r *VpcAttachment) Ipv6Support() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ipv6Support"])
-}
-
-// Identifiers of EC2 Subnets.
-func (r *VpcAttachment) SubnetIds() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["subnetIds"])
-}
-
-// Key-value tags for the EC2 Transit Gateway VPC Attachment.
-func (r *VpcAttachment) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// Boolean whether the VPC Attachment should be associated with the EC2 Transit Gateway association default route table. This cannot be configured or perform drift detection with Resource Access Manager shared EC2 Transit Gateways. Default value: `true`.
-func (r *VpcAttachment) TransitGatewayDefaultRouteTableAssociation() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["transitGatewayDefaultRouteTableAssociation"])
-}
-
-// Boolean whether the VPC Attachment should propagate routes with the EC2 Transit Gateway propagation default route table. This cannot be configured or perform drift detection with Resource Access Manager shared EC2 Transit Gateways. Default value: `true`.
-func (r *VpcAttachment) TransitGatewayDefaultRouteTablePropagation() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["transitGatewayDefaultRouteTablePropagation"])
-}
-
-// Identifier of EC2 Transit Gateway.
-func (r *VpcAttachment) TransitGatewayId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["transitGatewayId"])
-}
-
-// Identifier of EC2 VPC.
-func (r *VpcAttachment) VpcId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpcId"])
-}
-
-// Identifier of the AWS account that owns the EC2 VPC.
-func (r *VpcAttachment) VpcOwnerId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpcOwnerId"])
-}
-
 // Input properties used for looking up and filtering VpcAttachment resources.
 type VpcAttachmentState struct {
 	// Whether DNS support is enabled. Valid values: `disable`, `enable`. Default value: `enable`.
-	DnsSupport interface{}
+	DnsSupport pulumi.StringInput `pulumi:"dnsSupport"`
 	// Whether IPv6 support is enabled. Valid values: `disable`, `enable`. Default value: `disable`.
-	Ipv6Support interface{}
+	Ipv6Support pulumi.StringInput `pulumi:"ipv6Support"`
 	// Identifiers of EC2 Subnets.
-	SubnetIds interface{}
+	SubnetIds pulumi.ArrayInput `pulumi:"subnetIds"`
 	// Key-value tags for the EC2 Transit Gateway VPC Attachment.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Boolean whether the VPC Attachment should be associated with the EC2 Transit Gateway association default route table. This cannot be configured or perform drift detection with Resource Access Manager shared EC2 Transit Gateways. Default value: `true`.
-	TransitGatewayDefaultRouteTableAssociation interface{}
+	TransitGatewayDefaultRouteTableAssociation pulumi.BoolInput `pulumi:"transitGatewayDefaultRouteTableAssociation"`
 	// Boolean whether the VPC Attachment should propagate routes with the EC2 Transit Gateway propagation default route table. This cannot be configured or perform drift detection with Resource Access Manager shared EC2 Transit Gateways. Default value: `true`.
-	TransitGatewayDefaultRouteTablePropagation interface{}
+	TransitGatewayDefaultRouteTablePropagation pulumi.BoolInput `pulumi:"transitGatewayDefaultRouteTablePropagation"`
 	// Identifier of EC2 Transit Gateway.
-	TransitGatewayId interface{}
+	TransitGatewayId pulumi.StringInput `pulumi:"transitGatewayId"`
 	// Identifier of EC2 VPC.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 	// Identifier of the AWS account that owns the EC2 VPC.
-	VpcOwnerId interface{}
+	VpcOwnerId pulumi.StringInput `pulumi:"vpcOwnerId"`
 }
 
 // The set of arguments for constructing a VpcAttachment resource.
 type VpcAttachmentArgs struct {
 	// Whether DNS support is enabled. Valid values: `disable`, `enable`. Default value: `enable`.
-	DnsSupport interface{}
+	DnsSupport pulumi.StringInput `pulumi:"dnsSupport"`
 	// Whether IPv6 support is enabled. Valid values: `disable`, `enable`. Default value: `disable`.
-	Ipv6Support interface{}
+	Ipv6Support pulumi.StringInput `pulumi:"ipv6Support"`
 	// Identifiers of EC2 Subnets.
-	SubnetIds interface{}
+	SubnetIds pulumi.ArrayInput `pulumi:"subnetIds"`
 	// Key-value tags for the EC2 Transit Gateway VPC Attachment.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Boolean whether the VPC Attachment should be associated with the EC2 Transit Gateway association default route table. This cannot be configured or perform drift detection with Resource Access Manager shared EC2 Transit Gateways. Default value: `true`.
-	TransitGatewayDefaultRouteTableAssociation interface{}
+	TransitGatewayDefaultRouteTableAssociation pulumi.BoolInput `pulumi:"transitGatewayDefaultRouteTableAssociation"`
 	// Boolean whether the VPC Attachment should propagate routes with the EC2 Transit Gateway propagation default route table. This cannot be configured or perform drift detection with Resource Access Manager shared EC2 Transit Gateways. Default value: `true`.
-	TransitGatewayDefaultRouteTablePropagation interface{}
+	TransitGatewayDefaultRouteTablePropagation pulumi.BoolInput `pulumi:"transitGatewayDefaultRouteTablePropagation"`
 	// Identifier of EC2 Transit Gateway.
-	TransitGatewayId interface{}
+	TransitGatewayId pulumi.StringInput `pulumi:"transitGatewayId"`
 	// Identifier of EC2 VPC.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }

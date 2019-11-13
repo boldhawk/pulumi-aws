@@ -33,25 +33,25 @@ func LookupOrganization(ctx *pulumi.Context) (*GetOrganizationResult, error) {
 // A collection of values returned by getOrganization.
 type GetOrganizationResult struct {
 	// List of organization accounts including the master account. For a list excluding the master account, see the `nonMasterAccounts` attribute. All elements have these attributes:
-	Accounts interface{}
+	Accounts []interface{} `pulumi:"accounts"`
 	// ARN of the root
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// A list of AWS service principal names that have integration enabled with your organization. Organization must have `featureSet` set to `ALL`. For additional information, see the [AWS Organizations User Guide](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_integrate_services.html).
-	AwsServiceAccessPrincipals interface{}
+	AwsServiceAccessPrincipals []interface{} `pulumi:"awsServiceAccessPrincipals"`
 	// A list of Organizations policy types that are enabled in the Organization Root. Organization must have `featureSet` set to `ALL`. For additional information about valid policy types (e.g. `SERVICE_CONTROL_POLICY`), see the [AWS Organizations API Reference](https://docs.aws.amazon.com/organizations/latest/APIReference/API_EnablePolicyType.html).
-	EnabledPolicyTypes interface{}
+	EnabledPolicyTypes []interface{} `pulumi:"enabledPolicyTypes"`
 	// The FeatureSet of the organization.
-	FeatureSet interface{}
+	FeatureSet string `pulumi:"featureSet"`
 	// The Amazon Resource Name (ARN) of the account that is designated as the master account for the organization.
-	MasterAccountArn interface{}
+	MasterAccountArn string `pulumi:"masterAccountArn"`
 	// The email address that is associated with the AWS account that is designated as the master account for the organization.
-	MasterAccountEmail interface{}
+	MasterAccountEmail string `pulumi:"masterAccountEmail"`
 	// The unique identifier (ID) of the master account of an organization.
-	MasterAccountId interface{}
+	MasterAccountId string `pulumi:"masterAccountId"`
 	// List of organization accounts excluding the master account. For a list including the master account, see the `accounts` attribute. All elements have these attributes:
-	NonMasterAccounts interface{}
+	NonMasterAccounts []interface{} `pulumi:"nonMasterAccounts"`
 	// List of organization roots. All elements have these attributes:
-	Roots interface{}
+	Roots []interface{} `pulumi:"roots"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

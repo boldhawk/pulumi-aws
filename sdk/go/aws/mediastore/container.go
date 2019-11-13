@@ -11,93 +11,86 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/media_store_container.html.markdown.
 type Container struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the container.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The DNS endpoint of the container.
+	Endpoint pulumi.StringOutput `pulumi:"endpoint"`
+
+	// The name of the container. Must contain alphanumeric characters or underscores.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewContainer registers a new resource with the given unique name, arguments, and options.
 func NewContainer(ctx *pulumi.Context,
 	name string, args *ContainerArgs, opts ...pulumi.ResourceOpt) (*Container, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["name"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["name"] = args.Name
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	inputs["endpoint"] = nil
-	s, err := ctx.RegisterResource("aws:mediastore/container:Container", name, true, inputs, opts...)
+	var resource Container
+	err := ctx.RegisterResource("aws:mediastore/container:Container", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Container{s: s}, nil
+	return &resource, nil
 }
 
 // GetContainer gets an existing Container resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetContainer(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ContainerState, opts ...pulumi.ResourceOpt) (*Container, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["endpoint"] = state.Endpoint
 		inputs["name"] = state.Name
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:mediastore/container:Container", name, id, inputs, opts...)
+	var resource Container
+	err := ctx.ReadResource("aws:mediastore/container:Container", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Container{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Container) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Container) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Container) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Container) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the container.
-func (r *Container) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The DNS endpoint of the container.
-func (r *Container) Endpoint() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["endpoint"])
-}
-
-// The name of the container. Must contain alphanumeric characters or underscores.
-func (r *Container) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *Container) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering Container resources.
 type ContainerState struct {
 	// The ARN of the container.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The DNS endpoint of the container.
-	Endpoint interface{}
+	Endpoint pulumi.StringInput `pulumi:"endpoint"`
 	// The name of the container. Must contain alphanumeric characters or underscores.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a Container resource.
 type ContainerArgs struct {
 	// The name of the container. Must contain alphanumeric characters or underscores.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

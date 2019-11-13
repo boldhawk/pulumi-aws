@@ -47,31 +47,31 @@ func LookupTable(ctx *pulumi.Context, args *GetTableArgs) (*GetTableResult, erro
 // A collection of arguments for invoking getTable.
 type GetTableArgs struct {
 	// The name of the DynamoDB table.
-	Name interface{}
-	ServerSideEncryption interface{}
-	Tags interface{}
+	Name pulumi.StringInput `pulumi:"name"`
+	ServerSideEncryption pulumi.AnyInput `pulumi:"serverSideEncryption"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getTable.
 type GetTableResult struct {
-	Arn interface{}
-	Attributes interface{}
-	BillingMode interface{}
-	GlobalSecondaryIndexes interface{}
-	HashKey interface{}
-	LocalSecondaryIndexes interface{}
-	Name interface{}
-	PointInTimeRecovery interface{}
-	RangeKey interface{}
-	ReadCapacity interface{}
-	ServerSideEncryption interface{}
-	StreamArn interface{}
-	StreamEnabled interface{}
-	StreamLabel interface{}
-	StreamViewType interface{}
-	Tags interface{}
-	Ttl interface{}
-	WriteCapacity interface{}
+	Arn string `pulumi:"arn"`
+	Attributes []interface{} `pulumi:"attributes"`
+	BillingMode string `pulumi:"billingMode"`
+	GlobalSecondaryIndexes []interface{} `pulumi:"globalSecondaryIndexes"`
+	HashKey string `pulumi:"hashKey"`
+	LocalSecondaryIndexes []interface{} `pulumi:"localSecondaryIndexes"`
+	Name string `pulumi:"name"`
+	PointInTimeRecovery interface{} `pulumi:"pointInTimeRecovery"`
+	RangeKey string `pulumi:"rangeKey"`
+	ReadCapacity int `pulumi:"readCapacity"`
+	ServerSideEncryption interface{} `pulumi:"serverSideEncryption"`
+	StreamArn string `pulumi:"streamArn"`
+	StreamEnabled bool `pulumi:"streamEnabled"`
+	StreamLabel string `pulumi:"streamLabel"`
+	StreamViewType string `pulumi:"streamViewType"`
+	Tags map[string]interface{} `pulumi:"tags"`
+	Ttl interface{} `pulumi:"ttl"`
+	WriteCapacity int `pulumi:"writeCapacity"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

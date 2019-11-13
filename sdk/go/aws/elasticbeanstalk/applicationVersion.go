@@ -27,7 +27,36 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/elastic_beanstalk_application_version.html.markdown.
 type ApplicationVersion struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Name of the Beanstalk Application the version is associated with.
+	Application pulumi.StringOutput `pulumi:"application"`
+
+	// The ARN assigned by AWS for this Elastic Beanstalk Application.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// S3 bucket that contains the Application Version source bundle.
+	Bucket pulumi.StringOutput `pulumi:"bucket"`
+
+	// Short description of the Application Version.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// On delete, force an Application Version to be deleted when it may be in use
+	// by multiple Elastic Beanstalk Environments.
+	ForceDelete pulumi.BoolOutput `pulumi:"forceDelete"`
+
+	// S3 object that is the Application Version source bundle.
+	Key pulumi.StringOutput `pulumi:"key"`
+
+	// A unique name for the this Application Version.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Key-value mapping of tags for the Elastic Beanstalk Application Version.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewApplicationVersion registers a new resource with the given unique name, arguments, and options.
@@ -42,16 +71,9 @@ func NewApplicationVersion(ctx *pulumi.Context,
 	if args == nil || args.Key == nil {
 		return nil, errors.New("missing required argument 'Key'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["application"] = nil
-		inputs["bucket"] = nil
-		inputs["description"] = nil
-		inputs["forceDelete"] = nil
-		inputs["key"] = nil
-		inputs["name"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["application"] = args.Application
 		inputs["bucket"] = args.Bucket
 		inputs["description"] = args.Description
@@ -60,19 +82,19 @@ func NewApplicationVersion(ctx *pulumi.Context,
 		inputs["name"] = args.Name
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:elasticbeanstalk/applicationVersion:ApplicationVersion", name, true, inputs, opts...)
+	var resource ApplicationVersion
+	err := ctx.RegisterResource("aws:elasticbeanstalk/applicationVersion:ApplicationVersion", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ApplicationVersion{s: s}, nil
+	return &resource, nil
 }
 
 // GetApplicationVersion gets an existing ApplicationVersion resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetApplicationVersion(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ApplicationVersionState, opts ...pulumi.ResourceOpt) (*ApplicationVersion, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["application"] = state.Application
 		inputs["arn"] = state.Arn
@@ -83,100 +105,59 @@ func GetApplicationVersion(ctx *pulumi.Context,
 		inputs["name"] = state.Name
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:elasticbeanstalk/applicationVersion:ApplicationVersion", name, id, inputs, opts...)
+	var resource ApplicationVersion
+	err := ctx.ReadResource("aws:elasticbeanstalk/applicationVersion:ApplicationVersion", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ApplicationVersion{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ApplicationVersion) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ApplicationVersion) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ApplicationVersion) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ApplicationVersion) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Name of the Beanstalk Application the version is associated with.
-func (r *ApplicationVersion) Application() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["application"])
-}
-
-// The ARN assigned by AWS for this Elastic Beanstalk Application.
-func (r *ApplicationVersion) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// S3 bucket that contains the Application Version source bundle.
-func (r *ApplicationVersion) Bucket() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["bucket"])
-}
-
-// Short description of the Application Version.
-func (r *ApplicationVersion) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// On delete, force an Application Version to be deleted when it may be in use
-// by multiple Elastic Beanstalk Environments.
-func (r *ApplicationVersion) ForceDelete() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["forceDelete"])
-}
-
-// S3 object that is the Application Version source bundle.
-func (r *ApplicationVersion) Key() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["key"])
-}
-
-// A unique name for the this Application Version.
-func (r *ApplicationVersion) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Key-value mapping of tags for the Elastic Beanstalk Application Version.
-func (r *ApplicationVersion) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering ApplicationVersion resources.
 type ApplicationVersionState struct {
 	// Name of the Beanstalk Application the version is associated with.
-	Application interface{}
+	Application pulumi.StringInput `pulumi:"application"`
 	// The ARN assigned by AWS for this Elastic Beanstalk Application.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// S3 bucket that contains the Application Version source bundle.
-	Bucket interface{}
+	Bucket pulumi.StringInput `pulumi:"bucket"`
 	// Short description of the Application Version.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// On delete, force an Application Version to be deleted when it may be in use
 	// by multiple Elastic Beanstalk Environments.
-	ForceDelete interface{}
+	ForceDelete pulumi.BoolInput `pulumi:"forceDelete"`
 	// S3 object that is the Application Version source bundle.
-	Key interface{}
+	Key pulumi.StringInput `pulumi:"key"`
 	// A unique name for the this Application Version.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Key-value mapping of tags for the Elastic Beanstalk Application Version.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a ApplicationVersion resource.
 type ApplicationVersionArgs struct {
 	// Name of the Beanstalk Application the version is associated with.
-	Application interface{}
+	Application pulumi.StringInput `pulumi:"application"`
 	// S3 bucket that contains the Application Version source bundle.
-	Bucket interface{}
+	Bucket pulumi.StringInput `pulumi:"bucket"`
 	// Short description of the Application Version.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// On delete, force an Application Version to be deleted when it may be in use
 	// by multiple Elastic Beanstalk Environments.
-	ForceDelete interface{}
+	ForceDelete pulumi.BoolInput `pulumi:"forceDelete"`
 	// S3 object that is the Application Version source bundle.
-	Key interface{}
+	Key pulumi.StringInput `pulumi:"key"`
 	// A unique name for the this Application Version.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Key-value mapping of tags for the Elastic Beanstalk Application Version.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

@@ -40,28 +40,28 @@ func LookupReportDefinition(ctx *pulumi.Context, args *GetReportDefinitionArgs) 
 // A collection of arguments for invoking getReportDefinition.
 type GetReportDefinitionArgs struct {
 	// The name of the report definition to match.
-	ReportName interface{}
+	ReportName pulumi.StringInput `pulumi:"reportName"`
 }
 
 // A collection of values returned by getReportDefinition.
 type GetReportDefinitionResult struct {
 	// A list of additional artifacts.
-	AdditionalArtifacts interface{}
+	AdditionalArtifacts []interface{} `pulumi:"additionalArtifacts"`
 	// A list of schema elements.
-	AdditionalSchemaElements interface{}
+	AdditionalSchemaElements []interface{} `pulumi:"additionalSchemaElements"`
 	// Preferred format for report.
-	Compression interface{}
+	Compression string `pulumi:"compression"`
 	// Preferred compression format for report.
-	Format interface{}
-	ReportName interface{}
+	Format string `pulumi:"format"`
+	ReportName string `pulumi:"reportName"`
 	// Name of customer S3 bucket.
-	S3Bucket interface{}
+	S3Bucket string `pulumi:"s3Bucket"`
 	// Preferred report path prefix.
-	S3Prefix interface{}
+	S3Prefix string `pulumi:"s3Prefix"`
 	// Region of customer S3 bucket.
-	S3Region interface{}
+	S3Region string `pulumi:"s3Region"`
 	// The frequency on which report data are measured and displayed.
-	TimeUnit interface{}
+	TimeUnit string `pulumi:"timeUnit"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

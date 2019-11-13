@@ -24,7 +24,47 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/security_group_rule.html.markdown.
 type SecurityGroupRule struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// List of CIDR blocks. Cannot be specified with `sourceSecurityGroupId`.
+	CidrBlocks pulumi.ArrayOutput `pulumi:"cidrBlocks"`
+
+	// Description of the rule.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The start port (or ICMP type number if protocol is "icmp").
+	FromPort pulumi.IntOutput `pulumi:"fromPort"`
+
+	// List of IPv6 CIDR blocks.
+	Ipv6CidrBlocks pulumi.ArrayOutput `pulumi:"ipv6CidrBlocks"`
+
+	// List of prefix list IDs (for allowing access to VPC endpoints).
+	PrefixListIds pulumi.ArrayOutput `pulumi:"prefixListIds"`
+
+	// The protocol. If not icmp, tcp, udp, or all use the [protocol number](https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml)
+	Protocol pulumi.StringOutput `pulumi:"protocol"`
+
+	// The security group to apply this rule to.
+	SecurityGroupId pulumi.StringOutput `pulumi:"securityGroupId"`
+
+	// If true, the security group itself will be added as
+	// a source to this ingress rule. Cannot be specified with `sourceSecurityGroupId`.
+	Self pulumi.BoolOutput `pulumi:"self"`
+
+	// The security group id to allow access to/from,
+	// depending on the `type`. Cannot be specified with `cidrBlocks` and `self`.
+	SourceSecurityGroupId pulumi.StringOutput `pulumi:"sourceSecurityGroupId"`
+
+	// The end port (or ICMP code if protocol is "icmp").
+	ToPort pulumi.IntOutput `pulumi:"toPort"`
+
+	// The type of rule being created. Valid options are `ingress` (inbound)
+	// or `egress` (outbound).
+	Type pulumi.StringOutput `pulumi:"type"`
 }
 
 // NewSecurityGroupRule registers a new resource with the given unique name, arguments, and options.
@@ -45,20 +85,8 @@ func NewSecurityGroupRule(ctx *pulumi.Context,
 	if args == nil || args.Type == nil {
 		return nil, errors.New("missing required argument 'Type'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["cidrBlocks"] = nil
-		inputs["description"] = nil
-		inputs["fromPort"] = nil
-		inputs["ipv6CidrBlocks"] = nil
-		inputs["prefixListIds"] = nil
-		inputs["protocol"] = nil
-		inputs["securityGroupId"] = nil
-		inputs["self"] = nil
-		inputs["sourceSecurityGroupId"] = nil
-		inputs["toPort"] = nil
-		inputs["type"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["cidrBlocks"] = args.CidrBlocks
 		inputs["description"] = args.Description
 		inputs["fromPort"] = args.FromPort
@@ -71,18 +99,19 @@ func NewSecurityGroupRule(ctx *pulumi.Context,
 		inputs["toPort"] = args.ToPort
 		inputs["type"] = args.Type
 	}
-	s, err := ctx.RegisterResource("aws:ec2/securityGroupRule:SecurityGroupRule", name, true, inputs, opts...)
+	var resource SecurityGroupRule
+	err := ctx.RegisterResource("aws:ec2/securityGroupRule:SecurityGroupRule", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SecurityGroupRule{s: s}, nil
+	return &resource, nil
 }
 
 // GetSecurityGroupRule gets an existing SecurityGroupRule resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetSecurityGroupRule(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *SecurityGroupRuleState, opts ...pulumi.ResourceOpt) (*SecurityGroupRule, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["cidrBlocks"] = state.CidrBlocks
 		inputs["description"] = state.Description
@@ -96,135 +125,77 @@ func GetSecurityGroupRule(ctx *pulumi.Context,
 		inputs["toPort"] = state.ToPort
 		inputs["type"] = state.Type
 	}
-	s, err := ctx.ReadResource("aws:ec2/securityGroupRule:SecurityGroupRule", name, id, inputs, opts...)
+	var resource SecurityGroupRule
+	err := ctx.ReadResource("aws:ec2/securityGroupRule:SecurityGroupRule", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SecurityGroupRule{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *SecurityGroupRule) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *SecurityGroupRule) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *SecurityGroupRule) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *SecurityGroupRule) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// List of CIDR blocks. Cannot be specified with `sourceSecurityGroupId`.
-func (r *SecurityGroupRule) CidrBlocks() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["cidrBlocks"])
-}
-
-// Description of the rule.
-func (r *SecurityGroupRule) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The start port (or ICMP type number if protocol is "icmp").
-func (r *SecurityGroupRule) FromPort() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["fromPort"])
-}
-
-// List of IPv6 CIDR blocks.
-func (r *SecurityGroupRule) Ipv6CidrBlocks() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["ipv6CidrBlocks"])
-}
-
-// List of prefix list IDs (for allowing access to VPC endpoints).
-func (r *SecurityGroupRule) PrefixListIds() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["prefixListIds"])
-}
-
-// The protocol. If not icmp, tcp, udp, or all use the [protocol number](https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml)
-func (r *SecurityGroupRule) Protocol() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["protocol"])
-}
-
-// The security group to apply this rule to.
-func (r *SecurityGroupRule) SecurityGroupId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["securityGroupId"])
-}
-
-// If true, the security group itself will be added as
-// a source to this ingress rule. Cannot be specified with `sourceSecurityGroupId`.
-func (r *SecurityGroupRule) Self() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["self"])
-}
-
-// The security group id to allow access to/from,
-// depending on the `type`. Cannot be specified with `cidrBlocks` and `self`.
-func (r *SecurityGroupRule) SourceSecurityGroupId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["sourceSecurityGroupId"])
-}
-
-// The end port (or ICMP code if protocol is "icmp").
-func (r *SecurityGroupRule) ToPort() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["toPort"])
-}
-
-// The type of rule being created. Valid options are `ingress` (inbound)
-// or `egress` (outbound).
-func (r *SecurityGroupRule) Type() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["type"])
-}
-
 // Input properties used for looking up and filtering SecurityGroupRule resources.
 type SecurityGroupRuleState struct {
 	// List of CIDR blocks. Cannot be specified with `sourceSecurityGroupId`.
-	CidrBlocks interface{}
+	CidrBlocks pulumi.ArrayInput `pulumi:"cidrBlocks"`
 	// Description of the rule.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The start port (or ICMP type number if protocol is "icmp").
-	FromPort interface{}
+	FromPort pulumi.IntInput `pulumi:"fromPort"`
 	// List of IPv6 CIDR blocks.
-	Ipv6CidrBlocks interface{}
+	Ipv6CidrBlocks pulumi.ArrayInput `pulumi:"ipv6CidrBlocks"`
 	// List of prefix list IDs (for allowing access to VPC endpoints).
-	PrefixListIds interface{}
+	PrefixListIds pulumi.ArrayInput `pulumi:"prefixListIds"`
 	// The protocol. If not icmp, tcp, udp, or all use the [protocol number](https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml)
-	Protocol interface{}
+	Protocol pulumi.StringInput `pulumi:"protocol"`
 	// The security group to apply this rule to.
-	SecurityGroupId interface{}
+	SecurityGroupId pulumi.StringInput `pulumi:"securityGroupId"`
 	// If true, the security group itself will be added as
 	// a source to this ingress rule. Cannot be specified with `sourceSecurityGroupId`.
-	Self interface{}
+	Self pulumi.BoolInput `pulumi:"self"`
 	// The security group id to allow access to/from,
 	// depending on the `type`. Cannot be specified with `cidrBlocks` and `self`.
-	SourceSecurityGroupId interface{}
+	SourceSecurityGroupId pulumi.StringInput `pulumi:"sourceSecurityGroupId"`
 	// The end port (or ICMP code if protocol is "icmp").
-	ToPort interface{}
+	ToPort pulumi.IntInput `pulumi:"toPort"`
 	// The type of rule being created. Valid options are `ingress` (inbound)
 	// or `egress` (outbound).
-	Type interface{}
+	Type pulumi.StringInput `pulumi:"type"`
 }
 
 // The set of arguments for constructing a SecurityGroupRule resource.
 type SecurityGroupRuleArgs struct {
 	// List of CIDR blocks. Cannot be specified with `sourceSecurityGroupId`.
-	CidrBlocks interface{}
+	CidrBlocks pulumi.ArrayInput `pulumi:"cidrBlocks"`
 	// Description of the rule.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The start port (or ICMP type number if protocol is "icmp").
-	FromPort interface{}
+	FromPort pulumi.IntInput `pulumi:"fromPort"`
 	// List of IPv6 CIDR blocks.
-	Ipv6CidrBlocks interface{}
+	Ipv6CidrBlocks pulumi.ArrayInput `pulumi:"ipv6CidrBlocks"`
 	// List of prefix list IDs (for allowing access to VPC endpoints).
-	PrefixListIds interface{}
+	PrefixListIds pulumi.ArrayInput `pulumi:"prefixListIds"`
 	// The protocol. If not icmp, tcp, udp, or all use the [protocol number](https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml)
-	Protocol interface{}
+	Protocol pulumi.StringInput `pulumi:"protocol"`
 	// The security group to apply this rule to.
-	SecurityGroupId interface{}
+	SecurityGroupId pulumi.StringInput `pulumi:"securityGroupId"`
 	// If true, the security group itself will be added as
 	// a source to this ingress rule. Cannot be specified with `sourceSecurityGroupId`.
-	Self interface{}
+	Self pulumi.BoolInput `pulumi:"self"`
 	// The security group id to allow access to/from,
 	// depending on the `type`. Cannot be specified with `cidrBlocks` and `self`.
-	SourceSecurityGroupId interface{}
+	SourceSecurityGroupId pulumi.StringInput `pulumi:"sourceSecurityGroupId"`
 	// The end port (or ICMP code if protocol is "icmp").
-	ToPort interface{}
+	ToPort pulumi.IntInput `pulumi:"toPort"`
 	// The type of rule being created. Valid options are `ingress` (inbound)
 	// or `egress` (outbound).
-	Type interface{}
+	Type pulumi.StringInput `pulumi:"type"`
 }

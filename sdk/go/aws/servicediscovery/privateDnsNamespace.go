@@ -12,7 +12,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/service_discovery_private_dns_namespace.html.markdown.
 type PrivateDnsNamespace struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN that Amazon Route 53 assigns to the namespace when you create it.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The description that you specify for the namespace when you create it.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The ID for the hosted zone that Amazon Route 53 creates when you create a namespace.
+	HostedZone pulumi.StringOutput `pulumi:"hostedZone"`
+
+	// The name of the namespace.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The ID of VPC that you want to associate the namespace with.
+	Vpc pulumi.StringOutput `pulumi:"vpc"`
 }
 
 // NewPrivateDnsNamespace registers a new resource with the given unique name, arguments, and options.
@@ -21,30 +40,26 @@ func NewPrivateDnsNamespace(ctx *pulumi.Context,
 	if args == nil || args.Vpc == nil {
 		return nil, errors.New("missing required argument 'Vpc'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["description"] = nil
-		inputs["name"] = nil
-		inputs["vpc"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name
 		inputs["vpc"] = args.Vpc
 	}
-	inputs["arn"] = nil
-	inputs["hostedZone"] = nil
-	s, err := ctx.RegisterResource("aws:servicediscovery/privateDnsNamespace:PrivateDnsNamespace", name, true, inputs, opts...)
+	var resource PrivateDnsNamespace
+	err := ctx.RegisterResource("aws:servicediscovery/privateDnsNamespace:PrivateDnsNamespace", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &PrivateDnsNamespace{s: s}, nil
+	return &resource, nil
 }
 
 // GetPrivateDnsNamespace gets an existing PrivateDnsNamespace resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetPrivateDnsNamespace(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *PrivateDnsNamespaceState, opts ...pulumi.ResourceOpt) (*PrivateDnsNamespace, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["description"] = state.Description
@@ -52,68 +67,43 @@ func GetPrivateDnsNamespace(ctx *pulumi.Context,
 		inputs["name"] = state.Name
 		inputs["vpc"] = state.Vpc
 	}
-	s, err := ctx.ReadResource("aws:servicediscovery/privateDnsNamespace:PrivateDnsNamespace", name, id, inputs, opts...)
+	var resource PrivateDnsNamespace
+	err := ctx.ReadResource("aws:servicediscovery/privateDnsNamespace:PrivateDnsNamespace", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &PrivateDnsNamespace{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *PrivateDnsNamespace) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *PrivateDnsNamespace) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *PrivateDnsNamespace) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *PrivateDnsNamespace) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN that Amazon Route 53 assigns to the namespace when you create it.
-func (r *PrivateDnsNamespace) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The description that you specify for the namespace when you create it.
-func (r *PrivateDnsNamespace) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The ID for the hosted zone that Amazon Route 53 creates when you create a namespace.
-func (r *PrivateDnsNamespace) HostedZone() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["hostedZone"])
-}
-
-// The name of the namespace.
-func (r *PrivateDnsNamespace) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The ID of VPC that you want to associate the namespace with.
-func (r *PrivateDnsNamespace) Vpc() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpc"])
-}
-
 // Input properties used for looking up and filtering PrivateDnsNamespace resources.
 type PrivateDnsNamespaceState struct {
 	// The ARN that Amazon Route 53 assigns to the namespace when you create it.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The description that you specify for the namespace when you create it.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The ID for the hosted zone that Amazon Route 53 creates when you create a namespace.
-	HostedZone interface{}
+	HostedZone pulumi.StringInput `pulumi:"hostedZone"`
 	// The name of the namespace.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The ID of VPC that you want to associate the namespace with.
-	Vpc interface{}
+	Vpc pulumi.StringInput `pulumi:"vpc"`
 }
 
 // The set of arguments for constructing a PrivateDnsNamespace resource.
 type PrivateDnsNamespaceArgs struct {
 	// The description that you specify for the namespace when you create it.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name of the namespace.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The ID of VPC that you want to associate the namespace with.
-	Vpc interface{}
+	Vpc pulumi.StringInput `pulumi:"vpc"`
 }

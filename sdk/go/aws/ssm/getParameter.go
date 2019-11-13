@@ -34,19 +34,19 @@ func LookupParameter(ctx *pulumi.Context, args *GetParameterArgs) (*GetParameter
 // A collection of arguments for invoking getParameter.
 type GetParameterArgs struct {
 	// The name of the parameter.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Whether to return decrypted `SecureString` value. Defaults to `true`.
-	WithDecryption interface{}
+	WithDecryption pulumi.BoolInput `pulumi:"withDecryption"`
 }
 
 // A collection of values returned by getParameter.
 type GetParameterResult struct {
-	Arn interface{}
-	Name interface{}
-	Type interface{}
-	Value interface{}
-	Version interface{}
-	WithDecryption interface{}
+	Arn string `pulumi:"arn"`
+	Name string `pulumi:"name"`
+	Type string `pulumi:"type"`
+	Value string `pulumi:"value"`
+	Version int `pulumi:"version"`
+	WithDecryption bool `pulumi:"withDecryption"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

@@ -12,7 +12,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/athena_database.html.markdown.
 type Database struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Name of s3 bucket to save the results of the query execution.
+	Bucket pulumi.StringOutput `pulumi:"bucket"`
+
+	// The encryption key block AWS Athena uses to decrypt the data in S3, such as an AWS Key Management Service (AWS KMS) key. An `encryptionConfiguration` block is documented below.
+	EncryptionConfiguration pulumi.AnyOutput `pulumi:"encryptionConfiguration"`
+
+	// A boolean that indicates all tables should be deleted from the database so that the database can be destroyed without error. The tables are *not* recoverable.
+	ForceDestroy pulumi.BoolOutput `pulumi:"forceDestroy"`
+
+	// Name of the database to create.
+	Name pulumi.StringOutput `pulumi:"name"`
 }
 
 // NewDatabase registers a new resource with the given unique name, arguments, and options.
@@ -21,93 +37,70 @@ func NewDatabase(ctx *pulumi.Context,
 	if args == nil || args.Bucket == nil {
 		return nil, errors.New("missing required argument 'Bucket'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["bucket"] = nil
-		inputs["encryptionConfiguration"] = nil
-		inputs["forceDestroy"] = nil
-		inputs["name"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["bucket"] = args.Bucket
 		inputs["encryptionConfiguration"] = args.EncryptionConfiguration
 		inputs["forceDestroy"] = args.ForceDestroy
 		inputs["name"] = args.Name
 	}
-	s, err := ctx.RegisterResource("aws:athena/database:Database", name, true, inputs, opts...)
+	var resource Database
+	err := ctx.RegisterResource("aws:athena/database:Database", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Database{s: s}, nil
+	return &resource, nil
 }
 
 // GetDatabase gets an existing Database resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetDatabase(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *DatabaseState, opts ...pulumi.ResourceOpt) (*Database, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["bucket"] = state.Bucket
 		inputs["encryptionConfiguration"] = state.EncryptionConfiguration
 		inputs["forceDestroy"] = state.ForceDestroy
 		inputs["name"] = state.Name
 	}
-	s, err := ctx.ReadResource("aws:athena/database:Database", name, id, inputs, opts...)
+	var resource Database
+	err := ctx.ReadResource("aws:athena/database:Database", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Database{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Database) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Database) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Database) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Database) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Name of s3 bucket to save the results of the query execution.
-func (r *Database) Bucket() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["bucket"])
-}
-
-// The encryption key block AWS Athena uses to decrypt the data in S3, such as an AWS Key Management Service (AWS KMS) key. An `encryptionConfiguration` block is documented below.
-func (r *Database) EncryptionConfiguration() *pulumi.Output {
-	return r.s.State["encryptionConfiguration"]
-}
-
-// A boolean that indicates all tables should be deleted from the database so that the database can be destroyed without error. The tables are *not* recoverable.
-func (r *Database) ForceDestroy() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["forceDestroy"])
-}
-
-// Name of the database to create.
-func (r *Database) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
 // Input properties used for looking up and filtering Database resources.
 type DatabaseState struct {
 	// Name of s3 bucket to save the results of the query execution.
-	Bucket interface{}
+	Bucket pulumi.StringInput `pulumi:"bucket"`
 	// The encryption key block AWS Athena uses to decrypt the data in S3, such as an AWS Key Management Service (AWS KMS) key. An `encryptionConfiguration` block is documented below.
-	EncryptionConfiguration interface{}
+	EncryptionConfiguration pulumi.AnyInput `pulumi:"encryptionConfiguration"`
 	// A boolean that indicates all tables should be deleted from the database so that the database can be destroyed without error. The tables are *not* recoverable.
-	ForceDestroy interface{}
+	ForceDestroy pulumi.BoolInput `pulumi:"forceDestroy"`
 	// Name of the database to create.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // The set of arguments for constructing a Database resource.
 type DatabaseArgs struct {
 	// Name of s3 bucket to save the results of the query execution.
-	Bucket interface{}
+	Bucket pulumi.StringInput `pulumi:"bucket"`
 	// The encryption key block AWS Athena uses to decrypt the data in S3, such as an AWS Key Management Service (AWS KMS) key. An `encryptionConfiguration` block is documented below.
-	EncryptionConfiguration interface{}
+	EncryptionConfiguration pulumi.AnyInput `pulumi:"encryptionConfiguration"`
 	// A boolean that indicates all tables should be deleted from the database so that the database can be destroyed without error. The tables are *not* recoverable.
-	ForceDestroy interface{}
+	ForceDestroy pulumi.BoolInput `pulumi:"forceDestroy"`
 	// Name of the database to create.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }

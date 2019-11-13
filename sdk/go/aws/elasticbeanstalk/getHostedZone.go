@@ -28,13 +28,13 @@ func LookupHostedZone(ctx *pulumi.Context, args *GetHostedZoneArgs) (*GetHostedZ
 // A collection of arguments for invoking getHostedZone.
 type GetHostedZoneArgs struct {
 	// The region you'd like the zone for. By default, fetches the current region.
-	Region interface{}
+	Region pulumi.StringInput `pulumi:"region"`
 }
 
 // A collection of values returned by getHostedZone.
 type GetHostedZoneResult struct {
 	// The region of the hosted zone.
-	Region interface{}
+	Region string `pulumi:"region"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

@@ -14,7 +14,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/securityhub_product_subscription.html.markdown.
 type ProductSubscription struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of a resource that represents your subscription to the product that generates the findings that you want to import into Security Hub.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The ARN of the product that generates findings that you want to import into Security Hub - see below.
+	ProductArn pulumi.StringOutput `pulumi:"productArn"`
 }
 
 // NewProductSubscription registers a new resource with the given unique name, arguments, and options.
@@ -23,66 +33,54 @@ func NewProductSubscription(ctx *pulumi.Context,
 	if args == nil || args.ProductArn == nil {
 		return nil, errors.New("missing required argument 'ProductArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["productArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["productArn"] = args.ProductArn
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:securityhub/productSubscription:ProductSubscription", name, true, inputs, opts...)
+	var resource ProductSubscription
+	err := ctx.RegisterResource("aws:securityhub/productSubscription:ProductSubscription", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ProductSubscription{s: s}, nil
+	return &resource, nil
 }
 
 // GetProductSubscription gets an existing ProductSubscription resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetProductSubscription(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ProductSubscriptionState, opts ...pulumi.ResourceOpt) (*ProductSubscription, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["productArn"] = state.ProductArn
 	}
-	s, err := ctx.ReadResource("aws:securityhub/productSubscription:ProductSubscription", name, id, inputs, opts...)
+	var resource ProductSubscription
+	err := ctx.ReadResource("aws:securityhub/productSubscription:ProductSubscription", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ProductSubscription{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ProductSubscription) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ProductSubscription) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ProductSubscription) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ProductSubscription) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of a resource that represents your subscription to the product that generates the findings that you want to import into Security Hub.
-func (r *ProductSubscription) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The ARN of the product that generates findings that you want to import into Security Hub - see below.
-func (r *ProductSubscription) ProductArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["productArn"])
-}
-
 // Input properties used for looking up and filtering ProductSubscription resources.
 type ProductSubscriptionState struct {
 	// The ARN of a resource that represents your subscription to the product that generates the findings that you want to import into Security Hub.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The ARN of the product that generates findings that you want to import into Security Hub - see below.
-	ProductArn interface{}
+	ProductArn pulumi.StringInput `pulumi:"productArn"`
 }
 
 // The set of arguments for constructing a ProductSubscription resource.
 type ProductSubscriptionArgs struct {
 	// The ARN of the product that generates findings that you want to import into Security Hub - see below.
-	ProductArn interface{}
+	ProductArn pulumi.StringInput `pulumi:"productArn"`
 }

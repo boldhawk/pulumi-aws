@@ -38,28 +38,28 @@ type GetIpRangesArgs struct {
 	// Filter IP ranges by regions (or include all regions, if
 	// omitted). Valid items are `global` (for `cloudfront`) as well as all AWS regions
 	// (e.g. `eu-central-1`)
-	Regions interface{}
+	Regions pulumi.ArrayInput `pulumi:"regions"`
 	// Filter IP ranges by services. Valid items are `amazon`
 	// (for amazon.com), `cloudfront`, `codebuild`, `ec2`, `route53`, `route53Healthchecks` and `S3`.
-	Services interface{}
+	Services pulumi.ArrayInput `pulumi:"services"`
 	// Custom URL for source JSON file. Syntax must match [AWS IP Address Ranges documention][1]. Defaults to `https://ip-ranges.amazonaws.com/ip-ranges.json`.
-	Url interface{}
+	Url pulumi.StringInput `pulumi:"url"`
 }
 
 // A collection of values returned by getIpRanges.
 type GetIpRangesResult struct {
 	// The lexically ordered list of CIDR blocks.
-	CidrBlocks interface{}
+	CidrBlocks []interface{} `pulumi:"cidrBlocks"`
 	// The publication time of the IP ranges (e.g. `2016-08-03-23-46-05`).
-	CreateDate interface{}
+	CreateDate string `pulumi:"createDate"`
 	// The lexically ordered list of IPv6 CIDR blocks.
-	Ipv6CidrBlocks interface{}
-	Regions interface{}
-	Services interface{}
+	Ipv6CidrBlocks []interface{} `pulumi:"ipv6CidrBlocks"`
+	Regions []interface{} `pulumi:"regions"`
+	Services []interface{} `pulumi:"services"`
 	// The publication time of the IP ranges, in Unix epoch time format
 	// (e.g. `1470267965`).
-	SyncToken interface{}
-	Url interface{}
+	SyncToken int `pulumi:"syncToken"`
+	Url string `pulumi:"url"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

@@ -14,7 +14,21 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/autoscaling_notification.html.markdown.
 type Notification struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// A list of AutoScaling Group Names
+	GroupNames pulumi.ArrayOutput `pulumi:"groupNames"`
+
+	// A list of Notification Types that trigger
+	// notifications. Acceptable values are documented [in the AWS documentation here][1]
+	Notifications pulumi.ArrayOutput `pulumi:"notifications"`
+
+	// The Topic ARN for notifications to be sent through
+	TopicArn pulumi.StringOutput `pulumi:"topicArn"`
 }
 
 // NewNotification registers a new resource with the given unique name, arguments, and options.
@@ -29,84 +43,65 @@ func NewNotification(ctx *pulumi.Context,
 	if args == nil || args.TopicArn == nil {
 		return nil, errors.New("missing required argument 'TopicArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["groupNames"] = nil
-		inputs["notifications"] = nil
-		inputs["topicArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["groupNames"] = args.GroupNames
 		inputs["notifications"] = args.Notifications
 		inputs["topicArn"] = args.TopicArn
 	}
-	s, err := ctx.RegisterResource("aws:autoscaling/notification:Notification", name, true, inputs, opts...)
+	var resource Notification
+	err := ctx.RegisterResource("aws:autoscaling/notification:Notification", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Notification{s: s}, nil
+	return &resource, nil
 }
 
 // GetNotification gets an existing Notification resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetNotification(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *NotificationState, opts ...pulumi.ResourceOpt) (*Notification, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["groupNames"] = state.GroupNames
 		inputs["notifications"] = state.Notifications
 		inputs["topicArn"] = state.TopicArn
 	}
-	s, err := ctx.ReadResource("aws:autoscaling/notification:Notification", name, id, inputs, opts...)
+	var resource Notification
+	err := ctx.ReadResource("aws:autoscaling/notification:Notification", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Notification{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Notification) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Notification) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Notification) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Notification) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// A list of AutoScaling Group Names
-func (r *Notification) GroupNames() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["groupNames"])
-}
-
-// A list of Notification Types that trigger
-// notifications. Acceptable values are documented [in the AWS documentation here][1]
-func (r *Notification) Notifications() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["notifications"])
-}
-
-// The Topic ARN for notifications to be sent through
-func (r *Notification) TopicArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["topicArn"])
-}
-
 // Input properties used for looking up and filtering Notification resources.
 type NotificationState struct {
 	// A list of AutoScaling Group Names
-	GroupNames interface{}
+	GroupNames pulumi.ArrayInput `pulumi:"groupNames"`
 	// A list of Notification Types that trigger
 	// notifications. Acceptable values are documented [in the AWS documentation here][1]
-	Notifications interface{}
+	Notifications pulumi.ArrayInput `pulumi:"notifications"`
 	// The Topic ARN for notifications to be sent through
-	TopicArn interface{}
+	TopicArn pulumi.StringInput `pulumi:"topicArn"`
 }
 
 // The set of arguments for constructing a Notification resource.
 type NotificationArgs struct {
 	// A list of AutoScaling Group Names
-	GroupNames interface{}
+	GroupNames pulumi.ArrayInput `pulumi:"groupNames"`
 	// A list of Notification Types that trigger
 	// notifications. Acceptable values are documented [in the AWS documentation here][1]
-	Notifications interface{}
+	Notifications pulumi.ArrayInput `pulumi:"notifications"`
 	// The Topic ARN for notifications to be sent through
-	TopicArn interface{}
+	TopicArn pulumi.StringInput `pulumi:"topicArn"`
 }

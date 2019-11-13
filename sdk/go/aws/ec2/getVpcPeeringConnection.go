@@ -52,50 +52,50 @@ func LookupVpcPeeringConnection(ctx *pulumi.Context, args *GetVpcPeeringConnecti
 // A collection of arguments for invoking getVpcPeeringConnection.
 type GetVpcPeeringConnectionArgs struct {
 	// The CIDR block of the requester VPC of the specific VPC Peering Connection to retrieve.
-	CidrBlock interface{}
+	CidrBlock pulumi.StringInput `pulumi:"cidrBlock"`
 	// Custom filter block as described below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The ID of the specific VPC Peering Connection to retrieve.
-	Id interface{}
+	Id pulumi.StringInput `pulumi:"id"`
 	// The AWS account ID of the owner of the requester VPC of the specific VPC Peering Connection to retrieve.
-	OwnerId interface{}
+	OwnerId pulumi.StringInput `pulumi:"ownerId"`
 	// The CIDR block of the accepter VPC of the specific VPC Peering Connection to retrieve.
-	PeerCidrBlock interface{}
+	PeerCidrBlock pulumi.StringInput `pulumi:"peerCidrBlock"`
 	// The AWS account ID of the owner of the accepter VPC of the specific VPC Peering Connection to retrieve.
-	PeerOwnerId interface{}
+	PeerOwnerId pulumi.StringInput `pulumi:"peerOwnerId"`
 	// The region of the accepter VPC of the specific VPC Peering Connection to retrieve.
-	PeerRegion interface{}
+	PeerRegion pulumi.StringInput `pulumi:"peerRegion"`
 	// The ID of the accepter VPC of the specific VPC Peering Connection to retrieve.
-	PeerVpcId interface{}
+	PeerVpcId pulumi.StringInput `pulumi:"peerVpcId"`
 	// The region of the requester VPC of the specific VPC Peering Connection to retrieve.
-	Region interface{}
+	Region pulumi.StringInput `pulumi:"region"`
 	// The status of the specific VPC Peering Connection to retrieve.
-	Status interface{}
+	Status pulumi.StringInput `pulumi:"status"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired VPC Peering Connection.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The ID of the requester VPC of the specific VPC Peering Connection to retrieve.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getVpcPeeringConnection.
 type GetVpcPeeringConnectionResult struct {
 	// A configuration block that describes [VPC Peering Connection]
 	// (http://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide) options set for the accepter VPC.
-	Accepter interface{}
-	CidrBlock interface{}
-	Filters interface{}
-	Id interface{}
-	OwnerId interface{}
-	PeerCidrBlock interface{}
-	PeerOwnerId interface{}
-	PeerRegion interface{}
-	PeerVpcId interface{}
-	Region interface{}
+	Accepter map[string]interface{} `pulumi:"accepter"`
+	CidrBlock string `pulumi:"cidrBlock"`
+	Filters []interface{} `pulumi:"filters"`
+	Id string `pulumi:"id"`
+	OwnerId string `pulumi:"ownerId"`
+	PeerCidrBlock string `pulumi:"peerCidrBlock"`
+	PeerOwnerId string `pulumi:"peerOwnerId"`
+	PeerRegion string `pulumi:"peerRegion"`
+	PeerVpcId string `pulumi:"peerVpcId"`
+	Region string `pulumi:"region"`
 	// A configuration block that describes [VPC Peering Connection]
 	// (http://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide) options set for the requester VPC.
-	Requester interface{}
-	Status interface{}
-	Tags interface{}
-	VpcId interface{}
+	Requester map[string]interface{} `pulumi:"requester"`
+	Status string `pulumi:"status"`
+	Tags map[string]interface{} `pulumi:"tags"`
+	VpcId string `pulumi:"vpcId"`
 }

@@ -41,36 +41,36 @@ func LookupBucketObjects(ctx *pulumi.Context, args *GetBucketObjectsArgs) (*GetB
 // A collection of arguments for invoking getBucketObjects.
 type GetBucketObjectsArgs struct {
 	// Lists object keys in this S3 bucket
-	Bucket interface{}
+	Bucket pulumi.StringInput `pulumi:"bucket"`
 	// A character used to group keys (Default: none)
-	Delimiter interface{}
+	Delimiter pulumi.StringInput `pulumi:"delimiter"`
 	// Encodes keys using this method (Default: none; besides none, only "url" can be used)
-	EncodingType interface{}
+	EncodingType pulumi.StringInput `pulumi:"encodingType"`
 	// Boolean specifying whether to populate the owner list (Default: false)
-	FetchOwner interface{}
+	FetchOwner pulumi.BoolInput `pulumi:"fetchOwner"`
 	// Maximum object keys to return (Default: 1000)
-	MaxKeys interface{}
+	MaxKeys pulumi.IntInput `pulumi:"maxKeys"`
 	// Limits results to object keys with this prefix (Default: none)
-	Prefix interface{}
+	Prefix pulumi.StringInput `pulumi:"prefix"`
 	// Returns key names lexicographically after a specific object key in your bucket (Default: none; S3 lists object keys in UTF-8 character encoding in lexicographical order)
-	StartAfter interface{}
+	StartAfter pulumi.StringInput `pulumi:"startAfter"`
 }
 
 // A collection of values returned by getBucketObjects.
 type GetBucketObjectsResult struct {
-	Bucket interface{}
+	Bucket string `pulumi:"bucket"`
 	// List of any keys between `prefix` and the next occurrence of `delimiter` (i.e., similar to subdirectories of the `prefix` "directory"); the list is only returned when you specify `delimiter`
-	CommonPrefixes interface{}
-	Delimiter interface{}
-	EncodingType interface{}
-	FetchOwner interface{}
+	CommonPrefixes []interface{} `pulumi:"commonPrefixes"`
+	Delimiter string `pulumi:"delimiter"`
+	EncodingType string `pulumi:"encodingType"`
+	FetchOwner bool `pulumi:"fetchOwner"`
 	// List of strings representing object keys
-	Keys interface{}
-	MaxKeys interface{}
+	Keys []interface{} `pulumi:"keys"`
+	MaxKeys int `pulumi:"maxKeys"`
 	// List of strings representing object owner IDs (see `fetchOwner` above)
-	Owners interface{}
-	Prefix interface{}
-	StartAfter interface{}
+	Owners []interface{} `pulumi:"owners"`
+	Prefix string `pulumi:"prefix"`
+	StartAfter string `pulumi:"startAfter"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

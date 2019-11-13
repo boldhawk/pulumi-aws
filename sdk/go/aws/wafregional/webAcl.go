@@ -12,7 +12,29 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/wafregional_web_acl.html.markdown.
 type WebAcl struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Amazon Resource Name (ARN) of the WAF Regional WebACL.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The action that you want AWS WAF Regional to take when a request doesn't match the criteria in any of the rules that are associated with the web ACL.
+	DefaultAction pulumi.AnyOutput `pulumi:"defaultAction"`
+
+	// Configuration block to enable WAF logging. Detailed below.
+	LoggingConfiguration pulumi.AnyOutput `pulumi:"loggingConfiguration"`
+
+	// The name or description for the Amazon CloudWatch metric of this web ACL.
+	MetricName pulumi.StringOutput `pulumi:"metricName"`
+
+	// The name or description of the web ACL.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Set of configuration blocks containing rules for the web ACL. Detailed below.
+	Rules pulumi.ArrayOutput `pulumi:"rules"`
 }
 
 // NewWebAcl registers a new resource with the given unique name, arguments, and options.
@@ -24,33 +46,28 @@ func NewWebAcl(ctx *pulumi.Context,
 	if args == nil || args.MetricName == nil {
 		return nil, errors.New("missing required argument 'MetricName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["defaultAction"] = nil
-		inputs["loggingConfiguration"] = nil
-		inputs["metricName"] = nil
-		inputs["name"] = nil
-		inputs["rules"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["defaultAction"] = args.DefaultAction
 		inputs["loggingConfiguration"] = args.LoggingConfiguration
 		inputs["metricName"] = args.MetricName
 		inputs["name"] = args.Name
 		inputs["rules"] = args.Rules
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:wafregional/webAcl:WebAcl", name, true, inputs, opts...)
+	var resource WebAcl
+	err := ctx.RegisterResource("aws:wafregional/webAcl:WebAcl", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &WebAcl{s: s}, nil
+	return &resource, nil
 }
 
 // GetWebAcl gets an existing WebAcl resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetWebAcl(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *WebAclState, opts ...pulumi.ResourceOpt) (*WebAcl, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["defaultAction"] = state.DefaultAction
@@ -59,79 +76,49 @@ func GetWebAcl(ctx *pulumi.Context,
 		inputs["name"] = state.Name
 		inputs["rules"] = state.Rules
 	}
-	s, err := ctx.ReadResource("aws:wafregional/webAcl:WebAcl", name, id, inputs, opts...)
+	var resource WebAcl
+	err := ctx.ReadResource("aws:wafregional/webAcl:WebAcl", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &WebAcl{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *WebAcl) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *WebAcl) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *WebAcl) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *WebAcl) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Amazon Resource Name (ARN) of the WAF Regional WebACL.
-func (r *WebAcl) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The action that you want AWS WAF Regional to take when a request doesn't match the criteria in any of the rules that are associated with the web ACL.
-func (r *WebAcl) DefaultAction() *pulumi.Output {
-	return r.s.State["defaultAction"]
-}
-
-// Configuration block to enable WAF logging. Detailed below.
-func (r *WebAcl) LoggingConfiguration() *pulumi.Output {
-	return r.s.State["loggingConfiguration"]
-}
-
-// The name or description for the Amazon CloudWatch metric of this web ACL.
-func (r *WebAcl) MetricName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["metricName"])
-}
-
-// The name or description of the web ACL.
-func (r *WebAcl) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Set of configuration blocks containing rules for the web ACL. Detailed below.
-func (r *WebAcl) Rules() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["rules"])
-}
-
 // Input properties used for looking up and filtering WebAcl resources.
 type WebAclState struct {
 	// Amazon Resource Name (ARN) of the WAF Regional WebACL.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The action that you want AWS WAF Regional to take when a request doesn't match the criteria in any of the rules that are associated with the web ACL.
-	DefaultAction interface{}
+	DefaultAction pulumi.AnyInput `pulumi:"defaultAction"`
 	// Configuration block to enable WAF logging. Detailed below.
-	LoggingConfiguration interface{}
+	LoggingConfiguration pulumi.AnyInput `pulumi:"loggingConfiguration"`
 	// The name or description for the Amazon CloudWatch metric of this web ACL.
-	MetricName interface{}
+	MetricName pulumi.StringInput `pulumi:"metricName"`
 	// The name or description of the web ACL.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Set of configuration blocks containing rules for the web ACL. Detailed below.
-	Rules interface{}
+	Rules pulumi.ArrayInput `pulumi:"rules"`
 }
 
 // The set of arguments for constructing a WebAcl resource.
 type WebAclArgs struct {
 	// The action that you want AWS WAF Regional to take when a request doesn't match the criteria in any of the rules that are associated with the web ACL.
-	DefaultAction interface{}
+	DefaultAction pulumi.AnyInput `pulumi:"defaultAction"`
 	// Configuration block to enable WAF logging. Detailed below.
-	LoggingConfiguration interface{}
+	LoggingConfiguration pulumi.AnyInput `pulumi:"loggingConfiguration"`
 	// The name or description for the Amazon CloudWatch metric of this web ACL.
-	MetricName interface{}
+	MetricName pulumi.StringInput `pulumi:"metricName"`
 	// The name or description of the web ACL.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Set of configuration blocks containing rules for the web ACL. Detailed below.
-	Rules interface{}
+	Rules pulumi.ArrayInput `pulumi:"rules"`
 }

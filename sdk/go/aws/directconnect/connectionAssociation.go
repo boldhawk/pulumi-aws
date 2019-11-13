@@ -12,7 +12,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/dx_connection_association.html.markdown.
 type ConnectionAssociation struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ID of the connection.
+	ConnectionId pulumi.StringOutput `pulumi:"connectionId"`
+
+	// The ID of the LAG with which to associate the connection.
+	LagId pulumi.StringOutput `pulumi:"lagId"`
 }
 
 // NewConnectionAssociation registers a new resource with the given unique name, arguments, and options.
@@ -24,69 +34,57 @@ func NewConnectionAssociation(ctx *pulumi.Context,
 	if args == nil || args.LagId == nil {
 		return nil, errors.New("missing required argument 'LagId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["connectionId"] = nil
-		inputs["lagId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["connectionId"] = args.ConnectionId
 		inputs["lagId"] = args.LagId
 	}
-	s, err := ctx.RegisterResource("aws:directconnect/connectionAssociation:ConnectionAssociation", name, true, inputs, opts...)
+	var resource ConnectionAssociation
+	err := ctx.RegisterResource("aws:directconnect/connectionAssociation:ConnectionAssociation", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ConnectionAssociation{s: s}, nil
+	return &resource, nil
 }
 
 // GetConnectionAssociation gets an existing ConnectionAssociation resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetConnectionAssociation(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ConnectionAssociationState, opts ...pulumi.ResourceOpt) (*ConnectionAssociation, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["connectionId"] = state.ConnectionId
 		inputs["lagId"] = state.LagId
 	}
-	s, err := ctx.ReadResource("aws:directconnect/connectionAssociation:ConnectionAssociation", name, id, inputs, opts...)
+	var resource ConnectionAssociation
+	err := ctx.ReadResource("aws:directconnect/connectionAssociation:ConnectionAssociation", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ConnectionAssociation{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ConnectionAssociation) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ConnectionAssociation) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ConnectionAssociation) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ConnectionAssociation) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ID of the connection.
-func (r *ConnectionAssociation) ConnectionId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["connectionId"])
-}
-
-// The ID of the LAG with which to associate the connection.
-func (r *ConnectionAssociation) LagId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["lagId"])
-}
-
 // Input properties used for looking up and filtering ConnectionAssociation resources.
 type ConnectionAssociationState struct {
 	// The ID of the connection.
-	ConnectionId interface{}
+	ConnectionId pulumi.StringInput `pulumi:"connectionId"`
 	// The ID of the LAG with which to associate the connection.
-	LagId interface{}
+	LagId pulumi.StringInput `pulumi:"lagId"`
 }
 
 // The set of arguments for constructing a ConnectionAssociation resource.
 type ConnectionAssociationArgs struct {
 	// The ID of the connection.
-	ConnectionId interface{}
+	ConnectionId pulumi.StringInput `pulumi:"connectionId"`
 	// The ID of the LAG with which to associate the connection.
-	LagId interface{}
+	LagId pulumi.StringInput `pulumi:"lagId"`
 }

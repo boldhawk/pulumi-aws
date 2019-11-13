@@ -14,7 +14,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/lb_listener_rule_legacy.html.markdown.
 type ListenerRule struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// An Action block. Action blocks are documented below.
+	Actions pulumi.ArrayOutput `pulumi:"actions"`
+
+	// The ARN of the rule (matches `id`)
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// A Condition block. Condition blocks are documented below.
+	Conditions pulumi.ArrayOutput `pulumi:"conditions"`
+
+	// The ARN of the listener to which to attach the rule.
+	ListenerArn pulumi.StringOutput `pulumi:"listenerArn"`
+
+	// The priority for the rule between `1` and `50000`. Leaving it unset will automatically set the rule with next available priority after currently existing highest rule. A listener can't have multiple rules with the same priority.
+	Priority pulumi.IntOutput `pulumi:"priority"`
 }
 
 // NewListenerRule registers a new resource with the given unique name, arguments, and options.
@@ -29,31 +48,26 @@ func NewListenerRule(ctx *pulumi.Context,
 	if args == nil || args.ListenerArn == nil {
 		return nil, errors.New("missing required argument 'ListenerArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["actions"] = nil
-		inputs["conditions"] = nil
-		inputs["listenerArn"] = nil
-		inputs["priority"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["actions"] = args.Actions
 		inputs["conditions"] = args.Conditions
 		inputs["listenerArn"] = args.ListenerArn
 		inputs["priority"] = args.Priority
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:elasticloadbalancingv2/listenerRule:ListenerRule", name, true, inputs, opts...)
+	var resource ListenerRule
+	err := ctx.RegisterResource("aws:elasticloadbalancingv2/listenerRule:ListenerRule", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ListenerRule{s: s}, nil
+	return &resource, nil
 }
 
 // GetListenerRule gets an existing ListenerRule resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetListenerRule(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ListenerRuleState, opts ...pulumi.ResourceOpt) (*ListenerRule, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["actions"] = state.Actions
 		inputs["arn"] = state.Arn
@@ -61,70 +75,45 @@ func GetListenerRule(ctx *pulumi.Context,
 		inputs["listenerArn"] = state.ListenerArn
 		inputs["priority"] = state.Priority
 	}
-	s, err := ctx.ReadResource("aws:elasticloadbalancingv2/listenerRule:ListenerRule", name, id, inputs, opts...)
+	var resource ListenerRule
+	err := ctx.ReadResource("aws:elasticloadbalancingv2/listenerRule:ListenerRule", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ListenerRule{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ListenerRule) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ListenerRule) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ListenerRule) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ListenerRule) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// An Action block. Action blocks are documented below.
-func (r *ListenerRule) Actions() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["actions"])
-}
-
-// The ARN of the rule (matches `id`)
-func (r *ListenerRule) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// A Condition block. Condition blocks are documented below.
-func (r *ListenerRule) Conditions() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["conditions"])
-}
-
-// The ARN of the listener to which to attach the rule.
-func (r *ListenerRule) ListenerArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["listenerArn"])
-}
-
-// The priority for the rule between `1` and `50000`. Leaving it unset will automatically set the rule with next available priority after currently existing highest rule. A listener can't have multiple rules with the same priority.
-func (r *ListenerRule) Priority() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["priority"])
-}
-
 // Input properties used for looking up and filtering ListenerRule resources.
 type ListenerRuleState struct {
 	// An Action block. Action blocks are documented below.
-	Actions interface{}
+	Actions pulumi.ArrayInput `pulumi:"actions"`
 	// The ARN of the rule (matches `id`)
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// A Condition block. Condition blocks are documented below.
-	Conditions interface{}
+	Conditions pulumi.ArrayInput `pulumi:"conditions"`
 	// The ARN of the listener to which to attach the rule.
-	ListenerArn interface{}
+	ListenerArn pulumi.StringInput `pulumi:"listenerArn"`
 	// The priority for the rule between `1` and `50000`. Leaving it unset will automatically set the rule with next available priority after currently existing highest rule. A listener can't have multiple rules with the same priority.
-	Priority interface{}
+	Priority pulumi.IntInput `pulumi:"priority"`
 }
 
 // The set of arguments for constructing a ListenerRule resource.
 type ListenerRuleArgs struct {
 	// An Action block. Action blocks are documented below.
-	Actions interface{}
+	Actions pulumi.ArrayInput `pulumi:"actions"`
 	// A Condition block. Condition blocks are documented below.
-	Conditions interface{}
+	Conditions pulumi.ArrayInput `pulumi:"conditions"`
 	// The ARN of the listener to which to attach the rule.
-	ListenerArn interface{}
+	ListenerArn pulumi.StringInput `pulumi:"listenerArn"`
 	// The priority for the rule between `1` and `50000`. Leaving it unset will automatically set the rule with next available priority after currently existing highest rule. A listener can't have multiple rules with the same priority.
-	Priority interface{}
+	Priority pulumi.IntInput `pulumi:"priority"`
 }

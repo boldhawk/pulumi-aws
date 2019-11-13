@@ -11,37 +11,54 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ecr_repository.html.markdown.
 type Repository struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Full ARN of the repository.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The tag mutability setting for the repository. Must be one of: `MUTABLE` or `IMMUTABLE`. Defaults to `MUTABLE`.
+	ImageTagMutability pulumi.StringOutput `pulumi:"imageTagMutability"`
+
+	// Name of the repository.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The registry ID where the repository was created.
+	RegistryId pulumi.StringOutput `pulumi:"registryId"`
+
+	// The URL of the repository (in the form `aws_account_id.dkr.ecr.region.amazonaws.com/repositoryName`
+	RepositoryUrl pulumi.StringOutput `pulumi:"repositoryUrl"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewRepository registers a new resource with the given unique name, arguments, and options.
 func NewRepository(ctx *pulumi.Context,
 	name string, args *RepositoryArgs, opts ...pulumi.ResourceOpt) (*Repository, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["imageTagMutability"] = nil
-		inputs["name"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["imageTagMutability"] = args.ImageTagMutability
 		inputs["name"] = args.Name
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	inputs["registryId"] = nil
-	inputs["repositoryUrl"] = nil
-	s, err := ctx.RegisterResource("aws:ecr/repository:Repository", name, true, inputs, opts...)
+	var resource Repository
+	err := ctx.RegisterResource("aws:ecr/repository:Repository", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Repository{s: s}, nil
+	return &resource, nil
 }
 
 // GetRepository gets an existing Repository resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRepository(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RepositoryState, opts ...pulumi.ResourceOpt) (*Repository, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["imageTagMutability"] = state.ImageTagMutability
@@ -50,75 +67,45 @@ func GetRepository(ctx *pulumi.Context,
 		inputs["repositoryUrl"] = state.RepositoryUrl
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:ecr/repository:Repository", name, id, inputs, opts...)
+	var resource Repository
+	err := ctx.ReadResource("aws:ecr/repository:Repository", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Repository{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Repository) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Repository) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Repository) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Repository) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Full ARN of the repository.
-func (r *Repository) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The tag mutability setting for the repository. Must be one of: `MUTABLE` or `IMMUTABLE`. Defaults to `MUTABLE`.
-func (r *Repository) ImageTagMutability() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["imageTagMutability"])
-}
-
-// Name of the repository.
-func (r *Repository) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The registry ID where the repository was created.
-func (r *Repository) RegistryId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["registryId"])
-}
-
-// The URL of the repository (in the form `aws_account_id.dkr.ecr.region.amazonaws.com/repositoryName`
-func (r *Repository) RepositoryUrl() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["repositoryUrl"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *Repository) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering Repository resources.
 type RepositoryState struct {
 	// Full ARN of the repository.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The tag mutability setting for the repository. Must be one of: `MUTABLE` or `IMMUTABLE`. Defaults to `MUTABLE`.
-	ImageTagMutability interface{}
+	ImageTagMutability pulumi.StringInput `pulumi:"imageTagMutability"`
 	// Name of the repository.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The registry ID where the repository was created.
-	RegistryId interface{}
+	RegistryId pulumi.StringInput `pulumi:"registryId"`
 	// The URL of the repository (in the form `aws_account_id.dkr.ecr.region.amazonaws.com/repositoryName`
-	RepositoryUrl interface{}
+	RepositoryUrl pulumi.StringInput `pulumi:"repositoryUrl"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a Repository resource.
 type RepositoryArgs struct {
 	// The tag mutability setting for the repository. Must be one of: `MUTABLE` or `IMMUTABLE`. Defaults to `MUTABLE`.
-	ImageTagMutability interface{}
+	ImageTagMutability pulumi.StringInput `pulumi:"imageTagMutability"`
 	// Name of the repository.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

@@ -12,7 +12,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/waf_rate_based_rule.html.markdown.
 type RateBasedRule struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The name or description for the Amazon CloudWatch metric of this rule.
+	MetricName pulumi.StringOutput `pulumi:"metricName"`
+
+	// The name or description of the rule.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The objects to include in a rule (documented below).
+	Predicates pulumi.ArrayOutput `pulumi:"predicates"`
+
+	// Valid value is IP.
+	RateKey pulumi.StringOutput `pulumi:"rateKey"`
+
+	// The maximum number of requests, which have an identical value in the field specified by the RateKey, allowed in a five-minute period. Minimum value is 100.
+	RateLimit pulumi.IntOutput `pulumi:"rateLimit"`
 }
 
 // NewRateBasedRule registers a new resource with the given unique name, arguments, and options.
@@ -27,32 +46,28 @@ func NewRateBasedRule(ctx *pulumi.Context,
 	if args == nil || args.RateLimit == nil {
 		return nil, errors.New("missing required argument 'RateLimit'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["metricName"] = nil
-		inputs["name"] = nil
-		inputs["predicates"] = nil
-		inputs["rateKey"] = nil
-		inputs["rateLimit"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["metricName"] = args.MetricName
 		inputs["name"] = args.Name
 		inputs["predicates"] = args.Predicates
 		inputs["rateKey"] = args.RateKey
 		inputs["rateLimit"] = args.RateLimit
 	}
-	s, err := ctx.RegisterResource("aws:waf/rateBasedRule:RateBasedRule", name, true, inputs, opts...)
+	var resource RateBasedRule
+	err := ctx.RegisterResource("aws:waf/rateBasedRule:RateBasedRule", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RateBasedRule{s: s}, nil
+	return &resource, nil
 }
 
 // GetRateBasedRule gets an existing RateBasedRule resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRateBasedRule(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RateBasedRuleState, opts ...pulumi.ResourceOpt) (*RateBasedRule, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["metricName"] = state.MetricName
 		inputs["name"] = state.Name
@@ -60,72 +75,47 @@ func GetRateBasedRule(ctx *pulumi.Context,
 		inputs["rateKey"] = state.RateKey
 		inputs["rateLimit"] = state.RateLimit
 	}
-	s, err := ctx.ReadResource("aws:waf/rateBasedRule:RateBasedRule", name, id, inputs, opts...)
+	var resource RateBasedRule
+	err := ctx.ReadResource("aws:waf/rateBasedRule:RateBasedRule", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RateBasedRule{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *RateBasedRule) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *RateBasedRule) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *RateBasedRule) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *RateBasedRule) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The name or description for the Amazon CloudWatch metric of this rule.
-func (r *RateBasedRule) MetricName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["metricName"])
-}
-
-// The name or description of the rule.
-func (r *RateBasedRule) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The objects to include in a rule (documented below).
-func (r *RateBasedRule) Predicates() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["predicates"])
-}
-
-// Valid value is IP.
-func (r *RateBasedRule) RateKey() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["rateKey"])
-}
-
-// The maximum number of requests, which have an identical value in the field specified by the RateKey, allowed in a five-minute period. Minimum value is 100.
-func (r *RateBasedRule) RateLimit() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["rateLimit"])
-}
-
 // Input properties used for looking up and filtering RateBasedRule resources.
 type RateBasedRuleState struct {
 	// The name or description for the Amazon CloudWatch metric of this rule.
-	MetricName interface{}
+	MetricName pulumi.StringInput `pulumi:"metricName"`
 	// The name or description of the rule.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The objects to include in a rule (documented below).
-	Predicates interface{}
+	Predicates pulumi.ArrayInput `pulumi:"predicates"`
 	// Valid value is IP.
-	RateKey interface{}
+	RateKey pulumi.StringInput `pulumi:"rateKey"`
 	// The maximum number of requests, which have an identical value in the field specified by the RateKey, allowed in a five-minute period. Minimum value is 100.
-	RateLimit interface{}
+	RateLimit pulumi.IntInput `pulumi:"rateLimit"`
 }
 
 // The set of arguments for constructing a RateBasedRule resource.
 type RateBasedRuleArgs struct {
 	// The name or description for the Amazon CloudWatch metric of this rule.
-	MetricName interface{}
+	MetricName pulumi.StringInput `pulumi:"metricName"`
 	// The name or description of the rule.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The objects to include in a rule (documented below).
-	Predicates interface{}
+	Predicates pulumi.ArrayInput `pulumi:"predicates"`
 	// Valid value is IP.
-	RateKey interface{}
+	RateKey pulumi.StringInput `pulumi:"rateKey"`
 	// The maximum number of requests, which have an identical value in the field specified by the RateKey, allowed in a five-minute period. Minimum value is 100.
-	RateLimit interface{}
+	RateLimit pulumi.IntInput `pulumi:"rateLimit"`
 }

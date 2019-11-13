@@ -12,7 +12,50 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ssm_maintenance_window_task.html.markdown.
 type MaintenanceWindowTask struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The description of the maintenance window task.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// A structure containing information about an Amazon S3 bucket to write instance-level logs to. Use `taskInvocationParameters` configuration block `runCommandParameters` configuration block `output_s3_*` arguments instead. Conflicts with `taskInvocationParameters`. Documented below.
+	LoggingInfo pulumi.AnyOutput `pulumi:"loggingInfo"`
+
+	// The maximum number of targets this task can be run for in parallel.
+	MaxConcurrency pulumi.StringOutput `pulumi:"maxConcurrency"`
+
+	// The maximum number of errors allowed before this task stops being scheduled.
+	MaxErrors pulumi.StringOutput `pulumi:"maxErrors"`
+
+	// The parameter name.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The priority of the task in the Maintenance Window, the lower the number the higher the priority. Tasks in a Maintenance Window are scheduled in priority order with tasks that have the same priority scheduled in parallel.
+	Priority pulumi.IntOutput `pulumi:"priority"`
+
+	// The IAM service role to assume during task execution.
+	ServiceRoleArn pulumi.StringOutput `pulumi:"serviceRoleArn"`
+
+	// The targets (either instances or window target ids). Instances are specified using Key=InstanceIds,Values=instanceid1,instanceid2. Window target ids are specified using Key=WindowTargetIds,Values=window target id1, window target id2.
+	Targets pulumi.ArrayOutput `pulumi:"targets"`
+
+	// The ARN of the task to execute.
+	TaskArn pulumi.StringOutput `pulumi:"taskArn"`
+
+	// The parameters for task execution. This argument is conflict with `taskParameters` and `loggingInfo`.
+	TaskInvocationParameters pulumi.AnyOutput `pulumi:"taskInvocationParameters"`
+
+	// A structure containing information about parameters required by the particular `taskArn`. Use `parameter` configuration blocks under the `taskInvocationParameters` configuration block instead. Conflicts with `taskInvocationParameters`. Documented below.
+	TaskParameters pulumi.ArrayOutput `pulumi:"taskParameters"`
+
+	// The type of task being registered. The only allowed value is `RUN_COMMAND`.
+	TaskType pulumi.StringOutput `pulumi:"taskType"`
+
+	// The Id of the maintenance window to register the task with.
+	WindowId pulumi.StringOutput `pulumi:"windowId"`
 }
 
 // NewMaintenanceWindowTask registers a new resource with the given unique name, arguments, and options.
@@ -39,22 +82,9 @@ func NewMaintenanceWindowTask(ctx *pulumi.Context,
 	if args == nil || args.WindowId == nil {
 		return nil, errors.New("missing required argument 'WindowId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["description"] = nil
-		inputs["loggingInfo"] = nil
-		inputs["maxConcurrency"] = nil
-		inputs["maxErrors"] = nil
-		inputs["name"] = nil
-		inputs["priority"] = nil
-		inputs["serviceRoleArn"] = nil
-		inputs["targets"] = nil
-		inputs["taskArn"] = nil
-		inputs["taskInvocationParameters"] = nil
-		inputs["taskParameters"] = nil
-		inputs["taskType"] = nil
-		inputs["windowId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["loggingInfo"] = args.LoggingInfo
 		inputs["maxConcurrency"] = args.MaxConcurrency
@@ -69,18 +99,19 @@ func NewMaintenanceWindowTask(ctx *pulumi.Context,
 		inputs["taskType"] = args.TaskType
 		inputs["windowId"] = args.WindowId
 	}
-	s, err := ctx.RegisterResource("aws:ssm/maintenanceWindowTask:MaintenanceWindowTask", name, true, inputs, opts...)
+	var resource MaintenanceWindowTask
+	err := ctx.RegisterResource("aws:ssm/maintenanceWindowTask:MaintenanceWindowTask", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &MaintenanceWindowTask{s: s}, nil
+	return &resource, nil
 }
 
 // GetMaintenanceWindowTask gets an existing MaintenanceWindowTask resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetMaintenanceWindowTask(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *MaintenanceWindowTaskState, opts ...pulumi.ResourceOpt) (*MaintenanceWindowTask, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["description"] = state.Description
 		inputs["loggingInfo"] = state.LoggingInfo
@@ -96,144 +127,79 @@ func GetMaintenanceWindowTask(ctx *pulumi.Context,
 		inputs["taskType"] = state.TaskType
 		inputs["windowId"] = state.WindowId
 	}
-	s, err := ctx.ReadResource("aws:ssm/maintenanceWindowTask:MaintenanceWindowTask", name, id, inputs, opts...)
+	var resource MaintenanceWindowTask
+	err := ctx.ReadResource("aws:ssm/maintenanceWindowTask:MaintenanceWindowTask", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &MaintenanceWindowTask{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *MaintenanceWindowTask) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *MaintenanceWindowTask) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *MaintenanceWindowTask) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *MaintenanceWindowTask) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The description of the maintenance window task.
-func (r *MaintenanceWindowTask) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// A structure containing information about an Amazon S3 bucket to write instance-level logs to. Use `taskInvocationParameters` configuration block `runCommandParameters` configuration block `output_s3_*` arguments instead. Conflicts with `taskInvocationParameters`. Documented below.
-func (r *MaintenanceWindowTask) LoggingInfo() *pulumi.Output {
-	return r.s.State["loggingInfo"]
-}
-
-// The maximum number of targets this task can be run for in parallel.
-func (r *MaintenanceWindowTask) MaxConcurrency() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["maxConcurrency"])
-}
-
-// The maximum number of errors allowed before this task stops being scheduled.
-func (r *MaintenanceWindowTask) MaxErrors() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["maxErrors"])
-}
-
-// The parameter name.
-func (r *MaintenanceWindowTask) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The priority of the task in the Maintenance Window, the lower the number the higher the priority. Tasks in a Maintenance Window are scheduled in priority order with tasks that have the same priority scheduled in parallel.
-func (r *MaintenanceWindowTask) Priority() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["priority"])
-}
-
-// The IAM service role to assume during task execution.
-func (r *MaintenanceWindowTask) ServiceRoleArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["serviceRoleArn"])
-}
-
-// The targets (either instances or window target ids). Instances are specified using Key=InstanceIds,Values=instanceid1,instanceid2. Window target ids are specified using Key=WindowTargetIds,Values=window target id1, window target id2.
-func (r *MaintenanceWindowTask) Targets() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["targets"])
-}
-
-// The ARN of the task to execute.
-func (r *MaintenanceWindowTask) TaskArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["taskArn"])
-}
-
-// The parameters for task execution. This argument is conflict with `taskParameters` and `loggingInfo`.
-func (r *MaintenanceWindowTask) TaskInvocationParameters() *pulumi.Output {
-	return r.s.State["taskInvocationParameters"]
-}
-
-// A structure containing information about parameters required by the particular `taskArn`. Use `parameter` configuration blocks under the `taskInvocationParameters` configuration block instead. Conflicts with `taskInvocationParameters`. Documented below.
-func (r *MaintenanceWindowTask) TaskParameters() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["taskParameters"])
-}
-
-// The type of task being registered. The only allowed value is `RUN_COMMAND`.
-func (r *MaintenanceWindowTask) TaskType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["taskType"])
-}
-
-// The Id of the maintenance window to register the task with.
-func (r *MaintenanceWindowTask) WindowId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["windowId"])
-}
-
 // Input properties used for looking up and filtering MaintenanceWindowTask resources.
 type MaintenanceWindowTaskState struct {
 	// The description of the maintenance window task.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// A structure containing information about an Amazon S3 bucket to write instance-level logs to. Use `taskInvocationParameters` configuration block `runCommandParameters` configuration block `output_s3_*` arguments instead. Conflicts with `taskInvocationParameters`. Documented below.
-	LoggingInfo interface{}
+	LoggingInfo pulumi.AnyInput `pulumi:"loggingInfo"`
 	// The maximum number of targets this task can be run for in parallel.
-	MaxConcurrency interface{}
+	MaxConcurrency pulumi.StringInput `pulumi:"maxConcurrency"`
 	// The maximum number of errors allowed before this task stops being scheduled.
-	MaxErrors interface{}
+	MaxErrors pulumi.StringInput `pulumi:"maxErrors"`
 	// The parameter name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The priority of the task in the Maintenance Window, the lower the number the higher the priority. Tasks in a Maintenance Window are scheduled in priority order with tasks that have the same priority scheduled in parallel.
-	Priority interface{}
+	Priority pulumi.IntInput `pulumi:"priority"`
 	// The IAM service role to assume during task execution.
-	ServiceRoleArn interface{}
+	ServiceRoleArn pulumi.StringInput `pulumi:"serviceRoleArn"`
 	// The targets (either instances or window target ids). Instances are specified using Key=InstanceIds,Values=instanceid1,instanceid2. Window target ids are specified using Key=WindowTargetIds,Values=window target id1, window target id2.
-	Targets interface{}
+	Targets pulumi.ArrayInput `pulumi:"targets"`
 	// The ARN of the task to execute.
-	TaskArn interface{}
+	TaskArn pulumi.StringInput `pulumi:"taskArn"`
 	// The parameters for task execution. This argument is conflict with `taskParameters` and `loggingInfo`.
-	TaskInvocationParameters interface{}
+	TaskInvocationParameters pulumi.AnyInput `pulumi:"taskInvocationParameters"`
 	// A structure containing information about parameters required by the particular `taskArn`. Use `parameter` configuration blocks under the `taskInvocationParameters` configuration block instead. Conflicts with `taskInvocationParameters`. Documented below.
-	TaskParameters interface{}
+	TaskParameters pulumi.ArrayInput `pulumi:"taskParameters"`
 	// The type of task being registered. The only allowed value is `RUN_COMMAND`.
-	TaskType interface{}
+	TaskType pulumi.StringInput `pulumi:"taskType"`
 	// The Id of the maintenance window to register the task with.
-	WindowId interface{}
+	WindowId pulumi.StringInput `pulumi:"windowId"`
 }
 
 // The set of arguments for constructing a MaintenanceWindowTask resource.
 type MaintenanceWindowTaskArgs struct {
 	// The description of the maintenance window task.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// A structure containing information about an Amazon S3 bucket to write instance-level logs to. Use `taskInvocationParameters` configuration block `runCommandParameters` configuration block `output_s3_*` arguments instead. Conflicts with `taskInvocationParameters`. Documented below.
-	LoggingInfo interface{}
+	LoggingInfo pulumi.AnyInput `pulumi:"loggingInfo"`
 	// The maximum number of targets this task can be run for in parallel.
-	MaxConcurrency interface{}
+	MaxConcurrency pulumi.StringInput `pulumi:"maxConcurrency"`
 	// The maximum number of errors allowed before this task stops being scheduled.
-	MaxErrors interface{}
+	MaxErrors pulumi.StringInput `pulumi:"maxErrors"`
 	// The parameter name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The priority of the task in the Maintenance Window, the lower the number the higher the priority. Tasks in a Maintenance Window are scheduled in priority order with tasks that have the same priority scheduled in parallel.
-	Priority interface{}
+	Priority pulumi.IntInput `pulumi:"priority"`
 	// The IAM service role to assume during task execution.
-	ServiceRoleArn interface{}
+	ServiceRoleArn pulumi.StringInput `pulumi:"serviceRoleArn"`
 	// The targets (either instances or window target ids). Instances are specified using Key=InstanceIds,Values=instanceid1,instanceid2. Window target ids are specified using Key=WindowTargetIds,Values=window target id1, window target id2.
-	Targets interface{}
+	Targets pulumi.ArrayInput `pulumi:"targets"`
 	// The ARN of the task to execute.
-	TaskArn interface{}
+	TaskArn pulumi.StringInput `pulumi:"taskArn"`
 	// The parameters for task execution. This argument is conflict with `taskParameters` and `loggingInfo`.
-	TaskInvocationParameters interface{}
+	TaskInvocationParameters pulumi.AnyInput `pulumi:"taskInvocationParameters"`
 	// A structure containing information about parameters required by the particular `taskArn`. Use `parameter` configuration blocks under the `taskInvocationParameters` configuration block instead. Conflicts with `taskInvocationParameters`. Documented below.
-	TaskParameters interface{}
+	TaskParameters pulumi.ArrayInput `pulumi:"taskParameters"`
 	// The type of task being registered. The only allowed value is `RUN_COMMAND`.
-	TaskType interface{}
+	TaskType pulumi.StringInput `pulumi:"taskType"`
 	// The Id of the maintenance window to register the task with.
-	WindowId interface{}
+	WindowId pulumi.StringInput `pulumi:"windowId"`
 }

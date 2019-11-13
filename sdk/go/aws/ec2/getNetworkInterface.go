@@ -46,45 +46,45 @@ func LookupNetworkInterface(ctx *pulumi.Context, args *GetNetworkInterfaceArgs) 
 // A collection of arguments for invoking getNetworkInterface.
 type GetNetworkInterfaceArgs struct {
 	// One or more name/value pairs to filter off of. There are several valid keys, for a full reference, check out [describe-network-interfaces](https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-network-interfaces.html) in the AWS CLI reference.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The identifier for the network interface.
-	Id interface{}
-	Tags interface{}
+	Id pulumi.StringInput `pulumi:"id"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getNetworkInterface.
 type GetNetworkInterfaceResult struct {
 	// The association information for an Elastic IP address (IPv4) associated with the network interface. See supported fields below.
-	Associations interface{}
-	Attachments interface{}
+	Associations []interface{} `pulumi:"associations"`
+	Attachments []interface{} `pulumi:"attachments"`
 	// The Availability Zone.
-	AvailabilityZone interface{}
+	AvailabilityZone string `pulumi:"availabilityZone"`
 	// Description of the network interface.
-	Description interface{}
-	Filters interface{}
-	Id interface{}
+	Description string `pulumi:"description"`
+	Filters []interface{} `pulumi:"filters"`
+	Id string `pulumi:"id"`
 	// The type of interface.
-	InterfaceType interface{}
+	InterfaceType string `pulumi:"interfaceType"`
 	// List of IPv6 addresses to assign to the ENI.
-	Ipv6Addresses interface{}
+	Ipv6Addresses []interface{} `pulumi:"ipv6Addresses"`
 	// The MAC address.
-	MacAddress interface{}
+	MacAddress string `pulumi:"macAddress"`
 	// The AWS account ID of the owner of the network interface.
-	OwnerId interface{}
+	OwnerId string `pulumi:"ownerId"`
 	// The private DNS name.
-	PrivateDnsName interface{}
+	PrivateDnsName string `pulumi:"privateDnsName"`
 	// The private IPv4 address of the network interface within the subnet.
-	PrivateIp interface{}
+	PrivateIp string `pulumi:"privateIp"`
 	// The private IPv4 addresses associated with the network interface.
-	PrivateIps interface{}
+	PrivateIps []interface{} `pulumi:"privateIps"`
 	// The ID of the entity that launched the instance on your behalf.
-	RequesterId interface{}
+	RequesterId string `pulumi:"requesterId"`
 	// The list of security groups for the network interface.
-	SecurityGroups interface{}
+	SecurityGroups []interface{} `pulumi:"securityGroups"`
 	// The ID of the subnet.
-	SubnetId interface{}
+	SubnetId string `pulumi:"subnetId"`
 	// Any tags assigned to the network interface.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The ID of the VPC.
-	VpcId interface{}
+	VpcId string `pulumi:"vpcId"`
 }

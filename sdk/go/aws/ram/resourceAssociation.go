@@ -14,7 +14,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ram_resource_association.html.markdown.
 type ResourceAssociation struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Amazon Resource Name (ARN) of the resource to associate with the RAM Resource Share.
+	ResourceArn pulumi.StringOutput `pulumi:"resourceArn"`
+
+	// Amazon Resource Name (ARN) of the RAM Resource Share.
+	ResourceShareArn pulumi.StringOutput `pulumi:"resourceShareArn"`
 }
 
 // NewResourceAssociation registers a new resource with the given unique name, arguments, and options.
@@ -26,69 +36,57 @@ func NewResourceAssociation(ctx *pulumi.Context,
 	if args == nil || args.ResourceShareArn == nil {
 		return nil, errors.New("missing required argument 'ResourceShareArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["resourceArn"] = nil
-		inputs["resourceShareArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["resourceArn"] = args.ResourceArn
 		inputs["resourceShareArn"] = args.ResourceShareArn
 	}
-	s, err := ctx.RegisterResource("aws:ram/resourceAssociation:ResourceAssociation", name, true, inputs, opts...)
+	var resource ResourceAssociation
+	err := ctx.RegisterResource("aws:ram/resourceAssociation:ResourceAssociation", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ResourceAssociation{s: s}, nil
+	return &resource, nil
 }
 
 // GetResourceAssociation gets an existing ResourceAssociation resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetResourceAssociation(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ResourceAssociationState, opts ...pulumi.ResourceOpt) (*ResourceAssociation, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["resourceArn"] = state.ResourceArn
 		inputs["resourceShareArn"] = state.ResourceShareArn
 	}
-	s, err := ctx.ReadResource("aws:ram/resourceAssociation:ResourceAssociation", name, id, inputs, opts...)
+	var resource ResourceAssociation
+	err := ctx.ReadResource("aws:ram/resourceAssociation:ResourceAssociation", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ResourceAssociation{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ResourceAssociation) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ResourceAssociation) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ResourceAssociation) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ResourceAssociation) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Amazon Resource Name (ARN) of the resource to associate with the RAM Resource Share.
-func (r *ResourceAssociation) ResourceArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["resourceArn"])
-}
-
-// Amazon Resource Name (ARN) of the RAM Resource Share.
-func (r *ResourceAssociation) ResourceShareArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["resourceShareArn"])
-}
-
 // Input properties used for looking up and filtering ResourceAssociation resources.
 type ResourceAssociationState struct {
 	// Amazon Resource Name (ARN) of the resource to associate with the RAM Resource Share.
-	ResourceArn interface{}
+	ResourceArn pulumi.StringInput `pulumi:"resourceArn"`
 	// Amazon Resource Name (ARN) of the RAM Resource Share.
-	ResourceShareArn interface{}
+	ResourceShareArn pulumi.StringInput `pulumi:"resourceShareArn"`
 }
 
 // The set of arguments for constructing a ResourceAssociation resource.
 type ResourceAssociationArgs struct {
 	// Amazon Resource Name (ARN) of the resource to associate with the RAM Resource Share.
-	ResourceArn interface{}
+	ResourceArn pulumi.StringInput `pulumi:"resourceArn"`
 	// Amazon Resource Name (ARN) of the RAM Resource Share.
-	ResourceShareArn interface{}
+	ResourceShareArn pulumi.StringInput `pulumi:"resourceShareArn"`
 }

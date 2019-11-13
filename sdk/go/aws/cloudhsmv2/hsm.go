@@ -12,7 +12,32 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/cloudhsm_v2_hsm.html.markdown.
 type Hsm struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The IDs of AZ in which HSM module will be located. Do not use together with subnet_id.
+	AvailabilityZone pulumi.StringOutput `pulumi:"availabilityZone"`
+
+	// The ID of Cloud HSM v2 cluster to which HSM will be added.
+	ClusterId pulumi.StringOutput `pulumi:"clusterId"`
+
+	// The id of the ENI interface allocated for HSM module.
+	HsmEniId pulumi.StringOutput `pulumi:"hsmEniId"`
+
+	// The id of the HSM module.
+	HsmId pulumi.StringOutput `pulumi:"hsmId"`
+
+	// The state of the HSM module.
+	HsmState pulumi.StringOutput `pulumi:"hsmState"`
+
+	// The IP address of HSM module. Must be within the CIDR of selected subnet.
+	IpAddress pulumi.StringOutput `pulumi:"ipAddress"`
+
+	// The ID of subnet in which HSM module will be located.
+	SubnetId pulumi.StringOutput `pulumi:"subnetId"`
 }
 
 // NewHsm registers a new resource with the given unique name, arguments, and options.
@@ -21,33 +46,26 @@ func NewHsm(ctx *pulumi.Context,
 	if args == nil || args.ClusterId == nil {
 		return nil, errors.New("missing required argument 'ClusterId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["availabilityZone"] = nil
-		inputs["clusterId"] = nil
-		inputs["ipAddress"] = nil
-		inputs["subnetId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["availabilityZone"] = args.AvailabilityZone
 		inputs["clusterId"] = args.ClusterId
 		inputs["ipAddress"] = args.IpAddress
 		inputs["subnetId"] = args.SubnetId
 	}
-	inputs["hsmEniId"] = nil
-	inputs["hsmId"] = nil
-	inputs["hsmState"] = nil
-	s, err := ctx.RegisterResource("aws:cloudhsmv2/hsm:Hsm", name, true, inputs, opts...)
+	var resource Hsm
+	err := ctx.RegisterResource("aws:cloudhsmv2/hsm:Hsm", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Hsm{s: s}, nil
+	return &resource, nil
 }
 
 // GetHsm gets an existing Hsm resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetHsm(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *HsmState, opts ...pulumi.ResourceOpt) (*Hsm, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["availabilityZone"] = state.AvailabilityZone
 		inputs["clusterId"] = state.ClusterId
@@ -57,84 +75,49 @@ func GetHsm(ctx *pulumi.Context,
 		inputs["ipAddress"] = state.IpAddress
 		inputs["subnetId"] = state.SubnetId
 	}
-	s, err := ctx.ReadResource("aws:cloudhsmv2/hsm:Hsm", name, id, inputs, opts...)
+	var resource Hsm
+	err := ctx.ReadResource("aws:cloudhsmv2/hsm:Hsm", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Hsm{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Hsm) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Hsm) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Hsm) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Hsm) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The IDs of AZ in which HSM module will be located. Do not use together with subnet_id.
-func (r *Hsm) AvailabilityZone() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["availabilityZone"])
-}
-
-// The ID of Cloud HSM v2 cluster to which HSM will be added.
-func (r *Hsm) ClusterId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["clusterId"])
-}
-
-// The id of the ENI interface allocated for HSM module.
-func (r *Hsm) HsmEniId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["hsmEniId"])
-}
-
-// The id of the HSM module.
-func (r *Hsm) HsmId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["hsmId"])
-}
-
-// The state of the HSM module.
-func (r *Hsm) HsmState() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["hsmState"])
-}
-
-// The IP address of HSM module. Must be within the CIDR of selected subnet.
-func (r *Hsm) IpAddress() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ipAddress"])
-}
-
-// The ID of subnet in which HSM module will be located.
-func (r *Hsm) SubnetId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["subnetId"])
-}
-
 // Input properties used for looking up and filtering Hsm resources.
 type HsmState struct {
 	// The IDs of AZ in which HSM module will be located. Do not use together with subnet_id.
-	AvailabilityZone interface{}
+	AvailabilityZone pulumi.StringInput `pulumi:"availabilityZone"`
 	// The ID of Cloud HSM v2 cluster to which HSM will be added.
-	ClusterId interface{}
+	ClusterId pulumi.StringInput `pulumi:"clusterId"`
 	// The id of the ENI interface allocated for HSM module.
-	HsmEniId interface{}
+	HsmEniId pulumi.StringInput `pulumi:"hsmEniId"`
 	// The id of the HSM module.
-	HsmId interface{}
+	HsmId pulumi.StringInput `pulumi:"hsmId"`
 	// The state of the HSM module.
-	HsmState interface{}
+	HsmState pulumi.StringInput `pulumi:"hsmState"`
 	// The IP address of HSM module. Must be within the CIDR of selected subnet.
-	IpAddress interface{}
+	IpAddress pulumi.StringInput `pulumi:"ipAddress"`
 	// The ID of subnet in which HSM module will be located.
-	SubnetId interface{}
+	SubnetId pulumi.StringInput `pulumi:"subnetId"`
 }
 
 // The set of arguments for constructing a Hsm resource.
 type HsmArgs struct {
 	// The IDs of AZ in which HSM module will be located. Do not use together with subnet_id.
-	AvailabilityZone interface{}
+	AvailabilityZone pulumi.StringInput `pulumi:"availabilityZone"`
 	// The ID of Cloud HSM v2 cluster to which HSM will be added.
-	ClusterId interface{}
+	ClusterId pulumi.StringInput `pulumi:"clusterId"`
 	// The IP address of HSM module. Must be within the CIDR of selected subnet.
-	IpAddress interface{}
+	IpAddress pulumi.StringInput `pulumi:"ipAddress"`
 	// The ID of subnet in which HSM module will be located.
-	SubnetId interface{}
+	SubnetId pulumi.StringInput `pulumi:"subnetId"`
 }

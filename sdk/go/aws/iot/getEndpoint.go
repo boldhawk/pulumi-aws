@@ -29,7 +29,7 @@ func LookupEndpoint(ctx *pulumi.Context, args *GetEndpointArgs) (*GetEndpointRes
 // A collection of arguments for invoking getEndpoint.
 type GetEndpointArgs struct {
 	// Endpoint type. Valid values: `iot:CredentialProvider`, `iot:Data`, `iot:Data-ATS`, `iot:Job`.
-	EndpointType interface{}
+	EndpointType pulumi.StringInput `pulumi:"endpointType"`
 }
 
 // A collection of values returned by getEndpoint.
@@ -40,8 +40,8 @@ type GetEndpointResult struct {
 	// * `iot:Data`: `IDENTIFIER.iot.REGION.amazonaws.com`
 	// * `iot:Data-ATS`: `IDENTIFIER-ats.iot.REGION.amazonaws.com`
 	// * `iot:Job`: `IDENTIFIER.jobs.iot.REGION.amazonaws.com`
-	EndpointAddress interface{}
-	EndpointType interface{}
+	EndpointAddress string `pulumi:"endpointAddress"`
+	EndpointType string `pulumi:"endpointType"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

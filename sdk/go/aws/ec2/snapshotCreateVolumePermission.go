@@ -12,7 +12,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/snapshot_create_volume_permission.html.markdown.
 type SnapshotCreateVolumePermission struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// An AWS Account ID to add create volume permissions
+	AccountId pulumi.StringOutput `pulumi:"accountId"`
+
+	// A snapshot ID
+	SnapshotId pulumi.StringOutput `pulumi:"snapshotId"`
 }
 
 // NewSnapshotCreateVolumePermission registers a new resource with the given unique name, arguments, and options.
@@ -24,69 +34,57 @@ func NewSnapshotCreateVolumePermission(ctx *pulumi.Context,
 	if args == nil || args.SnapshotId == nil {
 		return nil, errors.New("missing required argument 'SnapshotId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["accountId"] = nil
-		inputs["snapshotId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["accountId"] = args.AccountId
 		inputs["snapshotId"] = args.SnapshotId
 	}
-	s, err := ctx.RegisterResource("aws:ec2/snapshotCreateVolumePermission:SnapshotCreateVolumePermission", name, true, inputs, opts...)
+	var resource SnapshotCreateVolumePermission
+	err := ctx.RegisterResource("aws:ec2/snapshotCreateVolumePermission:SnapshotCreateVolumePermission", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SnapshotCreateVolumePermission{s: s}, nil
+	return &resource, nil
 }
 
 // GetSnapshotCreateVolumePermission gets an existing SnapshotCreateVolumePermission resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetSnapshotCreateVolumePermission(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *SnapshotCreateVolumePermissionState, opts ...pulumi.ResourceOpt) (*SnapshotCreateVolumePermission, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["accountId"] = state.AccountId
 		inputs["snapshotId"] = state.SnapshotId
 	}
-	s, err := ctx.ReadResource("aws:ec2/snapshotCreateVolumePermission:SnapshotCreateVolumePermission", name, id, inputs, opts...)
+	var resource SnapshotCreateVolumePermission
+	err := ctx.ReadResource("aws:ec2/snapshotCreateVolumePermission:SnapshotCreateVolumePermission", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SnapshotCreateVolumePermission{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *SnapshotCreateVolumePermission) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *SnapshotCreateVolumePermission) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *SnapshotCreateVolumePermission) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *SnapshotCreateVolumePermission) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// An AWS Account ID to add create volume permissions
-func (r *SnapshotCreateVolumePermission) AccountId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["accountId"])
-}
-
-// A snapshot ID
-func (r *SnapshotCreateVolumePermission) SnapshotId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["snapshotId"])
-}
-
 // Input properties used for looking up and filtering SnapshotCreateVolumePermission resources.
 type SnapshotCreateVolumePermissionState struct {
 	// An AWS Account ID to add create volume permissions
-	AccountId interface{}
+	AccountId pulumi.StringInput `pulumi:"accountId"`
 	// A snapshot ID
-	SnapshotId interface{}
+	SnapshotId pulumi.StringInput `pulumi:"snapshotId"`
 }
 
 // The set of arguments for constructing a SnapshotCreateVolumePermission resource.
 type SnapshotCreateVolumePermissionArgs struct {
 	// An AWS Account ID to add create volume permissions
-	AccountId interface{}
+	AccountId pulumi.StringInput `pulumi:"accountId"`
 	// A snapshot ID
-	SnapshotId interface{}
+	SnapshotId pulumi.StringInput `pulumi:"snapshotId"`
 }

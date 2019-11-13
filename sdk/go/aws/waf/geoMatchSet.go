@@ -11,75 +11,74 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/waf_geo_match_set.html.markdown.
 type GeoMatchSet struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The GeoMatchConstraint objects which contain the country that you want AWS WAF to search for.
+	GeoMatchConstraints pulumi.ArrayOutput `pulumi:"geoMatchConstraints"`
+
+	// The name or description of the GeoMatchSet.
+	Name pulumi.StringOutput `pulumi:"name"`
 }
 
 // NewGeoMatchSet registers a new resource with the given unique name, arguments, and options.
 func NewGeoMatchSet(ctx *pulumi.Context,
 	name string, args *GeoMatchSetArgs, opts ...pulumi.ResourceOpt) (*GeoMatchSet, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["geoMatchConstraints"] = nil
-		inputs["name"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["geoMatchConstraints"] = args.GeoMatchConstraints
 		inputs["name"] = args.Name
 	}
-	s, err := ctx.RegisterResource("aws:waf/geoMatchSet:GeoMatchSet", name, true, inputs, opts...)
+	var resource GeoMatchSet
+	err := ctx.RegisterResource("aws:waf/geoMatchSet:GeoMatchSet", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &GeoMatchSet{s: s}, nil
+	return &resource, nil
 }
 
 // GetGeoMatchSet gets an existing GeoMatchSet resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetGeoMatchSet(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *GeoMatchSetState, opts ...pulumi.ResourceOpt) (*GeoMatchSet, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["geoMatchConstraints"] = state.GeoMatchConstraints
 		inputs["name"] = state.Name
 	}
-	s, err := ctx.ReadResource("aws:waf/geoMatchSet:GeoMatchSet", name, id, inputs, opts...)
+	var resource GeoMatchSet
+	err := ctx.ReadResource("aws:waf/geoMatchSet:GeoMatchSet", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &GeoMatchSet{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *GeoMatchSet) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *GeoMatchSet) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *GeoMatchSet) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *GeoMatchSet) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The GeoMatchConstraint objects which contain the country that you want AWS WAF to search for.
-func (r *GeoMatchSet) GeoMatchConstraints() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["geoMatchConstraints"])
-}
-
-// The name or description of the GeoMatchSet.
-func (r *GeoMatchSet) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
 // Input properties used for looking up and filtering GeoMatchSet resources.
 type GeoMatchSetState struct {
 	// The GeoMatchConstraint objects which contain the country that you want AWS WAF to search for.
-	GeoMatchConstraints interface{}
+	GeoMatchConstraints pulumi.ArrayInput `pulumi:"geoMatchConstraints"`
 	// The name or description of the GeoMatchSet.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // The set of arguments for constructing a GeoMatchSet resource.
 type GeoMatchSetArgs struct {
 	// The GeoMatchConstraint objects which contain the country that you want AWS WAF to search for.
-	GeoMatchConstraints interface{}
+	GeoMatchConstraints pulumi.ArrayInput `pulumi:"geoMatchConstraints"`
 	// The name or description of the GeoMatchSet.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }

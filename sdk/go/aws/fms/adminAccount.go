@@ -11,63 +11,64 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/fms_admin_account.html.markdown.
 type AdminAccount struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The AWS account ID to associate with AWS Firewall Manager as the AWS Firewall Manager administrator account. This can be an AWS Organizations master account or a member account. Defaults to the current account. Must be configured to perform drift detection.
+	AccountId pulumi.StringOutput `pulumi:"accountId"`
 }
 
 // NewAdminAccount registers a new resource with the given unique name, arguments, and options.
 func NewAdminAccount(ctx *pulumi.Context,
 	name string, args *AdminAccountArgs, opts ...pulumi.ResourceOpt) (*AdminAccount, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["accountId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["accountId"] = args.AccountId
 	}
-	s, err := ctx.RegisterResource("aws:fms/adminAccount:AdminAccount", name, true, inputs, opts...)
+	var resource AdminAccount
+	err := ctx.RegisterResource("aws:fms/adminAccount:AdminAccount", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AdminAccount{s: s}, nil
+	return &resource, nil
 }
 
 // GetAdminAccount gets an existing AdminAccount resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAdminAccount(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AdminAccountState, opts ...pulumi.ResourceOpt) (*AdminAccount, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["accountId"] = state.AccountId
 	}
-	s, err := ctx.ReadResource("aws:fms/adminAccount:AdminAccount", name, id, inputs, opts...)
+	var resource AdminAccount
+	err := ctx.ReadResource("aws:fms/adminAccount:AdminAccount", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AdminAccount{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *AdminAccount) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *AdminAccount) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *AdminAccount) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *AdminAccount) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The AWS account ID to associate with AWS Firewall Manager as the AWS Firewall Manager administrator account. This can be an AWS Organizations master account or a member account. Defaults to the current account. Must be configured to perform drift detection.
-func (r *AdminAccount) AccountId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["accountId"])
-}
-
 // Input properties used for looking up and filtering AdminAccount resources.
 type AdminAccountState struct {
 	// The AWS account ID to associate with AWS Firewall Manager as the AWS Firewall Manager administrator account. This can be an AWS Organizations master account or a member account. Defaults to the current account. Must be configured to perform drift detection.
-	AccountId interface{}
+	AccountId pulumi.StringInput `pulumi:"accountId"`
 }
 
 // The set of arguments for constructing a AdminAccount resource.
 type AdminAccountArgs struct {
 	// The AWS account ID to associate with AWS Firewall Manager as the AWS Firewall Manager administrator account. This can be an AWS Organizations master account or a member account. Defaults to the current account. Must be configured to perform drift detection.
-	AccountId interface{}
+	AccountId pulumi.StringInput `pulumi:"accountId"`
 }

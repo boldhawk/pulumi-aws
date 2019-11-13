@@ -12,7 +12,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/backup_plan.html.markdown.
 type Plan struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the backup plan.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The display name of a backup plan.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A rule object that specifies a scheduled task that is used to back up a selection of resources.
+	Rules pulumi.ArrayOutput `pulumi:"rules"`
+
+	// Metadata that you can assign to help organize the plans you create.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// Unique, randomly generated, Unicode, UTF-8 encoded string that serves as the version ID of the backup plan.
+	Version pulumi.StringOutput `pulumi:"version"`
 }
 
 // NewPlan registers a new resource with the given unique name, arguments, and options.
@@ -21,30 +40,26 @@ func NewPlan(ctx *pulumi.Context,
 	if args == nil || args.Rules == nil {
 		return nil, errors.New("missing required argument 'Rules'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["name"] = nil
-		inputs["rules"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["name"] = args.Name
 		inputs["rules"] = args.Rules
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	inputs["version"] = nil
-	s, err := ctx.RegisterResource("aws:backup/plan:Plan", name, true, inputs, opts...)
+	var resource Plan
+	err := ctx.RegisterResource("aws:backup/plan:Plan", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Plan{s: s}, nil
+	return &resource, nil
 }
 
 // GetPlan gets an existing Plan resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetPlan(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *PlanState, opts ...pulumi.ResourceOpt) (*Plan, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["name"] = state.Name
@@ -52,68 +67,43 @@ func GetPlan(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["version"] = state.Version
 	}
-	s, err := ctx.ReadResource("aws:backup/plan:Plan", name, id, inputs, opts...)
+	var resource Plan
+	err := ctx.ReadResource("aws:backup/plan:Plan", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Plan{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Plan) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Plan) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Plan) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Plan) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the backup plan.
-func (r *Plan) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The display name of a backup plan.
-func (r *Plan) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A rule object that specifies a scheduled task that is used to back up a selection of resources.
-func (r *Plan) Rules() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["rules"])
-}
-
-// Metadata that you can assign to help organize the plans you create.
-func (r *Plan) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// Unique, randomly generated, Unicode, UTF-8 encoded string that serves as the version ID of the backup plan.
-func (r *Plan) Version() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["version"])
-}
-
 // Input properties used for looking up and filtering Plan resources.
 type PlanState struct {
 	// The ARN of the backup plan.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The display name of a backup plan.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A rule object that specifies a scheduled task that is used to back up a selection of resources.
-	Rules interface{}
+	Rules pulumi.ArrayInput `pulumi:"rules"`
 	// Metadata that you can assign to help organize the plans you create.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Unique, randomly generated, Unicode, UTF-8 encoded string that serves as the version ID of the backup plan.
-	Version interface{}
+	Version pulumi.StringInput `pulumi:"version"`
 }
 
 // The set of arguments for constructing a Plan resource.
 type PlanArgs struct {
 	// The display name of a backup plan.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A rule object that specifies a scheduled task that is used to back up a selection of resources.
-	Rules interface{}
+	Rules pulumi.ArrayInput `pulumi:"rules"`
 	// Metadata that you can assign to help organize the plans you create.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

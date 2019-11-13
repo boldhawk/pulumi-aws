@@ -11,21 +11,45 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/route53_zone.html.markdown.
 type Zone struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// A comment for the hosted zone. Defaults to 'Managed by Pulumi'.
+	Comment pulumi.StringOutput `pulumi:"comment"`
+
+	// The ID of the reusable delegation set whose NS records you want to assign to the hosted zone. Conflicts with `vpc` as delegation sets can only be used for public zones.
+	DelegationSetId pulumi.StringOutput `pulumi:"delegationSetId"`
+
+	// Whether to destroy all records (possibly managed outside of this provider) in the zone when destroying the zone.
+	ForceDestroy pulumi.BoolOutput `pulumi:"forceDestroy"`
+
+	// This is the name of the hosted zone.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A list of name servers in associated (or default) delegation set.
+	// Find more about delegation sets in [AWS docs](https://docs.aws.amazon.com/Route53/latest/APIReference/actions-on-reusable-delegation-sets.html).
+	NameServers pulumi.ArrayOutput `pulumi:"nameServers"`
+
+	// A mapping of tags to assign to the zone.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// Configuration block(s) specifying VPC(s) to associate with a private hosted zone. Conflicts with the `delegationSetId` argument in this resource and any [`route53.ZoneAssociation` resource](https://www.terraform.io/docs/providers/aws/r/route53_zone_association.html) specifying the same zone ID. Detailed below.
+	Vpcs pulumi.ArrayOutput `pulumi:"vpcs"`
+
+	// The Hosted Zone ID. This can be referenced by zone records.
+	ZoneId pulumi.StringOutput `pulumi:"zoneId"`
 }
 
 // NewZone registers a new resource with the given unique name, arguments, and options.
 func NewZone(ctx *pulumi.Context,
 	name string, args *ZoneArgs, opts ...pulumi.ResourceOpt) (*Zone, error) {
-	inputs := make(map[string]interface{})
-	inputs["comment"] = "Managed by Pulumi"
-	if args == nil {
-		inputs["delegationSetId"] = nil
-		inputs["forceDestroy"] = nil
-		inputs["name"] = nil
-		inputs["tags"] = nil
-		inputs["vpcs"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["comment"] = pulumi.Any("Managed by Pulumi")
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["comment"] = args.Comment
 		inputs["delegationSetId"] = args.DelegationSetId
 		inputs["forceDestroy"] = args.ForceDestroy
@@ -33,20 +57,19 @@ func NewZone(ctx *pulumi.Context,
 		inputs["tags"] = args.Tags
 		inputs["vpcs"] = args.Vpcs
 	}
-	inputs["nameServers"] = nil
-	inputs["zoneId"] = nil
-	s, err := ctx.RegisterResource("aws:route53/zone:Zone", name, true, inputs, opts...)
+	var resource Zone
+	err := ctx.RegisterResource("aws:route53/zone:Zone", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Zone{s: s}, nil
+	return &resource, nil
 }
 
 // GetZone gets an existing Zone resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetZone(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ZoneState, opts ...pulumi.ResourceOpt) (*Zone, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["comment"] = state.Comment
 		inputs["delegationSetId"] = state.DelegationSetId
@@ -57,97 +80,56 @@ func GetZone(ctx *pulumi.Context,
 		inputs["vpcs"] = state.Vpcs
 		inputs["zoneId"] = state.ZoneId
 	}
-	s, err := ctx.ReadResource("aws:route53/zone:Zone", name, id, inputs, opts...)
+	var resource Zone
+	err := ctx.ReadResource("aws:route53/zone:Zone", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Zone{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Zone) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Zone) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Zone) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Zone) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// A comment for the hosted zone. Defaults to 'Managed by Pulumi'.
-func (r *Zone) Comment() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["comment"])
-}
-
-// The ID of the reusable delegation set whose NS records you want to assign to the hosted zone. Conflicts with `vpc` as delegation sets can only be used for public zones.
-func (r *Zone) DelegationSetId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["delegationSetId"])
-}
-
-// Whether to destroy all records (possibly managed outside of this provider) in the zone when destroying the zone.
-func (r *Zone) ForceDestroy() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["forceDestroy"])
-}
-
-// This is the name of the hosted zone.
-func (r *Zone) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A list of name servers in associated (or default) delegation set.
-// Find more about delegation sets in [AWS docs](https://docs.aws.amazon.com/Route53/latest/APIReference/actions-on-reusable-delegation-sets.html).
-func (r *Zone) NameServers() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["nameServers"])
-}
-
-// A mapping of tags to assign to the zone.
-func (r *Zone) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// Configuration block(s) specifying VPC(s) to associate with a private hosted zone. Conflicts with the `delegationSetId` argument in this resource and any [`route53.ZoneAssociation` resource](https://www.terraform.io/docs/providers/aws/r/route53_zone_association.html) specifying the same zone ID. Detailed below.
-func (r *Zone) Vpcs() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["vpcs"])
-}
-
-// The Hosted Zone ID. This can be referenced by zone records.
-func (r *Zone) ZoneId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["zoneId"])
-}
-
 // Input properties used for looking up and filtering Zone resources.
 type ZoneState struct {
 	// A comment for the hosted zone. Defaults to 'Managed by Pulumi'.
-	Comment interface{}
+	Comment pulumi.StringInput `pulumi:"comment"`
 	// The ID of the reusable delegation set whose NS records you want to assign to the hosted zone. Conflicts with `vpc` as delegation sets can only be used for public zones.
-	DelegationSetId interface{}
+	DelegationSetId pulumi.StringInput `pulumi:"delegationSetId"`
 	// Whether to destroy all records (possibly managed outside of this provider) in the zone when destroying the zone.
-	ForceDestroy interface{}
+	ForceDestroy pulumi.BoolInput `pulumi:"forceDestroy"`
 	// This is the name of the hosted zone.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A list of name servers in associated (or default) delegation set.
 	// Find more about delegation sets in [AWS docs](https://docs.aws.amazon.com/Route53/latest/APIReference/actions-on-reusable-delegation-sets.html).
-	NameServers interface{}
+	NameServers pulumi.ArrayInput `pulumi:"nameServers"`
 	// A mapping of tags to assign to the zone.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Configuration block(s) specifying VPC(s) to associate with a private hosted zone. Conflicts with the `delegationSetId` argument in this resource and any [`route53.ZoneAssociation` resource](https://www.terraform.io/docs/providers/aws/r/route53_zone_association.html) specifying the same zone ID. Detailed below.
-	Vpcs interface{}
+	Vpcs pulumi.ArrayInput `pulumi:"vpcs"`
 	// The Hosted Zone ID. This can be referenced by zone records.
-	ZoneId interface{}
+	ZoneId pulumi.StringInput `pulumi:"zoneId"`
 }
 
 // The set of arguments for constructing a Zone resource.
 type ZoneArgs struct {
 	// A comment for the hosted zone. Defaults to 'Managed by Pulumi'.
-	Comment interface{}
+	Comment pulumi.StringInput `pulumi:"comment"`
 	// The ID of the reusable delegation set whose NS records you want to assign to the hosted zone. Conflicts with `vpc` as delegation sets can only be used for public zones.
-	DelegationSetId interface{}
+	DelegationSetId pulumi.StringInput `pulumi:"delegationSetId"`
 	// Whether to destroy all records (possibly managed outside of this provider) in the zone when destroying the zone.
-	ForceDestroy interface{}
+	ForceDestroy pulumi.BoolInput `pulumi:"forceDestroy"`
 	// This is the name of the hosted zone.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A mapping of tags to assign to the zone.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Configuration block(s) specifying VPC(s) to associate with a private hosted zone. Conflicts with the `delegationSetId` argument in this resource and any [`route53.ZoneAssociation` resource](https://www.terraform.io/docs/providers/aws/r/route53_zone_association.html) specifying the same zone ID. Detailed below.
-	Vpcs interface{}
+	Vpcs pulumi.ArrayInput `pulumi:"vpcs"`
 }

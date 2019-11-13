@@ -12,7 +12,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/globalaccelerator_listener.html.markdown.
 type Listener struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The Amazon Resource Name (ARN) of your accelerator.
+	AcceleratorArn pulumi.StringOutput `pulumi:"acceleratorArn"`
+
+	// Direct all requests from a user to the same endpoint. Valid values are `NONE`, `SOURCE_IP`. Default: `NONE`. If `NONE`, Global Accelerator uses the "five-tuple" properties of source IP address, source port, destination IP address, destination port, and protocol to select the hash value. If `SOURCE_IP`, Global Accelerator uses the "two-tuple" properties of source (client) IP address and destination IP address to select the hash value.
+	ClientAffinity pulumi.StringOutput `pulumi:"clientAffinity"`
+
+	// The list of port ranges for the connections from clients to the accelerator. Fields documented below.
+	PortRanges pulumi.ArrayOutput `pulumi:"portRanges"`
+
+	// The protocol for the connections from clients to the accelerator. Valid values are `TCP`, `UDP`.
+	Protocol pulumi.StringOutput `pulumi:"protocol"`
 }
 
 // NewListener registers a new resource with the given unique name, arguments, and options.
@@ -27,93 +43,69 @@ func NewListener(ctx *pulumi.Context,
 	if args == nil || args.Protocol == nil {
 		return nil, errors.New("missing required argument 'Protocol'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["acceleratorArn"] = nil
-		inputs["clientAffinity"] = nil
-		inputs["portRanges"] = nil
-		inputs["protocol"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["acceleratorArn"] = args.AcceleratorArn
 		inputs["clientAffinity"] = args.ClientAffinity
 		inputs["portRanges"] = args.PortRanges
 		inputs["protocol"] = args.Protocol
 	}
-	s, err := ctx.RegisterResource("aws:globalaccelerator/listener:Listener", name, true, inputs, opts...)
+	var resource Listener
+	err := ctx.RegisterResource("aws:globalaccelerator/listener:Listener", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Listener{s: s}, nil
+	return &resource, nil
 }
 
 // GetListener gets an existing Listener resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetListener(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ListenerState, opts ...pulumi.ResourceOpt) (*Listener, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["acceleratorArn"] = state.AcceleratorArn
 		inputs["clientAffinity"] = state.ClientAffinity
 		inputs["portRanges"] = state.PortRanges
 		inputs["protocol"] = state.Protocol
 	}
-	s, err := ctx.ReadResource("aws:globalaccelerator/listener:Listener", name, id, inputs, opts...)
+	var resource Listener
+	err := ctx.ReadResource("aws:globalaccelerator/listener:Listener", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Listener{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Listener) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Listener) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Listener) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Listener) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The Amazon Resource Name (ARN) of your accelerator.
-func (r *Listener) AcceleratorArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["acceleratorArn"])
-}
-
-// Direct all requests from a user to the same endpoint. Valid values are `NONE`, `SOURCE_IP`. Default: `NONE`. If `NONE`, Global Accelerator uses the "five-tuple" properties of source IP address, source port, destination IP address, destination port, and protocol to select the hash value. If `SOURCE_IP`, Global Accelerator uses the "two-tuple" properties of source (client) IP address and destination IP address to select the hash value.
-func (r *Listener) ClientAffinity() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["clientAffinity"])
-}
-
-// The list of port ranges for the connections from clients to the accelerator. Fields documented below.
-func (r *Listener) PortRanges() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["portRanges"])
-}
-
-// The protocol for the connections from clients to the accelerator. Valid values are `TCP`, `UDP`.
-func (r *Listener) Protocol() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["protocol"])
-}
-
 // Input properties used for looking up and filtering Listener resources.
 type ListenerState struct {
 	// The Amazon Resource Name (ARN) of your accelerator.
-	AcceleratorArn interface{}
+	AcceleratorArn pulumi.StringInput `pulumi:"acceleratorArn"`
 	// Direct all requests from a user to the same endpoint. Valid values are `NONE`, `SOURCE_IP`. Default: `NONE`. If `NONE`, Global Accelerator uses the "five-tuple" properties of source IP address, source port, destination IP address, destination port, and protocol to select the hash value. If `SOURCE_IP`, Global Accelerator uses the "two-tuple" properties of source (client) IP address and destination IP address to select the hash value.
-	ClientAffinity interface{}
+	ClientAffinity pulumi.StringInput `pulumi:"clientAffinity"`
 	// The list of port ranges for the connections from clients to the accelerator. Fields documented below.
-	PortRanges interface{}
+	PortRanges pulumi.ArrayInput `pulumi:"portRanges"`
 	// The protocol for the connections from clients to the accelerator. Valid values are `TCP`, `UDP`.
-	Protocol interface{}
+	Protocol pulumi.StringInput `pulumi:"protocol"`
 }
 
 // The set of arguments for constructing a Listener resource.
 type ListenerArgs struct {
 	// The Amazon Resource Name (ARN) of your accelerator.
-	AcceleratorArn interface{}
+	AcceleratorArn pulumi.StringInput `pulumi:"acceleratorArn"`
 	// Direct all requests from a user to the same endpoint. Valid values are `NONE`, `SOURCE_IP`. Default: `NONE`. If `NONE`, Global Accelerator uses the "five-tuple" properties of source IP address, source port, destination IP address, destination port, and protocol to select the hash value. If `SOURCE_IP`, Global Accelerator uses the "two-tuple" properties of source (client) IP address and destination IP address to select the hash value.
-	ClientAffinity interface{}
+	ClientAffinity pulumi.StringInput `pulumi:"clientAffinity"`
 	// The list of port ranges for the connections from clients to the accelerator. Fields documented below.
-	PortRanges interface{}
+	PortRanges pulumi.ArrayInput `pulumi:"portRanges"`
 	// The protocol for the connections from clients to the accelerator. Valid values are `TCP`, `UDP`.
-	Protocol interface{}
+	Protocol pulumi.StringInput `pulumi:"protocol"`
 }

@@ -16,37 +16,51 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/elastic_beanstalk_application.html.markdown.
 type Application struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	AppversionLifecycle pulumi.AnyOutput `pulumi:"appversionLifecycle"`
+
+	// The ARN assigned by AWS for this Elastic Beanstalk Application.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Short description of the application
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The name of the application, must be unique within your account
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Key-value mapping of tags for the Elastic Beanstalk Application.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewApplication registers a new resource with the given unique name, arguments, and options.
 func NewApplication(ctx *pulumi.Context,
 	name string, args *ApplicationArgs, opts ...pulumi.ResourceOpt) (*Application, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["appversionLifecycle"] = nil
-		inputs["description"] = nil
-		inputs["name"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["appversionLifecycle"] = args.AppversionLifecycle
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:elasticbeanstalk/application:Application", name, true, inputs, opts...)
+	var resource Application
+	err := ctx.RegisterResource("aws:elasticbeanstalk/application:Application", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Application{s: s}, nil
+	return &resource, nil
 }
 
 // GetApplication gets an existing Application resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetApplication(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ApplicationState, opts ...pulumi.ResourceOpt) (*Application, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["appversionLifecycle"] = state.AppversionLifecycle
 		inputs["arn"] = state.Arn
@@ -54,67 +68,43 @@ func GetApplication(ctx *pulumi.Context,
 		inputs["name"] = state.Name
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:elasticbeanstalk/application:Application", name, id, inputs, opts...)
+	var resource Application
+	err := ctx.ReadResource("aws:elasticbeanstalk/application:Application", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Application{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Application) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Application) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Application) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Application) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-func (r *Application) AppversionLifecycle() *pulumi.Output {
-	return r.s.State["appversionLifecycle"]
-}
-
-// The ARN assigned by AWS for this Elastic Beanstalk Application.
-func (r *Application) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Short description of the application
-func (r *Application) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The name of the application, must be unique within your account
-func (r *Application) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Key-value mapping of tags for the Elastic Beanstalk Application.
-func (r *Application) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering Application resources.
 type ApplicationState struct {
-	AppversionLifecycle interface{}
+	AppversionLifecycle pulumi.AnyInput `pulumi:"appversionLifecycle"`
 	// The ARN assigned by AWS for this Elastic Beanstalk Application.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Short description of the application
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name of the application, must be unique within your account
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Key-value mapping of tags for the Elastic Beanstalk Application.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a Application resource.
 type ApplicationArgs struct {
-	AppversionLifecycle interface{}
+	AppversionLifecycle pulumi.AnyInput `pulumi:"appversionLifecycle"`
 	// Short description of the application
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name of the application, must be unique within your account
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Key-value mapping of tags for the Elastic Beanstalk Application.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

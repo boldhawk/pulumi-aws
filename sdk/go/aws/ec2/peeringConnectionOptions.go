@@ -26,7 +26,24 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/vpc_peering_connection_options.html.markdown.
 type PeeringConnectionOptions struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// An optional configuration block that allows for [VPC Peering Connection]
+	// (http://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide) options to be set for the VPC that accepts
+	// the peering connection (a maximum of one).
+	Accepter pulumi.AnyOutput `pulumi:"accepter"`
+
+	// A optional configuration block that allows for [VPC Peering Connection]
+	// (http://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide) options to be set for the VPC that requests
+	// the peering connection (a maximum of one).
+	Requester pulumi.AnyOutput `pulumi:"requester"`
+
+	// The ID of the requester VPC peering connection.
+	VpcPeeringConnectionId pulumi.StringOutput `pulumi:"vpcPeeringConnectionId"`
 }
 
 // NewPeeringConnectionOptions registers a new resource with the given unique name, arguments, and options.
@@ -35,81 +52,59 @@ func NewPeeringConnectionOptions(ctx *pulumi.Context,
 	if args == nil || args.VpcPeeringConnectionId == nil {
 		return nil, errors.New("missing required argument 'VpcPeeringConnectionId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["accepter"] = nil
-		inputs["requester"] = nil
-		inputs["vpcPeeringConnectionId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["accepter"] = args.Accepter
 		inputs["requester"] = args.Requester
 		inputs["vpcPeeringConnectionId"] = args.VpcPeeringConnectionId
 	}
-	s, err := ctx.RegisterResource("aws:ec2/peeringConnectionOptions:PeeringConnectionOptions", name, true, inputs, opts...)
+	var resource PeeringConnectionOptions
+	err := ctx.RegisterResource("aws:ec2/peeringConnectionOptions:PeeringConnectionOptions", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &PeeringConnectionOptions{s: s}, nil
+	return &resource, nil
 }
 
 // GetPeeringConnectionOptions gets an existing PeeringConnectionOptions resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetPeeringConnectionOptions(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *PeeringConnectionOptionsState, opts ...pulumi.ResourceOpt) (*PeeringConnectionOptions, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["accepter"] = state.Accepter
 		inputs["requester"] = state.Requester
 		inputs["vpcPeeringConnectionId"] = state.VpcPeeringConnectionId
 	}
-	s, err := ctx.ReadResource("aws:ec2/peeringConnectionOptions:PeeringConnectionOptions", name, id, inputs, opts...)
+	var resource PeeringConnectionOptions
+	err := ctx.ReadResource("aws:ec2/peeringConnectionOptions:PeeringConnectionOptions", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &PeeringConnectionOptions{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *PeeringConnectionOptions) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *PeeringConnectionOptions) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *PeeringConnectionOptions) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *PeeringConnectionOptions) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// An optional configuration block that allows for [VPC Peering Connection]
-// (http://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide) options to be set for the VPC that accepts
-// the peering connection (a maximum of one).
-func (r *PeeringConnectionOptions) Accepter() *pulumi.Output {
-	return r.s.State["accepter"]
-}
-
-// A optional configuration block that allows for [VPC Peering Connection]
-// (http://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide) options to be set for the VPC that requests
-// the peering connection (a maximum of one).
-func (r *PeeringConnectionOptions) Requester() *pulumi.Output {
-	return r.s.State["requester"]
-}
-
-// The ID of the requester VPC peering connection.
-func (r *PeeringConnectionOptions) VpcPeeringConnectionId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpcPeeringConnectionId"])
-}
-
 // Input properties used for looking up and filtering PeeringConnectionOptions resources.
 type PeeringConnectionOptionsState struct {
 	// An optional configuration block that allows for [VPC Peering Connection]
 	// (http://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide) options to be set for the VPC that accepts
 	// the peering connection (a maximum of one).
-	Accepter interface{}
+	Accepter pulumi.AnyInput `pulumi:"accepter"`
 	// A optional configuration block that allows for [VPC Peering Connection]
 	// (http://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide) options to be set for the VPC that requests
 	// the peering connection (a maximum of one).
-	Requester interface{}
+	Requester pulumi.AnyInput `pulumi:"requester"`
 	// The ID of the requester VPC peering connection.
-	VpcPeeringConnectionId interface{}
+	VpcPeeringConnectionId pulumi.StringInput `pulumi:"vpcPeeringConnectionId"`
 }
 
 // The set of arguments for constructing a PeeringConnectionOptions resource.
@@ -117,11 +112,11 @@ type PeeringConnectionOptionsArgs struct {
 	// An optional configuration block that allows for [VPC Peering Connection]
 	// (http://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide) options to be set for the VPC that accepts
 	// the peering connection (a maximum of one).
-	Accepter interface{}
+	Accepter pulumi.AnyInput `pulumi:"accepter"`
 	// A optional configuration block that allows for [VPC Peering Connection]
 	// (http://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide) options to be set for the VPC that requests
 	// the peering connection (a maximum of one).
-	Requester interface{}
+	Requester pulumi.AnyInput `pulumi:"requester"`
 	// The ID of the requester VPC peering connection.
-	VpcPeeringConnectionId interface{}
+	VpcPeeringConnectionId pulumi.StringInput `pulumi:"vpcPeeringConnectionId"`
 }

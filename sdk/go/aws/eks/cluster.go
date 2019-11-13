@@ -12,7 +12,49 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/eks_cluster.html.markdown.
 type Cluster struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The Amazon Resource Name (ARN) of the cluster.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Nested attribute containing `certificate-authority-data` for your cluster.
+	CertificateAuthority pulumi.AnyOutput `pulumi:"certificateAuthority"`
+
+	CreatedAt pulumi.StringOutput `pulumi:"createdAt"`
+
+	// A list of the desired control plane logging to enable. For more information, see [Amazon EKS Control Plane Logging](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)
+	EnabledClusterLogTypes pulumi.ArrayOutput `pulumi:"enabledClusterLogTypes"`
+
+	// The endpoint for your Kubernetes API server.
+	Endpoint pulumi.StringOutput `pulumi:"endpoint"`
+
+	// Nested attribute containing identity provider information for your cluster. Only available on Kubernetes version 1.13 and 1.14 clusters created or upgraded on or after September 3, 2019.
+	Identities pulumi.ArrayOutput `pulumi:"identities"`
+
+	// Name of the cluster.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The platform version for the cluster.
+	PlatformVersion pulumi.StringOutput `pulumi:"platformVersion"`
+
+	// The Amazon Resource Name (ARN) of the IAM role that provides permissions for the Kubernetes control plane to make calls to AWS API operations on your behalf.
+	RoleArn pulumi.StringOutput `pulumi:"roleArn"`
+
+	// The status of the EKS cluster. One of `CREATING`, `ACTIVE`, `DELETING`, `FAILED`. 
+	Status pulumi.StringOutput `pulumi:"status"`
+
+	// Key-value mapping of resource tags.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// Desired Kubernetes master version. If you do not specify a value, the latest available version at resource creation is used and no upgrades will occur except those automatically triggered by EKS. The value must be configured and increased to upgrade the version when desired. Downgrades are not supported by EKS.
+	Version pulumi.StringOutput `pulumi:"version"`
+
+	// Nested argument for the VPC associated with your cluster. Amazon EKS VPC resources have specific requirements to work properly with Kubernetes. For more information, see [Cluster VPC Considerations](https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html) and [Cluster Security Group Considerations](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html) in the Amazon EKS User Guide. Configuration detailed below.
+	VpcConfig pulumi.AnyOutput `pulumi:"vpcConfig"`
 }
 
 // NewCluster registers a new resource with the given unique name, arguments, and options.
@@ -24,15 +66,9 @@ func NewCluster(ctx *pulumi.Context,
 	if args == nil || args.VpcConfig == nil {
 		return nil, errors.New("missing required argument 'VpcConfig'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["enabledClusterLogTypes"] = nil
-		inputs["name"] = nil
-		inputs["roleArn"] = nil
-		inputs["tags"] = nil
-		inputs["version"] = nil
-		inputs["vpcConfig"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["enabledClusterLogTypes"] = args.EnabledClusterLogTypes
 		inputs["name"] = args.Name
 		inputs["roleArn"] = args.RoleArn
@@ -40,25 +76,19 @@ func NewCluster(ctx *pulumi.Context,
 		inputs["version"] = args.Version
 		inputs["vpcConfig"] = args.VpcConfig
 	}
-	inputs["arn"] = nil
-	inputs["certificateAuthority"] = nil
-	inputs["createdAt"] = nil
-	inputs["endpoint"] = nil
-	inputs["identities"] = nil
-	inputs["platformVersion"] = nil
-	inputs["status"] = nil
-	s, err := ctx.RegisterResource("aws:eks/cluster:Cluster", name, true, inputs, opts...)
+	var resource Cluster
+	err := ctx.RegisterResource("aws:eks/cluster:Cluster", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Cluster{s: s}, nil
+	return &resource, nil
 }
 
 // GetCluster gets an existing Cluster resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetCluster(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ClusterState, opts ...pulumi.ResourceOpt) (*Cluster, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["certificateAuthority"] = state.CertificateAuthority
@@ -74,128 +104,64 @@ func GetCluster(ctx *pulumi.Context,
 		inputs["version"] = state.Version
 		inputs["vpcConfig"] = state.VpcConfig
 	}
-	s, err := ctx.ReadResource("aws:eks/cluster:Cluster", name, id, inputs, opts...)
+	var resource Cluster
+	err := ctx.ReadResource("aws:eks/cluster:Cluster", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Cluster{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Cluster) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Cluster) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Cluster) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Cluster) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The Amazon Resource Name (ARN) of the cluster.
-func (r *Cluster) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Nested attribute containing `certificate-authority-data` for your cluster.
-func (r *Cluster) CertificateAuthority() *pulumi.Output {
-	return r.s.State["certificateAuthority"]
-}
-
-func (r *Cluster) CreatedAt() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["createdAt"])
-}
-
-// A list of the desired control plane logging to enable. For more information, see [Amazon EKS Control Plane Logging](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)
-func (r *Cluster) EnabledClusterLogTypes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["enabledClusterLogTypes"])
-}
-
-// The endpoint for your Kubernetes API server.
-func (r *Cluster) Endpoint() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["endpoint"])
-}
-
-// Nested attribute containing identity provider information for your cluster. Only available on Kubernetes version 1.13 and 1.14 clusters created or upgraded on or after September 3, 2019.
-func (r *Cluster) Identities() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["identities"])
-}
-
-// Name of the cluster.
-func (r *Cluster) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The platform version for the cluster.
-func (r *Cluster) PlatformVersion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["platformVersion"])
-}
-
-// The Amazon Resource Name (ARN) of the IAM role that provides permissions for the Kubernetes control plane to make calls to AWS API operations on your behalf.
-func (r *Cluster) RoleArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["roleArn"])
-}
-
-// The status of the EKS cluster. One of `CREATING`, `ACTIVE`, `DELETING`, `FAILED`. 
-func (r *Cluster) Status() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["status"])
-}
-
-// Key-value mapping of resource tags.
-func (r *Cluster) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// Desired Kubernetes master version. If you do not specify a value, the latest available version at resource creation is used and no upgrades will occur except those automatically triggered by EKS. The value must be configured and increased to upgrade the version when desired. Downgrades are not supported by EKS.
-func (r *Cluster) Version() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["version"])
-}
-
-// Nested argument for the VPC associated with your cluster. Amazon EKS VPC resources have specific requirements to work properly with Kubernetes. For more information, see [Cluster VPC Considerations](https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html) and [Cluster Security Group Considerations](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html) in the Amazon EKS User Guide. Configuration detailed below.
-func (r *Cluster) VpcConfig() *pulumi.Output {
-	return r.s.State["vpcConfig"]
-}
-
 // Input properties used for looking up and filtering Cluster resources.
 type ClusterState struct {
 	// The Amazon Resource Name (ARN) of the cluster.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Nested attribute containing `certificate-authority-data` for your cluster.
-	CertificateAuthority interface{}
-	CreatedAt interface{}
+	CertificateAuthority pulumi.AnyInput `pulumi:"certificateAuthority"`
+	CreatedAt pulumi.StringInput `pulumi:"createdAt"`
 	// A list of the desired control plane logging to enable. For more information, see [Amazon EKS Control Plane Logging](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)
-	EnabledClusterLogTypes interface{}
+	EnabledClusterLogTypes pulumi.ArrayInput `pulumi:"enabledClusterLogTypes"`
 	// The endpoint for your Kubernetes API server.
-	Endpoint interface{}
+	Endpoint pulumi.StringInput `pulumi:"endpoint"`
 	// Nested attribute containing identity provider information for your cluster. Only available on Kubernetes version 1.13 and 1.14 clusters created or upgraded on or after September 3, 2019.
-	Identities interface{}
+	Identities pulumi.ArrayInput `pulumi:"identities"`
 	// Name of the cluster.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The platform version for the cluster.
-	PlatformVersion interface{}
+	PlatformVersion pulumi.StringInput `pulumi:"platformVersion"`
 	// The Amazon Resource Name (ARN) of the IAM role that provides permissions for the Kubernetes control plane to make calls to AWS API operations on your behalf.
-	RoleArn interface{}
+	RoleArn pulumi.StringInput `pulumi:"roleArn"`
 	// The status of the EKS cluster. One of `CREATING`, `ACTIVE`, `DELETING`, `FAILED`. 
-	Status interface{}
+	Status pulumi.StringInput `pulumi:"status"`
 	// Key-value mapping of resource tags.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Desired Kubernetes master version. If you do not specify a value, the latest available version at resource creation is used and no upgrades will occur except those automatically triggered by EKS. The value must be configured and increased to upgrade the version when desired. Downgrades are not supported by EKS.
-	Version interface{}
+	Version pulumi.StringInput `pulumi:"version"`
 	// Nested argument for the VPC associated with your cluster. Amazon EKS VPC resources have specific requirements to work properly with Kubernetes. For more information, see [Cluster VPC Considerations](https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html) and [Cluster Security Group Considerations](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html) in the Amazon EKS User Guide. Configuration detailed below.
-	VpcConfig interface{}
+	VpcConfig pulumi.AnyInput `pulumi:"vpcConfig"`
 }
 
 // The set of arguments for constructing a Cluster resource.
 type ClusterArgs struct {
 	// A list of the desired control plane logging to enable. For more information, see [Amazon EKS Control Plane Logging](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)
-	EnabledClusterLogTypes interface{}
+	EnabledClusterLogTypes pulumi.ArrayInput `pulumi:"enabledClusterLogTypes"`
 	// Name of the cluster.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The Amazon Resource Name (ARN) of the IAM role that provides permissions for the Kubernetes control plane to make calls to AWS API operations on your behalf.
-	RoleArn interface{}
+	RoleArn pulumi.StringInput `pulumi:"roleArn"`
 	// Key-value mapping of resource tags.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Desired Kubernetes master version. If you do not specify a value, the latest available version at resource creation is used and no upgrades will occur except those automatically triggered by EKS. The value must be configured and increased to upgrade the version when desired. Downgrades are not supported by EKS.
-	Version interface{}
+	Version pulumi.StringInput `pulumi:"version"`
 	// Nested argument for the VPC associated with your cluster. Amazon EKS VPC resources have specific requirements to work properly with Kubernetes. For more information, see [Cluster VPC Considerations](https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html) and [Cluster Security Group Considerations](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html) in the Amazon EKS User Guide. Configuration detailed below.
-	VpcConfig interface{}
+	VpcConfig pulumi.AnyInput `pulumi:"vpcConfig"`
 }

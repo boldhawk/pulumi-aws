@@ -12,7 +12,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/elasticsearch_domain_policy.html.markdown.
 type DomainPolicy struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// IAM policy document specifying the access policies for the domain
+	AccessPolicies pulumi.StringOutput `pulumi:"accessPolicies"`
+
+	// Name of the domain.
+	DomainName pulumi.StringOutput `pulumi:"domainName"`
 }
 
 // NewDomainPolicy registers a new resource with the given unique name, arguments, and options.
@@ -24,69 +34,57 @@ func NewDomainPolicy(ctx *pulumi.Context,
 	if args == nil || args.DomainName == nil {
 		return nil, errors.New("missing required argument 'DomainName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["accessPolicies"] = nil
-		inputs["domainName"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["accessPolicies"] = args.AccessPolicies
 		inputs["domainName"] = args.DomainName
 	}
-	s, err := ctx.RegisterResource("aws:elasticsearch/domainPolicy:DomainPolicy", name, true, inputs, opts...)
+	var resource DomainPolicy
+	err := ctx.RegisterResource("aws:elasticsearch/domainPolicy:DomainPolicy", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DomainPolicy{s: s}, nil
+	return &resource, nil
 }
 
 // GetDomainPolicy gets an existing DomainPolicy resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetDomainPolicy(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *DomainPolicyState, opts ...pulumi.ResourceOpt) (*DomainPolicy, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["accessPolicies"] = state.AccessPolicies
 		inputs["domainName"] = state.DomainName
 	}
-	s, err := ctx.ReadResource("aws:elasticsearch/domainPolicy:DomainPolicy", name, id, inputs, opts...)
+	var resource DomainPolicy
+	err := ctx.ReadResource("aws:elasticsearch/domainPolicy:DomainPolicy", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DomainPolicy{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *DomainPolicy) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *DomainPolicy) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *DomainPolicy) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *DomainPolicy) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// IAM policy document specifying the access policies for the domain
-func (r *DomainPolicy) AccessPolicies() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["accessPolicies"])
-}
-
-// Name of the domain.
-func (r *DomainPolicy) DomainName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["domainName"])
-}
-
 // Input properties used for looking up and filtering DomainPolicy resources.
 type DomainPolicyState struct {
 	// IAM policy document specifying the access policies for the domain
-	AccessPolicies interface{}
+	AccessPolicies pulumi.StringInput `pulumi:"accessPolicies"`
 	// Name of the domain.
-	DomainName interface{}
+	DomainName pulumi.StringInput `pulumi:"domainName"`
 }
 
 // The set of arguments for constructing a DomainPolicy resource.
 type DomainPolicyArgs struct {
 	// IAM policy document specifying the access policies for the domain
-	AccessPolicies interface{}
+	AccessPolicies pulumi.StringInput `pulumi:"accessPolicies"`
 	// Name of the domain.
-	DomainName interface{}
+	DomainName pulumi.StringInput `pulumi:"domainName"`
 }

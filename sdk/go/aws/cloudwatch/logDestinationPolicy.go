@@ -12,7 +12,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/cloudwatch_log_destination_policy.html.markdown.
 type LogDestinationPolicy struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The policy document. This is a JSON formatted string.
+	AccessPolicy pulumi.StringOutput `pulumi:"accessPolicy"`
+
+	// A name for the subscription filter
+	DestinationName pulumi.StringOutput `pulumi:"destinationName"`
 }
 
 // NewLogDestinationPolicy registers a new resource with the given unique name, arguments, and options.
@@ -24,69 +34,57 @@ func NewLogDestinationPolicy(ctx *pulumi.Context,
 	if args == nil || args.DestinationName == nil {
 		return nil, errors.New("missing required argument 'DestinationName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["accessPolicy"] = nil
-		inputs["destinationName"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["accessPolicy"] = args.AccessPolicy
 		inputs["destinationName"] = args.DestinationName
 	}
-	s, err := ctx.RegisterResource("aws:cloudwatch/logDestinationPolicy:LogDestinationPolicy", name, true, inputs, opts...)
+	var resource LogDestinationPolicy
+	err := ctx.RegisterResource("aws:cloudwatch/logDestinationPolicy:LogDestinationPolicy", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &LogDestinationPolicy{s: s}, nil
+	return &resource, nil
 }
 
 // GetLogDestinationPolicy gets an existing LogDestinationPolicy resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetLogDestinationPolicy(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *LogDestinationPolicyState, opts ...pulumi.ResourceOpt) (*LogDestinationPolicy, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["accessPolicy"] = state.AccessPolicy
 		inputs["destinationName"] = state.DestinationName
 	}
-	s, err := ctx.ReadResource("aws:cloudwatch/logDestinationPolicy:LogDestinationPolicy", name, id, inputs, opts...)
+	var resource LogDestinationPolicy
+	err := ctx.ReadResource("aws:cloudwatch/logDestinationPolicy:LogDestinationPolicy", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &LogDestinationPolicy{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *LogDestinationPolicy) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *LogDestinationPolicy) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *LogDestinationPolicy) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *LogDestinationPolicy) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The policy document. This is a JSON formatted string.
-func (r *LogDestinationPolicy) AccessPolicy() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["accessPolicy"])
-}
-
-// A name for the subscription filter
-func (r *LogDestinationPolicy) DestinationName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["destinationName"])
-}
-
 // Input properties used for looking up and filtering LogDestinationPolicy resources.
 type LogDestinationPolicyState struct {
 	// The policy document. This is a JSON formatted string.
-	AccessPolicy interface{}
+	AccessPolicy pulumi.StringInput `pulumi:"accessPolicy"`
 	// A name for the subscription filter
-	DestinationName interface{}
+	DestinationName pulumi.StringInput `pulumi:"destinationName"`
 }
 
 // The set of arguments for constructing a LogDestinationPolicy resource.
 type LogDestinationPolicyArgs struct {
 	// The policy document. This is a JSON formatted string.
-	AccessPolicy interface{}
+	AccessPolicy pulumi.StringInput `pulumi:"accessPolicy"`
 	// A name for the subscription filter
-	DestinationName interface{}
+	DestinationName pulumi.StringInput `pulumi:"destinationName"`
 }

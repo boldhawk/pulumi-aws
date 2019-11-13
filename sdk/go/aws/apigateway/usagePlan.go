@@ -11,21 +11,37 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/api_gateway_usage_plan.html.markdown.
 type UsagePlan struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The associated API stages of the usage plan.
+	ApiStages pulumi.ArrayOutput `pulumi:"apiStages"`
+
+	// The description of a usage plan.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The name of the usage plan.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The AWS Markeplace product identifier to associate with the usage plan as a SaaS product on AWS Marketplace.
+	ProductCode pulumi.StringOutput `pulumi:"productCode"`
+
+	// The quota settings of the usage plan.
+	QuotaSettings pulumi.AnyOutput `pulumi:"quotaSettings"`
+
+	// The throttling limits of the usage plan.
+	ThrottleSettings pulumi.AnyOutput `pulumi:"throttleSettings"`
 }
 
 // NewUsagePlan registers a new resource with the given unique name, arguments, and options.
 func NewUsagePlan(ctx *pulumi.Context,
 	name string, args *UsagePlanArgs, opts ...pulumi.ResourceOpt) (*UsagePlan, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["apiStages"] = nil
-		inputs["description"] = nil
-		inputs["name"] = nil
-		inputs["productCode"] = nil
-		inputs["quotaSettings"] = nil
-		inputs["throttleSettings"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["apiStages"] = args.ApiStages
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name
@@ -33,18 +49,19 @@ func NewUsagePlan(ctx *pulumi.Context,
 		inputs["quotaSettings"] = args.QuotaSettings
 		inputs["throttleSettings"] = args.ThrottleSettings
 	}
-	s, err := ctx.RegisterResource("aws:apigateway/usagePlan:UsagePlan", name, true, inputs, opts...)
+	var resource UsagePlan
+	err := ctx.RegisterResource("aws:apigateway/usagePlan:UsagePlan", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &UsagePlan{s: s}, nil
+	return &resource, nil
 }
 
 // GetUsagePlan gets an existing UsagePlan resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetUsagePlan(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *UsagePlanState, opts ...pulumi.ResourceOpt) (*UsagePlan, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["apiStages"] = state.ApiStages
 		inputs["description"] = state.Description
@@ -53,81 +70,51 @@ func GetUsagePlan(ctx *pulumi.Context,
 		inputs["quotaSettings"] = state.QuotaSettings
 		inputs["throttleSettings"] = state.ThrottleSettings
 	}
-	s, err := ctx.ReadResource("aws:apigateway/usagePlan:UsagePlan", name, id, inputs, opts...)
+	var resource UsagePlan
+	err := ctx.ReadResource("aws:apigateway/usagePlan:UsagePlan", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &UsagePlan{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *UsagePlan) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *UsagePlan) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *UsagePlan) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *UsagePlan) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The associated API stages of the usage plan.
-func (r *UsagePlan) ApiStages() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["apiStages"])
-}
-
-// The description of a usage plan.
-func (r *UsagePlan) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The name of the usage plan.
-func (r *UsagePlan) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The AWS Markeplace product identifier to associate with the usage plan as a SaaS product on AWS Marketplace.
-func (r *UsagePlan) ProductCode() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["productCode"])
-}
-
-// The quota settings of the usage plan.
-func (r *UsagePlan) QuotaSettings() *pulumi.Output {
-	return r.s.State["quotaSettings"]
-}
-
-// The throttling limits of the usage plan.
-func (r *UsagePlan) ThrottleSettings() *pulumi.Output {
-	return r.s.State["throttleSettings"]
-}
-
 // Input properties used for looking up and filtering UsagePlan resources.
 type UsagePlanState struct {
 	// The associated API stages of the usage plan.
-	ApiStages interface{}
+	ApiStages pulumi.ArrayInput `pulumi:"apiStages"`
 	// The description of a usage plan.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name of the usage plan.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The AWS Markeplace product identifier to associate with the usage plan as a SaaS product on AWS Marketplace.
-	ProductCode interface{}
+	ProductCode pulumi.StringInput `pulumi:"productCode"`
 	// The quota settings of the usage plan.
-	QuotaSettings interface{}
+	QuotaSettings pulumi.AnyInput `pulumi:"quotaSettings"`
 	// The throttling limits of the usage plan.
-	ThrottleSettings interface{}
+	ThrottleSettings pulumi.AnyInput `pulumi:"throttleSettings"`
 }
 
 // The set of arguments for constructing a UsagePlan resource.
 type UsagePlanArgs struct {
 	// The associated API stages of the usage plan.
-	ApiStages interface{}
+	ApiStages pulumi.ArrayInput `pulumi:"apiStages"`
 	// The description of a usage plan.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name of the usage plan.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The AWS Markeplace product identifier to associate with the usage plan as a SaaS product on AWS Marketplace.
-	ProductCode interface{}
+	ProductCode pulumi.StringInput `pulumi:"productCode"`
 	// The quota settings of the usage plan.
-	QuotaSettings interface{}
+	QuotaSettings pulumi.AnyInput `pulumi:"quotaSettings"`
 	// The throttling limits of the usage plan.
-	ThrottleSettings interface{}
+	ThrottleSettings pulumi.AnyInput `pulumi:"throttleSettings"`
 }

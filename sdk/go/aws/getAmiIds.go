@@ -38,31 +38,31 @@ func LookupAmiIds(ctx *pulumi.Context, args *GetAmiIdsArgs) (*GetAmiIdsResult, e
 type GetAmiIdsArgs struct {
 	// Limit search to users with *explicit* launch
 	// permission on  the image. Valid items are the numeric account ID or `self`.
-	ExecutableUsers interface{}
+	ExecutableUsers pulumi.ArrayInput `pulumi:"executableUsers"`
 	// One or more name/value pairs to filter off of. There
 	// are several valid keys, for a full reference, check out
 	// [describe-images in the AWS CLI reference][1].
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// A regex string to apply to the AMI list returned
 	// by AWS. This allows more advanced filtering not supported from the AWS API.
 	// This filtering is done locally on what AWS returns, and could have a performance
 	// impact if the result is large. It is recommended to combine this with other
 	// options to narrow down the list AWS returns.
-	NameRegex interface{}
+	NameRegex pulumi.StringInput `pulumi:"nameRegex"`
 	// List of AMI owners to limit search. At least 1 value must be specified. Valid values: an AWS account ID, `self` (the current account), or an AWS owner alias (e.g. `amazon`, `aws-marketplace`, `microsoft`).
-	Owners interface{}
+	Owners pulumi.ArrayInput `pulumi:"owners"`
 	// Used to sort AMIs by creation time.
-	SortAscending interface{}
+	SortAscending pulumi.BoolInput `pulumi:"sortAscending"`
 }
 
 // A collection of values returned by getAmiIds.
 type GetAmiIdsResult struct {
-	ExecutableUsers interface{}
-	Filters interface{}
-	Ids interface{}
-	NameRegex interface{}
-	Owners interface{}
-	SortAscending interface{}
+	ExecutableUsers []interface{} `pulumi:"executableUsers"`
+	Filters []interface{} `pulumi:"filters"`
+	Ids []interface{} `pulumi:"ids"`
+	NameRegex string `pulumi:"nameRegex"`
+	Owners []interface{} `pulumi:"owners"`
+	SortAscending bool `pulumi:"sortAscending"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

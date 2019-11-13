@@ -48,46 +48,46 @@ func LookupVpcEndpoint(ctx *pulumi.Context, args *GetVpcEndpointArgs) (*GetVpcEn
 // A collection of arguments for invoking getVpcEndpoint.
 type GetVpcEndpointArgs struct {
 	// The ID of the specific VPC Endpoint to retrieve.
-	Id interface{}
+	Id pulumi.StringInput `pulumi:"id"`
 	// The AWS service name of the specific VPC Endpoint to retrieve.
-	ServiceName interface{}
+	ServiceName pulumi.StringInput `pulumi:"serviceName"`
 	// The state of the specific VPC Endpoint to retrieve.
-	State interface{}
-	Tags interface{}
+	State pulumi.StringInput `pulumi:"state"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The ID of the VPC in which the specific VPC Endpoint is used.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getVpcEndpoint.
 type GetVpcEndpointResult struct {
 	// The list of CIDR blocks for the exposed AWS service. Applicable for endpoints of type `Gateway`.
-	CidrBlocks interface{}
+	CidrBlocks []interface{} `pulumi:"cidrBlocks"`
 	// The DNS entries for the VPC Endpoint. Applicable for endpoints of type `Interface`. DNS blocks are documented below.
-	DnsEntries interface{}
-	Id interface{}
+	DnsEntries []interface{} `pulumi:"dnsEntries"`
+	Id string `pulumi:"id"`
 	// One or more network interfaces for the VPC Endpoint. Applicable for endpoints of type `Interface`.
-	NetworkInterfaceIds interface{}
+	NetworkInterfaceIds []interface{} `pulumi:"networkInterfaceIds"`
 	// The ID of the AWS account that owns the VPC endpoint.
-	OwnerId interface{}
+	OwnerId string `pulumi:"ownerId"`
 	// The policy document associated with the VPC Endpoint. Applicable for endpoints of type `Gateway`.
-	Policy interface{}
+	Policy string `pulumi:"policy"`
 	// The prefix list ID of the exposed AWS service. Applicable for endpoints of type `Gateway`.
-	PrefixListId interface{}
+	PrefixListId string `pulumi:"prefixListId"`
 	// Whether or not the VPC is associated with a private hosted zone - `true` or `false`. Applicable for endpoints of type `Interface`.
-	PrivateDnsEnabled interface{}
+	PrivateDnsEnabled bool `pulumi:"privateDnsEnabled"`
 	// Whether or not the VPC Endpoint is being managed by its service - `true` or `false`.
-	RequesterManaged interface{}
+	RequesterManaged bool `pulumi:"requesterManaged"`
 	// One or more route tables associated with the VPC Endpoint. Applicable for endpoints of type `Gateway`.
-	RouteTableIds interface{}
+	RouteTableIds []interface{} `pulumi:"routeTableIds"`
 	// One or more security groups associated with the network interfaces. Applicable for endpoints of type `Interface`.
-	SecurityGroupIds interface{}
-	ServiceName interface{}
-	State interface{}
+	SecurityGroupIds []interface{} `pulumi:"securityGroupIds"`
+	ServiceName string `pulumi:"serviceName"`
+	State string `pulumi:"state"`
 	// One or more subnets in which the VPC Endpoint is located. Applicable for endpoints of type `Interface`.
-	SubnetIds interface{}
+	SubnetIds []interface{} `pulumi:"subnetIds"`
 	// A mapping of tags assigned to the resource.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The VPC Endpoint type, `Gateway` or `Interface`.
-	VpcEndpointType interface{}
-	VpcId interface{}
+	VpcEndpointType string `pulumi:"vpcEndpointType"`
+	VpcId string `pulumi:"vpcId"`
 }

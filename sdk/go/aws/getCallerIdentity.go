@@ -27,11 +27,11 @@ func LookupCallerIdentity(ctx *pulumi.Context) (*GetCallerIdentityResult, error)
 // A collection of values returned by getCallerIdentity.
 type GetCallerIdentityResult struct {
 	// The AWS Account ID number of the account that owns or contains the calling entity.
-	AccountId interface{}
+	AccountId string `pulumi:"accountId"`
 	// The AWS ARN associated with the calling entity.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// The unique identifier of the calling entity.
-	UserId interface{}
+	UserId string `pulumi:"userId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

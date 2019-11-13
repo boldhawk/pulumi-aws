@@ -32,19 +32,19 @@ func LookupSolutionStack(ctx *pulumi.Context, args *GetSolutionStackArgs) (*GetS
 type GetSolutionStackArgs struct {
 	// If more than one result is returned, use the most
 	// recent solution stack.
-	MostRecent interface{}
+	MostRecent pulumi.BoolInput `pulumi:"mostRecent"`
 	// A regex string to apply to the solution stack list returned
 	// by AWS. See [Elastic Beanstalk Supported Platforms][beanstalk-platforms] from
 	// AWS documentation for reference solution stack names.
-	NameRegex interface{}
+	NameRegex pulumi.StringInput `pulumi:"nameRegex"`
 }
 
 // A collection of values returned by getSolutionStack.
 type GetSolutionStackResult struct {
-	MostRecent interface{}
+	MostRecent bool `pulumi:"mostRecent"`
 	// The name of the solution stack.
-	Name interface{}
-	NameRegex interface{}
+	Name string `pulumi:"name"`
+	NameRegex string `pulumi:"nameRegex"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

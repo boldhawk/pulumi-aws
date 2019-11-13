@@ -35,26 +35,26 @@ func LookupMountTarget(ctx *pulumi.Context, args *GetMountTargetArgs) (*GetMount
 // A collection of arguments for invoking getMountTarget.
 type GetMountTargetArgs struct {
 	// ID of the mount target that you want to have described
-	MountTargetId interface{}
+	MountTargetId pulumi.StringInput `pulumi:"mountTargetId"`
 }
 
 // A collection of values returned by getMountTarget.
 type GetMountTargetResult struct {
 	// The DNS name for the given subnet/AZ per [documented convention](http://docs.aws.amazon.com/efs/latest/ug/mounting-fs-mount-cmd-dns-name.html).
-	DnsName interface{}
+	DnsName string `pulumi:"dnsName"`
 	// Amazon Resource Name of the file system for which the mount target is intended.
-	FileSystemArn interface{}
+	FileSystemArn string `pulumi:"fileSystemArn"`
 	// ID of the file system for which the mount target is intended.
-	FileSystemId interface{}
+	FileSystemId string `pulumi:"fileSystemId"`
 	// Address at which the file system may be mounted via the mount target.
-	IpAddress interface{}
-	MountTargetId interface{}
+	IpAddress string `pulumi:"ipAddress"`
+	MountTargetId string `pulumi:"mountTargetId"`
 	// The ID of the network interface that Amazon EFS created when it created the mount target.
-	NetworkInterfaceId interface{}
+	NetworkInterfaceId string `pulumi:"networkInterfaceId"`
 	// List of VPC security group IDs attached to the mount target.
-	SecurityGroups interface{}
+	SecurityGroups []interface{} `pulumi:"securityGroups"`
 	// ID of the mount target's subnet.
-	SubnetId interface{}
+	SubnetId string `pulumi:"subnetId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

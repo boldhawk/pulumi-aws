@@ -14,7 +14,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ecr_repository_policy.html.markdown.
 type RepositoryPolicy struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The policy document. This is a JSON formatted string.
+	Policy pulumi.StringOutput `pulumi:"policy"`
+
+	// The registry ID where the repository was created.
+	RegistryId pulumi.StringOutput `pulumi:"registryId"`
+
+	// Name of the repository to apply the policy.
+	Repository pulumi.StringOutput `pulumi:"repository"`
 }
 
 // NewRepositoryPolicy registers a new resource with the given unique name, arguments, and options.
@@ -26,78 +39,60 @@ func NewRepositoryPolicy(ctx *pulumi.Context,
 	if args == nil || args.Repository == nil {
 		return nil, errors.New("missing required argument 'Repository'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["policy"] = nil
-		inputs["repository"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["policy"] = args.Policy
 		inputs["repository"] = args.Repository
 	}
-	inputs["registryId"] = nil
-	s, err := ctx.RegisterResource("aws:ecr/repositoryPolicy:RepositoryPolicy", name, true, inputs, opts...)
+	var resource RepositoryPolicy
+	err := ctx.RegisterResource("aws:ecr/repositoryPolicy:RepositoryPolicy", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RepositoryPolicy{s: s}, nil
+	return &resource, nil
 }
 
 // GetRepositoryPolicy gets an existing RepositoryPolicy resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRepositoryPolicy(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RepositoryPolicyState, opts ...pulumi.ResourceOpt) (*RepositoryPolicy, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["policy"] = state.Policy
 		inputs["registryId"] = state.RegistryId
 		inputs["repository"] = state.Repository
 	}
-	s, err := ctx.ReadResource("aws:ecr/repositoryPolicy:RepositoryPolicy", name, id, inputs, opts...)
+	var resource RepositoryPolicy
+	err := ctx.ReadResource("aws:ecr/repositoryPolicy:RepositoryPolicy", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RepositoryPolicy{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *RepositoryPolicy) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *RepositoryPolicy) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *RepositoryPolicy) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *RepositoryPolicy) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The policy document. This is a JSON formatted string.
-func (r *RepositoryPolicy) Policy() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["policy"])
-}
-
-// The registry ID where the repository was created.
-func (r *RepositoryPolicy) RegistryId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["registryId"])
-}
-
-// Name of the repository to apply the policy.
-func (r *RepositoryPolicy) Repository() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["repository"])
-}
-
 // Input properties used for looking up and filtering RepositoryPolicy resources.
 type RepositoryPolicyState struct {
 	// The policy document. This is a JSON formatted string.
-	Policy interface{}
+	Policy pulumi.StringInput `pulumi:"policy"`
 	// The registry ID where the repository was created.
-	RegistryId interface{}
+	RegistryId pulumi.StringInput `pulumi:"registryId"`
 	// Name of the repository to apply the policy.
-	Repository interface{}
+	Repository pulumi.StringInput `pulumi:"repository"`
 }
 
 // The set of arguments for constructing a RepositoryPolicy resource.
 type RepositoryPolicyArgs struct {
 	// The policy document. This is a JSON formatted string.
-	Policy interface{}
+	Policy pulumi.StringInput `pulumi:"policy"`
 	// Name of the repository to apply the policy.
-	Repository interface{}
+	Repository pulumi.StringInput `pulumi:"repository"`
 }

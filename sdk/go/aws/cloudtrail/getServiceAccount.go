@@ -31,14 +31,14 @@ func LookupServiceAccount(ctx *pulumi.Context, args *GetServiceAccountArgs) (*Ge
 type GetServiceAccountArgs struct {
 	// Name of the region whose AWS CloudTrail account ID is desired.
 	// Defaults to the region from the AWS provider configuration.
-	Region interface{}
+	Region pulumi.StringInput `pulumi:"region"`
 }
 
 // A collection of values returned by getServiceAccount.
 type GetServiceAccountResult struct {
 	// The ARN of the AWS CloudTrail service account in the selected region.
-	Arn interface{}
-	Region interface{}
+	Arn string `pulumi:"arn"`
+	Region string `pulumi:"region"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

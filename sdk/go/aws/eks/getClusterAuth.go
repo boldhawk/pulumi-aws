@@ -34,14 +34,14 @@ func LookupClusterAuth(ctx *pulumi.Context, args *GetClusterAuthArgs) (*GetClust
 // A collection of arguments for invoking getClusterAuth.
 type GetClusterAuthArgs struct {
 	// The name of the cluster
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getClusterAuth.
 type GetClusterAuthResult struct {
-	Name interface{}
+	Name string `pulumi:"name"`
 	// The token to use to authenticate with the cluster.
-	Token interface{}
+	Token string `pulumi:"token"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

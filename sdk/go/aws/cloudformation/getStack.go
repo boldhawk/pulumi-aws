@@ -39,32 +39,32 @@ func LookupStack(ctx *pulumi.Context, args *GetStackArgs) (*GetStackResult, erro
 // A collection of arguments for invoking getStack.
 type GetStackArgs struct {
 	// The name of the stack
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getStack.
 type GetStackResult struct {
 	// A list of capabilities
-	Capabilities interface{}
+	Capabilities []interface{} `pulumi:"capabilities"`
 	// Description of the stack
-	Description interface{}
+	Description string `pulumi:"description"`
 	// Whether the rollback of the stack is disabled when stack creation fails
-	DisableRollback interface{}
+	DisableRollback bool `pulumi:"disableRollback"`
 	// The ARN of the IAM role used to create the stack.
-	IamRoleArn interface{}
-	Name interface{}
+	IamRoleArn string `pulumi:"iamRoleArn"`
+	Name string `pulumi:"name"`
 	// A list of SNS topic ARNs to publish stack related events
-	NotificationArns interface{}
+	NotificationArns []interface{} `pulumi:"notificationArns"`
 	// A map of outputs from the stack.
-	Outputs interface{}
+	Outputs map[string]interface{} `pulumi:"outputs"`
 	// A map of parameters that specify input parameters for the stack.
-	Parameters interface{}
+	Parameters map[string]interface{} `pulumi:"parameters"`
 	// A map of tags associated with this stack.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// Structure containing the template body.
-	TemplateBody interface{}
+	TemplateBody string `pulumi:"templateBody"`
 	// The amount of time that can pass before the stack status becomes `CREATE_FAILED`
-	TimeoutInMinutes interface{}
+	TimeoutInMinutes int `pulumi:"timeoutInMinutes"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

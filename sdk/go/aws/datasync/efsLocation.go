@@ -14,7 +14,28 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/datasync_location_efs.html.markdown.
 type EfsLocation struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Amazon Resource Name (ARN) of the DataSync Location.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Configuration block containing EC2 configurations for connecting to the EFS File System.
+	Ec2Config pulumi.AnyOutput `pulumi:"ec2Config"`
+
+	// Amazon Resource Name (ARN) of EFS File System.
+	EfsFileSystemArn pulumi.StringOutput `pulumi:"efsFileSystemArn"`
+
+	// Subdirectory to perform actions as source or destination. Default `/`.
+	Subdirectory pulumi.StringOutput `pulumi:"subdirectory"`
+
+	// Key-value pairs of resource tags to assign to the DataSync Location.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	Uri pulumi.StringOutput `pulumi:"uri"`
 }
 
 // NewEfsLocation registers a new resource with the given unique name, arguments, and options.
@@ -26,32 +47,26 @@ func NewEfsLocation(ctx *pulumi.Context,
 	if args == nil || args.EfsFileSystemArn == nil {
 		return nil, errors.New("missing required argument 'EfsFileSystemArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["ec2Config"] = nil
-		inputs["efsFileSystemArn"] = nil
-		inputs["subdirectory"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["ec2Config"] = args.Ec2Config
 		inputs["efsFileSystemArn"] = args.EfsFileSystemArn
 		inputs["subdirectory"] = args.Subdirectory
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	inputs["uri"] = nil
-	s, err := ctx.RegisterResource("aws:datasync/efsLocation:EfsLocation", name, true, inputs, opts...)
+	var resource EfsLocation
+	err := ctx.RegisterResource("aws:datasync/efsLocation:EfsLocation", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EfsLocation{s: s}, nil
+	return &resource, nil
 }
 
 // GetEfsLocation gets an existing EfsLocation resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetEfsLocation(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *EfsLocationState, opts ...pulumi.ResourceOpt) (*EfsLocation, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["ec2Config"] = state.Ec2Config
@@ -60,75 +75,46 @@ func GetEfsLocation(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["uri"] = state.Uri
 	}
-	s, err := ctx.ReadResource("aws:datasync/efsLocation:EfsLocation", name, id, inputs, opts...)
+	var resource EfsLocation
+	err := ctx.ReadResource("aws:datasync/efsLocation:EfsLocation", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EfsLocation{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *EfsLocation) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *EfsLocation) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *EfsLocation) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *EfsLocation) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Amazon Resource Name (ARN) of the DataSync Location.
-func (r *EfsLocation) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Configuration block containing EC2 configurations for connecting to the EFS File System.
-func (r *EfsLocation) Ec2Config() *pulumi.Output {
-	return r.s.State["ec2Config"]
-}
-
-// Amazon Resource Name (ARN) of EFS File System.
-func (r *EfsLocation) EfsFileSystemArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["efsFileSystemArn"])
-}
-
-// Subdirectory to perform actions as source or destination. Default `/`.
-func (r *EfsLocation) Subdirectory() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["subdirectory"])
-}
-
-// Key-value pairs of resource tags to assign to the DataSync Location.
-func (r *EfsLocation) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-func (r *EfsLocation) Uri() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["uri"])
-}
-
 // Input properties used for looking up and filtering EfsLocation resources.
 type EfsLocationState struct {
 	// Amazon Resource Name (ARN) of the DataSync Location.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Configuration block containing EC2 configurations for connecting to the EFS File System.
-	Ec2Config interface{}
+	Ec2Config pulumi.AnyInput `pulumi:"ec2Config"`
 	// Amazon Resource Name (ARN) of EFS File System.
-	EfsFileSystemArn interface{}
+	EfsFileSystemArn pulumi.StringInput `pulumi:"efsFileSystemArn"`
 	// Subdirectory to perform actions as source or destination. Default `/`.
-	Subdirectory interface{}
+	Subdirectory pulumi.StringInput `pulumi:"subdirectory"`
 	// Key-value pairs of resource tags to assign to the DataSync Location.
-	Tags interface{}
-	Uri interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
+	Uri pulumi.StringInput `pulumi:"uri"`
 }
 
 // The set of arguments for constructing a EfsLocation resource.
 type EfsLocationArgs struct {
 	// Configuration block containing EC2 configurations for connecting to the EFS File System.
-	Ec2Config interface{}
+	Ec2Config pulumi.AnyInput `pulumi:"ec2Config"`
 	// Amazon Resource Name (ARN) of EFS File System.
-	EfsFileSystemArn interface{}
+	EfsFileSystemArn pulumi.StringInput `pulumi:"efsFileSystemArn"`
 	// Subdirectory to perform actions as source or destination. Default `/`.
-	Subdirectory interface{}
+	Subdirectory pulumi.StringInput `pulumi:"subdirectory"`
 	// Key-value pairs of resource tags to assign to the DataSync Location.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

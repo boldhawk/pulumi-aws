@@ -34,22 +34,22 @@ func LookupInternetGateway(ctx *pulumi.Context, args *GetInternetGatewayArgs) (*
 // A collection of arguments for invoking getInternetGateway.
 type GetInternetGatewayArgs struct {
 	// Custom filter block as described below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The id of the specific Internet Gateway to retrieve.
-	InternetGatewayId interface{}
+	InternetGatewayId pulumi.StringInput `pulumi:"internetGatewayId"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired Internet Gateway.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getInternetGateway.
 type GetInternetGatewayResult struct {
-	Attachments interface{}
-	Filters interface{}
-	InternetGatewayId interface{}
+	Attachments []interface{} `pulumi:"attachments"`
+	Filters []interface{} `pulumi:"filters"`
+	InternetGatewayId string `pulumi:"internetGatewayId"`
 	// The ID of the AWS account that owns the internet gateway.
-	OwnerId interface{}
-	Tags interface{}
+	OwnerId string `pulumi:"ownerId"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

@@ -33,21 +33,21 @@ func LookupRouteTables(ctx *pulumi.Context, args *GetRouteTablesArgs) (*GetRoute
 // A collection of arguments for invoking getRouteTables.
 type GetRouteTablesArgs struct {
 	// Custom filter block as described below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired route tables.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The VPC ID that you want to filter from.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getRouteTables.
 type GetRouteTablesResult struct {
-	Filters interface{}
+	Filters []interface{} `pulumi:"filters"`
 	// A list of all the route table ids found. This data source will fail if none are found.
-	Ids interface{}
-	Tags interface{}
-	VpcId interface{}
+	Ids []interface{} `pulumi:"ids"`
+	Tags map[string]interface{} `pulumi:"tags"`
+	VpcId string `pulumi:"vpcId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

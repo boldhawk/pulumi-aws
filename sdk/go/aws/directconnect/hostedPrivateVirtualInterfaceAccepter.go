@@ -13,7 +13,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/dx_hosted_private_virtual_interface_accepter.html.markdown.
 type HostedPrivateVirtualInterfaceAccepter struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the virtual interface.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The ID of the Direct Connect gateway to which to connect the virtual interface.
+	DxGatewayId pulumi.StringOutput `pulumi:"dxGatewayId"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// The ID of the Direct Connect virtual interface to accept.
+	VirtualInterfaceId pulumi.StringOutput `pulumi:"virtualInterfaceId"`
+
+	// The ID of the virtual private gateway to which to connect the virtual interface.
+	VpnGatewayId pulumi.StringOutput `pulumi:"vpnGatewayId"`
 }
 
 // NewHostedPrivateVirtualInterfaceAccepter registers a new resource with the given unique name, arguments, and options.
@@ -22,31 +41,26 @@ func NewHostedPrivateVirtualInterfaceAccepter(ctx *pulumi.Context,
 	if args == nil || args.VirtualInterfaceId == nil {
 		return nil, errors.New("missing required argument 'VirtualInterfaceId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["dxGatewayId"] = nil
-		inputs["tags"] = nil
-		inputs["virtualInterfaceId"] = nil
-		inputs["vpnGatewayId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["dxGatewayId"] = args.DxGatewayId
 		inputs["tags"] = args.Tags
 		inputs["virtualInterfaceId"] = args.VirtualInterfaceId
 		inputs["vpnGatewayId"] = args.VpnGatewayId
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:directconnect/hostedPrivateVirtualInterfaceAccepter:HostedPrivateVirtualInterfaceAccepter", name, true, inputs, opts...)
+	var resource HostedPrivateVirtualInterfaceAccepter
+	err := ctx.RegisterResource("aws:directconnect/hostedPrivateVirtualInterfaceAccepter:HostedPrivateVirtualInterfaceAccepter", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &HostedPrivateVirtualInterfaceAccepter{s: s}, nil
+	return &resource, nil
 }
 
 // GetHostedPrivateVirtualInterfaceAccepter gets an existing HostedPrivateVirtualInterfaceAccepter resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetHostedPrivateVirtualInterfaceAccepter(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *HostedPrivateVirtualInterfaceAccepterState, opts ...pulumi.ResourceOpt) (*HostedPrivateVirtualInterfaceAccepter, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["dxGatewayId"] = state.DxGatewayId
@@ -54,70 +68,45 @@ func GetHostedPrivateVirtualInterfaceAccepter(ctx *pulumi.Context,
 		inputs["virtualInterfaceId"] = state.VirtualInterfaceId
 		inputs["vpnGatewayId"] = state.VpnGatewayId
 	}
-	s, err := ctx.ReadResource("aws:directconnect/hostedPrivateVirtualInterfaceAccepter:HostedPrivateVirtualInterfaceAccepter", name, id, inputs, opts...)
+	var resource HostedPrivateVirtualInterfaceAccepter
+	err := ctx.ReadResource("aws:directconnect/hostedPrivateVirtualInterfaceAccepter:HostedPrivateVirtualInterfaceAccepter", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &HostedPrivateVirtualInterfaceAccepter{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *HostedPrivateVirtualInterfaceAccepter) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *HostedPrivateVirtualInterfaceAccepter) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *HostedPrivateVirtualInterfaceAccepter) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *HostedPrivateVirtualInterfaceAccepter) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the virtual interface.
-func (r *HostedPrivateVirtualInterfaceAccepter) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The ID of the Direct Connect gateway to which to connect the virtual interface.
-func (r *HostedPrivateVirtualInterfaceAccepter) DxGatewayId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["dxGatewayId"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *HostedPrivateVirtualInterfaceAccepter) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// The ID of the Direct Connect virtual interface to accept.
-func (r *HostedPrivateVirtualInterfaceAccepter) VirtualInterfaceId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["virtualInterfaceId"])
-}
-
-// The ID of the virtual private gateway to which to connect the virtual interface.
-func (r *HostedPrivateVirtualInterfaceAccepter) VpnGatewayId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpnGatewayId"])
-}
-
 // Input properties used for looking up and filtering HostedPrivateVirtualInterfaceAccepter resources.
 type HostedPrivateVirtualInterfaceAccepterState struct {
 	// The ARN of the virtual interface.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The ID of the Direct Connect gateway to which to connect the virtual interface.
-	DxGatewayId interface{}
+	DxGatewayId pulumi.StringInput `pulumi:"dxGatewayId"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The ID of the Direct Connect virtual interface to accept.
-	VirtualInterfaceId interface{}
+	VirtualInterfaceId pulumi.StringInput `pulumi:"virtualInterfaceId"`
 	// The ID of the virtual private gateway to which to connect the virtual interface.
-	VpnGatewayId interface{}
+	VpnGatewayId pulumi.StringInput `pulumi:"vpnGatewayId"`
 }
 
 // The set of arguments for constructing a HostedPrivateVirtualInterfaceAccepter resource.
 type HostedPrivateVirtualInterfaceAccepterArgs struct {
 	// The ID of the Direct Connect gateway to which to connect the virtual interface.
-	DxGatewayId interface{}
+	DxGatewayId pulumi.StringInput `pulumi:"dxGatewayId"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The ID of the Direct Connect virtual interface to accept.
-	VirtualInterfaceId interface{}
+	VirtualInterfaceId pulumi.StringInput `pulumi:"virtualInterfaceId"`
 	// The ID of the virtual private gateway to which to connect the virtual interface.
-	VpnGatewayId interface{}
+	VpnGatewayId pulumi.StringInput `pulumi:"vpnGatewayId"`
 }

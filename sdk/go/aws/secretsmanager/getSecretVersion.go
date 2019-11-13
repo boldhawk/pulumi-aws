@@ -36,26 +36,26 @@ func LookupSecretVersion(ctx *pulumi.Context, args *GetSecretVersionArgs) (*GetS
 // A collection of arguments for invoking getSecretVersion.
 type GetSecretVersionArgs struct {
 	// Specifies the secret containing the version that you want to retrieve. You can specify either the Amazon Resource Name (ARN) or the friendly name of the secret.
-	SecretId interface{}
+	SecretId pulumi.StringInput `pulumi:"secretId"`
 	// Specifies the unique identifier of the version of the secret that you want to retrieve. Overrides `versionStage`.
-	VersionId interface{}
+	VersionId pulumi.StringInput `pulumi:"versionId"`
 	// Specifies the secret version that you want to retrieve by the staging label attached to the version. Defaults to `AWSCURRENT`.
-	VersionStage interface{}
+	VersionStage pulumi.StringInput `pulumi:"versionStage"`
 }
 
 // A collection of values returned by getSecretVersion.
 type GetSecretVersionResult struct {
 	// The ARN of the secret.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// The decrypted part of the protected secret information that was originally provided as a binary. Base64 encoded.
-	SecretBinary interface{}
-	SecretId interface{}
+	SecretBinary string `pulumi:"secretBinary"`
+	SecretId string `pulumi:"secretId"`
 	// The decrypted part of the protected secret information that was originally provided as a string.
-	SecretString interface{}
+	SecretString string `pulumi:"secretString"`
 	// The unique identifier of this version of the secret.
-	VersionId interface{}
-	VersionStage interface{}
-	VersionStages interface{}
+	VersionId string `pulumi:"versionId"`
+	VersionStage string `pulumi:"versionStage"`
+	VersionStages []interface{} `pulumi:"versionStages"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

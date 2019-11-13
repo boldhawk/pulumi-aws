@@ -11,21 +11,40 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/service_discovery_service.html.markdown.
 type Service struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the service.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The description of the service.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// A complex type that contains information about the resource record sets that you want Amazon Route 53 to create when you register an instance.
+	DnsConfig pulumi.AnyOutput `pulumi:"dnsConfig"`
+
+	// A complex type that contains settings for an optional health check. Only for Public DNS namespaces.
+	HealthCheckConfig pulumi.AnyOutput `pulumi:"healthCheckConfig"`
+
+	// A complex type that contains settings for ECS managed health checks.
+	HealthCheckCustomConfig pulumi.AnyOutput `pulumi:"healthCheckCustomConfig"`
+
+	// The name of the service.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The ID of the namespace to use for DNS configuration.
+	NamespaceId pulumi.StringOutput `pulumi:"namespaceId"`
 }
 
 // NewService registers a new resource with the given unique name, arguments, and options.
 func NewService(ctx *pulumi.Context,
 	name string, args *ServiceArgs, opts ...pulumi.ResourceOpt) (*Service, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["description"] = nil
-		inputs["dnsConfig"] = nil
-		inputs["healthCheckConfig"] = nil
-		inputs["healthCheckCustomConfig"] = nil
-		inputs["name"] = nil
-		inputs["namespaceId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["dnsConfig"] = args.DnsConfig
 		inputs["healthCheckConfig"] = args.HealthCheckConfig
@@ -33,19 +52,19 @@ func NewService(ctx *pulumi.Context,
 		inputs["name"] = args.Name
 		inputs["namespaceId"] = args.NamespaceId
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:servicediscovery/service:Service", name, true, inputs, opts...)
+	var resource Service
+	err := ctx.RegisterResource("aws:servicediscovery/service:Service", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Service{s: s}, nil
+	return &resource, nil
 }
 
 // GetService gets an existing Service resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetService(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ServiceState, opts ...pulumi.ResourceOpt) (*Service, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["description"] = state.Description
@@ -55,88 +74,53 @@ func GetService(ctx *pulumi.Context,
 		inputs["name"] = state.Name
 		inputs["namespaceId"] = state.NamespaceId
 	}
-	s, err := ctx.ReadResource("aws:servicediscovery/service:Service", name, id, inputs, opts...)
+	var resource Service
+	err := ctx.ReadResource("aws:servicediscovery/service:Service", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Service{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Service) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Service) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Service) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Service) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the service.
-func (r *Service) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The description of the service.
-func (r *Service) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// A complex type that contains information about the resource record sets that you want Amazon Route 53 to create when you register an instance.
-func (r *Service) DnsConfig() *pulumi.Output {
-	return r.s.State["dnsConfig"]
-}
-
-// A complex type that contains settings for an optional health check. Only for Public DNS namespaces.
-func (r *Service) HealthCheckConfig() *pulumi.Output {
-	return r.s.State["healthCheckConfig"]
-}
-
-// A complex type that contains settings for ECS managed health checks.
-func (r *Service) HealthCheckCustomConfig() *pulumi.Output {
-	return r.s.State["healthCheckCustomConfig"]
-}
-
-// The name of the service.
-func (r *Service) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The ID of the namespace to use for DNS configuration.
-func (r *Service) NamespaceId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["namespaceId"])
-}
-
 // Input properties used for looking up and filtering Service resources.
 type ServiceState struct {
 	// The ARN of the service.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The description of the service.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// A complex type that contains information about the resource record sets that you want Amazon Route 53 to create when you register an instance.
-	DnsConfig interface{}
+	DnsConfig pulumi.AnyInput `pulumi:"dnsConfig"`
 	// A complex type that contains settings for an optional health check. Only for Public DNS namespaces.
-	HealthCheckConfig interface{}
+	HealthCheckConfig pulumi.AnyInput `pulumi:"healthCheckConfig"`
 	// A complex type that contains settings for ECS managed health checks.
-	HealthCheckCustomConfig interface{}
+	HealthCheckCustomConfig pulumi.AnyInput `pulumi:"healthCheckCustomConfig"`
 	// The name of the service.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The ID of the namespace to use for DNS configuration.
-	NamespaceId interface{}
+	NamespaceId pulumi.StringInput `pulumi:"namespaceId"`
 }
 
 // The set of arguments for constructing a Service resource.
 type ServiceArgs struct {
 	// The description of the service.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// A complex type that contains information about the resource record sets that you want Amazon Route 53 to create when you register an instance.
-	DnsConfig interface{}
+	DnsConfig pulumi.AnyInput `pulumi:"dnsConfig"`
 	// A complex type that contains settings for an optional health check. Only for Public DNS namespaces.
-	HealthCheckConfig interface{}
+	HealthCheckConfig pulumi.AnyInput `pulumi:"healthCheckConfig"`
 	// A complex type that contains settings for ECS managed health checks.
-	HealthCheckCustomConfig interface{}
+	HealthCheckCustomConfig pulumi.AnyInput `pulumi:"healthCheckCustomConfig"`
 	// The name of the service.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The ID of the namespace to use for DNS configuration.
-	NamespaceId interface{}
+	NamespaceId pulumi.StringInput `pulumi:"namespaceId"`
 }

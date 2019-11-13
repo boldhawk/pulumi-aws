@@ -41,34 +41,34 @@ func LookupNatGateway(ctx *pulumi.Context, args *GetNatGatewayArgs) (*GetNatGate
 // A collection of arguments for invoking getNatGateway.
 type GetNatGatewayArgs struct {
 	// Custom filter block as described below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The id of the specific Nat Gateway to retrieve.
-	Id interface{}
+	Id pulumi.StringInput `pulumi:"id"`
 	// The state of the NAT gateway (pending | failed | available | deleting | deleted ).
-	State interface{}
+	State pulumi.StringInput `pulumi:"state"`
 	// The id of subnet that the Nat Gateway resides in.
-	SubnetId interface{}
+	SubnetId pulumi.StringInput `pulumi:"subnetId"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired Nat Gateway.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The id of the VPC that the Nat Gateway resides in.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getNatGateway.
 type GetNatGatewayResult struct {
 	// The Id of the EIP allocated to the selected Nat Gateway.
-	AllocationId interface{}
-	Filters interface{}
-	Id interface{}
+	AllocationId string `pulumi:"allocationId"`
+	Filters []interface{} `pulumi:"filters"`
+	Id string `pulumi:"id"`
 	// The Id of the ENI allocated to the selected Nat Gateway.
-	NetworkInterfaceId interface{}
+	NetworkInterfaceId string `pulumi:"networkInterfaceId"`
 	// The private Ip address of the selected Nat Gateway.
-	PrivateIp interface{}
+	PrivateIp string `pulumi:"privateIp"`
 	// The public Ip (EIP) address of the selected Nat Gateway.
-	PublicIp interface{}
-	State interface{}
-	SubnetId interface{}
-	Tags interface{}
-	VpcId interface{}
+	PublicIp string `pulumi:"publicIp"`
+	State string `pulumi:"state"`
+	SubnetId string `pulumi:"subnetId"`
+	Tags map[string]interface{} `pulumi:"tags"`
+	VpcId string `pulumi:"vpcId"`
 }

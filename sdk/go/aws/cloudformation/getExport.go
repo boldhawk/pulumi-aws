@@ -33,16 +33,16 @@ func LookupExport(ctx *pulumi.Context, args *GetExportArgs) (*GetExportResult, e
 // A collection of arguments for invoking getExport.
 type GetExportArgs struct {
 	// The name of the export as it appears in the console or from [list-exports](http://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-exports.html)
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getExport.
 type GetExportResult struct {
 	// The exportingStackId (AWS ARNs) equivalent `ExportingStackId` from [list-exports](http://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-exports.html) 
-	ExportingStackId interface{}
-	Name interface{}
+	ExportingStackId string `pulumi:"exportingStackId"`
+	Name string `pulumi:"name"`
 	// The value from Cloudformation export identified by the export name found from [list-exports](http://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-exports.html)
-	Value interface{}
+	Value string `pulumi:"value"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

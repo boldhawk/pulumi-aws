@@ -58,71 +58,71 @@ func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult
 // A collection of arguments for invoking getCluster.
 type GetClusterArgs struct {
 	// The cluster identifier
-	ClusterIdentifier interface{}
-	Tags interface{}
+	ClusterIdentifier pulumi.StringInput `pulumi:"clusterIdentifier"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getCluster.
 type GetClusterResult struct {
 	// Whether major version upgrades can be applied during maintenance period
-	AllowVersionUpgrade interface{}
+	AllowVersionUpgrade bool `pulumi:"allowVersionUpgrade"`
 	// The backup retention period
-	AutomatedSnapshotRetentionPeriod interface{}
+	AutomatedSnapshotRetentionPeriod int `pulumi:"automatedSnapshotRetentionPeriod"`
 	// The availability zone of the cluster
-	AvailabilityZone interface{}
+	AvailabilityZone string `pulumi:"availabilityZone"`
 	// The name of the S3 bucket where the log files are to be stored
-	BucketName interface{}
+	BucketName string `pulumi:"bucketName"`
 	// The cluster identifier
-	ClusterIdentifier interface{}
+	ClusterIdentifier string `pulumi:"clusterIdentifier"`
 	// The name of the parameter group to be associated with this cluster
-	ClusterParameterGroupName interface{}
+	ClusterParameterGroupName string `pulumi:"clusterParameterGroupName"`
 	// The public key for the cluster
-	ClusterPublicKey interface{}
+	ClusterPublicKey string `pulumi:"clusterPublicKey"`
 	// The cluster revision number
-	ClusterRevisionNumber interface{}
+	ClusterRevisionNumber string `pulumi:"clusterRevisionNumber"`
 	// The security groups associated with the cluster
-	ClusterSecurityGroups interface{}
+	ClusterSecurityGroups []interface{} `pulumi:"clusterSecurityGroups"`
 	// The name of a cluster subnet group to be associated with this cluster
-	ClusterSubnetGroupName interface{}
+	ClusterSubnetGroupName string `pulumi:"clusterSubnetGroupName"`
 	// The cluster type
-	ClusterType interface{}
-	ClusterVersion interface{}
+	ClusterType string `pulumi:"clusterType"`
+	ClusterVersion string `pulumi:"clusterVersion"`
 	// The name of the default database in the cluster
-	DatabaseName interface{}
+	DatabaseName string `pulumi:"databaseName"`
 	// The Elastic IP of the cluster
-	ElasticIp interface{}
+	ElasticIp string `pulumi:"elasticIp"`
 	// Whether cluster logging is enabled
-	EnableLogging interface{}
+	EnableLogging bool `pulumi:"enableLogging"`
 	// Whether the cluster data is encrypted
-	Encrypted interface{}
+	Encrypted bool `pulumi:"encrypted"`
 	// The cluster endpoint
-	Endpoint interface{}
+	Endpoint string `pulumi:"endpoint"`
 	// Whether enhanced VPC routing is enabled
-	EnhancedVpcRouting interface{}
+	EnhancedVpcRouting bool `pulumi:"enhancedVpcRouting"`
 	// The IAM roles associated to the cluster
-	IamRoles interface{}
+	IamRoles []interface{} `pulumi:"iamRoles"`
 	// The KMS encryption key associated to the cluster
-	KmsKeyId interface{}
+	KmsKeyId string `pulumi:"kmsKeyId"`
 	// Username for the master DB user
-	MasterUsername interface{}
+	MasterUsername string `pulumi:"masterUsername"`
 	// The cluster node type
-	NodeType interface{}
+	NodeType string `pulumi:"nodeType"`
 	// The number of nodes in the cluster
-	NumberOfNodes interface{}
+	NumberOfNodes int `pulumi:"numberOfNodes"`
 	// The port the cluster responds on
-	Port interface{}
+	Port int `pulumi:"port"`
 	// The maintenance window
-	PreferredMaintenanceWindow interface{}
+	PreferredMaintenanceWindow string `pulumi:"preferredMaintenanceWindow"`
 	// Whether the cluster is publicly accessible
-	PubliclyAccessible interface{}
+	PubliclyAccessible bool `pulumi:"publiclyAccessible"`
 	// The folder inside the S3 bucket where the log files are stored
-	S3KeyPrefix interface{}
+	S3KeyPrefix string `pulumi:"s3KeyPrefix"`
 	// The tags associated to the cluster
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The VPC Id associated with the cluster
-	VpcId interface{}
+	VpcId string `pulumi:"vpcId"`
 	// The VPC security group Ids associated with the cluster
-	VpcSecurityGroupIds interface{}
+	VpcSecurityGroupIds []interface{} `pulumi:"vpcSecurityGroupIds"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

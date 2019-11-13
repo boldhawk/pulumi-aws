@@ -12,7 +12,30 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/iam_policy.html.markdown.
 type Policy struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN assigned by AWS to this policy.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Description of the IAM policy.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The name of the policy. If omitted, this provider will assign a random, unique name.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
+	NamePrefix pulumi.StringOutput `pulumi:"namePrefix"`
+
+	// Path in which to create the policy.
+	// See [IAM Identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html) for more information.
+	Path pulumi.StringOutput `pulumi:"path"`
+
+	// The policy document. This is a JSON formatted string.
+	Policy pulumi.StringOutput `pulumi:"policy"`
 }
 
 // NewPolicy registers a new resource with the given unique name, arguments, and options.
@@ -21,33 +44,28 @@ func NewPolicy(ctx *pulumi.Context,
 	if args == nil || args.Policy == nil {
 		return nil, errors.New("missing required argument 'Policy'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["description"] = nil
-		inputs["name"] = nil
-		inputs["namePrefix"] = nil
-		inputs["path"] = nil
-		inputs["policy"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name
 		inputs["namePrefix"] = args.NamePrefix
 		inputs["path"] = args.Path
 		inputs["policy"] = args.Policy
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:iam/policy:Policy", name, true, inputs, opts...)
+	var resource Policy
+	err := ctx.RegisterResource("aws:iam/policy:Policy", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Policy{s: s}, nil
+	return &resource, nil
 }
 
 // GetPolicy gets an existing Policy resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetPolicy(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *PolicyState, opts ...pulumi.ResourceOpt) (*Policy, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["description"] = state.Description
@@ -56,82 +74,51 @@ func GetPolicy(ctx *pulumi.Context,
 		inputs["path"] = state.Path
 		inputs["policy"] = state.Policy
 	}
-	s, err := ctx.ReadResource("aws:iam/policy:Policy", name, id, inputs, opts...)
+	var resource Policy
+	err := ctx.ReadResource("aws:iam/policy:Policy", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Policy{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Policy) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Policy) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Policy) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Policy) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN assigned by AWS to this policy.
-func (r *Policy) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Description of the IAM policy.
-func (r *Policy) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The name of the policy. If omitted, this provider will assign a random, unique name.
-func (r *Policy) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
-func (r *Policy) NamePrefix() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["namePrefix"])
-}
-
-// Path in which to create the policy.
-// See [IAM Identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html) for more information.
-func (r *Policy) Path() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["path"])
-}
-
-// The policy document. This is a JSON formatted string.
-func (r *Policy) Policy() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["policy"])
-}
-
 // Input properties used for looking up and filtering Policy resources.
 type PolicyState struct {
 	// The ARN assigned by AWS to this policy.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Description of the IAM policy.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name of the policy. If omitted, this provider will assign a random, unique name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// Path in which to create the policy.
 	// See [IAM Identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html) for more information.
-	Path interface{}
+	Path pulumi.StringInput `pulumi:"path"`
 	// The policy document. This is a JSON formatted string.
-	Policy interface{}
+	Policy pulumi.StringInput `pulumi:"policy"`
 }
 
 // The set of arguments for constructing a Policy resource.
 type PolicyArgs struct {
 	// Description of the IAM policy.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name of the policy. If omitted, this provider will assign a random, unique name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// Path in which to create the policy.
 	// See [IAM Identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html) for more information.
-	Path interface{}
+	Path pulumi.StringInput `pulumi:"path"`
 	// The policy document. This is a JSON formatted string.
-	Policy interface{}
+	Policy pulumi.StringInput `pulumi:"policy"`
 }

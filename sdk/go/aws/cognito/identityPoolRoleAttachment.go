@@ -12,7 +12,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/cognito_identity_pool_roles_attachment.html.markdown.
 type IdentityPoolRoleAttachment struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// An identity pool ID in the format REGION:GUID.
+	IdentityPoolId pulumi.StringOutput `pulumi:"identityPoolId"`
+
+	// A List of Role Mapping.
+	RoleMappings pulumi.ArrayOutput `pulumi:"roleMappings"`
+
+	// The map of roles associated with this pool. For a given role, the key will be either "authenticated" or "unauthenticated" and the value will be the Role ARN.
+	Roles pulumi.AnyOutput `pulumi:"roles"`
 }
 
 // NewIdentityPoolRoleAttachment registers a new resource with the given unique name, arguments, and options.
@@ -24,81 +37,63 @@ func NewIdentityPoolRoleAttachment(ctx *pulumi.Context,
 	if args == nil || args.Roles == nil {
 		return nil, errors.New("missing required argument 'Roles'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["identityPoolId"] = nil
-		inputs["roleMappings"] = nil
-		inputs["roles"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["identityPoolId"] = args.IdentityPoolId
 		inputs["roleMappings"] = args.RoleMappings
 		inputs["roles"] = args.Roles
 	}
-	s, err := ctx.RegisterResource("aws:cognito/identityPoolRoleAttachment:IdentityPoolRoleAttachment", name, true, inputs, opts...)
+	var resource IdentityPoolRoleAttachment
+	err := ctx.RegisterResource("aws:cognito/identityPoolRoleAttachment:IdentityPoolRoleAttachment", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &IdentityPoolRoleAttachment{s: s}, nil
+	return &resource, nil
 }
 
 // GetIdentityPoolRoleAttachment gets an existing IdentityPoolRoleAttachment resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetIdentityPoolRoleAttachment(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *IdentityPoolRoleAttachmentState, opts ...pulumi.ResourceOpt) (*IdentityPoolRoleAttachment, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["identityPoolId"] = state.IdentityPoolId
 		inputs["roleMappings"] = state.RoleMappings
 		inputs["roles"] = state.Roles
 	}
-	s, err := ctx.ReadResource("aws:cognito/identityPoolRoleAttachment:IdentityPoolRoleAttachment", name, id, inputs, opts...)
+	var resource IdentityPoolRoleAttachment
+	err := ctx.ReadResource("aws:cognito/identityPoolRoleAttachment:IdentityPoolRoleAttachment", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &IdentityPoolRoleAttachment{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *IdentityPoolRoleAttachment) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *IdentityPoolRoleAttachment) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *IdentityPoolRoleAttachment) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *IdentityPoolRoleAttachment) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// An identity pool ID in the format REGION:GUID.
-func (r *IdentityPoolRoleAttachment) IdentityPoolId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["identityPoolId"])
-}
-
-// A List of Role Mapping.
-func (r *IdentityPoolRoleAttachment) RoleMappings() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["roleMappings"])
-}
-
-// The map of roles associated with this pool. For a given role, the key will be either "authenticated" or "unauthenticated" and the value will be the Role ARN.
-func (r *IdentityPoolRoleAttachment) Roles() *pulumi.Output {
-	return r.s.State["roles"]
-}
-
 // Input properties used for looking up and filtering IdentityPoolRoleAttachment resources.
 type IdentityPoolRoleAttachmentState struct {
 	// An identity pool ID in the format REGION:GUID.
-	IdentityPoolId interface{}
+	IdentityPoolId pulumi.StringInput `pulumi:"identityPoolId"`
 	// A List of Role Mapping.
-	RoleMappings interface{}
+	RoleMappings pulumi.ArrayInput `pulumi:"roleMappings"`
 	// The map of roles associated with this pool. For a given role, the key will be either "authenticated" or "unauthenticated" and the value will be the Role ARN.
-	Roles interface{}
+	Roles pulumi.AnyInput `pulumi:"roles"`
 }
 
 // The set of arguments for constructing a IdentityPoolRoleAttachment resource.
 type IdentityPoolRoleAttachmentArgs struct {
 	// An identity pool ID in the format REGION:GUID.
-	IdentityPoolId interface{}
+	IdentityPoolId pulumi.StringInput `pulumi:"identityPoolId"`
 	// A List of Role Mapping.
-	RoleMappings interface{}
+	RoleMappings pulumi.ArrayInput `pulumi:"roleMappings"`
 	// The map of roles associated with this pool. For a given role, the key will be either "authenticated" or "unauthenticated" and the value will be the Role ARN.
-	Roles interface{}
+	Roles pulumi.AnyInput `pulumi:"roles"`
 }

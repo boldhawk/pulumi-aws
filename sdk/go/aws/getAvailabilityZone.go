@@ -44,29 +44,29 @@ func LookupAvailabilityZone(ctx *pulumi.Context, args *GetAvailabilityZoneArgs) 
 // A collection of arguments for invoking getAvailabilityZone.
 type GetAvailabilityZoneArgs struct {
 	// The full name of the availability zone to select.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A specific availability zone state to require. May
 	// be any of `"available"`, `"information"` or `"impaired"`.
-	State interface{}
+	State pulumi.StringInput `pulumi:"state"`
 	// The zone ID of the availability zone to select.
-	ZoneId interface{}
+	ZoneId pulumi.StringInput `pulumi:"zoneId"`
 }
 
 // A collection of values returned by getAvailabilityZone.
 type GetAvailabilityZoneResult struct {
 	// The name of the selected availability zone.
-	Name interface{}
+	Name string `pulumi:"name"`
 	// The part of the AZ name that appears after the region name,
 	// uniquely identifying the AZ within its region.
-	NameSuffix interface{}
+	NameSuffix string `pulumi:"nameSuffix"`
 	// The region where the selected availability zone resides.
 	// This is always the region selected on the provider, since this data source
 	// searches only within that region.
-	Region interface{}
+	Region string `pulumi:"region"`
 	// The current state of the AZ.
-	State interface{}
+	State string `pulumi:"state"`
 	// (Optional) The zone ID of the selected availability zone.
-	ZoneId interface{}
+	ZoneId string `pulumi:"zoneId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

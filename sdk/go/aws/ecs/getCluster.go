@@ -35,24 +35,24 @@ func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult
 // A collection of arguments for invoking getCluster.
 type GetClusterArgs struct {
 	// The name of the ECS Cluster
-	ClusterName interface{}
+	ClusterName pulumi.StringInput `pulumi:"clusterName"`
 }
 
 // A collection of values returned by getCluster.
 type GetClusterResult struct {
 	// The ARN of the ECS Cluster
-	Arn interface{}
-	ClusterName interface{}
+	Arn string `pulumi:"arn"`
+	ClusterName string `pulumi:"clusterName"`
 	// The number of pending tasks for the ECS Cluster
-	PendingTasksCount interface{}
+	PendingTasksCount int `pulumi:"pendingTasksCount"`
 	// The number of registered container instances for the ECS Cluster
-	RegisteredContainerInstancesCount interface{}
+	RegisteredContainerInstancesCount int `pulumi:"registeredContainerInstancesCount"`
 	// The number of running tasks for the ECS Cluster
-	RunningTasksCount interface{}
+	RunningTasksCount int `pulumi:"runningTasksCount"`
 	// The settings associated with the ECS Cluster.
-	Settings interface{}
+	Settings []interface{} `pulumi:"settings"`
 	// The status of the ECS Cluster
-	Status interface{}
+	Status string `pulumi:"status"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

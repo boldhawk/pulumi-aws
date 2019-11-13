@@ -12,7 +12,29 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/pinpoint_email_channel.html.markdown.
 type EmailChannel struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The application ID.
+	ApplicationId pulumi.StringOutput `pulumi:"applicationId"`
+
+	// Whether the channel is enabled or disabled. Defaults to `true`.
+	Enabled pulumi.BoolOutput `pulumi:"enabled"`
+
+	// The email address used to send emails from.
+	FromAddress pulumi.StringOutput `pulumi:"fromAddress"`
+
+	// The ARN of an identity verified with SES.
+	Identity pulumi.StringOutput `pulumi:"identity"`
+
+	// Messages per second that can be sent.
+	MessagesPerSecond pulumi.IntOutput `pulumi:"messagesPerSecond"`
+
+	// The ARN of an IAM Role used to submit events to Mobile Analytics' event ingestion service.
+	RoleArn pulumi.StringOutput `pulumi:"roleArn"`
 }
 
 // NewEmailChannel registers a new resource with the given unique name, arguments, and options.
@@ -30,33 +52,27 @@ func NewEmailChannel(ctx *pulumi.Context,
 	if args == nil || args.RoleArn == nil {
 		return nil, errors.New("missing required argument 'RoleArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["applicationId"] = nil
-		inputs["enabled"] = nil
-		inputs["fromAddress"] = nil
-		inputs["identity"] = nil
-		inputs["roleArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["applicationId"] = args.ApplicationId
 		inputs["enabled"] = args.Enabled
 		inputs["fromAddress"] = args.FromAddress
 		inputs["identity"] = args.Identity
 		inputs["roleArn"] = args.RoleArn
 	}
-	inputs["messagesPerSecond"] = nil
-	s, err := ctx.RegisterResource("aws:pinpoint/emailChannel:EmailChannel", name, true, inputs, opts...)
+	var resource EmailChannel
+	err := ctx.RegisterResource("aws:pinpoint/emailChannel:EmailChannel", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EmailChannel{s: s}, nil
+	return &resource, nil
 }
 
 // GetEmailChannel gets an existing EmailChannel resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetEmailChannel(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *EmailChannelState, opts ...pulumi.ResourceOpt) (*EmailChannel, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["applicationId"] = state.ApplicationId
 		inputs["enabled"] = state.Enabled
@@ -65,79 +81,49 @@ func GetEmailChannel(ctx *pulumi.Context,
 		inputs["messagesPerSecond"] = state.MessagesPerSecond
 		inputs["roleArn"] = state.RoleArn
 	}
-	s, err := ctx.ReadResource("aws:pinpoint/emailChannel:EmailChannel", name, id, inputs, opts...)
+	var resource EmailChannel
+	err := ctx.ReadResource("aws:pinpoint/emailChannel:EmailChannel", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EmailChannel{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *EmailChannel) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *EmailChannel) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *EmailChannel) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *EmailChannel) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The application ID.
-func (r *EmailChannel) ApplicationId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["applicationId"])
-}
-
-// Whether the channel is enabled or disabled. Defaults to `true`.
-func (r *EmailChannel) Enabled() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["enabled"])
-}
-
-// The email address used to send emails from.
-func (r *EmailChannel) FromAddress() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["fromAddress"])
-}
-
-// The ARN of an identity verified with SES.
-func (r *EmailChannel) Identity() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["identity"])
-}
-
-// Messages per second that can be sent.
-func (r *EmailChannel) MessagesPerSecond() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["messagesPerSecond"])
-}
-
-// The ARN of an IAM Role used to submit events to Mobile Analytics' event ingestion service.
-func (r *EmailChannel) RoleArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["roleArn"])
-}
-
 // Input properties used for looking up and filtering EmailChannel resources.
 type EmailChannelState struct {
 	// The application ID.
-	ApplicationId interface{}
+	ApplicationId pulumi.StringInput `pulumi:"applicationId"`
 	// Whether the channel is enabled or disabled. Defaults to `true`.
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// The email address used to send emails from.
-	FromAddress interface{}
+	FromAddress pulumi.StringInput `pulumi:"fromAddress"`
 	// The ARN of an identity verified with SES.
-	Identity interface{}
+	Identity pulumi.StringInput `pulumi:"identity"`
 	// Messages per second that can be sent.
-	MessagesPerSecond interface{}
+	MessagesPerSecond pulumi.IntInput `pulumi:"messagesPerSecond"`
 	// The ARN of an IAM Role used to submit events to Mobile Analytics' event ingestion service.
-	RoleArn interface{}
+	RoleArn pulumi.StringInput `pulumi:"roleArn"`
 }
 
 // The set of arguments for constructing a EmailChannel resource.
 type EmailChannelArgs struct {
 	// The application ID.
-	ApplicationId interface{}
+	ApplicationId pulumi.StringInput `pulumi:"applicationId"`
 	// Whether the channel is enabled or disabled. Defaults to `true`.
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// The email address used to send emails from.
-	FromAddress interface{}
+	FromAddress pulumi.StringInput `pulumi:"fromAddress"`
 	// The ARN of an identity verified with SES.
-	Identity interface{}
+	Identity pulumi.StringInput `pulumi:"identity"`
 	// The ARN of an IAM Role used to submit events to Mobile Analytics' event ingestion service.
-	RoleArn interface{}
+	RoleArn pulumi.StringInput `pulumi:"roleArn"`
 }

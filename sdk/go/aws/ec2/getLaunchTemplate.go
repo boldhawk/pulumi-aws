@@ -54,71 +54,71 @@ func LookupLaunchTemplate(ctx *pulumi.Context, args *GetLaunchTemplateArgs) (*Ge
 // A collection of arguments for invoking getLaunchTemplate.
 type GetLaunchTemplateArgs struct {
 	// The name of the launch template.
-	Name interface{}
-	Tags interface{}
+	Name pulumi.StringInput `pulumi:"name"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getLaunchTemplate.
 type GetLaunchTemplateResult struct {
 	// Amazon Resource Name (ARN) of the launch template.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// Specify volumes to attach to the instance besides the volumes specified by the AMI.
-	BlockDeviceMappings interface{}
+	BlockDeviceMappings []interface{} `pulumi:"blockDeviceMappings"`
 	// Customize the credit specification of the instance. See Credit
 	// Specification below for more details.
-	CreditSpecifications interface{}
+	CreditSpecifications []interface{} `pulumi:"creditSpecifications"`
 	// The default version of the launch template.
-	DefaultVersion interface{}
+	DefaultVersion int `pulumi:"defaultVersion"`
 	// Description of the launch template.
-	Description interface{}
+	Description string `pulumi:"description"`
 	// If `true`, enables [EC2 Instance
 	// Termination Protection](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/terminating-instances.html#Using_ChangingDisableAPITermination)
-	DisableApiTermination interface{}
+	DisableApiTermination bool `pulumi:"disableApiTermination"`
 	// If `true`, the launched EC2 instance will be EBS-optimized.
-	EbsOptimized interface{}
+	EbsOptimized string `pulumi:"ebsOptimized"`
 	// The elastic GPU to attach to the instance. See Elastic GPU
 	// below for more details.
-	ElasticGpuSpecifications interface{}
+	ElasticGpuSpecifications []interface{} `pulumi:"elasticGpuSpecifications"`
 	// The IAM Instance Profile to launch the instance with. See Instance Profile
 	// below for more details.
-	IamInstanceProfiles interface{}
+	IamInstanceProfiles []interface{} `pulumi:"iamInstanceProfiles"`
 	// The AMI from which to launch the instance.
-	ImageId interface{}
+	ImageId string `pulumi:"imageId"`
 	// Shutdown behavior for the instance. Can be `stop` or `terminate`.
 	// (Default: `stop`).
-	InstanceInitiatedShutdownBehavior interface{}
+	InstanceInitiatedShutdownBehavior string `pulumi:"instanceInitiatedShutdownBehavior"`
 	// The market (purchasing) option for the instance.
 	// below for details.
-	InstanceMarketOptions interface{}
+	InstanceMarketOptions []interface{} `pulumi:"instanceMarketOptions"`
 	// The type of the instance.
-	InstanceType interface{}
+	InstanceType string `pulumi:"instanceType"`
 	// The kernel ID.
-	KernelId interface{}
+	KernelId string `pulumi:"kernelId"`
 	// The key name to use for the instance.
-	KeyName interface{}
+	KeyName string `pulumi:"keyName"`
 	// The latest version of the launch template.
-	LatestVersion interface{}
+	LatestVersion int `pulumi:"latestVersion"`
 	// The monitoring option for the instance.
-	Monitorings interface{}
-	Name interface{}
+	Monitorings []interface{} `pulumi:"monitorings"`
+	Name string `pulumi:"name"`
 	// Customize network interfaces to be attached at instance boot time. See Network
 	// Interfaces below for more details.
-	NetworkInterfaces interface{}
+	NetworkInterfaces []interface{} `pulumi:"networkInterfaces"`
 	// The placement of the instance.
-	Placements interface{}
+	Placements []interface{} `pulumi:"placements"`
 	// The ID of the RAM disk.
-	RamDiskId interface{}
+	RamDiskId string `pulumi:"ramDiskId"`
 	// A list of security group names to associate with. If you are creating Instances in a VPC, use
 	// `vpcSecurityGroupIds` instead.
-	SecurityGroupNames interface{}
+	SecurityGroupNames []interface{} `pulumi:"securityGroupNames"`
 	// The tags to apply to the resources during launch.
-	TagSpecifications interface{}
+	TagSpecifications []interface{} `pulumi:"tagSpecifications"`
 	// (Optional) A mapping of tags to assign to the launch template.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The Base64-encoded user data to provide when launching the instance.
-	UserData interface{}
+	UserData string `pulumi:"userData"`
 	// A list of security group IDs to associate with.
-	VpcSecurityGroupIds interface{}
+	VpcSecurityGroupIds []interface{} `pulumi:"vpcSecurityGroupIds"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

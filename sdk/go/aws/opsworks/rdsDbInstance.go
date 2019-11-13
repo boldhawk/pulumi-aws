@@ -15,7 +15,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/opsworks_rds_db_instance.html.markdown.
 type RdsDbInstance struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// A db password
+	DbPassword pulumi.StringOutput `pulumi:"dbPassword"`
+
+	// A db username
+	DbUser pulumi.StringOutput `pulumi:"dbUser"`
+
+	// The db instance to register for this stack. Changing this will force a new resource.
+	RdsDbInstanceArn pulumi.StringOutput `pulumi:"rdsDbInstanceArn"`
+
+	// The stack to register a db instance for. Changing this will force a new resource.
+	StackId pulumi.StringOutput `pulumi:"stackId"`
 }
 
 // NewRdsDbInstance registers a new resource with the given unique name, arguments, and options.
@@ -33,93 +49,69 @@ func NewRdsDbInstance(ctx *pulumi.Context,
 	if args == nil || args.StackId == nil {
 		return nil, errors.New("missing required argument 'StackId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["dbPassword"] = nil
-		inputs["dbUser"] = nil
-		inputs["rdsDbInstanceArn"] = nil
-		inputs["stackId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["dbPassword"] = args.DbPassword
 		inputs["dbUser"] = args.DbUser
 		inputs["rdsDbInstanceArn"] = args.RdsDbInstanceArn
 		inputs["stackId"] = args.StackId
 	}
-	s, err := ctx.RegisterResource("aws:opsworks/rdsDbInstance:RdsDbInstance", name, true, inputs, opts...)
+	var resource RdsDbInstance
+	err := ctx.RegisterResource("aws:opsworks/rdsDbInstance:RdsDbInstance", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RdsDbInstance{s: s}, nil
+	return &resource, nil
 }
 
 // GetRdsDbInstance gets an existing RdsDbInstance resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRdsDbInstance(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RdsDbInstanceState, opts ...pulumi.ResourceOpt) (*RdsDbInstance, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["dbPassword"] = state.DbPassword
 		inputs["dbUser"] = state.DbUser
 		inputs["rdsDbInstanceArn"] = state.RdsDbInstanceArn
 		inputs["stackId"] = state.StackId
 	}
-	s, err := ctx.ReadResource("aws:opsworks/rdsDbInstance:RdsDbInstance", name, id, inputs, opts...)
+	var resource RdsDbInstance
+	err := ctx.ReadResource("aws:opsworks/rdsDbInstance:RdsDbInstance", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RdsDbInstance{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *RdsDbInstance) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *RdsDbInstance) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *RdsDbInstance) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *RdsDbInstance) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// A db password
-func (r *RdsDbInstance) DbPassword() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["dbPassword"])
-}
-
-// A db username
-func (r *RdsDbInstance) DbUser() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["dbUser"])
-}
-
-// The db instance to register for this stack. Changing this will force a new resource.
-func (r *RdsDbInstance) RdsDbInstanceArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["rdsDbInstanceArn"])
-}
-
-// The stack to register a db instance for. Changing this will force a new resource.
-func (r *RdsDbInstance) StackId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["stackId"])
-}
-
 // Input properties used for looking up and filtering RdsDbInstance resources.
 type RdsDbInstanceState struct {
 	// A db password
-	DbPassword interface{}
+	DbPassword pulumi.StringInput `pulumi:"dbPassword"`
 	// A db username
-	DbUser interface{}
+	DbUser pulumi.StringInput `pulumi:"dbUser"`
 	// The db instance to register for this stack. Changing this will force a new resource.
-	RdsDbInstanceArn interface{}
+	RdsDbInstanceArn pulumi.StringInput `pulumi:"rdsDbInstanceArn"`
 	// The stack to register a db instance for. Changing this will force a new resource.
-	StackId interface{}
+	StackId pulumi.StringInput `pulumi:"stackId"`
 }
 
 // The set of arguments for constructing a RdsDbInstance resource.
 type RdsDbInstanceArgs struct {
 	// A db password
-	DbPassword interface{}
+	DbPassword pulumi.StringInput `pulumi:"dbPassword"`
 	// A db username
-	DbUser interface{}
+	DbUser pulumi.StringInput `pulumi:"dbUser"`
 	// The db instance to register for this stack. Changing this will force a new resource.
-	RdsDbInstanceArn interface{}
+	RdsDbInstanceArn pulumi.StringInput `pulumi:"rdsDbInstanceArn"`
 	// The stack to register a db instance for. Changing this will force a new resource.
-	StackId interface{}
+	StackId pulumi.StringInput `pulumi:"stackId"`
 }

@@ -15,24 +15,45 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ssm_patch_baseline.html.markdown.
 type PatchBaseline struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// A set of rules used to include patches in the baseline. up to 10 approval rules can be specified. Each approvalRule block requires the fields documented below.
+	ApprovalRules pulumi.ArrayOutput `pulumi:"approvalRules"`
+
+	// A list of explicitly approved patches for the baseline.
+	ApprovedPatches pulumi.ArrayOutput `pulumi:"approvedPatches"`
+
+	// Defines the compliance level for approved patches. This means that if an approved patch is reported as missing, this is the severity of the compliance violation. Valid compliance levels include the following: `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `INFORMATIONAL`, `UNSPECIFIED`. The default value is `UNSPECIFIED`.
+	ApprovedPatchesComplianceLevel pulumi.StringOutput `pulumi:"approvedPatchesComplianceLevel"`
+
+	// The description of the patch baseline.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// A set of global filters used to exclude patches from the baseline. Up to 4 global filters can be specified using Key/Value pairs. Valid Keys are `PRODUCT | CLASSIFICATION | MSRC_SEVERITY | PATCH_ID`.
+	GlobalFilters pulumi.ArrayOutput `pulumi:"globalFilters"`
+
+	// The name of the patch baseline.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Defines the operating system the patch baseline applies to. Supported operating systems include `WINDOWS`, `AMAZON_LINUX`, `AMAZON_LINUX_2`, `SUSE`, `UBUNTU`, `CENTOS`, and `REDHAT_ENTERPRISE_LINUX`. The Default value is `WINDOWS`.
+	OperatingSystem pulumi.StringOutput `pulumi:"operatingSystem"`
+
+	// A list of rejected patches.
+	RejectedPatches pulumi.ArrayOutput `pulumi:"rejectedPatches"`
+
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewPatchBaseline registers a new resource with the given unique name, arguments, and options.
 func NewPatchBaseline(ctx *pulumi.Context,
 	name string, args *PatchBaselineArgs, opts ...pulumi.ResourceOpt) (*PatchBaseline, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["approvalRules"] = nil
-		inputs["approvedPatches"] = nil
-		inputs["approvedPatchesComplianceLevel"] = nil
-		inputs["description"] = nil
-		inputs["globalFilters"] = nil
-		inputs["name"] = nil
-		inputs["operatingSystem"] = nil
-		inputs["rejectedPatches"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["approvalRules"] = args.ApprovalRules
 		inputs["approvedPatches"] = args.ApprovedPatches
 		inputs["approvedPatchesComplianceLevel"] = args.ApprovedPatchesComplianceLevel
@@ -43,18 +64,19 @@ func NewPatchBaseline(ctx *pulumi.Context,
 		inputs["rejectedPatches"] = args.RejectedPatches
 		inputs["tags"] = args.Tags
 	}
-	s, err := ctx.RegisterResource("aws:ssm/patchBaseline:PatchBaseline", name, true, inputs, opts...)
+	var resource PatchBaseline
+	err := ctx.RegisterResource("aws:ssm/patchBaseline:PatchBaseline", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &PatchBaseline{s: s}, nil
+	return &resource, nil
 }
 
 // GetPatchBaseline gets an existing PatchBaseline resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetPatchBaseline(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *PatchBaselineState, opts ...pulumi.ResourceOpt) (*PatchBaseline, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["approvalRules"] = state.ApprovalRules
 		inputs["approvedPatches"] = state.ApprovedPatches
@@ -66,105 +88,61 @@ func GetPatchBaseline(ctx *pulumi.Context,
 		inputs["rejectedPatches"] = state.RejectedPatches
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:ssm/patchBaseline:PatchBaseline", name, id, inputs, opts...)
+	var resource PatchBaseline
+	err := ctx.ReadResource("aws:ssm/patchBaseline:PatchBaseline", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &PatchBaseline{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *PatchBaseline) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *PatchBaseline) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *PatchBaseline) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *PatchBaseline) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// A set of rules used to include patches in the baseline. up to 10 approval rules can be specified. Each approvalRule block requires the fields documented below.
-func (r *PatchBaseline) ApprovalRules() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["approvalRules"])
-}
-
-// A list of explicitly approved patches for the baseline.
-func (r *PatchBaseline) ApprovedPatches() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["approvedPatches"])
-}
-
-// Defines the compliance level for approved patches. This means that if an approved patch is reported as missing, this is the severity of the compliance violation. Valid compliance levels include the following: `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `INFORMATIONAL`, `UNSPECIFIED`. The default value is `UNSPECIFIED`.
-func (r *PatchBaseline) ApprovedPatchesComplianceLevel() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["approvedPatchesComplianceLevel"])
-}
-
-// The description of the patch baseline.
-func (r *PatchBaseline) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// A set of global filters used to exclude patches from the baseline. Up to 4 global filters can be specified using Key/Value pairs. Valid Keys are `PRODUCT | CLASSIFICATION | MSRC_SEVERITY | PATCH_ID`.
-func (r *PatchBaseline) GlobalFilters() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["globalFilters"])
-}
-
-// The name of the patch baseline.
-func (r *PatchBaseline) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Defines the operating system the patch baseline applies to. Supported operating systems include `WINDOWS`, `AMAZON_LINUX`, `AMAZON_LINUX_2`, `SUSE`, `UBUNTU`, `CENTOS`, and `REDHAT_ENTERPRISE_LINUX`. The Default value is `WINDOWS`.
-func (r *PatchBaseline) OperatingSystem() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["operatingSystem"])
-}
-
-// A list of rejected patches.
-func (r *PatchBaseline) RejectedPatches() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["rejectedPatches"])
-}
-
-func (r *PatchBaseline) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering PatchBaseline resources.
 type PatchBaselineState struct {
 	// A set of rules used to include patches in the baseline. up to 10 approval rules can be specified. Each approvalRule block requires the fields documented below.
-	ApprovalRules interface{}
+	ApprovalRules pulumi.ArrayInput `pulumi:"approvalRules"`
 	// A list of explicitly approved patches for the baseline.
-	ApprovedPatches interface{}
+	ApprovedPatches pulumi.ArrayInput `pulumi:"approvedPatches"`
 	// Defines the compliance level for approved patches. This means that if an approved patch is reported as missing, this is the severity of the compliance violation. Valid compliance levels include the following: `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `INFORMATIONAL`, `UNSPECIFIED`. The default value is `UNSPECIFIED`.
-	ApprovedPatchesComplianceLevel interface{}
+	ApprovedPatchesComplianceLevel pulumi.StringInput `pulumi:"approvedPatchesComplianceLevel"`
 	// The description of the patch baseline.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// A set of global filters used to exclude patches from the baseline. Up to 4 global filters can be specified using Key/Value pairs. Valid Keys are `PRODUCT | CLASSIFICATION | MSRC_SEVERITY | PATCH_ID`.
-	GlobalFilters interface{}
+	GlobalFilters pulumi.ArrayInput `pulumi:"globalFilters"`
 	// The name of the patch baseline.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Defines the operating system the patch baseline applies to. Supported operating systems include `WINDOWS`, `AMAZON_LINUX`, `AMAZON_LINUX_2`, `SUSE`, `UBUNTU`, `CENTOS`, and `REDHAT_ENTERPRISE_LINUX`. The Default value is `WINDOWS`.
-	OperatingSystem interface{}
+	OperatingSystem pulumi.StringInput `pulumi:"operatingSystem"`
 	// A list of rejected patches.
-	RejectedPatches interface{}
-	Tags interface{}
+	RejectedPatches pulumi.ArrayInput `pulumi:"rejectedPatches"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a PatchBaseline resource.
 type PatchBaselineArgs struct {
 	// A set of rules used to include patches in the baseline. up to 10 approval rules can be specified. Each approvalRule block requires the fields documented below.
-	ApprovalRules interface{}
+	ApprovalRules pulumi.ArrayInput `pulumi:"approvalRules"`
 	// A list of explicitly approved patches for the baseline.
-	ApprovedPatches interface{}
+	ApprovedPatches pulumi.ArrayInput `pulumi:"approvedPatches"`
 	// Defines the compliance level for approved patches. This means that if an approved patch is reported as missing, this is the severity of the compliance violation. Valid compliance levels include the following: `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `INFORMATIONAL`, `UNSPECIFIED`. The default value is `UNSPECIFIED`.
-	ApprovedPatchesComplianceLevel interface{}
+	ApprovedPatchesComplianceLevel pulumi.StringInput `pulumi:"approvedPatchesComplianceLevel"`
 	// The description of the patch baseline.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// A set of global filters used to exclude patches from the baseline. Up to 4 global filters can be specified using Key/Value pairs. Valid Keys are `PRODUCT | CLASSIFICATION | MSRC_SEVERITY | PATCH_ID`.
-	GlobalFilters interface{}
+	GlobalFilters pulumi.ArrayInput `pulumi:"globalFilters"`
 	// The name of the patch baseline.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Defines the operating system the patch baseline applies to. Supported operating systems include `WINDOWS`, `AMAZON_LINUX`, `AMAZON_LINUX_2`, `SUSE`, `UBUNTU`, `CENTOS`, and `REDHAT_ENTERPRISE_LINUX`. The Default value is `WINDOWS`.
-	OperatingSystem interface{}
+	OperatingSystem pulumi.StringInput `pulumi:"operatingSystem"`
 	// A list of rejected patches.
-	RejectedPatches interface{}
-	Tags interface{}
+	RejectedPatches pulumi.ArrayInput `pulumi:"rejectedPatches"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

@@ -43,31 +43,31 @@ func LookupRouteTable(ctx *pulumi.Context, args *GetRouteTableArgs) (*GetRouteTa
 // A collection of arguments for invoking getRouteTable.
 type GetRouteTableArgs struct {
 	// Custom filter block as described below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The id of the specific Route Table to retrieve.
-	RouteTableId interface{}
+	RouteTableId pulumi.StringInput `pulumi:"routeTableId"`
 	// The id of a Subnet which is connected to the Route Table (not be exported if not given in parameter).
-	SubnetId interface{}
+	SubnetId pulumi.StringInput `pulumi:"subnetId"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired Route Table.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The id of the VPC that the desired Route Table belongs to.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getRouteTable.
 type GetRouteTableResult struct {
-	Associations interface{}
-	Filters interface{}
+	Associations []interface{} `pulumi:"associations"`
+	Filters []interface{} `pulumi:"filters"`
 	// The ID of the AWS account that owns the route table
-	OwnerId interface{}
+	OwnerId string `pulumi:"ownerId"`
 	// The Route Table ID.
-	RouteTableId interface{}
-	Routes interface{}
+	RouteTableId string `pulumi:"routeTableId"`
+	Routes []interface{} `pulumi:"routes"`
 	// The Subnet ID.
-	SubnetId interface{}
-	Tags interface{}
-	VpcId interface{}
+	SubnetId string `pulumi:"subnetId"`
+	Tags map[string]interface{} `pulumi:"tags"`
+	VpcId string `pulumi:"vpcId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

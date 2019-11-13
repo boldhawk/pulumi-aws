@@ -35,24 +35,24 @@ func LookupDocument(ctx *pulumi.Context, args *GetDocumentArgs) (*GetDocumentRes
 // A collection of arguments for invoking getDocument.
 type GetDocumentArgs struct {
 	// Returns the document in the specified format. The document format can be either JSON or YAML. JSON is the default format.
-	DocumentFormat interface{}
+	DocumentFormat pulumi.StringInput `pulumi:"documentFormat"`
 	// The document version for which you want information.
-	DocumentVersion interface{}
+	DocumentVersion pulumi.StringInput `pulumi:"documentVersion"`
 	// The name of the Systems Manager document.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getDocument.
 type GetDocumentResult struct {
 	// The ARN of the document.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// The contents of the document.
-	Content interface{}
-	DocumentFormat interface{}
+	Content string `pulumi:"content"`
+	DocumentFormat string `pulumi:"documentFormat"`
 	// The type of the document.
-	DocumentType interface{}
-	DocumentVersion interface{}
-	Name interface{}
+	DocumentType string `pulumi:"documentType"`
+	DocumentVersion string `pulumi:"documentVersion"`
+	Name string `pulumi:"name"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

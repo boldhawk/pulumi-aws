@@ -12,7 +12,44 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ec2_capacity_reservation.html.markdown.
 type CapacityReservation struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The Availability Zone in which to create the Capacity Reservation.
+	AvailabilityZone pulumi.StringOutput `pulumi:"availabilityZone"`
+
+	// Indicates whether the Capacity Reservation supports EBS-optimized instances.
+	EbsOptimized pulumi.BoolOutput `pulumi:"ebsOptimized"`
+
+	// The date and time at which the Capacity Reservation expires. When a Capacity Reservation expires, the reserved capacity is released and you can no longer launch instances into it. Valid values: [RFC3339 time string](https://tools.ietf.org/html/rfc3339#section-5.8) (`YYYY-MM-DDTHH:MM:SSZ`)
+	EndDate pulumi.StringOutput `pulumi:"endDate"`
+
+	// Indicates the way in which the Capacity Reservation ends. Specify either `unlimited` or `limited`.
+	EndDateType pulumi.StringOutput `pulumi:"endDateType"`
+
+	// Indicates whether the Capacity Reservation supports instances with temporary, block-level storage.
+	EphemeralStorage pulumi.BoolOutput `pulumi:"ephemeralStorage"`
+
+	// The number of instances for which to reserve capacity.
+	InstanceCount pulumi.IntOutput `pulumi:"instanceCount"`
+
+	// Indicates the type of instance launches that the Capacity Reservation accepts. Specify either `open` or `targeted`.
+	InstanceMatchCriteria pulumi.StringOutput `pulumi:"instanceMatchCriteria"`
+
+	// The type of operating system for which to reserve capacity. Valid options are `Linux/UNIX`, `Red Hat Enterprise Linux`, `SUSE Linux`, `Windows`, `Windows with SQL Server`, `Windows with SQL Server Enterprise`, `Windows with SQL Server Standard` or `Windows with SQL Server Web`.
+	InstancePlatform pulumi.StringOutput `pulumi:"instancePlatform"`
+
+	// The instance type for which to reserve capacity.
+	InstanceType pulumi.StringOutput `pulumi:"instanceType"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// Indicates the tenancy of the Capacity Reservation. Specify either `default` or `dedicated`.
+	Tenancy pulumi.StringOutput `pulumi:"tenancy"`
 }
 
 // NewCapacityReservation registers a new resource with the given unique name, arguments, and options.
@@ -30,20 +67,8 @@ func NewCapacityReservation(ctx *pulumi.Context,
 	if args == nil || args.InstanceType == nil {
 		return nil, errors.New("missing required argument 'InstanceType'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["availabilityZone"] = nil
-		inputs["ebsOptimized"] = nil
-		inputs["endDate"] = nil
-		inputs["endDateType"] = nil
-		inputs["ephemeralStorage"] = nil
-		inputs["instanceCount"] = nil
-		inputs["instanceMatchCriteria"] = nil
-		inputs["instancePlatform"] = nil
-		inputs["instanceType"] = nil
-		inputs["tags"] = nil
-		inputs["tenancy"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["availabilityZone"] = args.AvailabilityZone
 		inputs["ebsOptimized"] = args.EbsOptimized
 		inputs["endDate"] = args.EndDate
@@ -56,18 +81,19 @@ func NewCapacityReservation(ctx *pulumi.Context,
 		inputs["tags"] = args.Tags
 		inputs["tenancy"] = args.Tenancy
 	}
-	s, err := ctx.RegisterResource("aws:ec2/capacityReservation:CapacityReservation", name, true, inputs, opts...)
+	var resource CapacityReservation
+	err := ctx.RegisterResource("aws:ec2/capacityReservation:CapacityReservation", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &CapacityReservation{s: s}, nil
+	return &resource, nil
 }
 
 // GetCapacityReservation gets an existing CapacityReservation resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetCapacityReservation(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *CapacityReservationState, opts ...pulumi.ResourceOpt) (*CapacityReservation, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["availabilityZone"] = state.AvailabilityZone
 		inputs["ebsOptimized"] = state.EbsOptimized
@@ -81,126 +107,71 @@ func GetCapacityReservation(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["tenancy"] = state.Tenancy
 	}
-	s, err := ctx.ReadResource("aws:ec2/capacityReservation:CapacityReservation", name, id, inputs, opts...)
+	var resource CapacityReservation
+	err := ctx.ReadResource("aws:ec2/capacityReservation:CapacityReservation", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &CapacityReservation{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *CapacityReservation) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *CapacityReservation) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *CapacityReservation) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *CapacityReservation) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The Availability Zone in which to create the Capacity Reservation.
-func (r *CapacityReservation) AvailabilityZone() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["availabilityZone"])
-}
-
-// Indicates whether the Capacity Reservation supports EBS-optimized instances.
-func (r *CapacityReservation) EbsOptimized() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["ebsOptimized"])
-}
-
-// The date and time at which the Capacity Reservation expires. When a Capacity Reservation expires, the reserved capacity is released and you can no longer launch instances into it. Valid values: [RFC3339 time string](https://tools.ietf.org/html/rfc3339#section-5.8) (`YYYY-MM-DDTHH:MM:SSZ`)
-func (r *CapacityReservation) EndDate() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["endDate"])
-}
-
-// Indicates the way in which the Capacity Reservation ends. Specify either `unlimited` or `limited`.
-func (r *CapacityReservation) EndDateType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["endDateType"])
-}
-
-// Indicates whether the Capacity Reservation supports instances with temporary, block-level storage.
-func (r *CapacityReservation) EphemeralStorage() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["ephemeralStorage"])
-}
-
-// The number of instances for which to reserve capacity.
-func (r *CapacityReservation) InstanceCount() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["instanceCount"])
-}
-
-// Indicates the type of instance launches that the Capacity Reservation accepts. Specify either `open` or `targeted`.
-func (r *CapacityReservation) InstanceMatchCriteria() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["instanceMatchCriteria"])
-}
-
-// The type of operating system for which to reserve capacity. Valid options are `Linux/UNIX`, `Red Hat Enterprise Linux`, `SUSE Linux`, `Windows`, `Windows with SQL Server`, `Windows with SQL Server Enterprise`, `Windows with SQL Server Standard` or `Windows with SQL Server Web`.
-func (r *CapacityReservation) InstancePlatform() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["instancePlatform"])
-}
-
-// The instance type for which to reserve capacity.
-func (r *CapacityReservation) InstanceType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["instanceType"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *CapacityReservation) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// Indicates the tenancy of the Capacity Reservation. Specify either `default` or `dedicated`.
-func (r *CapacityReservation) Tenancy() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["tenancy"])
-}
-
 // Input properties used for looking up and filtering CapacityReservation resources.
 type CapacityReservationState struct {
 	// The Availability Zone in which to create the Capacity Reservation.
-	AvailabilityZone interface{}
+	AvailabilityZone pulumi.StringInput `pulumi:"availabilityZone"`
 	// Indicates whether the Capacity Reservation supports EBS-optimized instances.
-	EbsOptimized interface{}
+	EbsOptimized pulumi.BoolInput `pulumi:"ebsOptimized"`
 	// The date and time at which the Capacity Reservation expires. When a Capacity Reservation expires, the reserved capacity is released and you can no longer launch instances into it. Valid values: [RFC3339 time string](https://tools.ietf.org/html/rfc3339#section-5.8) (`YYYY-MM-DDTHH:MM:SSZ`)
-	EndDate interface{}
+	EndDate pulumi.StringInput `pulumi:"endDate"`
 	// Indicates the way in which the Capacity Reservation ends. Specify either `unlimited` or `limited`.
-	EndDateType interface{}
+	EndDateType pulumi.StringInput `pulumi:"endDateType"`
 	// Indicates whether the Capacity Reservation supports instances with temporary, block-level storage.
-	EphemeralStorage interface{}
+	EphemeralStorage pulumi.BoolInput `pulumi:"ephemeralStorage"`
 	// The number of instances for which to reserve capacity.
-	InstanceCount interface{}
+	InstanceCount pulumi.IntInput `pulumi:"instanceCount"`
 	// Indicates the type of instance launches that the Capacity Reservation accepts. Specify either `open` or `targeted`.
-	InstanceMatchCriteria interface{}
+	InstanceMatchCriteria pulumi.StringInput `pulumi:"instanceMatchCriteria"`
 	// The type of operating system for which to reserve capacity. Valid options are `Linux/UNIX`, `Red Hat Enterprise Linux`, `SUSE Linux`, `Windows`, `Windows with SQL Server`, `Windows with SQL Server Enterprise`, `Windows with SQL Server Standard` or `Windows with SQL Server Web`.
-	InstancePlatform interface{}
+	InstancePlatform pulumi.StringInput `pulumi:"instancePlatform"`
 	// The instance type for which to reserve capacity.
-	InstanceType interface{}
+	InstanceType pulumi.StringInput `pulumi:"instanceType"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Indicates the tenancy of the Capacity Reservation. Specify either `default` or `dedicated`.
-	Tenancy interface{}
+	Tenancy pulumi.StringInput `pulumi:"tenancy"`
 }
 
 // The set of arguments for constructing a CapacityReservation resource.
 type CapacityReservationArgs struct {
 	// The Availability Zone in which to create the Capacity Reservation.
-	AvailabilityZone interface{}
+	AvailabilityZone pulumi.StringInput `pulumi:"availabilityZone"`
 	// Indicates whether the Capacity Reservation supports EBS-optimized instances.
-	EbsOptimized interface{}
+	EbsOptimized pulumi.BoolInput `pulumi:"ebsOptimized"`
 	// The date and time at which the Capacity Reservation expires. When a Capacity Reservation expires, the reserved capacity is released and you can no longer launch instances into it. Valid values: [RFC3339 time string](https://tools.ietf.org/html/rfc3339#section-5.8) (`YYYY-MM-DDTHH:MM:SSZ`)
-	EndDate interface{}
+	EndDate pulumi.StringInput `pulumi:"endDate"`
 	// Indicates the way in which the Capacity Reservation ends. Specify either `unlimited` or `limited`.
-	EndDateType interface{}
+	EndDateType pulumi.StringInput `pulumi:"endDateType"`
 	// Indicates whether the Capacity Reservation supports instances with temporary, block-level storage.
-	EphemeralStorage interface{}
+	EphemeralStorage pulumi.BoolInput `pulumi:"ephemeralStorage"`
 	// The number of instances for which to reserve capacity.
-	InstanceCount interface{}
+	InstanceCount pulumi.IntInput `pulumi:"instanceCount"`
 	// Indicates the type of instance launches that the Capacity Reservation accepts. Specify either `open` or `targeted`.
-	InstanceMatchCriteria interface{}
+	InstanceMatchCriteria pulumi.StringInput `pulumi:"instanceMatchCriteria"`
 	// The type of operating system for which to reserve capacity. Valid options are `Linux/UNIX`, `Red Hat Enterprise Linux`, `SUSE Linux`, `Windows`, `Windows with SQL Server`, `Windows with SQL Server Enterprise`, `Windows with SQL Server Standard` or `Windows with SQL Server Web`.
-	InstancePlatform interface{}
+	InstancePlatform pulumi.StringInput `pulumi:"instancePlatform"`
 	// The instance type for which to reserve capacity.
-	InstanceType interface{}
+	InstanceType pulumi.StringInput `pulumi:"instanceType"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Indicates the tenancy of the Capacity Reservation. Specify either `default` or `dedicated`.
-	Tenancy interface{}
+	Tenancy pulumi.StringInput `pulumi:"tenancy"`
 }

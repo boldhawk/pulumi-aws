@@ -17,7 +17,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/vpn_gateway_attachment.html.markdown.
 type VpnGatewayAttachment struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ID of the VPC.
+	VpcId pulumi.StringOutput `pulumi:"vpcId"`
+
+	// The ID of the Virtual Private Gateway.
+	VpnGatewayId pulumi.StringOutput `pulumi:"vpnGatewayId"`
 }
 
 // NewVpnGatewayAttachment registers a new resource with the given unique name, arguments, and options.
@@ -29,69 +39,57 @@ func NewVpnGatewayAttachment(ctx *pulumi.Context,
 	if args == nil || args.VpnGatewayId == nil {
 		return nil, errors.New("missing required argument 'VpnGatewayId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["vpcId"] = nil
-		inputs["vpnGatewayId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["vpcId"] = args.VpcId
 		inputs["vpnGatewayId"] = args.VpnGatewayId
 	}
-	s, err := ctx.RegisterResource("aws:ec2/vpnGatewayAttachment:VpnGatewayAttachment", name, true, inputs, opts...)
+	var resource VpnGatewayAttachment
+	err := ctx.RegisterResource("aws:ec2/vpnGatewayAttachment:VpnGatewayAttachment", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &VpnGatewayAttachment{s: s}, nil
+	return &resource, nil
 }
 
 // GetVpnGatewayAttachment gets an existing VpnGatewayAttachment resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetVpnGatewayAttachment(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *VpnGatewayAttachmentState, opts ...pulumi.ResourceOpt) (*VpnGatewayAttachment, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["vpcId"] = state.VpcId
 		inputs["vpnGatewayId"] = state.VpnGatewayId
 	}
-	s, err := ctx.ReadResource("aws:ec2/vpnGatewayAttachment:VpnGatewayAttachment", name, id, inputs, opts...)
+	var resource VpnGatewayAttachment
+	err := ctx.ReadResource("aws:ec2/vpnGatewayAttachment:VpnGatewayAttachment", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &VpnGatewayAttachment{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *VpnGatewayAttachment) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *VpnGatewayAttachment) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *VpnGatewayAttachment) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *VpnGatewayAttachment) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ID of the VPC.
-func (r *VpnGatewayAttachment) VpcId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpcId"])
-}
-
-// The ID of the Virtual Private Gateway.
-func (r *VpnGatewayAttachment) VpnGatewayId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpnGatewayId"])
-}
-
 // Input properties used for looking up and filtering VpnGatewayAttachment resources.
 type VpnGatewayAttachmentState struct {
 	// The ID of the VPC.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 	// The ID of the Virtual Private Gateway.
-	VpnGatewayId interface{}
+	VpnGatewayId pulumi.StringInput `pulumi:"vpnGatewayId"`
 }
 
 // The set of arguments for constructing a VpnGatewayAttachment resource.
 type VpnGatewayAttachmentArgs struct {
 	// The ID of the VPC.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 	// The ID of the Virtual Private Gateway.
-	VpnGatewayId interface{}
+	VpnGatewayId pulumi.StringInput `pulumi:"vpnGatewayId"`
 }

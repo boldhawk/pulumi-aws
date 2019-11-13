@@ -12,7 +12,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/iot_thing_principal_attachment.html.markdown.
 type ThingPrincipalAttachment struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The AWS IoT Certificate ARN or Amazon Cognito Identity ID.
+	Principal pulumi.StringOutput `pulumi:"principal"`
+
+	// The name of the thing.
+	Thing pulumi.StringOutput `pulumi:"thing"`
 }
 
 // NewThingPrincipalAttachment registers a new resource with the given unique name, arguments, and options.
@@ -24,69 +34,57 @@ func NewThingPrincipalAttachment(ctx *pulumi.Context,
 	if args == nil || args.Thing == nil {
 		return nil, errors.New("missing required argument 'Thing'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["principal"] = nil
-		inputs["thing"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["principal"] = args.Principal
 		inputs["thing"] = args.Thing
 	}
-	s, err := ctx.RegisterResource("aws:iot/thingPrincipalAttachment:ThingPrincipalAttachment", name, true, inputs, opts...)
+	var resource ThingPrincipalAttachment
+	err := ctx.RegisterResource("aws:iot/thingPrincipalAttachment:ThingPrincipalAttachment", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ThingPrincipalAttachment{s: s}, nil
+	return &resource, nil
 }
 
 // GetThingPrincipalAttachment gets an existing ThingPrincipalAttachment resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetThingPrincipalAttachment(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ThingPrincipalAttachmentState, opts ...pulumi.ResourceOpt) (*ThingPrincipalAttachment, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["principal"] = state.Principal
 		inputs["thing"] = state.Thing
 	}
-	s, err := ctx.ReadResource("aws:iot/thingPrincipalAttachment:ThingPrincipalAttachment", name, id, inputs, opts...)
+	var resource ThingPrincipalAttachment
+	err := ctx.ReadResource("aws:iot/thingPrincipalAttachment:ThingPrincipalAttachment", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ThingPrincipalAttachment{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ThingPrincipalAttachment) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ThingPrincipalAttachment) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ThingPrincipalAttachment) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ThingPrincipalAttachment) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The AWS IoT Certificate ARN or Amazon Cognito Identity ID.
-func (r *ThingPrincipalAttachment) Principal() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["principal"])
-}
-
-// The name of the thing.
-func (r *ThingPrincipalAttachment) Thing() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["thing"])
-}
-
 // Input properties used for looking up and filtering ThingPrincipalAttachment resources.
 type ThingPrincipalAttachmentState struct {
 	// The AWS IoT Certificate ARN or Amazon Cognito Identity ID.
-	Principal interface{}
+	Principal pulumi.StringInput `pulumi:"principal"`
 	// The name of the thing.
-	Thing interface{}
+	Thing pulumi.StringInput `pulumi:"thing"`
 }
 
 // The set of arguments for constructing a ThingPrincipalAttachment resource.
 type ThingPrincipalAttachmentArgs struct {
 	// The AWS IoT Certificate ARN or Amazon Cognito Identity ID.
-	Principal interface{}
+	Principal pulumi.StringInput `pulumi:"principal"`
 	// The name of the thing.
-	Thing interface{}
+	Thing pulumi.StringInput `pulumi:"thing"`
 }

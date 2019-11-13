@@ -30,16 +30,16 @@ func LookupLogGroup(ctx *pulumi.Context, args *GetLogGroupArgs) (*GetLogGroupRes
 // A collection of arguments for invoking getLogGroup.
 type GetLogGroupArgs struct {
 	// The name of the Cloudwatch log group
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getLogGroup.
 type GetLogGroupResult struct {
 	// The ARN of the Cloudwatch log group
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// The creation time of the log group, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.
-	CreationTime interface{}
-	Name interface{}
+	CreationTime int `pulumi:"creationTime"`
+	Name string `pulumi:"name"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

@@ -12,7 +12,39 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/network_interface.html.markdown.
 type NetworkInterface struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Block to define the attachment of the ENI. Documented below.
+	Attachments pulumi.ArrayOutput `pulumi:"attachments"`
+
+	// A description for the network interface.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	PrivateDnsName pulumi.StringOutput `pulumi:"privateDnsName"`
+
+	PrivateIp pulumi.StringOutput `pulumi:"privateIp"`
+
+	// List of private IPs to assign to the ENI.
+	PrivateIps pulumi.ArrayOutput `pulumi:"privateIps"`
+
+	// Number of secondary private IPs to assign to the ENI. The total number of private IPs will be 1 + private_ips_count, as a primary private IP will be assiged to an ENI by default. 
+	PrivateIpsCount pulumi.IntOutput `pulumi:"privateIpsCount"`
+
+	// List of security group IDs to assign to the ENI.
+	SecurityGroups pulumi.ArrayOutput `pulumi:"securityGroups"`
+
+	// Whether to enable source destination checking for the ENI. Default true.
+	SourceDestCheck pulumi.BoolOutput `pulumi:"sourceDestCheck"`
+
+	// Subnet ID to create the ENI in.
+	SubnetId pulumi.StringOutput `pulumi:"subnetId"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewNetworkInterface registers a new resource with the given unique name, arguments, and options.
@@ -21,18 +53,8 @@ func NewNetworkInterface(ctx *pulumi.Context,
 	if args == nil || args.SubnetId == nil {
 		return nil, errors.New("missing required argument 'SubnetId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["attachments"] = nil
-		inputs["description"] = nil
-		inputs["privateIp"] = nil
-		inputs["privateIps"] = nil
-		inputs["privateIpsCount"] = nil
-		inputs["securityGroups"] = nil
-		inputs["sourceDestCheck"] = nil
-		inputs["subnetId"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["attachments"] = args.Attachments
 		inputs["description"] = args.Description
 		inputs["privateIp"] = args.PrivateIp
@@ -43,19 +65,19 @@ func NewNetworkInterface(ctx *pulumi.Context,
 		inputs["subnetId"] = args.SubnetId
 		inputs["tags"] = args.Tags
 	}
-	inputs["privateDnsName"] = nil
-	s, err := ctx.RegisterResource("aws:ec2/networkInterface:NetworkInterface", name, true, inputs, opts...)
+	var resource NetworkInterface
+	err := ctx.RegisterResource("aws:ec2/networkInterface:NetworkInterface", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &NetworkInterface{s: s}, nil
+	return &resource, nil
 }
 
 // GetNetworkInterface gets an existing NetworkInterface resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetNetworkInterface(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *NetworkInterfaceState, opts ...pulumi.ResourceOpt) (*NetworkInterface, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["attachments"] = state.Attachments
 		inputs["description"] = state.Description
@@ -68,110 +90,62 @@ func GetNetworkInterface(ctx *pulumi.Context,
 		inputs["subnetId"] = state.SubnetId
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:ec2/networkInterface:NetworkInterface", name, id, inputs, opts...)
+	var resource NetworkInterface
+	err := ctx.ReadResource("aws:ec2/networkInterface:NetworkInterface", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &NetworkInterface{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *NetworkInterface) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *NetworkInterface) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *NetworkInterface) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *NetworkInterface) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Block to define the attachment of the ENI. Documented below.
-func (r *NetworkInterface) Attachments() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["attachments"])
-}
-
-// A description for the network interface.
-func (r *NetworkInterface) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-func (r *NetworkInterface) PrivateDnsName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["privateDnsName"])
-}
-
-func (r *NetworkInterface) PrivateIp() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["privateIp"])
-}
-
-// List of private IPs to assign to the ENI.
-func (r *NetworkInterface) PrivateIps() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["privateIps"])
-}
-
-// Number of secondary private IPs to assign to the ENI. The total number of private IPs will be 1 + private_ips_count, as a primary private IP will be assiged to an ENI by default. 
-func (r *NetworkInterface) PrivateIpsCount() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["privateIpsCount"])
-}
-
-// List of security group IDs to assign to the ENI.
-func (r *NetworkInterface) SecurityGroups() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["securityGroups"])
-}
-
-// Whether to enable source destination checking for the ENI. Default true.
-func (r *NetworkInterface) SourceDestCheck() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["sourceDestCheck"])
-}
-
-// Subnet ID to create the ENI in.
-func (r *NetworkInterface) SubnetId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["subnetId"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *NetworkInterface) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering NetworkInterface resources.
 type NetworkInterfaceState struct {
 	// Block to define the attachment of the ENI. Documented below.
-	Attachments interface{}
+	Attachments pulumi.ArrayInput `pulumi:"attachments"`
 	// A description for the network interface.
-	Description interface{}
-	PrivateDnsName interface{}
-	PrivateIp interface{}
+	Description pulumi.StringInput `pulumi:"description"`
+	PrivateDnsName pulumi.StringInput `pulumi:"privateDnsName"`
+	PrivateIp pulumi.StringInput `pulumi:"privateIp"`
 	// List of private IPs to assign to the ENI.
-	PrivateIps interface{}
+	PrivateIps pulumi.ArrayInput `pulumi:"privateIps"`
 	// Number of secondary private IPs to assign to the ENI. The total number of private IPs will be 1 + private_ips_count, as a primary private IP will be assiged to an ENI by default. 
-	PrivateIpsCount interface{}
+	PrivateIpsCount pulumi.IntInput `pulumi:"privateIpsCount"`
 	// List of security group IDs to assign to the ENI.
-	SecurityGroups interface{}
+	SecurityGroups pulumi.ArrayInput `pulumi:"securityGroups"`
 	// Whether to enable source destination checking for the ENI. Default true.
-	SourceDestCheck interface{}
+	SourceDestCheck pulumi.BoolInput `pulumi:"sourceDestCheck"`
 	// Subnet ID to create the ENI in.
-	SubnetId interface{}
+	SubnetId pulumi.StringInput `pulumi:"subnetId"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a NetworkInterface resource.
 type NetworkInterfaceArgs struct {
 	// Block to define the attachment of the ENI. Documented below.
-	Attachments interface{}
+	Attachments pulumi.ArrayInput `pulumi:"attachments"`
 	// A description for the network interface.
-	Description interface{}
-	PrivateIp interface{}
+	Description pulumi.StringInput `pulumi:"description"`
+	PrivateIp pulumi.StringInput `pulumi:"privateIp"`
 	// List of private IPs to assign to the ENI.
-	PrivateIps interface{}
+	PrivateIps pulumi.ArrayInput `pulumi:"privateIps"`
 	// Number of secondary private IPs to assign to the ENI. The total number of private IPs will be 1 + private_ips_count, as a primary private IP will be assiged to an ENI by default. 
-	PrivateIpsCount interface{}
+	PrivateIpsCount pulumi.IntInput `pulumi:"privateIpsCount"`
 	// List of security group IDs to assign to the ENI.
-	SecurityGroups interface{}
+	SecurityGroups pulumi.ArrayInput `pulumi:"securityGroups"`
 	// Whether to enable source destination checking for the ENI. Default true.
-	SourceDestCheck interface{}
+	SourceDestCheck pulumi.BoolInput `pulumi:"sourceDestCheck"`
 	// Subnet ID to create the ENI in.
-	SubnetId interface{}
+	SubnetId pulumi.StringInput `pulumi:"subnetId"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

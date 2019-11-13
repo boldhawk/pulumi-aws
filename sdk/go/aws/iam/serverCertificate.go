@@ -24,7 +24,40 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/iam_server_certificate.html.markdown.
 type ServerCertificate struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The Amazon Resource Name (ARN) specifying the server certificate.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The contents of the public key certificate in
+	// PEM-encoded format.
+	CertificateBody pulumi.StringOutput `pulumi:"certificateBody"`
+
+	// The contents of the certificate chain.
+	// This is typically a concatenation of the PEM-encoded public key certificates
+	// of the chain.
+	CertificateChain pulumi.StringOutput `pulumi:"certificateChain"`
+
+	// The name of the Server Certificate. Do not include the
+	// path in this value. If omitted, this provider will assign a random, unique name.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Creates a unique name beginning with the specified
+	// prefix. Conflicts with `name`.
+	NamePrefix pulumi.StringOutput `pulumi:"namePrefix"`
+
+	// The IAM path for the server certificate.  If it is not
+	// included, it defaults to a slash (/). If this certificate is for use with
+	// AWS CloudFront, the path must be in format `/cloudfront/your_path_here`.
+	// See [IAM Identifiers][1] for more details on IAM Paths.
+	Path pulumi.StringOutput `pulumi:"path"`
+
+	// The contents of the private key in PEM-encoded format.
+	PrivateKey pulumi.StringOutput `pulumi:"privateKey"`
 }
 
 // NewServerCertificate registers a new resource with the given unique name, arguments, and options.
@@ -36,16 +69,9 @@ func NewServerCertificate(ctx *pulumi.Context,
 	if args == nil || args.PrivateKey == nil {
 		return nil, errors.New("missing required argument 'PrivateKey'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["arn"] = nil
-		inputs["certificateBody"] = nil
-		inputs["certificateChain"] = nil
-		inputs["name"] = nil
-		inputs["namePrefix"] = nil
-		inputs["path"] = nil
-		inputs["privateKey"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["arn"] = args.Arn
 		inputs["certificateBody"] = args.CertificateBody
 		inputs["certificateChain"] = args.CertificateChain
@@ -54,18 +80,19 @@ func NewServerCertificate(ctx *pulumi.Context,
 		inputs["path"] = args.Path
 		inputs["privateKey"] = args.PrivateKey
 	}
-	s, err := ctx.RegisterResource("aws:iam/serverCertificate:ServerCertificate", name, true, inputs, opts...)
+	var resource ServerCertificate
+	err := ctx.RegisterResource("aws:iam/serverCertificate:ServerCertificate", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ServerCertificate{s: s}, nil
+	return &resource, nil
 }
 
 // GetServerCertificate gets an existing ServerCertificate resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetServerCertificate(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ServerCertificateState, opts ...pulumi.ResourceOpt) (*ServerCertificate, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["certificateBody"] = state.CertificateBody
@@ -75,114 +102,71 @@ func GetServerCertificate(ctx *pulumi.Context,
 		inputs["path"] = state.Path
 		inputs["privateKey"] = state.PrivateKey
 	}
-	s, err := ctx.ReadResource("aws:iam/serverCertificate:ServerCertificate", name, id, inputs, opts...)
+	var resource ServerCertificate
+	err := ctx.ReadResource("aws:iam/serverCertificate:ServerCertificate", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ServerCertificate{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ServerCertificate) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ServerCertificate) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ServerCertificate) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ServerCertificate) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The Amazon Resource Name (ARN) specifying the server certificate.
-func (r *ServerCertificate) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The contents of the public key certificate in
-// PEM-encoded format.
-func (r *ServerCertificate) CertificateBody() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["certificateBody"])
-}
-
-// The contents of the certificate chain.
-// This is typically a concatenation of the PEM-encoded public key certificates
-// of the chain.
-func (r *ServerCertificate) CertificateChain() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["certificateChain"])
-}
-
-// The name of the Server Certificate. Do not include the
-// path in this value. If omitted, this provider will assign a random, unique name.
-func (r *ServerCertificate) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Creates a unique name beginning with the specified
-// prefix. Conflicts with `name`.
-func (r *ServerCertificate) NamePrefix() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["namePrefix"])
-}
-
-// The IAM path for the server certificate.  If it is not
-// included, it defaults to a slash (/). If this certificate is for use with
-// AWS CloudFront, the path must be in format `/cloudfront/your_path_here`.
-// See [IAM Identifiers][1] for more details on IAM Paths.
-func (r *ServerCertificate) Path() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["path"])
-}
-
-// The contents of the private key in PEM-encoded format.
-func (r *ServerCertificate) PrivateKey() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["privateKey"])
-}
-
 // Input properties used for looking up and filtering ServerCertificate resources.
 type ServerCertificateState struct {
 	// The Amazon Resource Name (ARN) specifying the server certificate.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The contents of the public key certificate in
 	// PEM-encoded format.
-	CertificateBody interface{}
+	CertificateBody pulumi.StringInput `pulumi:"certificateBody"`
 	// The contents of the certificate chain.
 	// This is typically a concatenation of the PEM-encoded public key certificates
 	// of the chain.
-	CertificateChain interface{}
+	CertificateChain pulumi.StringInput `pulumi:"certificateChain"`
 	// The name of the Server Certificate. Do not include the
 	// path in this value. If omitted, this provider will assign a random, unique name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified
 	// prefix. Conflicts with `name`.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// The IAM path for the server certificate.  If it is not
 	// included, it defaults to a slash (/). If this certificate is for use with
 	// AWS CloudFront, the path must be in format `/cloudfront/your_path_here`.
 	// See [IAM Identifiers][1] for more details on IAM Paths.
-	Path interface{}
+	Path pulumi.StringInput `pulumi:"path"`
 	// The contents of the private key in PEM-encoded format.
-	PrivateKey interface{}
+	PrivateKey pulumi.StringInput `pulumi:"privateKey"`
 }
 
 // The set of arguments for constructing a ServerCertificate resource.
 type ServerCertificateArgs struct {
 	// The Amazon Resource Name (ARN) specifying the server certificate.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The contents of the public key certificate in
 	// PEM-encoded format.
-	CertificateBody interface{}
+	CertificateBody pulumi.StringInput `pulumi:"certificateBody"`
 	// The contents of the certificate chain.
 	// This is typically a concatenation of the PEM-encoded public key certificates
 	// of the chain.
-	CertificateChain interface{}
+	CertificateChain pulumi.StringInput `pulumi:"certificateChain"`
 	// The name of the Server Certificate. Do not include the
 	// path in this value. If omitted, this provider will assign a random, unique name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified
 	// prefix. Conflicts with `name`.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// The IAM path for the server certificate.  If it is not
 	// included, it defaults to a slash (/). If this certificate is for use with
 	// AWS CloudFront, the path must be in format `/cloudfront/your_path_here`.
 	// See [IAM Identifiers][1] for more details on IAM Paths.
-	Path interface{}
+	Path pulumi.StringInput `pulumi:"path"`
 	// The contents of the private key in PEM-encoded format.
-	PrivateKey interface{}
+	PrivateKey pulumi.StringInput `pulumi:"privateKey"`
 }

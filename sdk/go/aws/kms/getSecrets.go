@@ -29,14 +29,14 @@ func LookupSecrets(ctx *pulumi.Context, args *GetSecretsArgs) (*GetSecretsResult
 // A collection of arguments for invoking getSecrets.
 type GetSecretsArgs struct {
 	// One or more encrypted payload definitions from the KMS service. See the Secret Definitions below.
-	Secrets interface{}
+	Secrets pulumi.ArrayInput `pulumi:"secrets"`
 }
 
 // A collection of values returned by getSecrets.
 type GetSecretsResult struct {
 	// Map containing each `secret` `name` as the key with its decrypted plaintext value
-	Plaintext interface{}
-	Secrets interface{}
+	Plaintext map[string]interface{} `pulumi:"plaintext"`
+	Secrets []interface{} `pulumi:"secrets"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

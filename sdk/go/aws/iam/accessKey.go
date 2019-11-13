@@ -12,7 +12,41 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/iam_access_key.html.markdown.
 type AccessKey struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The encrypted secret, base64 encoded.
+	// > **NOTE:** The encrypted secret may be decrypted using the command line,
+	// for example: `... | base64 --decode | keybase pgp decrypt`.
+	EncryptedSecret pulumi.StringOutput `pulumi:"encryptedSecret"`
+
+	// The fingerprint of the PGP key used to encrypt
+	// the secret
+	KeyFingerprint pulumi.StringOutput `pulumi:"keyFingerprint"`
+
+	// Either a base-64 encoded PGP public key, or a
+	// keybase username in the form `keybase:some_person_that_exists`.
+	PgpKey pulumi.StringOutput `pulumi:"pgpKey"`
+
+	// The secret access key. Note that this will be written
+	// to the state file. Please supply a `pgpKey` instead, which will prevent the
+	// secret from being stored in plain text
+	Secret pulumi.StringOutput `pulumi:"secret"`
+
+	// The secret access key converted into an SES SMTP
+	// password by applying [AWS's documented conversion
+	// algorithm](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/smtp-credentials.html#smtp-credentials-convert).
+	SesSmtpPassword pulumi.StringOutput `pulumi:"sesSmtpPassword"`
+
+	// The access key status to apply. Defaults to `Active`.
+	// Valid values are `Active` and `Inactive`.
+	Status pulumi.StringOutput `pulumi:"status"`
+
+	// The IAM user to associate with this access key.
+	User pulumi.StringOutput `pulumi:"user"`
 }
 
 // NewAccessKey registers a new resource with the given unique name, arguments, and options.
@@ -21,32 +55,25 @@ func NewAccessKey(ctx *pulumi.Context,
 	if args == nil || args.User == nil {
 		return nil, errors.New("missing required argument 'User'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["pgpKey"] = nil
-		inputs["status"] = nil
-		inputs["user"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["pgpKey"] = args.PgpKey
 		inputs["status"] = args.Status
 		inputs["user"] = args.User
 	}
-	inputs["encryptedSecret"] = nil
-	inputs["keyFingerprint"] = nil
-	inputs["secret"] = nil
-	inputs["sesSmtpPassword"] = nil
-	s, err := ctx.RegisterResource("aws:iam/accessKey:AccessKey", name, true, inputs, opts...)
+	var resource AccessKey
+	err := ctx.RegisterResource("aws:iam/accessKey:AccessKey", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AccessKey{s: s}, nil
+	return &resource, nil
 }
 
 // GetAccessKey gets an existing AccessKey resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAccessKey(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AccessKeyState, opts ...pulumi.ResourceOpt) (*AccessKey, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["encryptedSecret"] = state.EncryptedSecret
 		inputs["keyFingerprint"] = state.KeyFingerprint
@@ -56,102 +83,58 @@ func GetAccessKey(ctx *pulumi.Context,
 		inputs["status"] = state.Status
 		inputs["user"] = state.User
 	}
-	s, err := ctx.ReadResource("aws:iam/accessKey:AccessKey", name, id, inputs, opts...)
+	var resource AccessKey
+	err := ctx.ReadResource("aws:iam/accessKey:AccessKey", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AccessKey{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *AccessKey) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *AccessKey) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *AccessKey) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *AccessKey) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The encrypted secret, base64 encoded.
-// > **NOTE:** The encrypted secret may be decrypted using the command line,
-// for example: `... | base64 --decode | keybase pgp decrypt`.
-func (r *AccessKey) EncryptedSecret() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["encryptedSecret"])
-}
-
-// The fingerprint of the PGP key used to encrypt
-// the secret
-func (r *AccessKey) KeyFingerprint() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["keyFingerprint"])
-}
-
-// Either a base-64 encoded PGP public key, or a
-// keybase username in the form `keybase:some_person_that_exists`.
-func (r *AccessKey) PgpKey() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["pgpKey"])
-}
-
-// The secret access key. Note that this will be written
-// to the state file. Please supply a `pgpKey` instead, which will prevent the
-// secret from being stored in plain text
-func (r *AccessKey) Secret() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["secret"])
-}
-
-// The secret access key converted into an SES SMTP
-// password by applying [AWS's documented conversion
-// algorithm](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/smtp-credentials.html#smtp-credentials-convert).
-func (r *AccessKey) SesSmtpPassword() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["sesSmtpPassword"])
-}
-
-// The access key status to apply. Defaults to `Active`.
-// Valid values are `Active` and `Inactive`.
-func (r *AccessKey) Status() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["status"])
-}
-
-// The IAM user to associate with this access key.
-func (r *AccessKey) User() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["user"])
-}
-
 // Input properties used for looking up and filtering AccessKey resources.
 type AccessKeyState struct {
 	// The encrypted secret, base64 encoded.
 	// > **NOTE:** The encrypted secret may be decrypted using the command line,
 	// for example: `... | base64 --decode | keybase pgp decrypt`.
-	EncryptedSecret interface{}
+	EncryptedSecret pulumi.StringInput `pulumi:"encryptedSecret"`
 	// The fingerprint of the PGP key used to encrypt
 	// the secret
-	KeyFingerprint interface{}
+	KeyFingerprint pulumi.StringInput `pulumi:"keyFingerprint"`
 	// Either a base-64 encoded PGP public key, or a
 	// keybase username in the form `keybase:some_person_that_exists`.
-	PgpKey interface{}
+	PgpKey pulumi.StringInput `pulumi:"pgpKey"`
 	// The secret access key. Note that this will be written
 	// to the state file. Please supply a `pgpKey` instead, which will prevent the
 	// secret from being stored in plain text
-	Secret interface{}
+	Secret pulumi.StringInput `pulumi:"secret"`
 	// The secret access key converted into an SES SMTP
 	// password by applying [AWS's documented conversion
 	// algorithm](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/smtp-credentials.html#smtp-credentials-convert).
-	SesSmtpPassword interface{}
+	SesSmtpPassword pulumi.StringInput `pulumi:"sesSmtpPassword"`
 	// The access key status to apply. Defaults to `Active`.
 	// Valid values are `Active` and `Inactive`.
-	Status interface{}
+	Status pulumi.StringInput `pulumi:"status"`
 	// The IAM user to associate with this access key.
-	User interface{}
+	User pulumi.StringInput `pulumi:"user"`
 }
 
 // The set of arguments for constructing a AccessKey resource.
 type AccessKeyArgs struct {
 	// Either a base-64 encoded PGP public key, or a
 	// keybase username in the form `keybase:some_person_that_exists`.
-	PgpKey interface{}
+	PgpKey pulumi.StringInput `pulumi:"pgpKey"`
 	// The access key status to apply. Defaults to `Active`.
 	// Valid values are `Active` and `Inactive`.
-	Status interface{}
+	Status pulumi.StringInput `pulumi:"status"`
 	// The IAM user to associate with this access key.
-	User interface{}
+	User pulumi.StringInput `pulumi:"user"`
 }

@@ -12,7 +12,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/iam_user_policy.html.markdown.
 type UserPolicy struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The name of the policy. If omitted, this provider will assign a random, unique name.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
+	NamePrefix pulumi.StringOutput `pulumi:"namePrefix"`
+
+	// The policy document. This is a JSON formatted string.
+	Policy pulumi.StringOutput `pulumi:"policy"`
+
+	// IAM user to which to attach this policy.
+	User pulumi.StringOutput `pulumi:"user"`
 }
 
 // NewUserPolicy registers a new resource with the given unique name, arguments, and options.
@@ -24,93 +40,70 @@ func NewUserPolicy(ctx *pulumi.Context,
 	if args == nil || args.User == nil {
 		return nil, errors.New("missing required argument 'User'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["name"] = nil
-		inputs["namePrefix"] = nil
-		inputs["policy"] = nil
-		inputs["user"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["name"] = args.Name
 		inputs["namePrefix"] = args.NamePrefix
 		inputs["policy"] = args.Policy
 		inputs["user"] = args.User
 	}
-	s, err := ctx.RegisterResource("aws:iam/userPolicy:UserPolicy", name, true, inputs, opts...)
+	var resource UserPolicy
+	err := ctx.RegisterResource("aws:iam/userPolicy:UserPolicy", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &UserPolicy{s: s}, nil
+	return &resource, nil
 }
 
 // GetUserPolicy gets an existing UserPolicy resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetUserPolicy(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *UserPolicyState, opts ...pulumi.ResourceOpt) (*UserPolicy, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["name"] = state.Name
 		inputs["namePrefix"] = state.NamePrefix
 		inputs["policy"] = state.Policy
 		inputs["user"] = state.User
 	}
-	s, err := ctx.ReadResource("aws:iam/userPolicy:UserPolicy", name, id, inputs, opts...)
+	var resource UserPolicy
+	err := ctx.ReadResource("aws:iam/userPolicy:UserPolicy", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &UserPolicy{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *UserPolicy) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *UserPolicy) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *UserPolicy) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *UserPolicy) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The name of the policy. If omitted, this provider will assign a random, unique name.
-func (r *UserPolicy) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
-func (r *UserPolicy) NamePrefix() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["namePrefix"])
-}
-
-// The policy document. This is a JSON formatted string.
-func (r *UserPolicy) Policy() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["policy"])
-}
-
-// IAM user to which to attach this policy.
-func (r *UserPolicy) User() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["user"])
-}
-
 // Input properties used for looking up and filtering UserPolicy resources.
 type UserPolicyState struct {
 	// The name of the policy. If omitted, this provider will assign a random, unique name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// The policy document. This is a JSON formatted string.
-	Policy interface{}
+	Policy pulumi.StringInput `pulumi:"policy"`
 	// IAM user to which to attach this policy.
-	User interface{}
+	User pulumi.StringInput `pulumi:"user"`
 }
 
 // The set of arguments for constructing a UserPolicy resource.
 type UserPolicyArgs struct {
 	// The name of the policy. If omitted, this provider will assign a random, unique name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// The policy document. This is a JSON formatted string.
-	Policy interface{}
+	Policy pulumi.StringInput `pulumi:"policy"`
 	// IAM user to which to attach this policy.
-	User interface{}
+	User pulumi.StringInput `pulumi:"user"`
 }

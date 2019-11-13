@@ -12,7 +12,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/api_gateway_gateway_response.html.markdown.
 type Response struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// A map specifying the parameters (paths, query strings and headers) of the Gateway Response.
+	ResponseParameters pulumi.MapOutput `pulumi:"responseParameters"`
+
+	// A map specifying the templates used to transform the response body.
+	ResponseTemplates pulumi.MapOutput `pulumi:"responseTemplates"`
+
+	// The response type of the associated GatewayResponse.
+	ResponseType pulumi.StringOutput `pulumi:"responseType"`
+
+	// The string identifier of the associated REST API.
+	RestApiId pulumi.StringOutput `pulumi:"restApiId"`
+
+	// The HTTP status code of the Gateway Response.
+	StatusCode pulumi.StringOutput `pulumi:"statusCode"`
 }
 
 // NewResponse registers a new resource with the given unique name, arguments, and options.
@@ -24,32 +43,27 @@ func NewResponse(ctx *pulumi.Context,
 	if args == nil || args.RestApiId == nil {
 		return nil, errors.New("missing required argument 'RestApiId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["responseParameters"] = nil
-		inputs["responseTemplates"] = nil
-		inputs["responseType"] = nil
-		inputs["restApiId"] = nil
-		inputs["statusCode"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["responseParameters"] = args.ResponseParameters
 		inputs["responseTemplates"] = args.ResponseTemplates
 		inputs["responseType"] = args.ResponseType
 		inputs["restApiId"] = args.RestApiId
 		inputs["statusCode"] = args.StatusCode
 	}
-	s, err := ctx.RegisterResource("aws:apigateway/response:Response", name, true, inputs, opts...)
+	var resource Response
+	err := ctx.RegisterResource("aws:apigateway/response:Response", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Response{s: s}, nil
+	return &resource, nil
 }
 
 // GetResponse gets an existing Response resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetResponse(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ResponseState, opts ...pulumi.ResourceOpt) (*Response, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["responseParameters"] = state.ResponseParameters
 		inputs["responseTemplates"] = state.ResponseTemplates
@@ -57,72 +71,47 @@ func GetResponse(ctx *pulumi.Context,
 		inputs["restApiId"] = state.RestApiId
 		inputs["statusCode"] = state.StatusCode
 	}
-	s, err := ctx.ReadResource("aws:apigateway/response:Response", name, id, inputs, opts...)
+	var resource Response
+	err := ctx.ReadResource("aws:apigateway/response:Response", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Response{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Response) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Response) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Response) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Response) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// A map specifying the parameters (paths, query strings and headers) of the Gateway Response.
-func (r *Response) ResponseParameters() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["responseParameters"])
-}
-
-// A map specifying the templates used to transform the response body.
-func (r *Response) ResponseTemplates() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["responseTemplates"])
-}
-
-// The response type of the associated GatewayResponse.
-func (r *Response) ResponseType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["responseType"])
-}
-
-// The string identifier of the associated REST API.
-func (r *Response) RestApiId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["restApiId"])
-}
-
-// The HTTP status code of the Gateway Response.
-func (r *Response) StatusCode() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["statusCode"])
-}
-
 // Input properties used for looking up and filtering Response resources.
 type ResponseState struct {
 	// A map specifying the parameters (paths, query strings and headers) of the Gateway Response.
-	ResponseParameters interface{}
+	ResponseParameters pulumi.MapInput `pulumi:"responseParameters"`
 	// A map specifying the templates used to transform the response body.
-	ResponseTemplates interface{}
+	ResponseTemplates pulumi.MapInput `pulumi:"responseTemplates"`
 	// The response type of the associated GatewayResponse.
-	ResponseType interface{}
+	ResponseType pulumi.StringInput `pulumi:"responseType"`
 	// The string identifier of the associated REST API.
-	RestApiId interface{}
+	RestApiId pulumi.StringInput `pulumi:"restApiId"`
 	// The HTTP status code of the Gateway Response.
-	StatusCode interface{}
+	StatusCode pulumi.StringInput `pulumi:"statusCode"`
 }
 
 // The set of arguments for constructing a Response resource.
 type ResponseArgs struct {
 	// A map specifying the parameters (paths, query strings and headers) of the Gateway Response.
-	ResponseParameters interface{}
+	ResponseParameters pulumi.MapInput `pulumi:"responseParameters"`
 	// A map specifying the templates used to transform the response body.
-	ResponseTemplates interface{}
+	ResponseTemplates pulumi.MapInput `pulumi:"responseTemplates"`
 	// The response type of the associated GatewayResponse.
-	ResponseType interface{}
+	ResponseType pulumi.StringInput `pulumi:"responseType"`
 	// The string identifier of the associated REST API.
-	RestApiId interface{}
+	RestApiId pulumi.StringInput `pulumi:"restApiId"`
 	// The HTTP status code of the Gateway Response.
-	StatusCode interface{}
+	StatusCode pulumi.StringInput `pulumi:"statusCode"`
 }

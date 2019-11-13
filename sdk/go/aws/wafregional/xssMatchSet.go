@@ -11,75 +11,74 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/wafregional_xss_match_set.html.markdown.
 type XssMatchSet struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The name of the set
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The parts of web requests that you want to inspect for cross-site scripting attacks.
+	XssMatchTuples pulumi.ArrayOutput `pulumi:"xssMatchTuples"`
 }
 
 // NewXssMatchSet registers a new resource with the given unique name, arguments, and options.
 func NewXssMatchSet(ctx *pulumi.Context,
 	name string, args *XssMatchSetArgs, opts ...pulumi.ResourceOpt) (*XssMatchSet, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["name"] = nil
-		inputs["xssMatchTuples"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["name"] = args.Name
 		inputs["xssMatchTuples"] = args.XssMatchTuples
 	}
-	s, err := ctx.RegisterResource("aws:wafregional/xssMatchSet:XssMatchSet", name, true, inputs, opts...)
+	var resource XssMatchSet
+	err := ctx.RegisterResource("aws:wafregional/xssMatchSet:XssMatchSet", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &XssMatchSet{s: s}, nil
+	return &resource, nil
 }
 
 // GetXssMatchSet gets an existing XssMatchSet resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetXssMatchSet(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *XssMatchSetState, opts ...pulumi.ResourceOpt) (*XssMatchSet, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["name"] = state.Name
 		inputs["xssMatchTuples"] = state.XssMatchTuples
 	}
-	s, err := ctx.ReadResource("aws:wafregional/xssMatchSet:XssMatchSet", name, id, inputs, opts...)
+	var resource XssMatchSet
+	err := ctx.ReadResource("aws:wafregional/xssMatchSet:XssMatchSet", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &XssMatchSet{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *XssMatchSet) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *XssMatchSet) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *XssMatchSet) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *XssMatchSet) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The name of the set
-func (r *XssMatchSet) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The parts of web requests that you want to inspect for cross-site scripting attacks.
-func (r *XssMatchSet) XssMatchTuples() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["xssMatchTuples"])
-}
-
 // Input properties used for looking up and filtering XssMatchSet resources.
 type XssMatchSetState struct {
 	// The name of the set
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The parts of web requests that you want to inspect for cross-site scripting attacks.
-	XssMatchTuples interface{}
+	XssMatchTuples pulumi.ArrayInput `pulumi:"xssMatchTuples"`
 }
 
 // The set of arguments for constructing a XssMatchSet resource.
 type XssMatchSetArgs struct {
 	// The name of the set
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The parts of web requests that you want to inspect for cross-site scripting attacks.
-	XssMatchTuples interface{}
+	XssMatchTuples pulumi.ArrayInput `pulumi:"xssMatchTuples"`
 }

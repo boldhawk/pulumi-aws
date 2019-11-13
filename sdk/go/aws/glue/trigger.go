@@ -12,7 +12,32 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/glue_trigger.html.markdown.
 type Trigger struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// List of actions initiated by this trigger when it fires. Defined below.
+	Actions pulumi.ArrayOutput `pulumi:"actions"`
+
+	// A description of the new trigger.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// Start the trigger. Defaults to `true`. Not valid to disable for `ON_DEMAND` type.
+	Enabled pulumi.BoolOutput `pulumi:"enabled"`
+
+	// The name of the trigger.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A predicate to specify when the new trigger should fire. Required when trigger type is `CONDITIONAL`. Defined below.
+	Predicate pulumi.AnyOutput `pulumi:"predicate"`
+
+	// A cron expression used to specify the schedule. [Time-Based Schedules for Jobs and Crawlers](https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html)
+	Schedule pulumi.StringOutput `pulumi:"schedule"`
+
+	// The type of trigger. Valid values are `CONDITIONAL`, `ON_DEMAND`, and `SCHEDULED`.
+	Type pulumi.StringOutput `pulumi:"type"`
 }
 
 // NewTrigger registers a new resource with the given unique name, arguments, and options.
@@ -24,16 +49,9 @@ func NewTrigger(ctx *pulumi.Context,
 	if args == nil || args.Type == nil {
 		return nil, errors.New("missing required argument 'Type'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["actions"] = nil
-		inputs["description"] = nil
-		inputs["enabled"] = nil
-		inputs["name"] = nil
-		inputs["predicate"] = nil
-		inputs["schedule"] = nil
-		inputs["type"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["actions"] = args.Actions
 		inputs["description"] = args.Description
 		inputs["enabled"] = args.Enabled
@@ -42,18 +60,19 @@ func NewTrigger(ctx *pulumi.Context,
 		inputs["schedule"] = args.Schedule
 		inputs["type"] = args.Type
 	}
-	s, err := ctx.RegisterResource("aws:glue/trigger:Trigger", name, true, inputs, opts...)
+	var resource Trigger
+	err := ctx.RegisterResource("aws:glue/trigger:Trigger", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Trigger{s: s}, nil
+	return &resource, nil
 }
 
 // GetTrigger gets an existing Trigger resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetTrigger(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *TriggerState, opts ...pulumi.ResourceOpt) (*Trigger, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["actions"] = state.Actions
 		inputs["description"] = state.Description
@@ -63,90 +82,55 @@ func GetTrigger(ctx *pulumi.Context,
 		inputs["schedule"] = state.Schedule
 		inputs["type"] = state.Type
 	}
-	s, err := ctx.ReadResource("aws:glue/trigger:Trigger", name, id, inputs, opts...)
+	var resource Trigger
+	err := ctx.ReadResource("aws:glue/trigger:Trigger", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Trigger{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Trigger) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Trigger) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Trigger) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Trigger) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// List of actions initiated by this trigger when it fires. Defined below.
-func (r *Trigger) Actions() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["actions"])
-}
-
-// A description of the new trigger.
-func (r *Trigger) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// Start the trigger. Defaults to `true`. Not valid to disable for `ON_DEMAND` type.
-func (r *Trigger) Enabled() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["enabled"])
-}
-
-// The name of the trigger.
-func (r *Trigger) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A predicate to specify when the new trigger should fire. Required when trigger type is `CONDITIONAL`. Defined below.
-func (r *Trigger) Predicate() *pulumi.Output {
-	return r.s.State["predicate"]
-}
-
-// A cron expression used to specify the schedule. [Time-Based Schedules for Jobs and Crawlers](https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html)
-func (r *Trigger) Schedule() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["schedule"])
-}
-
-// The type of trigger. Valid values are `CONDITIONAL`, `ON_DEMAND`, and `SCHEDULED`.
-func (r *Trigger) Type() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["type"])
-}
-
 // Input properties used for looking up and filtering Trigger resources.
 type TriggerState struct {
 	// List of actions initiated by this trigger when it fires. Defined below.
-	Actions interface{}
+	Actions pulumi.ArrayInput `pulumi:"actions"`
 	// A description of the new trigger.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// Start the trigger. Defaults to `true`. Not valid to disable for `ON_DEMAND` type.
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// The name of the trigger.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A predicate to specify when the new trigger should fire. Required when trigger type is `CONDITIONAL`. Defined below.
-	Predicate interface{}
+	Predicate pulumi.AnyInput `pulumi:"predicate"`
 	// A cron expression used to specify the schedule. [Time-Based Schedules for Jobs and Crawlers](https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html)
-	Schedule interface{}
+	Schedule pulumi.StringInput `pulumi:"schedule"`
 	// The type of trigger. Valid values are `CONDITIONAL`, `ON_DEMAND`, and `SCHEDULED`.
-	Type interface{}
+	Type pulumi.StringInput `pulumi:"type"`
 }
 
 // The set of arguments for constructing a Trigger resource.
 type TriggerArgs struct {
 	// List of actions initiated by this trigger when it fires. Defined below.
-	Actions interface{}
+	Actions pulumi.ArrayInput `pulumi:"actions"`
 	// A description of the new trigger.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// Start the trigger. Defaults to `true`. Not valid to disable for `ON_DEMAND` type.
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// The name of the trigger.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A predicate to specify when the new trigger should fire. Required when trigger type is `CONDITIONAL`. Defined below.
-	Predicate interface{}
+	Predicate pulumi.AnyInput `pulumi:"predicate"`
 	// A cron expression used to specify the schedule. [Time-Based Schedules for Jobs and Crawlers](https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html)
-	Schedule interface{}
+	Schedule pulumi.StringInput `pulumi:"schedule"`
 	// The type of trigger. Valid values are `CONDITIONAL`, `ON_DEMAND`, and `SCHEDULED`.
-	Type interface{}
+	Type pulumi.StringInput `pulumi:"type"`
 }

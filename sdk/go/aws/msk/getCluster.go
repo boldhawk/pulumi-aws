@@ -36,27 +36,27 @@ func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult
 // A collection of arguments for invoking getCluster.
 type GetClusterArgs struct {
 	// Name of the cluster.
-	ClusterName interface{}
-	Tags interface{}
+	ClusterName pulumi.StringInput `pulumi:"clusterName"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getCluster.
 type GetClusterResult struct {
 	// Amazon Resource Name (ARN) of the MSK cluster.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// A comma separated list of one or more hostname:port pairs of Kafka brokers suitable to boostrap connectivity to the Kafka cluster.
-	BootstrapBrokers interface{}
+	BootstrapBrokers string `pulumi:"bootstrapBrokers"`
 	// A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity to the kafka cluster.
-	BootstrapBrokersTls interface{}
-	ClusterName interface{}
+	BootstrapBrokersTls string `pulumi:"bootstrapBrokersTls"`
+	ClusterName string `pulumi:"clusterName"`
 	// Apache Kafka version.
-	KafkaVersion interface{}
+	KafkaVersion string `pulumi:"kafkaVersion"`
 	// Number of broker nodes in the cluster.
-	NumberOfBrokerNodes interface{}
+	NumberOfBrokerNodes int `pulumi:"numberOfBrokerNodes"`
 	// Map of key-value pairs assigned to the cluster.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// A comma separated list of one or more IP:port pairs to use to connect to the Apache Zookeeper cluster.
-	ZookeeperConnectString interface{}
+	ZookeeperConnectString string `pulumi:"zookeeperConnectString"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

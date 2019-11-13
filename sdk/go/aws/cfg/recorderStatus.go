@@ -14,7 +14,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/config_configuration_recorder_status.html.markdown.
 type RecorderStatus struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Whether the configuration recorder should be enabled or disabled.
+	IsEnabled pulumi.BoolOutput `pulumi:"isEnabled"`
+
+	// The name of the recorder
+	Name pulumi.StringOutput `pulumi:"name"`
 }
 
 // NewRecorderStatus registers a new resource with the given unique name, arguments, and options.
@@ -23,69 +33,58 @@ func NewRecorderStatus(ctx *pulumi.Context,
 	if args == nil || args.IsEnabled == nil {
 		return nil, errors.New("missing required argument 'IsEnabled'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["isEnabled"] = nil
-		inputs["name"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["isEnabled"] = args.IsEnabled
 		inputs["name"] = args.Name
 	}
-	s, err := ctx.RegisterResource("aws:cfg/recorderStatus:RecorderStatus", name, true, inputs, opts...)
+	var resource RecorderStatus
+	err := ctx.RegisterResource("aws:cfg/recorderStatus:RecorderStatus", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RecorderStatus{s: s}, nil
+	return &resource, nil
 }
 
 // GetRecorderStatus gets an existing RecorderStatus resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRecorderStatus(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RecorderStatusState, opts ...pulumi.ResourceOpt) (*RecorderStatus, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["isEnabled"] = state.IsEnabled
 		inputs["name"] = state.Name
 	}
-	s, err := ctx.ReadResource("aws:cfg/recorderStatus:RecorderStatus", name, id, inputs, opts...)
+	var resource RecorderStatus
+	err := ctx.ReadResource("aws:cfg/recorderStatus:RecorderStatus", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RecorderStatus{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *RecorderStatus) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *RecorderStatus) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *RecorderStatus) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *RecorderStatus) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Whether the configuration recorder should be enabled or disabled.
-func (r *RecorderStatus) IsEnabled() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["isEnabled"])
-}
-
-// The name of the recorder
-func (r *RecorderStatus) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
 // Input properties used for looking up and filtering RecorderStatus resources.
 type RecorderStatusState struct {
 	// Whether the configuration recorder should be enabled or disabled.
-	IsEnabled interface{}
+	IsEnabled pulumi.BoolInput `pulumi:"isEnabled"`
 	// The name of the recorder
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // The set of arguments for constructing a RecorderStatus resource.
 type RecorderStatusArgs struct {
 	// Whether the configuration recorder should be enabled or disabled.
-	IsEnabled interface{}
+	IsEnabled pulumi.BoolInput `pulumi:"isEnabled"`
 	// The name of the recorder
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }

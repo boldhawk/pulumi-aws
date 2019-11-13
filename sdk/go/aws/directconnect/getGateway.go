@@ -30,16 +30,16 @@ func LookupGateway(ctx *pulumi.Context, args *GetGatewayArgs) (*GetGatewayResult
 // A collection of arguments for invoking getGateway.
 type GetGatewayArgs struct {
 	// The name of the gateway to retrieve.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getGateway.
 type GetGatewayResult struct {
 	// The ASN on the Amazon side of the connection.
-	AmazonSideAsn interface{}
-	Name interface{}
+	AmazonSideAsn string `pulumi:"amazonSideAsn"`
+	Name string `pulumi:"name"`
 	// AWS Account ID of the gateway.
-	OwnerAccountId interface{}
+	OwnerAccountId string `pulumi:"ownerAccountId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

@@ -12,7 +12,41 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/appsync_graphql_api.html.markdown.
 type GraphQLApi struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// One or more additional authentication providers for the GraphqlApi. Defined below.
+	AdditionalAuthenticationProviders pulumi.ArrayOutput `pulumi:"additionalAuthenticationProviders"`
+
+	// The ARN
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The authentication type. Valid values: `API_KEY`, `AWS_IAM`, `AMAZON_COGNITO_USER_POOLS`, `OPENID_CONNECT`
+	AuthenticationType pulumi.StringOutput `pulumi:"authenticationType"`
+
+	// Nested argument containing logging configuration. Defined below.
+	LogConfig pulumi.AnyOutput `pulumi:"logConfig"`
+
+	// A user-supplied name for the GraphqlApi.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Nested argument containing OpenID Connect configuration. Defined below.
+	OpenidConnectConfig pulumi.AnyOutput `pulumi:"openidConnectConfig"`
+
+	// The schema definition, in GraphQL schema language format. This provider cannot perform drift detection of this configuration.
+	Schema pulumi.StringOutput `pulumi:"schema"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// Map of URIs associated with the API. e.g. `uris["GRAPHQL"] = https://ID.appsync-api.REGION.amazonaws.com/graphql`
+	Uris pulumi.MapOutput `pulumi:"uris"`
+
+	// The Amazon Cognito User Pool configuration. Defined below.
+	UserPoolConfig pulumi.AnyOutput `pulumi:"userPoolConfig"`
 }
 
 // NewGraphQLApi registers a new resource with the given unique name, arguments, and options.
@@ -21,17 +55,9 @@ func NewGraphQLApi(ctx *pulumi.Context,
 	if args == nil || args.AuthenticationType == nil {
 		return nil, errors.New("missing required argument 'AuthenticationType'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["additionalAuthenticationProviders"] = nil
-		inputs["authenticationType"] = nil
-		inputs["logConfig"] = nil
-		inputs["name"] = nil
-		inputs["openidConnectConfig"] = nil
-		inputs["schema"] = nil
-		inputs["tags"] = nil
-		inputs["userPoolConfig"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["additionalAuthenticationProviders"] = args.AdditionalAuthenticationProviders
 		inputs["authenticationType"] = args.AuthenticationType
 		inputs["logConfig"] = args.LogConfig
@@ -41,20 +67,19 @@ func NewGraphQLApi(ctx *pulumi.Context,
 		inputs["tags"] = args.Tags
 		inputs["userPoolConfig"] = args.UserPoolConfig
 	}
-	inputs["arn"] = nil
-	inputs["uris"] = nil
-	s, err := ctx.RegisterResource("aws:appsync/graphQLApi:GraphQLApi", name, true, inputs, opts...)
+	var resource GraphQLApi
+	err := ctx.RegisterResource("aws:appsync/graphQLApi:GraphQLApi", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &GraphQLApi{s: s}, nil
+	return &resource, nil
 }
 
 // GetGraphQLApi gets an existing GraphQLApi resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetGraphQLApi(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *GraphQLApiState, opts ...pulumi.ResourceOpt) (*GraphQLApi, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["additionalAuthenticationProviders"] = state.AdditionalAuthenticationProviders
 		inputs["arn"] = state.Arn
@@ -67,113 +92,63 @@ func GetGraphQLApi(ctx *pulumi.Context,
 		inputs["uris"] = state.Uris
 		inputs["userPoolConfig"] = state.UserPoolConfig
 	}
-	s, err := ctx.ReadResource("aws:appsync/graphQLApi:GraphQLApi", name, id, inputs, opts...)
+	var resource GraphQLApi
+	err := ctx.ReadResource("aws:appsync/graphQLApi:GraphQLApi", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &GraphQLApi{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *GraphQLApi) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *GraphQLApi) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *GraphQLApi) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *GraphQLApi) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// One or more additional authentication providers for the GraphqlApi. Defined below.
-func (r *GraphQLApi) AdditionalAuthenticationProviders() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["additionalAuthenticationProviders"])
-}
-
-// The ARN
-func (r *GraphQLApi) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The authentication type. Valid values: `API_KEY`, `AWS_IAM`, `AMAZON_COGNITO_USER_POOLS`, `OPENID_CONNECT`
-func (r *GraphQLApi) AuthenticationType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["authenticationType"])
-}
-
-// Nested argument containing logging configuration. Defined below.
-func (r *GraphQLApi) LogConfig() *pulumi.Output {
-	return r.s.State["logConfig"]
-}
-
-// A user-supplied name for the GraphqlApi.
-func (r *GraphQLApi) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Nested argument containing OpenID Connect configuration. Defined below.
-func (r *GraphQLApi) OpenidConnectConfig() *pulumi.Output {
-	return r.s.State["openidConnectConfig"]
-}
-
-// The schema definition, in GraphQL schema language format. This provider cannot perform drift detection of this configuration.
-func (r *GraphQLApi) Schema() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["schema"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *GraphQLApi) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// Map of URIs associated with the API. e.g. `uris["GRAPHQL"] = https://ID.appsync-api.REGION.amazonaws.com/graphql`
-func (r *GraphQLApi) Uris() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["uris"])
-}
-
-// The Amazon Cognito User Pool configuration. Defined below.
-func (r *GraphQLApi) UserPoolConfig() *pulumi.Output {
-	return r.s.State["userPoolConfig"]
-}
-
 // Input properties used for looking up and filtering GraphQLApi resources.
 type GraphQLApiState struct {
 	// One or more additional authentication providers for the GraphqlApi. Defined below.
-	AdditionalAuthenticationProviders interface{}
+	AdditionalAuthenticationProviders pulumi.ArrayInput `pulumi:"additionalAuthenticationProviders"`
 	// The ARN
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The authentication type. Valid values: `API_KEY`, `AWS_IAM`, `AMAZON_COGNITO_USER_POOLS`, `OPENID_CONNECT`
-	AuthenticationType interface{}
+	AuthenticationType pulumi.StringInput `pulumi:"authenticationType"`
 	// Nested argument containing logging configuration. Defined below.
-	LogConfig interface{}
+	LogConfig pulumi.AnyInput `pulumi:"logConfig"`
 	// A user-supplied name for the GraphqlApi.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Nested argument containing OpenID Connect configuration. Defined below.
-	OpenidConnectConfig interface{}
+	OpenidConnectConfig pulumi.AnyInput `pulumi:"openidConnectConfig"`
 	// The schema definition, in GraphQL schema language format. This provider cannot perform drift detection of this configuration.
-	Schema interface{}
+	Schema pulumi.StringInput `pulumi:"schema"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Map of URIs associated with the API. e.g. `uris["GRAPHQL"] = https://ID.appsync-api.REGION.amazonaws.com/graphql`
-	Uris interface{}
+	Uris pulumi.MapInput `pulumi:"uris"`
 	// The Amazon Cognito User Pool configuration. Defined below.
-	UserPoolConfig interface{}
+	UserPoolConfig pulumi.AnyInput `pulumi:"userPoolConfig"`
 }
 
 // The set of arguments for constructing a GraphQLApi resource.
 type GraphQLApiArgs struct {
 	// One or more additional authentication providers for the GraphqlApi. Defined below.
-	AdditionalAuthenticationProviders interface{}
+	AdditionalAuthenticationProviders pulumi.ArrayInput `pulumi:"additionalAuthenticationProviders"`
 	// The authentication type. Valid values: `API_KEY`, `AWS_IAM`, `AMAZON_COGNITO_USER_POOLS`, `OPENID_CONNECT`
-	AuthenticationType interface{}
+	AuthenticationType pulumi.StringInput `pulumi:"authenticationType"`
 	// Nested argument containing logging configuration. Defined below.
-	LogConfig interface{}
+	LogConfig pulumi.AnyInput `pulumi:"logConfig"`
 	// A user-supplied name for the GraphqlApi.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Nested argument containing OpenID Connect configuration. Defined below.
-	OpenidConnectConfig interface{}
+	OpenidConnectConfig pulumi.AnyInput `pulumi:"openidConnectConfig"`
 	// The schema definition, in GraphQL schema language format. This provider cannot perform drift detection of this configuration.
-	Schema interface{}
+	Schema pulumi.StringInput `pulumi:"schema"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The Amazon Cognito User Pool configuration. Defined below.
-	UserPoolConfig interface{}
+	UserPoolConfig pulumi.AnyInput `pulumi:"userPoolConfig"`
 }

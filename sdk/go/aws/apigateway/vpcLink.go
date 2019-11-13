@@ -12,7 +12,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/api_gateway_vpc_link.html.markdown.
 type VpcLink struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The description of the VPC link.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The name used to label and identify the VPC link.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The list of network load balancer arns in the VPC targeted by the VPC link. Currently AWS only supports 1 target.
+	TargetArn pulumi.StringOutput `pulumi:"targetArn"`
 }
 
 // NewVpcLink registers a new resource with the given unique name, arguments, and options.
@@ -21,81 +34,64 @@ func NewVpcLink(ctx *pulumi.Context,
 	if args == nil || args.TargetArn == nil {
 		return nil, errors.New("missing required argument 'TargetArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["description"] = nil
-		inputs["name"] = nil
-		inputs["targetArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name
 		inputs["targetArn"] = args.TargetArn
 	}
-	s, err := ctx.RegisterResource("aws:apigateway/vpcLink:VpcLink", name, true, inputs, opts...)
+	var resource VpcLink
+	err := ctx.RegisterResource("aws:apigateway/vpcLink:VpcLink", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &VpcLink{s: s}, nil
+	return &resource, nil
 }
 
 // GetVpcLink gets an existing VpcLink resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetVpcLink(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *VpcLinkState, opts ...pulumi.ResourceOpt) (*VpcLink, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["description"] = state.Description
 		inputs["name"] = state.Name
 		inputs["targetArn"] = state.TargetArn
 	}
-	s, err := ctx.ReadResource("aws:apigateway/vpcLink:VpcLink", name, id, inputs, opts...)
+	var resource VpcLink
+	err := ctx.ReadResource("aws:apigateway/vpcLink:VpcLink", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &VpcLink{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *VpcLink) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *VpcLink) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *VpcLink) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *VpcLink) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The description of the VPC link.
-func (r *VpcLink) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The name used to label and identify the VPC link.
-func (r *VpcLink) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The list of network load balancer arns in the VPC targeted by the VPC link. Currently AWS only supports 1 target.
-func (r *VpcLink) TargetArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["targetArn"])
-}
-
 // Input properties used for looking up and filtering VpcLink resources.
 type VpcLinkState struct {
 	// The description of the VPC link.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name used to label and identify the VPC link.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The list of network load balancer arns in the VPC targeted by the VPC link. Currently AWS only supports 1 target.
-	TargetArn interface{}
+	TargetArn pulumi.StringInput `pulumi:"targetArn"`
 }
 
 // The set of arguments for constructing a VpcLink resource.
 type VpcLinkArgs struct {
 	// The description of the VPC link.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name used to label and identify the VPC link.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The list of network load balancer arns in the VPC targeted by the VPC link. Currently AWS only supports 1 target.
-	TargetArn interface{}
+	TargetArn pulumi.StringInput `pulumi:"targetArn"`
 }

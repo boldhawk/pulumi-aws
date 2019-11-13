@@ -33,14 +33,14 @@ func LookupRestApi(ctx *pulumi.Context, args *GetRestApiArgs) (*GetRestApiResult
 type GetRestApiArgs struct {
 	// The name of the REST API to look up. If no REST API is found with this name, an error will be returned. 
 	// If multiple REST APIs are found with this name, an error will be returned.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getRestApi.
 type GetRestApiResult struct {
-	Name interface{}
+	Name string `pulumi:"name"`
 	// Set to the ID of the API Gateway Resource on the found REST API where the route matches '/'.
-	RootResourceId interface{}
+	RootResourceId string `pulumi:"rootResourceId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

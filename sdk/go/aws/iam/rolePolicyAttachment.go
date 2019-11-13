@@ -14,7 +14,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/iam_role_policy_attachment.html.markdown.
 type RolePolicyAttachment struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the policy you want to apply
+	PolicyArn pulumi.StringOutput `pulumi:"policyArn"`
+
+	// The role the policy should be applied to
+	Role pulumi.StringOutput `pulumi:"role"`
 }
 
 // NewRolePolicyAttachment registers a new resource with the given unique name, arguments, and options.
@@ -26,69 +36,57 @@ func NewRolePolicyAttachment(ctx *pulumi.Context,
 	if args == nil || args.Role == nil {
 		return nil, errors.New("missing required argument 'Role'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["policyArn"] = nil
-		inputs["role"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["policyArn"] = args.PolicyArn
 		inputs["role"] = args.Role
 	}
-	s, err := ctx.RegisterResource("aws:iam/rolePolicyAttachment:RolePolicyAttachment", name, true, inputs, opts...)
+	var resource RolePolicyAttachment
+	err := ctx.RegisterResource("aws:iam/rolePolicyAttachment:RolePolicyAttachment", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RolePolicyAttachment{s: s}, nil
+	return &resource, nil
 }
 
 // GetRolePolicyAttachment gets an existing RolePolicyAttachment resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRolePolicyAttachment(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RolePolicyAttachmentState, opts ...pulumi.ResourceOpt) (*RolePolicyAttachment, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["policyArn"] = state.PolicyArn
 		inputs["role"] = state.Role
 	}
-	s, err := ctx.ReadResource("aws:iam/rolePolicyAttachment:RolePolicyAttachment", name, id, inputs, opts...)
+	var resource RolePolicyAttachment
+	err := ctx.ReadResource("aws:iam/rolePolicyAttachment:RolePolicyAttachment", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RolePolicyAttachment{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *RolePolicyAttachment) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *RolePolicyAttachment) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *RolePolicyAttachment) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *RolePolicyAttachment) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the policy you want to apply
-func (r *RolePolicyAttachment) PolicyArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["policyArn"])
-}
-
-// The role the policy should be applied to
-func (r *RolePolicyAttachment) Role() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["role"])
-}
-
 // Input properties used for looking up and filtering RolePolicyAttachment resources.
 type RolePolicyAttachmentState struct {
 	// The ARN of the policy you want to apply
-	PolicyArn interface{}
+	PolicyArn pulumi.StringInput `pulumi:"policyArn"`
 	// The role the policy should be applied to
-	Role interface{}
+	Role pulumi.StringInput `pulumi:"role"`
 }
 
 // The set of arguments for constructing a RolePolicyAttachment resource.
 type RolePolicyAttachmentArgs struct {
 	// The ARN of the policy you want to apply
-	PolicyArn interface{}
+	PolicyArn pulumi.StringInput `pulumi:"policyArn"`
 	// The role the policy should be applied to
-	Role interface{}
+	Role pulumi.StringInput `pulumi:"role"`
 }

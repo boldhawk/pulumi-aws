@@ -12,7 +12,37 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/globalaccelerator_endpoint_group.html.markdown.
 type EndpointGroup struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The list of endpoint objects. Fields documented below.
+	EndpointConfigurations pulumi.ArrayOutput `pulumi:"endpointConfigurations"`
+
+	EndpointGroupRegion pulumi.StringOutput `pulumi:"endpointGroupRegion"`
+
+	// The time—10 seconds or 30 seconds—between each health check for an endpoint. The default value is 30.
+	HealthCheckIntervalSeconds pulumi.IntOutput `pulumi:"healthCheckIntervalSeconds"`
+
+	// If the protocol is HTTP/S, then this specifies the path that is the destination for health check targets. The default value is slash (/).
+	HealthCheckPath pulumi.StringOutput `pulumi:"healthCheckPath"`
+
+	// The port that AWS Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default port is the listener port that this endpoint group is associated with. If listener port is a list of ports, Global Accelerator uses the first port in the list.
+	HealthCheckPort pulumi.IntOutput `pulumi:"healthCheckPort"`
+
+	// The protocol that AWS Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default value is TCP.
+	HealthCheckProtocol pulumi.StringOutput `pulumi:"healthCheckProtocol"`
+
+	// The Amazon Resource Name (ARN) of the listener.
+	ListenerArn pulumi.StringOutput `pulumi:"listenerArn"`
+
+	// The number of consecutive health checks required to set the state of a healthy endpoint to unhealthy, or to set an unhealthy endpoint to healthy. The default value is 3.
+	ThresholdCount pulumi.IntOutput `pulumi:"thresholdCount"`
+
+	// The percentage of traffic to send to an AWS Region. Additional traffic is distributed to other endpoint groups for this listener. The default value is 100.
+	TrafficDialPercentage pulumi.Float64Output `pulumi:"trafficDialPercentage"`
 }
 
 // NewEndpointGroup registers a new resource with the given unique name, arguments, and options.
@@ -21,18 +51,8 @@ func NewEndpointGroup(ctx *pulumi.Context,
 	if args == nil || args.ListenerArn == nil {
 		return nil, errors.New("missing required argument 'ListenerArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["endpointConfigurations"] = nil
-		inputs["endpointGroupRegion"] = nil
-		inputs["healthCheckIntervalSeconds"] = nil
-		inputs["healthCheckPath"] = nil
-		inputs["healthCheckPort"] = nil
-		inputs["healthCheckProtocol"] = nil
-		inputs["listenerArn"] = nil
-		inputs["thresholdCount"] = nil
-		inputs["trafficDialPercentage"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["endpointConfigurations"] = args.EndpointConfigurations
 		inputs["endpointGroupRegion"] = args.EndpointGroupRegion
 		inputs["healthCheckIntervalSeconds"] = args.HealthCheckIntervalSeconds
@@ -43,18 +63,19 @@ func NewEndpointGroup(ctx *pulumi.Context,
 		inputs["thresholdCount"] = args.ThresholdCount
 		inputs["trafficDialPercentage"] = args.TrafficDialPercentage
 	}
-	s, err := ctx.RegisterResource("aws:globalaccelerator/endpointGroup:EndpointGroup", name, true, inputs, opts...)
+	var resource EndpointGroup
+	err := ctx.RegisterResource("aws:globalaccelerator/endpointGroup:EndpointGroup", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EndpointGroup{s: s}, nil
+	return &resource, nil
 }
 
 // GetEndpointGroup gets an existing EndpointGroup resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetEndpointGroup(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *EndpointGroupState, opts ...pulumi.ResourceOpt) (*EndpointGroup, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["endpointConfigurations"] = state.EndpointConfigurations
 		inputs["endpointGroupRegion"] = state.EndpointGroupRegion
@@ -66,105 +87,61 @@ func GetEndpointGroup(ctx *pulumi.Context,
 		inputs["thresholdCount"] = state.ThresholdCount
 		inputs["trafficDialPercentage"] = state.TrafficDialPercentage
 	}
-	s, err := ctx.ReadResource("aws:globalaccelerator/endpointGroup:EndpointGroup", name, id, inputs, opts...)
+	var resource EndpointGroup
+	err := ctx.ReadResource("aws:globalaccelerator/endpointGroup:EndpointGroup", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EndpointGroup{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *EndpointGroup) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *EndpointGroup) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *EndpointGroup) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *EndpointGroup) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The list of endpoint objects. Fields documented below.
-func (r *EndpointGroup) EndpointConfigurations() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["endpointConfigurations"])
-}
-
-func (r *EndpointGroup) EndpointGroupRegion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["endpointGroupRegion"])
-}
-
-// The time—10 seconds or 30 seconds—between each health check for an endpoint. The default value is 30.
-func (r *EndpointGroup) HealthCheckIntervalSeconds() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["healthCheckIntervalSeconds"])
-}
-
-// If the protocol is HTTP/S, then this specifies the path that is the destination for health check targets. The default value is slash (/).
-func (r *EndpointGroup) HealthCheckPath() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["healthCheckPath"])
-}
-
-// The port that AWS Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default port is the listener port that this endpoint group is associated with. If listener port is a list of ports, Global Accelerator uses the first port in the list.
-func (r *EndpointGroup) HealthCheckPort() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["healthCheckPort"])
-}
-
-// The protocol that AWS Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default value is TCP.
-func (r *EndpointGroup) HealthCheckProtocol() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["healthCheckProtocol"])
-}
-
-// The Amazon Resource Name (ARN) of the listener.
-func (r *EndpointGroup) ListenerArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["listenerArn"])
-}
-
-// The number of consecutive health checks required to set the state of a healthy endpoint to unhealthy, or to set an unhealthy endpoint to healthy. The default value is 3.
-func (r *EndpointGroup) ThresholdCount() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["thresholdCount"])
-}
-
-// The percentage of traffic to send to an AWS Region. Additional traffic is distributed to other endpoint groups for this listener. The default value is 100.
-func (r *EndpointGroup) TrafficDialPercentage() *pulumi.Float64Output {
-	return (*pulumi.Float64Output)(r.s.State["trafficDialPercentage"])
-}
-
 // Input properties used for looking up and filtering EndpointGroup resources.
 type EndpointGroupState struct {
 	// The list of endpoint objects. Fields documented below.
-	EndpointConfigurations interface{}
-	EndpointGroupRegion interface{}
+	EndpointConfigurations pulumi.ArrayInput `pulumi:"endpointConfigurations"`
+	EndpointGroupRegion pulumi.StringInput `pulumi:"endpointGroupRegion"`
 	// The time—10 seconds or 30 seconds—between each health check for an endpoint. The default value is 30.
-	HealthCheckIntervalSeconds interface{}
+	HealthCheckIntervalSeconds pulumi.IntInput `pulumi:"healthCheckIntervalSeconds"`
 	// If the protocol is HTTP/S, then this specifies the path that is the destination for health check targets. The default value is slash (/).
-	HealthCheckPath interface{}
+	HealthCheckPath pulumi.StringInput `pulumi:"healthCheckPath"`
 	// The port that AWS Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default port is the listener port that this endpoint group is associated with. If listener port is a list of ports, Global Accelerator uses the first port in the list.
-	HealthCheckPort interface{}
+	HealthCheckPort pulumi.IntInput `pulumi:"healthCheckPort"`
 	// The protocol that AWS Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default value is TCP.
-	HealthCheckProtocol interface{}
+	HealthCheckProtocol pulumi.StringInput `pulumi:"healthCheckProtocol"`
 	// The Amazon Resource Name (ARN) of the listener.
-	ListenerArn interface{}
+	ListenerArn pulumi.StringInput `pulumi:"listenerArn"`
 	// The number of consecutive health checks required to set the state of a healthy endpoint to unhealthy, or to set an unhealthy endpoint to healthy. The default value is 3.
-	ThresholdCount interface{}
+	ThresholdCount pulumi.IntInput `pulumi:"thresholdCount"`
 	// The percentage of traffic to send to an AWS Region. Additional traffic is distributed to other endpoint groups for this listener. The default value is 100.
-	TrafficDialPercentage interface{}
+	TrafficDialPercentage pulumi.Float64Input `pulumi:"trafficDialPercentage"`
 }
 
 // The set of arguments for constructing a EndpointGroup resource.
 type EndpointGroupArgs struct {
 	// The list of endpoint objects. Fields documented below.
-	EndpointConfigurations interface{}
-	EndpointGroupRegion interface{}
+	EndpointConfigurations pulumi.ArrayInput `pulumi:"endpointConfigurations"`
+	EndpointGroupRegion pulumi.StringInput `pulumi:"endpointGroupRegion"`
 	// The time—10 seconds or 30 seconds—between each health check for an endpoint. The default value is 30.
-	HealthCheckIntervalSeconds interface{}
+	HealthCheckIntervalSeconds pulumi.IntInput `pulumi:"healthCheckIntervalSeconds"`
 	// If the protocol is HTTP/S, then this specifies the path that is the destination for health check targets. The default value is slash (/).
-	HealthCheckPath interface{}
+	HealthCheckPath pulumi.StringInput `pulumi:"healthCheckPath"`
 	// The port that AWS Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default port is the listener port that this endpoint group is associated with. If listener port is a list of ports, Global Accelerator uses the first port in the list.
-	HealthCheckPort interface{}
+	HealthCheckPort pulumi.IntInput `pulumi:"healthCheckPort"`
 	// The protocol that AWS Global Accelerator uses to check the health of endpoints that are part of this endpoint group. The default value is TCP.
-	HealthCheckProtocol interface{}
+	HealthCheckProtocol pulumi.StringInput `pulumi:"healthCheckProtocol"`
 	// The Amazon Resource Name (ARN) of the listener.
-	ListenerArn interface{}
+	ListenerArn pulumi.StringInput `pulumi:"listenerArn"`
 	// The number of consecutive health checks required to set the state of a healthy endpoint to unhealthy, or to set an unhealthy endpoint to healthy. The default value is 3.
-	ThresholdCount interface{}
+	ThresholdCount pulumi.IntInput `pulumi:"thresholdCount"`
 	// The percentage of traffic to send to an AWS Region. Additional traffic is distributed to other endpoint groups for this listener. The default value is 100.
-	TrafficDialPercentage interface{}
+	TrafficDialPercentage pulumi.Float64Input `pulumi:"trafficDialPercentage"`
 }

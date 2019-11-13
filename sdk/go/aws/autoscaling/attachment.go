@@ -19,7 +19,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/autoscaling_attachment.html.markdown.
 type Attachment struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of an ALB Target Group.
+	AlbTargetGroupArn pulumi.StringOutput `pulumi:"albTargetGroupArn"`
+
+	// Name of ASG to associate with the ELB.
+	AutoscalingGroupName pulumi.StringOutput `pulumi:"autoscalingGroupName"`
+
+	// The name of the ELB.
+	Elb pulumi.StringOutput `pulumi:"elb"`
 }
 
 // NewAttachment registers a new resource with the given unique name, arguments, and options.
@@ -28,81 +41,63 @@ func NewAttachment(ctx *pulumi.Context,
 	if args == nil || args.AutoscalingGroupName == nil {
 		return nil, errors.New("missing required argument 'AutoscalingGroupName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["albTargetGroupArn"] = nil
-		inputs["autoscalingGroupName"] = nil
-		inputs["elb"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["albTargetGroupArn"] = args.AlbTargetGroupArn
 		inputs["autoscalingGroupName"] = args.AutoscalingGroupName
 		inputs["elb"] = args.Elb
 	}
-	s, err := ctx.RegisterResource("aws:autoscaling/attachment:Attachment", name, true, inputs, opts...)
+	var resource Attachment
+	err := ctx.RegisterResource("aws:autoscaling/attachment:Attachment", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Attachment{s: s}, nil
+	return &resource, nil
 }
 
 // GetAttachment gets an existing Attachment resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAttachment(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AttachmentState, opts ...pulumi.ResourceOpt) (*Attachment, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["albTargetGroupArn"] = state.AlbTargetGroupArn
 		inputs["autoscalingGroupName"] = state.AutoscalingGroupName
 		inputs["elb"] = state.Elb
 	}
-	s, err := ctx.ReadResource("aws:autoscaling/attachment:Attachment", name, id, inputs, opts...)
+	var resource Attachment
+	err := ctx.ReadResource("aws:autoscaling/attachment:Attachment", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Attachment{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Attachment) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Attachment) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Attachment) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Attachment) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of an ALB Target Group.
-func (r *Attachment) AlbTargetGroupArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["albTargetGroupArn"])
-}
-
-// Name of ASG to associate with the ELB.
-func (r *Attachment) AutoscalingGroupName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["autoscalingGroupName"])
-}
-
-// The name of the ELB.
-func (r *Attachment) Elb() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["elb"])
-}
-
 // Input properties used for looking up and filtering Attachment resources.
 type AttachmentState struct {
 	// The ARN of an ALB Target Group.
-	AlbTargetGroupArn interface{}
+	AlbTargetGroupArn pulumi.StringInput `pulumi:"albTargetGroupArn"`
 	// Name of ASG to associate with the ELB.
-	AutoscalingGroupName interface{}
+	AutoscalingGroupName pulumi.StringInput `pulumi:"autoscalingGroupName"`
 	// The name of the ELB.
-	Elb interface{}
+	Elb pulumi.StringInput `pulumi:"elb"`
 }
 
 // The set of arguments for constructing a Attachment resource.
 type AttachmentArgs struct {
 	// The ARN of an ALB Target Group.
-	AlbTargetGroupArn interface{}
+	AlbTargetGroupArn pulumi.StringInput `pulumi:"albTargetGroupArn"`
 	// Name of ASG to associate with the ELB.
-	AutoscalingGroupName interface{}
+	AutoscalingGroupName pulumi.StringInput `pulumi:"autoscalingGroupName"`
 	// The name of the ELB.
-	Elb interface{}
+	Elb pulumi.StringInput `pulumi:"elb"`
 }

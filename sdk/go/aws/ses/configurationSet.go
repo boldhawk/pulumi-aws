@@ -11,63 +11,65 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ses_configuration_set.html.markdown.
 type ConfigurationSet struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The name of the configuration set
+	Name pulumi.StringOutput `pulumi:"name"`
 }
 
 // NewConfigurationSet registers a new resource with the given unique name, arguments, and options.
 func NewConfigurationSet(ctx *pulumi.Context,
 	name string, args *ConfigurationSetArgs, opts ...pulumi.ResourceOpt) (*ConfigurationSet, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["name"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["name"] = args.Name
 	}
-	s, err := ctx.RegisterResource("aws:ses/configurationSet:ConfigurationSet", name, true, inputs, opts...)
+	var resource ConfigurationSet
+	err := ctx.RegisterResource("aws:ses/configurationSet:ConfigurationSet", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ConfigurationSet{s: s}, nil
+	return &resource, nil
 }
 
 // GetConfigurationSet gets an existing ConfigurationSet resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetConfigurationSet(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ConfigurationSetState, opts ...pulumi.ResourceOpt) (*ConfigurationSet, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["name"] = state.Name
 	}
-	s, err := ctx.ReadResource("aws:ses/configurationSet:ConfigurationSet", name, id, inputs, opts...)
+	var resource ConfigurationSet
+	err := ctx.ReadResource("aws:ses/configurationSet:ConfigurationSet", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ConfigurationSet{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ConfigurationSet) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ConfigurationSet) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ConfigurationSet) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ConfigurationSet) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The name of the configuration set
-func (r *ConfigurationSet) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
 // Input properties used for looking up and filtering ConfigurationSet resources.
 type ConfigurationSetState struct {
 	// The name of the configuration set
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // The set of arguments for constructing a ConfigurationSet resource.
 type ConfigurationSetArgs struct {
 	// The name of the configuration set
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }

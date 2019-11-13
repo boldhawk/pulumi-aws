@@ -45,27 +45,27 @@ func LookupServerCertificate(ctx *pulumi.Context, args *GetServerCertificateArgs
 // A collection of arguments for invoking getServerCertificate.
 type GetServerCertificateArgs struct {
 	// sort results by expiration date. returns the certificate with expiration date in furthest in the future.
-	Latest interface{}
+	Latest pulumi.BoolInput `pulumi:"latest"`
 	// exact name of the cert to lookup
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// prefix of cert to filter by
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// prefix of path to filter by
-	PathPrefix interface{}
+	PathPrefix pulumi.StringInput `pulumi:"pathPrefix"`
 }
 
 // A collection of values returned by getServerCertificate.
 type GetServerCertificateResult struct {
-	Arn interface{}
-	CertificateBody interface{}
-	CertificateChain interface{}
-	ExpirationDate interface{}
-	Latest interface{}
-	Name interface{}
-	NamePrefix interface{}
-	Path interface{}
-	PathPrefix interface{}
-	UploadDate interface{}
+	Arn string `pulumi:"arn"`
+	CertificateBody string `pulumi:"certificateBody"`
+	CertificateChain string `pulumi:"certificateChain"`
+	ExpirationDate string `pulumi:"expirationDate"`
+	Latest bool `pulumi:"latest"`
+	Name string `pulumi:"name"`
+	NamePrefix string `pulumi:"namePrefix"`
+	Path string `pulumi:"path"`
+	PathPrefix string `pulumi:"pathPrefix"`
+	UploadDate string `pulumi:"uploadDate"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

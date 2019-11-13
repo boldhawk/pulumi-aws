@@ -12,7 +12,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/opsworks_permission.html.markdown.
 type Permission struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Whether the user is allowed to use SSH to communicate with the instance
+	AllowSsh pulumi.BoolOutput `pulumi:"allowSsh"`
+
+	// Whether the user is allowed to use sudo to elevate privileges
+	AllowSudo pulumi.BoolOutput `pulumi:"allowSudo"`
+
+	// The users permission level. Mus be one of `deny`, `show`, `deploy`, `manage`, `iamOnly`
+	Level pulumi.StringOutput `pulumi:"level"`
+
+	// The stack to set the permissions for
+	StackId pulumi.StringOutput `pulumi:"stackId"`
+
+	// The user's IAM ARN to set permissions for
+	UserArn pulumi.StringOutput `pulumi:"userArn"`
 }
 
 // NewPermission registers a new resource with the given unique name, arguments, and options.
@@ -21,32 +40,27 @@ func NewPermission(ctx *pulumi.Context,
 	if args == nil || args.UserArn == nil {
 		return nil, errors.New("missing required argument 'UserArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["allowSsh"] = nil
-		inputs["allowSudo"] = nil
-		inputs["level"] = nil
-		inputs["stackId"] = nil
-		inputs["userArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["allowSsh"] = args.AllowSsh
 		inputs["allowSudo"] = args.AllowSudo
 		inputs["level"] = args.Level
 		inputs["stackId"] = args.StackId
 		inputs["userArn"] = args.UserArn
 	}
-	s, err := ctx.RegisterResource("aws:opsworks/permission:Permission", name, true, inputs, opts...)
+	var resource Permission
+	err := ctx.RegisterResource("aws:opsworks/permission:Permission", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Permission{s: s}, nil
+	return &resource, nil
 }
 
 // GetPermission gets an existing Permission resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetPermission(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *PermissionState, opts ...pulumi.ResourceOpt) (*Permission, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["allowSsh"] = state.AllowSsh
 		inputs["allowSudo"] = state.AllowSudo
@@ -54,72 +68,47 @@ func GetPermission(ctx *pulumi.Context,
 		inputs["stackId"] = state.StackId
 		inputs["userArn"] = state.UserArn
 	}
-	s, err := ctx.ReadResource("aws:opsworks/permission:Permission", name, id, inputs, opts...)
+	var resource Permission
+	err := ctx.ReadResource("aws:opsworks/permission:Permission", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Permission{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Permission) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Permission) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Permission) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Permission) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Whether the user is allowed to use SSH to communicate with the instance
-func (r *Permission) AllowSsh() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["allowSsh"])
-}
-
-// Whether the user is allowed to use sudo to elevate privileges
-func (r *Permission) AllowSudo() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["allowSudo"])
-}
-
-// The users permission level. Mus be one of `deny`, `show`, `deploy`, `manage`, `iamOnly`
-func (r *Permission) Level() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["level"])
-}
-
-// The stack to set the permissions for
-func (r *Permission) StackId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["stackId"])
-}
-
-// The user's IAM ARN to set permissions for
-func (r *Permission) UserArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["userArn"])
-}
-
 // Input properties used for looking up and filtering Permission resources.
 type PermissionState struct {
 	// Whether the user is allowed to use SSH to communicate with the instance
-	AllowSsh interface{}
+	AllowSsh pulumi.BoolInput `pulumi:"allowSsh"`
 	// Whether the user is allowed to use sudo to elevate privileges
-	AllowSudo interface{}
+	AllowSudo pulumi.BoolInput `pulumi:"allowSudo"`
 	// The users permission level. Mus be one of `deny`, `show`, `deploy`, `manage`, `iamOnly`
-	Level interface{}
+	Level pulumi.StringInput `pulumi:"level"`
 	// The stack to set the permissions for
-	StackId interface{}
+	StackId pulumi.StringInput `pulumi:"stackId"`
 	// The user's IAM ARN to set permissions for
-	UserArn interface{}
+	UserArn pulumi.StringInput `pulumi:"userArn"`
 }
 
 // The set of arguments for constructing a Permission resource.
 type PermissionArgs struct {
 	// Whether the user is allowed to use SSH to communicate with the instance
-	AllowSsh interface{}
+	AllowSsh pulumi.BoolInput `pulumi:"allowSsh"`
 	// Whether the user is allowed to use sudo to elevate privileges
-	AllowSudo interface{}
+	AllowSudo pulumi.BoolInput `pulumi:"allowSudo"`
 	// The users permission level. Mus be one of `deny`, `show`, `deploy`, `manage`, `iamOnly`
-	Level interface{}
+	Level pulumi.StringInput `pulumi:"level"`
 	// The stack to set the permissions for
-	StackId interface{}
+	StackId pulumi.StringInput `pulumi:"stackId"`
 	// The user's IAM ARN to set permissions for
-	UserArn interface{}
+	UserArn pulumi.StringInput `pulumi:"userArn"`
 }

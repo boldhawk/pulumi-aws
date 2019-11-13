@@ -39,20 +39,20 @@ func LookupCipherText(ctx *pulumi.Context, args *GetCipherTextArgs) (*GetCipherT
 // A collection of arguments for invoking getCipherText.
 type GetCipherTextArgs struct {
 	// An optional mapping that makes up the encryption context.
-	Context interface{}
+	Context pulumi.MapInput `pulumi:"context"`
 	// Globally unique key ID for the customer master key.
-	KeyId interface{}
+	KeyId pulumi.StringInput `pulumi:"keyId"`
 	// Data to be encrypted. Note that this may show up in logs, and it will be stored in the state file.
-	Plaintext interface{}
+	Plaintext pulumi.StringInput `pulumi:"plaintext"`
 }
 
 // A collection of values returned by getCipherText.
 type GetCipherTextResult struct {
 	// Base64 encoded ciphertext
-	CiphertextBlob interface{}
-	Context interface{}
-	KeyId interface{}
-	Plaintext interface{}
+	CiphertextBlob string `pulumi:"ciphertextBlob"`
+	Context map[string]interface{} `pulumi:"context"`
+	KeyId string `pulumi:"keyId"`
+	Plaintext string `pulumi:"plaintext"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

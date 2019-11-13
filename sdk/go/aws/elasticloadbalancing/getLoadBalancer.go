@@ -52,30 +52,30 @@ func LookupLoadBalancer(ctx *pulumi.Context, args *GetLoadBalancerArgs) (*GetLoa
 // A collection of arguments for invoking getLoadBalancer.
 type GetLoadBalancerArgs struct {
 	// The unique name of the load balancer.
-	Name interface{}
-	Tags interface{}
+	Name pulumi.StringInput `pulumi:"name"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getLoadBalancer.
 type GetLoadBalancerResult struct {
-	AccessLogs interface{}
-	AvailabilityZones interface{}
-	ConnectionDraining interface{}
-	ConnectionDrainingTimeout interface{}
-	CrossZoneLoadBalancing interface{}
-	DnsName interface{}
-	HealthCheck interface{}
-	IdleTimeout interface{}
-	Instances interface{}
-	Internal interface{}
-	Listeners interface{}
-	Name interface{}
-	SecurityGroups interface{}
-	SourceSecurityGroup interface{}
-	SourceSecurityGroupId interface{}
-	Subnets interface{}
-	Tags interface{}
-	ZoneId interface{}
+	AccessLogs interface{} `pulumi:"accessLogs"`
+	AvailabilityZones []interface{} `pulumi:"availabilityZones"`
+	ConnectionDraining bool `pulumi:"connectionDraining"`
+	ConnectionDrainingTimeout int `pulumi:"connectionDrainingTimeout"`
+	CrossZoneLoadBalancing bool `pulumi:"crossZoneLoadBalancing"`
+	DnsName string `pulumi:"dnsName"`
+	HealthCheck interface{} `pulumi:"healthCheck"`
+	IdleTimeout int `pulumi:"idleTimeout"`
+	Instances []interface{} `pulumi:"instances"`
+	Internal bool `pulumi:"internal"`
+	Listeners []interface{} `pulumi:"listeners"`
+	Name string `pulumi:"name"`
+	SecurityGroups []interface{} `pulumi:"securityGroups"`
+	SourceSecurityGroup string `pulumi:"sourceSecurityGroup"`
+	SourceSecurityGroupId string `pulumi:"sourceSecurityGroupId"`
+	Subnets []interface{} `pulumi:"subnets"`
+	Tags map[string]interface{} `pulumi:"tags"`
+	ZoneId string `pulumi:"zoneId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

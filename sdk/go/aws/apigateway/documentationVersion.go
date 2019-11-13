@@ -12,7 +12,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/api_gateway_documentation_version.html.markdown.
 type DocumentationVersion struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The description of the API documentation version.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The ID of the associated Rest API
+	RestApiId pulumi.StringOutput `pulumi:"restApiId"`
+
+	// The version identifier of the API documentation snapshot.
+	Version pulumi.StringOutput `pulumi:"version"`
 }
 
 // NewDocumentationVersion registers a new resource with the given unique name, arguments, and options.
@@ -24,81 +37,63 @@ func NewDocumentationVersion(ctx *pulumi.Context,
 	if args == nil || args.Version == nil {
 		return nil, errors.New("missing required argument 'Version'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["description"] = nil
-		inputs["restApiId"] = nil
-		inputs["version"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["restApiId"] = args.RestApiId
 		inputs["version"] = args.Version
 	}
-	s, err := ctx.RegisterResource("aws:apigateway/documentationVersion:DocumentationVersion", name, true, inputs, opts...)
+	var resource DocumentationVersion
+	err := ctx.RegisterResource("aws:apigateway/documentationVersion:DocumentationVersion", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DocumentationVersion{s: s}, nil
+	return &resource, nil
 }
 
 // GetDocumentationVersion gets an existing DocumentationVersion resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetDocumentationVersion(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *DocumentationVersionState, opts ...pulumi.ResourceOpt) (*DocumentationVersion, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["description"] = state.Description
 		inputs["restApiId"] = state.RestApiId
 		inputs["version"] = state.Version
 	}
-	s, err := ctx.ReadResource("aws:apigateway/documentationVersion:DocumentationVersion", name, id, inputs, opts...)
+	var resource DocumentationVersion
+	err := ctx.ReadResource("aws:apigateway/documentationVersion:DocumentationVersion", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DocumentationVersion{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *DocumentationVersion) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *DocumentationVersion) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *DocumentationVersion) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *DocumentationVersion) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The description of the API documentation version.
-func (r *DocumentationVersion) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The ID of the associated Rest API
-func (r *DocumentationVersion) RestApiId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["restApiId"])
-}
-
-// The version identifier of the API documentation snapshot.
-func (r *DocumentationVersion) Version() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["version"])
-}
-
 // Input properties used for looking up and filtering DocumentationVersion resources.
 type DocumentationVersionState struct {
 	// The description of the API documentation version.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The ID of the associated Rest API
-	RestApiId interface{}
+	RestApiId pulumi.StringInput `pulumi:"restApiId"`
 	// The version identifier of the API documentation snapshot.
-	Version interface{}
+	Version pulumi.StringInput `pulumi:"version"`
 }
 
 // The set of arguments for constructing a DocumentationVersion resource.
 type DocumentationVersionArgs struct {
 	// The description of the API documentation version.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The ID of the associated Rest API
-	RestApiId interface{}
+	RestApiId pulumi.StringInput `pulumi:"restApiId"`
 	// The version identifier of the API documentation snapshot.
-	Version interface{}
+	Version pulumi.StringInput `pulumi:"version"`
 }

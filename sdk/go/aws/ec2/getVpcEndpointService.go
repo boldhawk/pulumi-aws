@@ -42,36 +42,36 @@ func LookupVpcEndpointService(ctx *pulumi.Context, args *GetVpcEndpointServiceAr
 // A collection of arguments for invoking getVpcEndpointService.
 type GetVpcEndpointServiceArgs struct {
 	// The common name of an AWS service (e.g. `s3`).
-	Service interface{}
+	Service pulumi.StringInput `pulumi:"service"`
 	// The service name that can be specified when creating a VPC endpoint.
-	ServiceName interface{}
-	Tags interface{}
+	ServiceName pulumi.StringInput `pulumi:"serviceName"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpcEndpointService.
 type GetVpcEndpointServiceResult struct {
 	// Whether or not VPC endpoint connection requests to the service must be accepted by the service owner - `true` or `false`.
-	AcceptanceRequired interface{}
+	AcceptanceRequired bool `pulumi:"acceptanceRequired"`
 	// The Availability Zones in which the service is available.
-	AvailabilityZones interface{}
+	AvailabilityZones []interface{} `pulumi:"availabilityZones"`
 	// The DNS names for the service.
-	BaseEndpointDnsNames interface{}
+	BaseEndpointDnsNames []interface{} `pulumi:"baseEndpointDnsNames"`
 	// Whether or not the service manages its VPC endpoints - `true` or `false`.
-	ManagesVpcEndpoints interface{}
+	ManagesVpcEndpoints bool `pulumi:"managesVpcEndpoints"`
 	// The AWS account ID of the service owner or `amazon`.
-	Owner interface{}
+	Owner string `pulumi:"owner"`
 	// The private DNS name for the service.
-	PrivateDnsName interface{}
-	Service interface{}
+	PrivateDnsName string `pulumi:"privateDnsName"`
+	Service string `pulumi:"service"`
 	// The ID of the endpoint service.
-	ServiceId interface{}
-	ServiceName interface{}
+	ServiceId string `pulumi:"serviceId"`
+	ServiceName string `pulumi:"serviceName"`
 	// The service type, `Gateway` or `Interface`.
-	ServiceType interface{}
+	ServiceType string `pulumi:"serviceType"`
 	// A mapping of tags assigned to the resource.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// Whether or not the service supports endpoint policies - `true` or `false`.
-	VpcEndpointPolicySupported interface{}
+	VpcEndpointPolicySupported bool `pulumi:"vpcEndpointPolicySupported"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

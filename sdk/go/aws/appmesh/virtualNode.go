@@ -23,7 +23,32 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/appmesh_virtual_node.html.markdown.
 type VirtualNode struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the virtual node.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The creation date of the virtual node.
+	CreatedDate pulumi.StringOutput `pulumi:"createdDate"`
+
+	// The last update date of the virtual node.
+	LastUpdatedDate pulumi.StringOutput `pulumi:"lastUpdatedDate"`
+
+	// The name of the service mesh in which to create the virtual node.
+	MeshName pulumi.StringOutput `pulumi:"meshName"`
+
+	// The name to use for the virtual node.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The virtual node specification to apply.
+	Spec pulumi.AnyOutput `pulumi:"spec"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewVirtualNode registers a new resource with the given unique name, arguments, and options.
@@ -35,33 +60,27 @@ func NewVirtualNode(ctx *pulumi.Context,
 	if args == nil || args.Spec == nil {
 		return nil, errors.New("missing required argument 'Spec'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["meshName"] = nil
-		inputs["name"] = nil
-		inputs["spec"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["meshName"] = args.MeshName
 		inputs["name"] = args.Name
 		inputs["spec"] = args.Spec
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	inputs["createdDate"] = nil
-	inputs["lastUpdatedDate"] = nil
-	s, err := ctx.RegisterResource("aws:appmesh/virtualNode:VirtualNode", name, true, inputs, opts...)
+	var resource VirtualNode
+	err := ctx.RegisterResource("aws:appmesh/virtualNode:VirtualNode", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &VirtualNode{s: s}, nil
+	return &resource, nil
 }
 
 // GetVirtualNode gets an existing VirtualNode resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetVirtualNode(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *VirtualNodeState, opts ...pulumi.ResourceOpt) (*VirtualNode, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["createdDate"] = state.CreatedDate
@@ -71,84 +90,49 @@ func GetVirtualNode(ctx *pulumi.Context,
 		inputs["spec"] = state.Spec
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:appmesh/virtualNode:VirtualNode", name, id, inputs, opts...)
+	var resource VirtualNode
+	err := ctx.ReadResource("aws:appmesh/virtualNode:VirtualNode", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &VirtualNode{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *VirtualNode) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *VirtualNode) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *VirtualNode) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *VirtualNode) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the virtual node.
-func (r *VirtualNode) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The creation date of the virtual node.
-func (r *VirtualNode) CreatedDate() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["createdDate"])
-}
-
-// The last update date of the virtual node.
-func (r *VirtualNode) LastUpdatedDate() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["lastUpdatedDate"])
-}
-
-// The name of the service mesh in which to create the virtual node.
-func (r *VirtualNode) MeshName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["meshName"])
-}
-
-// The name to use for the virtual node.
-func (r *VirtualNode) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The virtual node specification to apply.
-func (r *VirtualNode) Spec() *pulumi.Output {
-	return r.s.State["spec"]
-}
-
-// A mapping of tags to assign to the resource.
-func (r *VirtualNode) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering VirtualNode resources.
 type VirtualNodeState struct {
 	// The ARN of the virtual node.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The creation date of the virtual node.
-	CreatedDate interface{}
+	CreatedDate pulumi.StringInput `pulumi:"createdDate"`
 	// The last update date of the virtual node.
-	LastUpdatedDate interface{}
+	LastUpdatedDate pulumi.StringInput `pulumi:"lastUpdatedDate"`
 	// The name of the service mesh in which to create the virtual node.
-	MeshName interface{}
+	MeshName pulumi.StringInput `pulumi:"meshName"`
 	// The name to use for the virtual node.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The virtual node specification to apply.
-	Spec interface{}
+	Spec pulumi.AnyInput `pulumi:"spec"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a VirtualNode resource.
 type VirtualNodeArgs struct {
 	// The name of the service mesh in which to create the virtual node.
-	MeshName interface{}
+	MeshName pulumi.StringInput `pulumi:"meshName"`
 	// The name to use for the virtual node.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The virtual node specification to apply.
-	Spec interface{}
+	Spec pulumi.AnyInput `pulumi:"spec"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

@@ -24,7 +24,7 @@ func LookupEncryptionByDefault(ctx *pulumi.Context) (*GetEncryptionByDefaultResu
 // A collection of values returned by getEncryptionByDefault.
 type GetEncryptionByDefaultResult struct {
 	// Whether or not default EBS encryption is enabled. Returns as `true` or `false`.
-	Enabled interface{}
+	Enabled bool `pulumi:"enabled"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

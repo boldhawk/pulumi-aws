@@ -12,7 +12,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/config_aggregate_authorization.html.markdown.
 type AggregateAuthorization struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Account ID
+	AccountId pulumi.StringOutput `pulumi:"accountId"`
+
+	// The ARN of the authorization
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Region
+	Region pulumi.StringOutput `pulumi:"region"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewAggregateAuthorization registers a new resource with the given unique name, arguments, and options.
@@ -24,90 +40,66 @@ func NewAggregateAuthorization(ctx *pulumi.Context,
 	if args == nil || args.Region == nil {
 		return nil, errors.New("missing required argument 'Region'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["accountId"] = nil
-		inputs["region"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["accountId"] = args.AccountId
 		inputs["region"] = args.Region
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:cfg/aggregateAuthorization:AggregateAuthorization", name, true, inputs, opts...)
+	var resource AggregateAuthorization
+	err := ctx.RegisterResource("aws:cfg/aggregateAuthorization:AggregateAuthorization", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AggregateAuthorization{s: s}, nil
+	return &resource, nil
 }
 
 // GetAggregateAuthorization gets an existing AggregateAuthorization resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAggregateAuthorization(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AggregateAuthorizationState, opts ...pulumi.ResourceOpt) (*AggregateAuthorization, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["accountId"] = state.AccountId
 		inputs["arn"] = state.Arn
 		inputs["region"] = state.Region
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:cfg/aggregateAuthorization:AggregateAuthorization", name, id, inputs, opts...)
+	var resource AggregateAuthorization
+	err := ctx.ReadResource("aws:cfg/aggregateAuthorization:AggregateAuthorization", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AggregateAuthorization{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *AggregateAuthorization) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *AggregateAuthorization) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *AggregateAuthorization) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *AggregateAuthorization) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Account ID
-func (r *AggregateAuthorization) AccountId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["accountId"])
-}
-
-// The ARN of the authorization
-func (r *AggregateAuthorization) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Region
-func (r *AggregateAuthorization) Region() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["region"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *AggregateAuthorization) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering AggregateAuthorization resources.
 type AggregateAuthorizationState struct {
 	// Account ID
-	AccountId interface{}
+	AccountId pulumi.StringInput `pulumi:"accountId"`
 	// The ARN of the authorization
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Region
-	Region interface{}
+	Region pulumi.StringInput `pulumi:"region"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a AggregateAuthorization resource.
 type AggregateAuthorizationArgs struct {
 	// Account ID
-	AccountId interface{}
+	AccountId pulumi.StringInput `pulumi:"accountId"`
 	// Region
-	Region interface{}
+	Region pulumi.StringInput `pulumi:"region"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

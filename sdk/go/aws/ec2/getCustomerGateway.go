@@ -34,22 +34,22 @@ func LookupCustomerGateway(ctx *pulumi.Context, args *GetCustomerGatewayArgs) (*
 // A collection of arguments for invoking getCustomerGateway.
 type GetCustomerGatewayArgs struct {
 	// One or more [name-value pairs][dcg-filters] to filter by.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The ID of the gateway.
-	Id interface{}
-	Tags interface{}
+	Id pulumi.StringInput `pulumi:"id"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getCustomerGateway.
 type GetCustomerGatewayResult struct {
 	// (Optional) The gateway's Border Gateway Protocol (BGP) Autonomous System Number (ASN).
-	BgpAsn interface{}
-	Filters interface{}
-	Id interface{}
+	BgpAsn int `pulumi:"bgpAsn"`
+	Filters []interface{} `pulumi:"filters"`
+	Id string `pulumi:"id"`
 	// (Optional) The IP address of the gateway's Internet-routable external interface.
-	IpAddress interface{}
+	IpAddress string `pulumi:"ipAddress"`
 	// Map of key-value pairs assigned to the gateway.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// (Optional) The type of customer gateway. The only type AWS supports at this time is "ipsec.1".
-	Type interface{}
+	Type string `pulumi:"type"`
 }

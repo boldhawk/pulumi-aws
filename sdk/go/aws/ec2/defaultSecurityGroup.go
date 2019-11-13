@@ -50,41 +50,63 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/default_security_group.html.markdown.
 type DefaultSecurityGroup struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Can be specified multiple times for each
+	// egress rule. Each egress block supports fields documented below.
+	Egress pulumi.ArrayOutput `pulumi:"egress"`
+
+	// Can be specified multiple times for each
+	// ingress rule. Each ingress block supports fields documented below.
+	Ingress pulumi.ArrayOutput `pulumi:"ingress"`
+
+	// The name of the security group
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The owner ID.
+	OwnerId pulumi.StringOutput `pulumi:"ownerId"`
+
+	RevokeRulesOnDelete pulumi.BoolOutput `pulumi:"revokeRulesOnDelete"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// The VPC ID. **Note that changing
+	// the `vpcId` will _not_ restore any default security group rules that were
+	// modified, added, or removed.** It will be left in its current state
+	VpcId pulumi.StringOutput `pulumi:"vpcId"`
 }
 
 // NewDefaultSecurityGroup registers a new resource with the given unique name, arguments, and options.
 func NewDefaultSecurityGroup(ctx *pulumi.Context,
 	name string, args *DefaultSecurityGroupArgs, opts ...pulumi.ResourceOpt) (*DefaultSecurityGroup, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["egress"] = nil
-		inputs["ingress"] = nil
-		inputs["revokeRulesOnDelete"] = nil
-		inputs["tags"] = nil
-		inputs["vpcId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["egress"] = args.Egress
 		inputs["ingress"] = args.Ingress
 		inputs["revokeRulesOnDelete"] = args.RevokeRulesOnDelete
 		inputs["tags"] = args.Tags
 		inputs["vpcId"] = args.VpcId
 	}
-	inputs["arn"] = nil
-	inputs["name"] = nil
-	inputs["ownerId"] = nil
-	s, err := ctx.RegisterResource("aws:ec2/defaultSecurityGroup:DefaultSecurityGroup", name, true, inputs, opts...)
+	var resource DefaultSecurityGroup
+	err := ctx.RegisterResource("aws:ec2/defaultSecurityGroup:DefaultSecurityGroup", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DefaultSecurityGroup{s: s}, nil
+	return &resource, nil
 }
 
 // GetDefaultSecurityGroup gets an existing DefaultSecurityGroup resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetDefaultSecurityGroup(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *DefaultSecurityGroupState, opts ...pulumi.ResourceOpt) (*DefaultSecurityGroup, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["egress"] = state.Egress
@@ -95,100 +117,58 @@ func GetDefaultSecurityGroup(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["vpcId"] = state.VpcId
 	}
-	s, err := ctx.ReadResource("aws:ec2/defaultSecurityGroup:DefaultSecurityGroup", name, id, inputs, opts...)
+	var resource DefaultSecurityGroup
+	err := ctx.ReadResource("aws:ec2/defaultSecurityGroup:DefaultSecurityGroup", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DefaultSecurityGroup{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *DefaultSecurityGroup) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *DefaultSecurityGroup) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *DefaultSecurityGroup) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *DefaultSecurityGroup) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-func (r *DefaultSecurityGroup) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Can be specified multiple times for each
-// egress rule. Each egress block supports fields documented below.
-func (r *DefaultSecurityGroup) Egress() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["egress"])
-}
-
-// Can be specified multiple times for each
-// ingress rule. Each ingress block supports fields documented below.
-func (r *DefaultSecurityGroup) Ingress() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["ingress"])
-}
-
-// The name of the security group
-func (r *DefaultSecurityGroup) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The owner ID.
-func (r *DefaultSecurityGroup) OwnerId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ownerId"])
-}
-
-func (r *DefaultSecurityGroup) RevokeRulesOnDelete() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["revokeRulesOnDelete"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *DefaultSecurityGroup) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// The VPC ID. **Note that changing
-// the `vpcId` will _not_ restore any default security group rules that were
-// modified, added, or removed.** It will be left in its current state
-func (r *DefaultSecurityGroup) VpcId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpcId"])
-}
-
 // Input properties used for looking up and filtering DefaultSecurityGroup resources.
 type DefaultSecurityGroupState struct {
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Can be specified multiple times for each
 	// egress rule. Each egress block supports fields documented below.
-	Egress interface{}
+	Egress pulumi.ArrayInput `pulumi:"egress"`
 	// Can be specified multiple times for each
 	// ingress rule. Each ingress block supports fields documented below.
-	Ingress interface{}
+	Ingress pulumi.ArrayInput `pulumi:"ingress"`
 	// The name of the security group
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The owner ID.
-	OwnerId interface{}
-	RevokeRulesOnDelete interface{}
+	OwnerId pulumi.StringInput `pulumi:"ownerId"`
+	RevokeRulesOnDelete pulumi.BoolInput `pulumi:"revokeRulesOnDelete"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The VPC ID. **Note that changing
 	// the `vpcId` will _not_ restore any default security group rules that were
 	// modified, added, or removed.** It will be left in its current state
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // The set of arguments for constructing a DefaultSecurityGroup resource.
 type DefaultSecurityGroupArgs struct {
 	// Can be specified multiple times for each
 	// egress rule. Each egress block supports fields documented below.
-	Egress interface{}
+	Egress pulumi.ArrayInput `pulumi:"egress"`
 	// Can be specified multiple times for each
 	// ingress rule. Each ingress block supports fields documented below.
-	Ingress interface{}
-	RevokeRulesOnDelete interface{}
+	Ingress pulumi.ArrayInput `pulumi:"ingress"`
+	RevokeRulesOnDelete pulumi.BoolInput `pulumi:"revokeRulesOnDelete"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The VPC ID. **Note that changing
 	// the `vpcId` will _not_ restore any default security group rules that were
 	// modified, added, or removed.** It will be left in its current state
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }

@@ -33,22 +33,22 @@ func LookupConfiguration(ctx *pulumi.Context, args *GetConfigurationArgs) (*GetC
 // A collection of arguments for invoking getConfiguration.
 type GetConfigurationArgs struct {
 	// Name of the configuration.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getConfiguration.
 type GetConfigurationResult struct {
 	// Amazon Resource Name (ARN) of the configuration.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// Description of the configuration.
-	Description interface{}
+	Description string `pulumi:"description"`
 	// List of Apache Kafka versions which can use this configuration.
-	KafkaVersions interface{}
+	KafkaVersions []interface{} `pulumi:"kafkaVersions"`
 	// Latest revision of the configuration.
-	LatestRevision interface{}
-	Name interface{}
+	LatestRevision int `pulumi:"latestRevision"`
+	Name string `pulumi:"name"`
 	// Contents of the server.properties file.
-	ServerProperties interface{}
+	ServerProperties string `pulumi:"serverProperties"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

@@ -26,14 +26,14 @@ func LookupEventCategories(ctx *pulumi.Context, args *GetEventCategoriesArgs) (*
 // A collection of arguments for invoking getEventCategories.
 type GetEventCategoriesArgs struct {
 	// The type of source that will be generating the events. Valid options are db-instance, db-security-group, db-parameter-group, db-snapshot, db-cluster or db-cluster-snapshot.
-	SourceType interface{}
+	SourceType pulumi.StringInput `pulumi:"sourceType"`
 }
 
 // A collection of values returned by getEventCategories.
 type GetEventCategoriesResult struct {
 	// A list of the event categories.
-	EventCategories interface{}
-	SourceType interface{}
+	EventCategories []interface{} `pulumi:"eventCategories"`
+	SourceType string `pulumi:"sourceType"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

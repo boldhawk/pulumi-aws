@@ -15,7 +15,56 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/directory_service_directory.html.markdown.
 type Directory struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The access URL for the directory, such as `http://alias.awsapps.com`.
+	AccessUrl pulumi.StringOutput `pulumi:"accessUrl"`
+
+	// The alias for the directory (must be unique amongst all aliases in AWS). Required for `enableSso`.
+	Alias pulumi.StringOutput `pulumi:"alias"`
+
+	// Connector related information about the directory. Fields documented below.
+	ConnectSettings pulumi.AnyOutput `pulumi:"connectSettings"`
+
+	// A textual description for the directory.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// A list of IP addresses of the DNS servers for the directory or connector.
+	DnsIpAddresses pulumi.ArrayOutput `pulumi:"dnsIpAddresses"`
+
+	// The MicrosoftAD edition (`Standard` or `Enterprise`). Defaults to `Enterprise` (applies to MicrosoftAD type only).
+	Edition pulumi.StringOutput `pulumi:"edition"`
+
+	// Whether to enable single-sign on for the directory. Requires `alias`. Defaults to `false`.
+	EnableSso pulumi.BoolOutput `pulumi:"enableSso"`
+
+	// The fully qualified name for the directory, such as `corp.example.com`
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The password for the directory administrator or connector user.
+	Password pulumi.StringOutput `pulumi:"password"`
+
+	// The ID of the security group created by the directory.
+	SecurityGroupId pulumi.StringOutput `pulumi:"securityGroupId"`
+
+	// The short name of the directory, such as `CORP`.
+	ShortName pulumi.StringOutput `pulumi:"shortName"`
+
+	// The size of the directory (`Small` or `Large` are accepted values).
+	Size pulumi.StringOutput `pulumi:"size"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// The directory type (`SimpleAD`, `ADConnector` or `MicrosoftAD` are accepted values). Defaults to `SimpleAD`.
+	Type pulumi.StringOutput `pulumi:"type"`
+
+	// VPC related information about the directory. Fields documented below.
+	VpcSettings pulumi.AnyOutput `pulumi:"vpcSettings"`
 }
 
 // NewDirectory registers a new resource with the given unique name, arguments, and options.
@@ -24,21 +73,9 @@ func NewDirectory(ctx *pulumi.Context,
 	if args == nil || args.Password == nil {
 		return nil, errors.New("missing required argument 'Password'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["alias"] = nil
-		inputs["connectSettings"] = nil
-		inputs["description"] = nil
-		inputs["edition"] = nil
-		inputs["enableSso"] = nil
-		inputs["name"] = nil
-		inputs["password"] = nil
-		inputs["shortName"] = nil
-		inputs["size"] = nil
-		inputs["tags"] = nil
-		inputs["type"] = nil
-		inputs["vpcSettings"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["alias"] = args.Alias
 		inputs["connectSettings"] = args.ConnectSettings
 		inputs["description"] = args.Description
@@ -52,21 +89,19 @@ func NewDirectory(ctx *pulumi.Context,
 		inputs["type"] = args.Type
 		inputs["vpcSettings"] = args.VpcSettings
 	}
-	inputs["accessUrl"] = nil
-	inputs["dnsIpAddresses"] = nil
-	inputs["securityGroupId"] = nil
-	s, err := ctx.RegisterResource("aws:directoryservice/directory:Directory", name, true, inputs, opts...)
+	var resource Directory
+	err := ctx.RegisterResource("aws:directoryservice/directory:Directory", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Directory{s: s}, nil
+	return &resource, nil
 }
 
 // GetDirectory gets an existing Directory resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetDirectory(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *DirectoryState, opts ...pulumi.ResourceOpt) (*Directory, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["accessUrl"] = state.AccessUrl
 		inputs["alias"] = state.Alias
@@ -84,156 +119,81 @@ func GetDirectory(ctx *pulumi.Context,
 		inputs["type"] = state.Type
 		inputs["vpcSettings"] = state.VpcSettings
 	}
-	s, err := ctx.ReadResource("aws:directoryservice/directory:Directory", name, id, inputs, opts...)
+	var resource Directory
+	err := ctx.ReadResource("aws:directoryservice/directory:Directory", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Directory{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Directory) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Directory) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Directory) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Directory) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The access URL for the directory, such as `http://alias.awsapps.com`.
-func (r *Directory) AccessUrl() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["accessUrl"])
-}
-
-// The alias for the directory (must be unique amongst all aliases in AWS). Required for `enableSso`.
-func (r *Directory) Alias() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["alias"])
-}
-
-// Connector related information about the directory. Fields documented below.
-func (r *Directory) ConnectSettings() *pulumi.Output {
-	return r.s.State["connectSettings"]
-}
-
-// A textual description for the directory.
-func (r *Directory) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// A list of IP addresses of the DNS servers for the directory or connector.
-func (r *Directory) DnsIpAddresses() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["dnsIpAddresses"])
-}
-
-// The MicrosoftAD edition (`Standard` or `Enterprise`). Defaults to `Enterprise` (applies to MicrosoftAD type only).
-func (r *Directory) Edition() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["edition"])
-}
-
-// Whether to enable single-sign on for the directory. Requires `alias`. Defaults to `false`.
-func (r *Directory) EnableSso() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["enableSso"])
-}
-
-// The fully qualified name for the directory, such as `corp.example.com`
-func (r *Directory) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The password for the directory administrator or connector user.
-func (r *Directory) Password() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["password"])
-}
-
-// The ID of the security group created by the directory.
-func (r *Directory) SecurityGroupId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["securityGroupId"])
-}
-
-// The short name of the directory, such as `CORP`.
-func (r *Directory) ShortName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["shortName"])
-}
-
-// The size of the directory (`Small` or `Large` are accepted values).
-func (r *Directory) Size() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["size"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *Directory) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// The directory type (`SimpleAD`, `ADConnector` or `MicrosoftAD` are accepted values). Defaults to `SimpleAD`.
-func (r *Directory) Type() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["type"])
-}
-
-// VPC related information about the directory. Fields documented below.
-func (r *Directory) VpcSettings() *pulumi.Output {
-	return r.s.State["vpcSettings"]
-}
-
 // Input properties used for looking up and filtering Directory resources.
 type DirectoryState struct {
 	// The access URL for the directory, such as `http://alias.awsapps.com`.
-	AccessUrl interface{}
+	AccessUrl pulumi.StringInput `pulumi:"accessUrl"`
 	// The alias for the directory (must be unique amongst all aliases in AWS). Required for `enableSso`.
-	Alias interface{}
+	Alias pulumi.StringInput `pulumi:"alias"`
 	// Connector related information about the directory. Fields documented below.
-	ConnectSettings interface{}
+	ConnectSettings pulumi.AnyInput `pulumi:"connectSettings"`
 	// A textual description for the directory.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// A list of IP addresses of the DNS servers for the directory or connector.
-	DnsIpAddresses interface{}
+	DnsIpAddresses pulumi.ArrayInput `pulumi:"dnsIpAddresses"`
 	// The MicrosoftAD edition (`Standard` or `Enterprise`). Defaults to `Enterprise` (applies to MicrosoftAD type only).
-	Edition interface{}
+	Edition pulumi.StringInput `pulumi:"edition"`
 	// Whether to enable single-sign on for the directory. Requires `alias`. Defaults to `false`.
-	EnableSso interface{}
+	EnableSso pulumi.BoolInput `pulumi:"enableSso"`
 	// The fully qualified name for the directory, such as `corp.example.com`
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The password for the directory administrator or connector user.
-	Password interface{}
+	Password pulumi.StringInput `pulumi:"password"`
 	// The ID of the security group created by the directory.
-	SecurityGroupId interface{}
+	SecurityGroupId pulumi.StringInput `pulumi:"securityGroupId"`
 	// The short name of the directory, such as `CORP`.
-	ShortName interface{}
+	ShortName pulumi.StringInput `pulumi:"shortName"`
 	// The size of the directory (`Small` or `Large` are accepted values).
-	Size interface{}
+	Size pulumi.StringInput `pulumi:"size"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The directory type (`SimpleAD`, `ADConnector` or `MicrosoftAD` are accepted values). Defaults to `SimpleAD`.
-	Type interface{}
+	Type pulumi.StringInput `pulumi:"type"`
 	// VPC related information about the directory. Fields documented below.
-	VpcSettings interface{}
+	VpcSettings pulumi.AnyInput `pulumi:"vpcSettings"`
 }
 
 // The set of arguments for constructing a Directory resource.
 type DirectoryArgs struct {
 	// The alias for the directory (must be unique amongst all aliases in AWS). Required for `enableSso`.
-	Alias interface{}
+	Alias pulumi.StringInput `pulumi:"alias"`
 	// Connector related information about the directory. Fields documented below.
-	ConnectSettings interface{}
+	ConnectSettings pulumi.AnyInput `pulumi:"connectSettings"`
 	// A textual description for the directory.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The MicrosoftAD edition (`Standard` or `Enterprise`). Defaults to `Enterprise` (applies to MicrosoftAD type only).
-	Edition interface{}
+	Edition pulumi.StringInput `pulumi:"edition"`
 	// Whether to enable single-sign on for the directory. Requires `alias`. Defaults to `false`.
-	EnableSso interface{}
+	EnableSso pulumi.BoolInput `pulumi:"enableSso"`
 	// The fully qualified name for the directory, such as `corp.example.com`
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The password for the directory administrator or connector user.
-	Password interface{}
+	Password pulumi.StringInput `pulumi:"password"`
 	// The short name of the directory, such as `CORP`.
-	ShortName interface{}
+	ShortName pulumi.StringInput `pulumi:"shortName"`
 	// The size of the directory (`Small` or `Large` are accepted values).
-	Size interface{}
+	Size pulumi.StringInput `pulumi:"size"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The directory type (`SimpleAD`, `ADConnector` or `MicrosoftAD` are accepted values). Defaults to `SimpleAD`.
-	Type interface{}
+	Type pulumi.StringInput `pulumi:"type"`
 	// VPC related information about the directory. Fields documented below.
-	VpcSettings interface{}
+	VpcSettings pulumi.AnyInput `pulumi:"vpcSettings"`
 }

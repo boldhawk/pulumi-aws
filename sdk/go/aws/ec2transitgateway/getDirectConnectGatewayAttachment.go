@@ -32,18 +32,18 @@ func LookupDirectConnectGatewayAttachment(ctx *pulumi.Context, args *GetDirectCo
 // A collection of arguments for invoking getDirectConnectGatewayAttachment.
 type GetDirectConnectGatewayAttachmentArgs struct {
 	// Identifier of the Direct Connect Gateway.
-	DxGatewayId interface{}
-	Tags interface{}
+	DxGatewayId pulumi.StringInput `pulumi:"dxGatewayId"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Identifier of the EC2 Transit Gateway.
-	TransitGatewayId interface{}
+	TransitGatewayId pulumi.StringInput `pulumi:"transitGatewayId"`
 }
 
 // A collection of values returned by getDirectConnectGatewayAttachment.
 type GetDirectConnectGatewayAttachmentResult struct {
-	DxGatewayId interface{}
+	DxGatewayId string `pulumi:"dxGatewayId"`
 	// Key-value tags for the EC2 Transit Gateway Attachment
-	Tags interface{}
-	TransitGatewayId interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
+	TransitGatewayId string `pulumi:"transitGatewayId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

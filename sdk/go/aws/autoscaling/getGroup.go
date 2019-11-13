@@ -45,45 +45,45 @@ func LookupGroup(ctx *pulumi.Context, args *GetGroupArgs) (*GetGroupResult, erro
 // A collection of arguments for invoking getGroup.
 type GetGroupArgs struct {
 	// Specify the exact name of the desired autoscaling group.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getGroup.
 type GetGroupResult struct {
 	// The Amazon Resource Name (ARN) of the Auto Scaling group.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// One or more Availability Zones for the group.
-	AvailabilityZones interface{}
-	DefaultCooldown interface{}
+	AvailabilityZones []interface{} `pulumi:"availabilityZones"`
+	DefaultCooldown int `pulumi:"defaultCooldown"`
 	// The desired size of the group.
-	DesiredCapacity interface{}
+	DesiredCapacity int `pulumi:"desiredCapacity"`
 	// The amount of time, in seconds, that Amazon EC2 Auto Scaling waits before checking the health status of an EC2 instance that has come into service.
-	HealthCheckGracePeriod interface{}
+	HealthCheckGracePeriod int `pulumi:"healthCheckGracePeriod"`
 	// The service to use for the health checks. The valid values are EC2 and ELB.
-	HealthCheckType interface{}
+	HealthCheckType string `pulumi:"healthCheckType"`
 	// The name of the associated launch configuration.
-	LaunchConfiguration interface{}
+	LaunchConfiguration string `pulumi:"launchConfiguration"`
 	// One or more load balancers associated with the group.
-	LoadBalancers interface{}
+	LoadBalancers []interface{} `pulumi:"loadBalancers"`
 	// The maximum size of the group.
-	MaxSize interface{}
+	MaxSize int `pulumi:"maxSize"`
 	// The minimum size of the group.
-	MinSize interface{}
+	MinSize int `pulumi:"minSize"`
 	// The name of the Auto Scaling group.
-	Name interface{}
-	NewInstancesProtectedFromScaleIn interface{}
+	Name string `pulumi:"name"`
+	NewInstancesProtectedFromScaleIn bool `pulumi:"newInstancesProtectedFromScaleIn"`
 	// The name of the placement group into which to launch your instances, if any. For more information, see Placement Groups (http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html) in the Amazon Elastic Compute Cloud User Guide.
-	PlacementGroup interface{}
+	PlacementGroup string `pulumi:"placementGroup"`
 	// The Amazon Resource Name (ARN) of the service-linked role that the Auto Scaling group uses to call other AWS services on your behalf.
-	ServiceLinkedRoleArn interface{}
+	ServiceLinkedRoleArn string `pulumi:"serviceLinkedRoleArn"`
 	// The current state of the group when DeleteAutoScalingGroup is in progress.
-	Status interface{}
+	Status string `pulumi:"status"`
 	// The Amazon Resource Names (ARN) of the target groups for your load balancer.
-	TargetGroupArns interface{}
+	TargetGroupArns []interface{} `pulumi:"targetGroupArns"`
 	// The termination policies for the group.
-	TerminationPolicies interface{}
+	TerminationPolicies []interface{} `pulumi:"terminationPolicies"`
 	// VPC ID for the group.
-	VpcZoneIdentifier interface{}
+	VpcZoneIdentifier string `pulumi:"vpcZoneIdentifier"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

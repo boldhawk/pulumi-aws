@@ -31,14 +31,14 @@ func LookupTopic(ctx *pulumi.Context, args *GetTopicArgs) (*GetTopicResult, erro
 // A collection of arguments for invoking getTopic.
 type GetTopicArgs struct {
 	// The friendly name of the topic to match.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getTopic.
 type GetTopicResult struct {
 	// Set to the ARN of the found topic, suitable for referencing in other resources that support SNS topics.
-	Arn interface{}
-	Name interface{}
+	Arn string `pulumi:"arn"`
+	Name string `pulumi:"name"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

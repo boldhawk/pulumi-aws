@@ -12,7 +12,25 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/iam_group_policy.html.markdown.
 type GroupPolicy struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The IAM group to attach to the policy.
+	Group pulumi.StringOutput `pulumi:"group"`
+
+	// The name of the policy. If omitted, this provider will
+	// assign a random, unique name.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Creates a unique name beginning with the specified
+	// prefix. Conflicts with `name`.
+	NamePrefix pulumi.StringOutput `pulumi:"namePrefix"`
+
+	// The policy document. This is a JSON formatted string.
+	Policy pulumi.StringOutput `pulumi:"policy"`
 }
 
 // NewGroupPolicy registers a new resource with the given unique name, arguments, and options.
@@ -24,99 +42,74 @@ func NewGroupPolicy(ctx *pulumi.Context,
 	if args == nil || args.Policy == nil {
 		return nil, errors.New("missing required argument 'Policy'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["group"] = nil
-		inputs["name"] = nil
-		inputs["namePrefix"] = nil
-		inputs["policy"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["group"] = args.Group
 		inputs["name"] = args.Name
 		inputs["namePrefix"] = args.NamePrefix
 		inputs["policy"] = args.Policy
 	}
-	s, err := ctx.RegisterResource("aws:iam/groupPolicy:GroupPolicy", name, true, inputs, opts...)
+	var resource GroupPolicy
+	err := ctx.RegisterResource("aws:iam/groupPolicy:GroupPolicy", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &GroupPolicy{s: s}, nil
+	return &resource, nil
 }
 
 // GetGroupPolicy gets an existing GroupPolicy resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetGroupPolicy(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *GroupPolicyState, opts ...pulumi.ResourceOpt) (*GroupPolicy, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["group"] = state.Group
 		inputs["name"] = state.Name
 		inputs["namePrefix"] = state.NamePrefix
 		inputs["policy"] = state.Policy
 	}
-	s, err := ctx.ReadResource("aws:iam/groupPolicy:GroupPolicy", name, id, inputs, opts...)
+	var resource GroupPolicy
+	err := ctx.ReadResource("aws:iam/groupPolicy:GroupPolicy", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &GroupPolicy{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *GroupPolicy) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *GroupPolicy) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *GroupPolicy) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *GroupPolicy) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The IAM group to attach to the policy.
-func (r *GroupPolicy) Group() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["group"])
-}
-
-// The name of the policy. If omitted, this provider will
-// assign a random, unique name.
-func (r *GroupPolicy) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Creates a unique name beginning with the specified
-// prefix. Conflicts with `name`.
-func (r *GroupPolicy) NamePrefix() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["namePrefix"])
-}
-
-// The policy document. This is a JSON formatted string.
-func (r *GroupPolicy) Policy() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["policy"])
-}
-
 // Input properties used for looking up and filtering GroupPolicy resources.
 type GroupPolicyState struct {
 	// The IAM group to attach to the policy.
-	Group interface{}
+	Group pulumi.StringInput `pulumi:"group"`
 	// The name of the policy. If omitted, this provider will
 	// assign a random, unique name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified
 	// prefix. Conflicts with `name`.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// The policy document. This is a JSON formatted string.
-	Policy interface{}
+	Policy pulumi.StringInput `pulumi:"policy"`
 }
 
 // The set of arguments for constructing a GroupPolicy resource.
 type GroupPolicyArgs struct {
 	// The IAM group to attach to the policy.
-	Group interface{}
+	Group pulumi.StringInput `pulumi:"group"`
 	// The name of the policy. If omitted, this provider will
 	// assign a random, unique name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified
 	// prefix. Conflicts with `name`.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// The policy document. This is a JSON formatted string.
-	Policy interface{}
+	Policy pulumi.StringInput `pulumi:"policy"`
 }

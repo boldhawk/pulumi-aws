@@ -31,17 +31,17 @@ func LookupApplication(ctx *pulumi.Context, args *GetApplicationArgs) (*GetAppli
 // A collection of arguments for invoking getApplication.
 type GetApplicationArgs struct {
 	// The name of the application
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getApplication.
 type GetApplicationResult struct {
-	AppversionLifecycle interface{}
+	AppversionLifecycle interface{} `pulumi:"appversionLifecycle"`
 	// The Amazon Resource Name (ARN) of the application.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// Short description of the application
-	Description interface{}
-	Name interface{}
+	Description string `pulumi:"description"`
+	Name string `pulumi:"name"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

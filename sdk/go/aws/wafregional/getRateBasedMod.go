@@ -28,12 +28,12 @@ func LookupRateBasedMod(ctx *pulumi.Context, args *GetRateBasedModArgs) (*GetRat
 // A collection of arguments for invoking getRateBasedMod.
 type GetRateBasedModArgs struct {
 	// The name of the WAF Regional rate based rule.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getRateBasedMod.
 type GetRateBasedModResult struct {
-	Name interface{}
+	Name string `pulumi:"name"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

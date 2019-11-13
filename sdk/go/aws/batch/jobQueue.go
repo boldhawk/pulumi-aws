@@ -12,7 +12,30 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/batch_job_queue.html.markdown.
 type JobQueue struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The Amazon Resource Name of the job queue.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Specifies the set of compute environments
+	// mapped to a job queue and their order.  The position of the compute environments
+	// in the list will dictate the order. You can associate up to 3 compute environments
+	// with a job queue.
+	ComputeEnvironments pulumi.ArrayOutput `pulumi:"computeEnvironments"`
+
+	// Specifies the name of the job queue.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The priority of the job queue. Job queues with a higher priority
+	// are evaluated first when associated with the same compute environment.
+	Priority pulumi.IntOutput `pulumi:"priority"`
+
+	// The state of the job queue. Must be one of: `ENABLED` or `DISABLED`
+	State pulumi.StringOutput `pulumi:"state"`
 }
 
 // NewJobQueue registers a new resource with the given unique name, arguments, and options.
@@ -27,31 +50,27 @@ func NewJobQueue(ctx *pulumi.Context,
 	if args == nil || args.State == nil {
 		return nil, errors.New("missing required argument 'State'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["computeEnvironments"] = nil
-		inputs["name"] = nil
-		inputs["priority"] = nil
-		inputs["state"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["computeEnvironments"] = args.ComputeEnvironments
 		inputs["name"] = args.Name
 		inputs["priority"] = args.Priority
 		inputs["state"] = args.State
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:batch/jobQueue:JobQueue", name, true, inputs, opts...)
+	var resource JobQueue
+	err := ctx.RegisterResource("aws:batch/jobQueue:JobQueue", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &JobQueue{s: s}, nil
+	return &resource, nil
 }
 
 // GetJobQueue gets an existing JobQueue resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetJobQueue(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *JobQueueState, opts ...pulumi.ResourceOpt) (*JobQueue, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["computeEnvironments"] = state.ComputeEnvironments
@@ -59,68 +78,39 @@ func GetJobQueue(ctx *pulumi.Context,
 		inputs["priority"] = state.Priority
 		inputs["state"] = state.State
 	}
-	s, err := ctx.ReadResource("aws:batch/jobQueue:JobQueue", name, id, inputs, opts...)
+	var resource JobQueue
+	err := ctx.ReadResource("aws:batch/jobQueue:JobQueue", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &JobQueue{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *JobQueue) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *JobQueue) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *JobQueue) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *JobQueue) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The Amazon Resource Name of the job queue.
-func (r *JobQueue) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Specifies the set of compute environments
-// mapped to a job queue and their order.  The position of the compute environments
-// in the list will dictate the order. You can associate up to 3 compute environments
-// with a job queue.
-func (r *JobQueue) ComputeEnvironments() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["computeEnvironments"])
-}
-
-// Specifies the name of the job queue.
-func (r *JobQueue) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The priority of the job queue. Job queues with a higher priority
-// are evaluated first when associated with the same compute environment.
-func (r *JobQueue) Priority() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["priority"])
-}
-
-// The state of the job queue. Must be one of: `ENABLED` or `DISABLED`
-func (r *JobQueue) State() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["state"])
-}
-
 // Input properties used for looking up and filtering JobQueue resources.
 type JobQueueState struct {
 	// The Amazon Resource Name of the job queue.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Specifies the set of compute environments
 	// mapped to a job queue and their order.  The position of the compute environments
 	// in the list will dictate the order. You can associate up to 3 compute environments
 	// with a job queue.
-	ComputeEnvironments interface{}
+	ComputeEnvironments pulumi.ArrayInput `pulumi:"computeEnvironments"`
 	// Specifies the name of the job queue.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The priority of the job queue. Job queues with a higher priority
 	// are evaluated first when associated with the same compute environment.
-	Priority interface{}
+	Priority pulumi.IntInput `pulumi:"priority"`
 	// The state of the job queue. Must be one of: `ENABLED` or `DISABLED`
-	State interface{}
+	State pulumi.StringInput `pulumi:"state"`
 }
 
 // The set of arguments for constructing a JobQueue resource.
@@ -129,12 +119,12 @@ type JobQueueArgs struct {
 	// mapped to a job queue and their order.  The position of the compute environments
 	// in the list will dictate the order. You can associate up to 3 compute environments
 	// with a job queue.
-	ComputeEnvironments interface{}
+	ComputeEnvironments pulumi.ArrayInput `pulumi:"computeEnvironments"`
 	// Specifies the name of the job queue.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The priority of the job queue. Job queues with a higher priority
 	// are evaluated first when associated with the same compute environment.
-	Priority interface{}
+	Priority pulumi.IntInput `pulumi:"priority"`
 	// The state of the job queue. Must be one of: `ENABLED` or `DISABLED`
-	State interface{}
+	State pulumi.StringInput `pulumi:"state"`
 }

@@ -37,27 +37,27 @@ func LookupImage(ctx *pulumi.Context, args *GetImageArgs) (*GetImageResult, erro
 // A collection of arguments for invoking getImage.
 type GetImageArgs struct {
 	// The sha256 digest of the image manifest. At least one of `imageDigest` or `imageTag` must be specified.
-	ImageDigest interface{}
+	ImageDigest pulumi.StringInput `pulumi:"imageDigest"`
 	// The tag associated with this image. At least one of `imageDigest` or `imageTag` must be specified.
-	ImageTag interface{}
+	ImageTag pulumi.StringInput `pulumi:"imageTag"`
 	// The ID of the Registry where the repository resides.
-	RegistryId interface{}
+	RegistryId pulumi.StringInput `pulumi:"registryId"`
 	// The name of the ECR Repository.
-	RepositoryName interface{}
+	RepositoryName pulumi.StringInput `pulumi:"repositoryName"`
 }
 
 // A collection of values returned by getImage.
 type GetImageResult struct {
-	ImageDigest interface{}
+	ImageDigest string `pulumi:"imageDigest"`
 	// The date and time, expressed as a unix timestamp, at which the current image was pushed to the repository.
-	ImagePushedAt interface{}
+	ImagePushedAt int `pulumi:"imagePushedAt"`
 	// The size, in bytes, of the image in the repository.
-	ImageSizeInBytes interface{}
-	ImageTag interface{}
+	ImageSizeInBytes int `pulumi:"imageSizeInBytes"`
+	ImageTag string `pulumi:"imageTag"`
 	// The list of tags associated with this image.
-	ImageTags interface{}
-	RegistryId interface{}
-	RepositoryName interface{}
+	ImageTags []interface{} `pulumi:"imageTags"`
+	RegistryId string `pulumi:"registryId"`
+	RepositoryName string `pulumi:"repositoryName"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

@@ -38,30 +38,30 @@ func LookupServiceQuota(ctx *pulumi.Context, args *GetServiceQuotaArgs) (*GetSer
 // A collection of arguments for invoking getServiceQuota.
 type GetServiceQuotaArgs struct {
 	// Quota code within the service. When configured, the data source directly looks up the service quota. Available values can be found with the [AWS CLI service-quotas list-service-quotas command](https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html).
-	QuotaCode interface{}
+	QuotaCode pulumi.StringInput `pulumi:"quotaCode"`
 	// Quota name within the service. When configured, the data source searches through all service quotas to find the matching quota name. Available values can be found with the [AWS CLI service-quotas list-service-quotas command](https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html).
-	QuotaName interface{}
+	QuotaName pulumi.StringInput `pulumi:"quotaName"`
 	// Service code for the quota. Available values can be found with the [`servicequotas.getService` data source](https://www.terraform.io/docs/providers/aws/d/servicequotas_service.html) or [AWS CLI service-quotas list-services command](https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-services.html).
-	ServiceCode interface{}
+	ServiceCode pulumi.StringInput `pulumi:"serviceCode"`
 }
 
 // A collection of values returned by getServiceQuota.
 type GetServiceQuotaResult struct {
 	// Whether the service quota is adjustable.
-	Adjustable interface{}
+	Adjustable bool `pulumi:"adjustable"`
 	// Amazon Resource Name (ARN) of the service quota.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// Default value of the service quota.
-	DefaultValue interface{}
+	DefaultValue float64 `pulumi:"defaultValue"`
 	// Whether the service quota is global for the AWS account.
-	GlobalQuota interface{}
-	QuotaCode interface{}
-	QuotaName interface{}
-	ServiceCode interface{}
+	GlobalQuota bool `pulumi:"globalQuota"`
+	QuotaCode string `pulumi:"quotaCode"`
+	QuotaName string `pulumi:"quotaName"`
+	ServiceCode string `pulumi:"serviceCode"`
 	// Name of the service.
-	ServiceName interface{}
+	ServiceName string `pulumi:"serviceName"`
 	// Current value of the service quota.
-	Value interface{}
+	Value float64 `pulumi:"value"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

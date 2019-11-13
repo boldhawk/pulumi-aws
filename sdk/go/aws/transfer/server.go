@@ -11,23 +11,48 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/transfer_server.html.markdown.
 type Server struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Amazon Resource Name (ARN) of Transfer Server
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The endpoint of the Transfer Server (e.g. `s-12345678.server.transfer.REGION.amazonaws.com`)
+	Endpoint pulumi.StringOutput `pulumi:"endpoint"`
+
+	// The virtual private cloud (VPC) endpoint settings that you want to configure for your SFTP server. Fields documented below.
+	EndpointDetails pulumi.AnyOutput `pulumi:"endpointDetails"`
+
+	// The type of endpoint that you want your SFTP server connect to. If you connect to a `VPC_ENDPOINT`, your SFTP server isn't accessible over the public internet. If you want to connect your SFTP server via public internet, set `PUBLIC`.  Defaults to `PUBLIC`.
+	EndpointType pulumi.StringOutput `pulumi:"endpointType"`
+
+	// A boolean that indicates all users associated with the server should be deleted so that the Server can be destroyed without error. The default value is `false`.
+	ForceDestroy pulumi.BoolOutput `pulumi:"forceDestroy"`
+
+	// The mode of authentication enabled for this service. The default value is `SERVICE_MANAGED`, which allows you to store and access SFTP user credentials within the service. `API_GATEWAY` indicates that user authentication requires a call to an API Gateway endpoint URL provided by you to integrate an identity provider of your choice.
+	IdentityProviderType pulumi.StringOutput `pulumi:"identityProviderType"`
+
+	// Amazon Resource Name (ARN) of the IAM role used to authenticate the user account with an `identityProviderType` of `API_GATEWAY`.
+	InvocationRole pulumi.StringOutput `pulumi:"invocationRole"`
+
+	// Amazon Resource Name (ARN) of an IAM role that allows the service to write your SFTP users’ activity to your Amazon CloudWatch logs for monitoring and auditing purposes.
+	LoggingRole pulumi.StringOutput `pulumi:"loggingRole"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// - URL of the service endpoint used to authenticate users with an `identityProviderType` of `API_GATEWAY`.
+	Url pulumi.StringOutput `pulumi:"url"`
 }
 
 // NewServer registers a new resource with the given unique name, arguments, and options.
 func NewServer(ctx *pulumi.Context,
 	name string, args *ServerArgs, opts ...pulumi.ResourceOpt) (*Server, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["endpointDetails"] = nil
-		inputs["endpointType"] = nil
-		inputs["forceDestroy"] = nil
-		inputs["identityProviderType"] = nil
-		inputs["invocationRole"] = nil
-		inputs["loggingRole"] = nil
-		inputs["tags"] = nil
-		inputs["url"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["endpointDetails"] = args.EndpointDetails
 		inputs["endpointType"] = args.EndpointType
 		inputs["forceDestroy"] = args.ForceDestroy
@@ -37,20 +62,19 @@ func NewServer(ctx *pulumi.Context,
 		inputs["tags"] = args.Tags
 		inputs["url"] = args.Url
 	}
-	inputs["arn"] = nil
-	inputs["endpoint"] = nil
-	s, err := ctx.RegisterResource("aws:transfer/server:Server", name, true, inputs, opts...)
+	var resource Server
+	err := ctx.RegisterResource("aws:transfer/server:Server", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Server{s: s}, nil
+	return &resource, nil
 }
 
 // GetServer gets an existing Server resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetServer(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ServerState, opts ...pulumi.ResourceOpt) (*Server, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["endpoint"] = state.Endpoint
@@ -63,113 +87,63 @@ func GetServer(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["url"] = state.Url
 	}
-	s, err := ctx.ReadResource("aws:transfer/server:Server", name, id, inputs, opts...)
+	var resource Server
+	err := ctx.ReadResource("aws:transfer/server:Server", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Server{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Server) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Server) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Server) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Server) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Amazon Resource Name (ARN) of Transfer Server
-func (r *Server) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The endpoint of the Transfer Server (e.g. `s-12345678.server.transfer.REGION.amazonaws.com`)
-func (r *Server) Endpoint() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["endpoint"])
-}
-
-// The virtual private cloud (VPC) endpoint settings that you want to configure for your SFTP server. Fields documented below.
-func (r *Server) EndpointDetails() *pulumi.Output {
-	return r.s.State["endpointDetails"]
-}
-
-// The type of endpoint that you want your SFTP server connect to. If you connect to a `VPC_ENDPOINT`, your SFTP server isn't accessible over the public internet. If you want to connect your SFTP server via public internet, set `PUBLIC`.  Defaults to `PUBLIC`.
-func (r *Server) EndpointType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["endpointType"])
-}
-
-// A boolean that indicates all users associated with the server should be deleted so that the Server can be destroyed without error. The default value is `false`.
-func (r *Server) ForceDestroy() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["forceDestroy"])
-}
-
-// The mode of authentication enabled for this service. The default value is `SERVICE_MANAGED`, which allows you to store and access SFTP user credentials within the service. `API_GATEWAY` indicates that user authentication requires a call to an API Gateway endpoint URL provided by you to integrate an identity provider of your choice.
-func (r *Server) IdentityProviderType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["identityProviderType"])
-}
-
-// Amazon Resource Name (ARN) of the IAM role used to authenticate the user account with an `identityProviderType` of `API_GATEWAY`.
-func (r *Server) InvocationRole() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["invocationRole"])
-}
-
-// Amazon Resource Name (ARN) of an IAM role that allows the service to write your SFTP users’ activity to your Amazon CloudWatch logs for monitoring and auditing purposes.
-func (r *Server) LoggingRole() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["loggingRole"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *Server) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// - URL of the service endpoint used to authenticate users with an `identityProviderType` of `API_GATEWAY`.
-func (r *Server) Url() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["url"])
-}
-
 // Input properties used for looking up and filtering Server resources.
 type ServerState struct {
 	// Amazon Resource Name (ARN) of Transfer Server
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The endpoint of the Transfer Server (e.g. `s-12345678.server.transfer.REGION.amazonaws.com`)
-	Endpoint interface{}
+	Endpoint pulumi.StringInput `pulumi:"endpoint"`
 	// The virtual private cloud (VPC) endpoint settings that you want to configure for your SFTP server. Fields documented below.
-	EndpointDetails interface{}
+	EndpointDetails pulumi.AnyInput `pulumi:"endpointDetails"`
 	// The type of endpoint that you want your SFTP server connect to. If you connect to a `VPC_ENDPOINT`, your SFTP server isn't accessible over the public internet. If you want to connect your SFTP server via public internet, set `PUBLIC`.  Defaults to `PUBLIC`.
-	EndpointType interface{}
+	EndpointType pulumi.StringInput `pulumi:"endpointType"`
 	// A boolean that indicates all users associated with the server should be deleted so that the Server can be destroyed without error. The default value is `false`.
-	ForceDestroy interface{}
+	ForceDestroy pulumi.BoolInput `pulumi:"forceDestroy"`
 	// The mode of authentication enabled for this service. The default value is `SERVICE_MANAGED`, which allows you to store and access SFTP user credentials within the service. `API_GATEWAY` indicates that user authentication requires a call to an API Gateway endpoint URL provided by you to integrate an identity provider of your choice.
-	IdentityProviderType interface{}
+	IdentityProviderType pulumi.StringInput `pulumi:"identityProviderType"`
 	// Amazon Resource Name (ARN) of the IAM role used to authenticate the user account with an `identityProviderType` of `API_GATEWAY`.
-	InvocationRole interface{}
+	InvocationRole pulumi.StringInput `pulumi:"invocationRole"`
 	// Amazon Resource Name (ARN) of an IAM role that allows the service to write your SFTP users’ activity to your Amazon CloudWatch logs for monitoring and auditing purposes.
-	LoggingRole interface{}
+	LoggingRole pulumi.StringInput `pulumi:"loggingRole"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// - URL of the service endpoint used to authenticate users with an `identityProviderType` of `API_GATEWAY`.
-	Url interface{}
+	Url pulumi.StringInput `pulumi:"url"`
 }
 
 // The set of arguments for constructing a Server resource.
 type ServerArgs struct {
 	// The virtual private cloud (VPC) endpoint settings that you want to configure for your SFTP server. Fields documented below.
-	EndpointDetails interface{}
+	EndpointDetails pulumi.AnyInput `pulumi:"endpointDetails"`
 	// The type of endpoint that you want your SFTP server connect to. If you connect to a `VPC_ENDPOINT`, your SFTP server isn't accessible over the public internet. If you want to connect your SFTP server via public internet, set `PUBLIC`.  Defaults to `PUBLIC`.
-	EndpointType interface{}
+	EndpointType pulumi.StringInput `pulumi:"endpointType"`
 	// A boolean that indicates all users associated with the server should be deleted so that the Server can be destroyed without error. The default value is `false`.
-	ForceDestroy interface{}
+	ForceDestroy pulumi.BoolInput `pulumi:"forceDestroy"`
 	// The mode of authentication enabled for this service. The default value is `SERVICE_MANAGED`, which allows you to store and access SFTP user credentials within the service. `API_GATEWAY` indicates that user authentication requires a call to an API Gateway endpoint URL provided by you to integrate an identity provider of your choice.
-	IdentityProviderType interface{}
+	IdentityProviderType pulumi.StringInput `pulumi:"identityProviderType"`
 	// Amazon Resource Name (ARN) of the IAM role used to authenticate the user account with an `identityProviderType` of `API_GATEWAY`.
-	InvocationRole interface{}
+	InvocationRole pulumi.StringInput `pulumi:"invocationRole"`
 	// Amazon Resource Name (ARN) of an IAM role that allows the service to write your SFTP users’ activity to your Amazon CloudWatch logs for monitoring and auditing purposes.
-	LoggingRole interface{}
+	LoggingRole pulumi.StringInput `pulumi:"loggingRole"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// - URL of the service endpoint used to authenticate users with an `identityProviderType` of `API_GATEWAY`.
-	Url interface{}
+	Url pulumi.StringInput `pulumi:"url"`
 }

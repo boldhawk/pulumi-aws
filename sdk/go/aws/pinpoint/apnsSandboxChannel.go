@@ -15,7 +15,41 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/pinpoint_apns_sandbox_channel.html.markdown.
 type ApnsSandboxChannel struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The application ID.
+	ApplicationId pulumi.StringOutput `pulumi:"applicationId"`
+
+	// The ID assigned to your iOS app. To find this value, choose Certificates, IDs & Profiles, choose App IDs in the Identifiers section, and choose your app.
+	BundleId pulumi.StringOutput `pulumi:"bundleId"`
+
+	// The pem encoded TLS Certificate from Apple.
+	Certificate pulumi.StringOutput `pulumi:"certificate"`
+
+	// The default authentication method used for APNs Sandbox. 
+	// __NOTE__: Amazon Pinpoint uses this default for every APNs push notification that you send using the console.
+	// You can override the default when you send a message programmatically using the Amazon Pinpoint API, the AWS CLI, or an AWS SDK.
+	// If your default authentication type fails, Amazon Pinpoint doesn't attempt to use the other authentication type.
+	DefaultAuthenticationMethod pulumi.StringOutput `pulumi:"defaultAuthenticationMethod"`
+
+	// Whether the channel is enabled or disabled. Defaults to `true`.
+	Enabled pulumi.BoolOutput `pulumi:"enabled"`
+
+	// The Certificate Private Key file (ie. `.key` file).
+	PrivateKey pulumi.StringOutput `pulumi:"privateKey"`
+
+	// The ID assigned to your Apple developer account team. This value is provided on the Membership page.
+	TeamId pulumi.StringOutput `pulumi:"teamId"`
+
+	// The `.p8` file that you download from your Apple developer account when you create an authentication key. 
+	TokenKey pulumi.StringOutput `pulumi:"tokenKey"`
+
+	// The ID assigned to your signing key. To find this value, choose Certificates, IDs & Profiles, and choose your key in the Keys section.
+	TokenKeyId pulumi.StringOutput `pulumi:"tokenKeyId"`
 }
 
 // NewApnsSandboxChannel registers a new resource with the given unique name, arguments, and options.
@@ -24,18 +58,8 @@ func NewApnsSandboxChannel(ctx *pulumi.Context,
 	if args == nil || args.ApplicationId == nil {
 		return nil, errors.New("missing required argument 'ApplicationId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["applicationId"] = nil
-		inputs["bundleId"] = nil
-		inputs["certificate"] = nil
-		inputs["defaultAuthenticationMethod"] = nil
-		inputs["enabled"] = nil
-		inputs["privateKey"] = nil
-		inputs["teamId"] = nil
-		inputs["tokenKey"] = nil
-		inputs["tokenKeyId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["applicationId"] = args.ApplicationId
 		inputs["bundleId"] = args.BundleId
 		inputs["certificate"] = args.Certificate
@@ -46,18 +70,19 @@ func NewApnsSandboxChannel(ctx *pulumi.Context,
 		inputs["tokenKey"] = args.TokenKey
 		inputs["tokenKeyId"] = args.TokenKeyId
 	}
-	s, err := ctx.RegisterResource("aws:pinpoint/apnsSandboxChannel:ApnsSandboxChannel", name, true, inputs, opts...)
+	var resource ApnsSandboxChannel
+	err := ctx.RegisterResource("aws:pinpoint/apnsSandboxChannel:ApnsSandboxChannel", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ApnsSandboxChannel{s: s}, nil
+	return &resource, nil
 }
 
 // GetApnsSandboxChannel gets an existing ApnsSandboxChannel resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetApnsSandboxChannel(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ApnsSandboxChannelState, opts ...pulumi.ResourceOpt) (*ApnsSandboxChannel, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["applicationId"] = state.ApplicationId
 		inputs["bundleId"] = state.BundleId
@@ -69,117 +94,69 @@ func GetApnsSandboxChannel(ctx *pulumi.Context,
 		inputs["tokenKey"] = state.TokenKey
 		inputs["tokenKeyId"] = state.TokenKeyId
 	}
-	s, err := ctx.ReadResource("aws:pinpoint/apnsSandboxChannel:ApnsSandboxChannel", name, id, inputs, opts...)
+	var resource ApnsSandboxChannel
+	err := ctx.ReadResource("aws:pinpoint/apnsSandboxChannel:ApnsSandboxChannel", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ApnsSandboxChannel{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ApnsSandboxChannel) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ApnsSandboxChannel) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ApnsSandboxChannel) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ApnsSandboxChannel) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The application ID.
-func (r *ApnsSandboxChannel) ApplicationId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["applicationId"])
-}
-
-// The ID assigned to your iOS app. To find this value, choose Certificates, IDs & Profiles, choose App IDs in the Identifiers section, and choose your app.
-func (r *ApnsSandboxChannel) BundleId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["bundleId"])
-}
-
-// The pem encoded TLS Certificate from Apple.
-func (r *ApnsSandboxChannel) Certificate() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["certificate"])
-}
-
-// The default authentication method used for APNs Sandbox. 
-// __NOTE__: Amazon Pinpoint uses this default for every APNs push notification that you send using the console.
-// You can override the default when you send a message programmatically using the Amazon Pinpoint API, the AWS CLI, or an AWS SDK.
-// If your default authentication type fails, Amazon Pinpoint doesn't attempt to use the other authentication type.
-func (r *ApnsSandboxChannel) DefaultAuthenticationMethod() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["defaultAuthenticationMethod"])
-}
-
-// Whether the channel is enabled or disabled. Defaults to `true`.
-func (r *ApnsSandboxChannel) Enabled() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["enabled"])
-}
-
-// The Certificate Private Key file (ie. `.key` file).
-func (r *ApnsSandboxChannel) PrivateKey() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["privateKey"])
-}
-
-// The ID assigned to your Apple developer account team. This value is provided on the Membership page.
-func (r *ApnsSandboxChannel) TeamId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["teamId"])
-}
-
-// The `.p8` file that you download from your Apple developer account when you create an authentication key. 
-func (r *ApnsSandboxChannel) TokenKey() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["tokenKey"])
-}
-
-// The ID assigned to your signing key. To find this value, choose Certificates, IDs & Profiles, and choose your key in the Keys section.
-func (r *ApnsSandboxChannel) TokenKeyId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["tokenKeyId"])
-}
-
 // Input properties used for looking up and filtering ApnsSandboxChannel resources.
 type ApnsSandboxChannelState struct {
 	// The application ID.
-	ApplicationId interface{}
+	ApplicationId pulumi.StringInput `pulumi:"applicationId"`
 	// The ID assigned to your iOS app. To find this value, choose Certificates, IDs & Profiles, choose App IDs in the Identifiers section, and choose your app.
-	BundleId interface{}
+	BundleId pulumi.StringInput `pulumi:"bundleId"`
 	// The pem encoded TLS Certificate from Apple.
-	Certificate interface{}
+	Certificate pulumi.StringInput `pulumi:"certificate"`
 	// The default authentication method used for APNs Sandbox. 
 	// __NOTE__: Amazon Pinpoint uses this default for every APNs push notification that you send using the console.
 	// You can override the default when you send a message programmatically using the Amazon Pinpoint API, the AWS CLI, or an AWS SDK.
 	// If your default authentication type fails, Amazon Pinpoint doesn't attempt to use the other authentication type.
-	DefaultAuthenticationMethod interface{}
+	DefaultAuthenticationMethod pulumi.StringInput `pulumi:"defaultAuthenticationMethod"`
 	// Whether the channel is enabled or disabled. Defaults to `true`.
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// The Certificate Private Key file (ie. `.key` file).
-	PrivateKey interface{}
+	PrivateKey pulumi.StringInput `pulumi:"privateKey"`
 	// The ID assigned to your Apple developer account team. This value is provided on the Membership page.
-	TeamId interface{}
+	TeamId pulumi.StringInput `pulumi:"teamId"`
 	// The `.p8` file that you download from your Apple developer account when you create an authentication key. 
-	TokenKey interface{}
+	TokenKey pulumi.StringInput `pulumi:"tokenKey"`
 	// The ID assigned to your signing key. To find this value, choose Certificates, IDs & Profiles, and choose your key in the Keys section.
-	TokenKeyId interface{}
+	TokenKeyId pulumi.StringInput `pulumi:"tokenKeyId"`
 }
 
 // The set of arguments for constructing a ApnsSandboxChannel resource.
 type ApnsSandboxChannelArgs struct {
 	// The application ID.
-	ApplicationId interface{}
+	ApplicationId pulumi.StringInput `pulumi:"applicationId"`
 	// The ID assigned to your iOS app. To find this value, choose Certificates, IDs & Profiles, choose App IDs in the Identifiers section, and choose your app.
-	BundleId interface{}
+	BundleId pulumi.StringInput `pulumi:"bundleId"`
 	// The pem encoded TLS Certificate from Apple.
-	Certificate interface{}
+	Certificate pulumi.StringInput `pulumi:"certificate"`
 	// The default authentication method used for APNs Sandbox. 
 	// __NOTE__: Amazon Pinpoint uses this default for every APNs push notification that you send using the console.
 	// You can override the default when you send a message programmatically using the Amazon Pinpoint API, the AWS CLI, or an AWS SDK.
 	// If your default authentication type fails, Amazon Pinpoint doesn't attempt to use the other authentication type.
-	DefaultAuthenticationMethod interface{}
+	DefaultAuthenticationMethod pulumi.StringInput `pulumi:"defaultAuthenticationMethod"`
 	// Whether the channel is enabled or disabled. Defaults to `true`.
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// The Certificate Private Key file (ie. `.key` file).
-	PrivateKey interface{}
+	PrivateKey pulumi.StringInput `pulumi:"privateKey"`
 	// The ID assigned to your Apple developer account team. This value is provided on the Membership page.
-	TeamId interface{}
+	TeamId pulumi.StringInput `pulumi:"teamId"`
 	// The `.p8` file that you download from your Apple developer account when you create an authentication key. 
-	TokenKey interface{}
+	TokenKey pulumi.StringInput `pulumi:"tokenKey"`
 	// The ID assigned to your signing key. To find this value, choose Certificates, IDs & Profiles, and choose your key in the Keys section.
-	TokenKeyId interface{}
+	TokenKeyId pulumi.StringInput `pulumi:"tokenKeyId"`
 }

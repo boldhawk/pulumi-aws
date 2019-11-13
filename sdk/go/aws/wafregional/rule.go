@@ -24,7 +24,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/wafregional_rule.html.markdown.
 type Rule struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The name or description for the Amazon CloudWatch metric of this rule.
+	MetricName pulumi.StringOutput `pulumi:"metricName"`
+
+	// The name or description of the rule.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The objects to include in a rule (documented below).
+	Predicates pulumi.ArrayOutput `pulumi:"predicates"`
 }
 
 // NewRule registers a new resource with the given unique name, arguments, and options.
@@ -33,81 +46,64 @@ func NewRule(ctx *pulumi.Context,
 	if args == nil || args.MetricName == nil {
 		return nil, errors.New("missing required argument 'MetricName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["metricName"] = nil
-		inputs["name"] = nil
-		inputs["predicates"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["metricName"] = args.MetricName
 		inputs["name"] = args.Name
 		inputs["predicates"] = args.Predicates
 	}
-	s, err := ctx.RegisterResource("aws:wafregional/rule:Rule", name, true, inputs, opts...)
+	var resource Rule
+	err := ctx.RegisterResource("aws:wafregional/rule:Rule", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Rule{s: s}, nil
+	return &resource, nil
 }
 
 // GetRule gets an existing Rule resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRule(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RuleState, opts ...pulumi.ResourceOpt) (*Rule, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["metricName"] = state.MetricName
 		inputs["name"] = state.Name
 		inputs["predicates"] = state.Predicates
 	}
-	s, err := ctx.ReadResource("aws:wafregional/rule:Rule", name, id, inputs, opts...)
+	var resource Rule
+	err := ctx.ReadResource("aws:wafregional/rule:Rule", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Rule{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Rule) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Rule) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Rule) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Rule) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The name or description for the Amazon CloudWatch metric of this rule.
-func (r *Rule) MetricName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["metricName"])
-}
-
-// The name or description of the rule.
-func (r *Rule) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The objects to include in a rule (documented below).
-func (r *Rule) Predicates() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["predicates"])
-}
-
 // Input properties used for looking up and filtering Rule resources.
 type RuleState struct {
 	// The name or description for the Amazon CloudWatch metric of this rule.
-	MetricName interface{}
+	MetricName pulumi.StringInput `pulumi:"metricName"`
 	// The name or description of the rule.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The objects to include in a rule (documented below).
-	Predicates interface{}
+	Predicates pulumi.ArrayInput `pulumi:"predicates"`
 }
 
 // The set of arguments for constructing a Rule resource.
 type RuleArgs struct {
 	// The name or description for the Amazon CloudWatch metric of this rule.
-	MetricName interface{}
+	MetricName pulumi.StringInput `pulumi:"metricName"`
 	// The name or description of the rule.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The objects to include in a rule (documented below).
-	Predicates interface{}
+	Predicates pulumi.ArrayInput `pulumi:"predicates"`
 }

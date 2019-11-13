@@ -11,90 +11,82 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/api_gateway_client_certificate.html.markdown.
 type ClientCertificate struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The date when the client certificate was created.
+	CreatedDate pulumi.StringOutput `pulumi:"createdDate"`
+
+	// The description of the client certificate.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The date when the client certificate will expire.
+	ExpirationDate pulumi.StringOutput `pulumi:"expirationDate"`
+
+	// The PEM-encoded public key of the client certificate.
+	PemEncodedCertificate pulumi.StringOutput `pulumi:"pemEncodedCertificate"`
 }
 
 // NewClientCertificate registers a new resource with the given unique name, arguments, and options.
 func NewClientCertificate(ctx *pulumi.Context,
 	name string, args *ClientCertificateArgs, opts ...pulumi.ResourceOpt) (*ClientCertificate, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["description"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["description"] = args.Description
 	}
-	inputs["createdDate"] = nil
-	inputs["expirationDate"] = nil
-	inputs["pemEncodedCertificate"] = nil
-	s, err := ctx.RegisterResource("aws:apigateway/clientCertificate:ClientCertificate", name, true, inputs, opts...)
+	var resource ClientCertificate
+	err := ctx.RegisterResource("aws:apigateway/clientCertificate:ClientCertificate", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ClientCertificate{s: s}, nil
+	return &resource, nil
 }
 
 // GetClientCertificate gets an existing ClientCertificate resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetClientCertificate(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ClientCertificateState, opts ...pulumi.ResourceOpt) (*ClientCertificate, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["createdDate"] = state.CreatedDate
 		inputs["description"] = state.Description
 		inputs["expirationDate"] = state.ExpirationDate
 		inputs["pemEncodedCertificate"] = state.PemEncodedCertificate
 	}
-	s, err := ctx.ReadResource("aws:apigateway/clientCertificate:ClientCertificate", name, id, inputs, opts...)
+	var resource ClientCertificate
+	err := ctx.ReadResource("aws:apigateway/clientCertificate:ClientCertificate", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ClientCertificate{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ClientCertificate) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ClientCertificate) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ClientCertificate) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ClientCertificate) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The date when the client certificate was created.
-func (r *ClientCertificate) CreatedDate() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["createdDate"])
-}
-
-// The description of the client certificate.
-func (r *ClientCertificate) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The date when the client certificate will expire.
-func (r *ClientCertificate) ExpirationDate() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["expirationDate"])
-}
-
-// The PEM-encoded public key of the client certificate.
-func (r *ClientCertificate) PemEncodedCertificate() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["pemEncodedCertificate"])
-}
-
 // Input properties used for looking up and filtering ClientCertificate resources.
 type ClientCertificateState struct {
 	// The date when the client certificate was created.
-	CreatedDate interface{}
+	CreatedDate pulumi.StringInput `pulumi:"createdDate"`
 	// The description of the client certificate.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The date when the client certificate will expire.
-	ExpirationDate interface{}
+	ExpirationDate pulumi.StringInput `pulumi:"expirationDate"`
 	// The PEM-encoded public key of the client certificate.
-	PemEncodedCertificate interface{}
+	PemEncodedCertificate pulumi.StringInput `pulumi:"pemEncodedCertificate"`
 }
 
 // The set of arguments for constructing a ClientCertificate resource.
 type ClientCertificateArgs struct {
 	// The description of the client certificate.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 }

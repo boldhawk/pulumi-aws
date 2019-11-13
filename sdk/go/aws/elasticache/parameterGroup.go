@@ -14,7 +14,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/elasticache_parameter_group.html.markdown.
 type ParameterGroup struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The description of the ElastiCache parameter group. Defaults to "Managed by Pulumi".
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The family of the ElastiCache parameter group.
+	Family pulumi.StringOutput `pulumi:"family"`
+
+	// The name of the ElastiCache parameter.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A list of ElastiCache parameters to apply.
+	Parameters pulumi.ArrayOutput `pulumi:"parameters"`
 }
 
 // NewParameterGroup registers a new resource with the given unique name, arguments, and options.
@@ -23,93 +39,71 @@ func NewParameterGroup(ctx *pulumi.Context,
 	if args == nil || args.Family == nil {
 		return nil, errors.New("missing required argument 'Family'")
 	}
-	inputs := make(map[string]interface{})
-	inputs["description"] = "Managed by Pulumi"
-	if args == nil {
-		inputs["family"] = nil
-		inputs["name"] = nil
-		inputs["parameters"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["description"] = pulumi.Any("Managed by Pulumi")
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["family"] = args.Family
 		inputs["name"] = args.Name
 		inputs["parameters"] = args.Parameters
 	}
-	s, err := ctx.RegisterResource("aws:elasticache/parameterGroup:ParameterGroup", name, true, inputs, opts...)
+	var resource ParameterGroup
+	err := ctx.RegisterResource("aws:elasticache/parameterGroup:ParameterGroup", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ParameterGroup{s: s}, nil
+	return &resource, nil
 }
 
 // GetParameterGroup gets an existing ParameterGroup resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetParameterGroup(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ParameterGroupState, opts ...pulumi.ResourceOpt) (*ParameterGroup, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["description"] = state.Description
 		inputs["family"] = state.Family
 		inputs["name"] = state.Name
 		inputs["parameters"] = state.Parameters
 	}
-	s, err := ctx.ReadResource("aws:elasticache/parameterGroup:ParameterGroup", name, id, inputs, opts...)
+	var resource ParameterGroup
+	err := ctx.ReadResource("aws:elasticache/parameterGroup:ParameterGroup", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ParameterGroup{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ParameterGroup) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ParameterGroup) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ParameterGroup) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ParameterGroup) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The description of the ElastiCache parameter group. Defaults to "Managed by Pulumi".
-func (r *ParameterGroup) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The family of the ElastiCache parameter group.
-func (r *ParameterGroup) Family() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["family"])
-}
-
-// The name of the ElastiCache parameter.
-func (r *ParameterGroup) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A list of ElastiCache parameters to apply.
-func (r *ParameterGroup) Parameters() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["parameters"])
-}
-
 // Input properties used for looking up and filtering ParameterGroup resources.
 type ParameterGroupState struct {
 	// The description of the ElastiCache parameter group. Defaults to "Managed by Pulumi".
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The family of the ElastiCache parameter group.
-	Family interface{}
+	Family pulumi.StringInput `pulumi:"family"`
 	// The name of the ElastiCache parameter.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A list of ElastiCache parameters to apply.
-	Parameters interface{}
+	Parameters pulumi.ArrayInput `pulumi:"parameters"`
 }
 
 // The set of arguments for constructing a ParameterGroup resource.
 type ParameterGroupArgs struct {
 	// The description of the ElastiCache parameter group. Defaults to "Managed by Pulumi".
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The family of the ElastiCache parameter group.
-	Family interface{}
+	Family pulumi.StringInput `pulumi:"family"`
 	// The name of the ElastiCache parameter.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A list of ElastiCache parameters to apply.
-	Parameters interface{}
+	Parameters pulumi.ArrayInput `pulumi:"parameters"`
 }

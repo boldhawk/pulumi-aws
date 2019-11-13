@@ -52,51 +52,51 @@ func LookupVpc(ctx *pulumi.Context, args *GetVpcArgs) (*GetVpcResult, error) {
 // A collection of arguments for invoking getVpc.
 type GetVpcArgs struct {
 	// The cidr block of the desired VPC.
-	CidrBlock interface{}
+	CidrBlock pulumi.StringInput `pulumi:"cidrBlock"`
 	// Boolean constraint on whether the desired VPC is
 	// the default VPC for the region.
-	Default interface{}
+	Default pulumi.BoolInput `pulumi:"default"`
 	// The DHCP options id of the desired VPC.
-	DhcpOptionsId interface{}
+	DhcpOptionsId pulumi.StringInput `pulumi:"dhcpOptionsId"`
 	// Custom filter block as described below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The id of the specific VPC to retrieve.
-	Id interface{}
+	Id pulumi.StringInput `pulumi:"id"`
 	// The current state of the desired VPC.
 	// Can be either `"pending"` or `"available"`.
-	State interface{}
+	State pulumi.StringInput `pulumi:"state"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired VPC.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpc.
 type GetVpcResult struct {
 	// Amazon Resource Name (ARN) of VPC
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// The CIDR block for the association.
-	CidrBlock interface{}
-	CidrBlockAssociations interface{}
-	Default interface{}
-	DhcpOptionsId interface{}
+	CidrBlock string `pulumi:"cidrBlock"`
+	CidrBlockAssociations []interface{} `pulumi:"cidrBlockAssociations"`
+	Default bool `pulumi:"default"`
+	DhcpOptionsId string `pulumi:"dhcpOptionsId"`
 	// Whether or not the VPC has DNS hostname support
-	EnableDnsHostnames interface{}
+	EnableDnsHostnames bool `pulumi:"enableDnsHostnames"`
 	// Whether or not the VPC has DNS support
-	EnableDnsSupport interface{}
-	Filters interface{}
-	Id interface{}
+	EnableDnsSupport bool `pulumi:"enableDnsSupport"`
+	Filters []interface{} `pulumi:"filters"`
+	Id string `pulumi:"id"`
 	// The allowed tenancy of instances launched into the
 	// selected VPC. May be any of `"default"`, `"dedicated"`, or `"host"`.
-	InstanceTenancy interface{}
+	InstanceTenancy string `pulumi:"instanceTenancy"`
 	// The association ID for the IPv6 CIDR block.
-	Ipv6AssociationId interface{}
+	Ipv6AssociationId string `pulumi:"ipv6AssociationId"`
 	// The IPv6 CIDR block.
-	Ipv6CidrBlock interface{}
+	Ipv6CidrBlock string `pulumi:"ipv6CidrBlock"`
 	// The ID of the main route table associated with this VPC.
-	MainRouteTableId interface{}
+	MainRouteTableId string `pulumi:"mainRouteTableId"`
 	// The ID of the AWS account that owns the VPC.
-	OwnerId interface{}
+	OwnerId string `pulumi:"ownerId"`
 	// The State of the association.
-	State interface{}
-	Tags interface{}
+	State string `pulumi:"state"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }

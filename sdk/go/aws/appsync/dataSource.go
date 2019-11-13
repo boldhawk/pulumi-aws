@@ -12,7 +12,41 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/appsync_datasource.html.markdown.
 type DataSource struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The API ID for the GraphQL API for the DataSource.
+	ApiId pulumi.StringOutput `pulumi:"apiId"`
+
+	// The ARN
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// A description of the DataSource.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// DynamoDB settings. See below
+	DynamodbConfig pulumi.AnyOutput `pulumi:"dynamodbConfig"`
+
+	// Amazon Elasticsearch settings. See below
+	ElasticsearchConfig pulumi.AnyOutput `pulumi:"elasticsearchConfig"`
+
+	// HTTP settings. See below
+	HttpConfig pulumi.AnyOutput `pulumi:"httpConfig"`
+
+	// AWS Lambda settings. See below
+	LambdaConfig pulumi.AnyOutput `pulumi:"lambdaConfig"`
+
+	// A user-supplied name for the DataSource.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The IAM service role ARN for the data source.
+	ServiceRoleArn pulumi.StringOutput `pulumi:"serviceRoleArn"`
+
+	// The type of the DataSource. Valid values: `AWS_LAMBDA`, `AMAZON_DYNAMODB`, `AMAZON_ELASTICSEARCH`, `HTTP`, `NONE`.
+	Type pulumi.StringOutput `pulumi:"type"`
 }
 
 // NewDataSource registers a new resource with the given unique name, arguments, and options.
@@ -24,18 +58,9 @@ func NewDataSource(ctx *pulumi.Context,
 	if args == nil || args.Type == nil {
 		return nil, errors.New("missing required argument 'Type'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["apiId"] = nil
-		inputs["description"] = nil
-		inputs["dynamodbConfig"] = nil
-		inputs["elasticsearchConfig"] = nil
-		inputs["httpConfig"] = nil
-		inputs["lambdaConfig"] = nil
-		inputs["name"] = nil
-		inputs["serviceRoleArn"] = nil
-		inputs["type"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["apiId"] = args.ApiId
 		inputs["description"] = args.Description
 		inputs["dynamodbConfig"] = args.DynamodbConfig
@@ -46,19 +71,19 @@ func NewDataSource(ctx *pulumi.Context,
 		inputs["serviceRoleArn"] = args.ServiceRoleArn
 		inputs["type"] = args.Type
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:appsync/dataSource:DataSource", name, true, inputs, opts...)
+	var resource DataSource
+	err := ctx.RegisterResource("aws:appsync/dataSource:DataSource", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DataSource{s: s}, nil
+	return &resource, nil
 }
 
 // GetDataSource gets an existing DataSource resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetDataSource(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *DataSourceState, opts ...pulumi.ResourceOpt) (*DataSource, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["apiId"] = state.ApiId
 		inputs["arn"] = state.Arn
@@ -71,115 +96,65 @@ func GetDataSource(ctx *pulumi.Context,
 		inputs["serviceRoleArn"] = state.ServiceRoleArn
 		inputs["type"] = state.Type
 	}
-	s, err := ctx.ReadResource("aws:appsync/dataSource:DataSource", name, id, inputs, opts...)
+	var resource DataSource
+	err := ctx.ReadResource("aws:appsync/dataSource:DataSource", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DataSource{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *DataSource) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *DataSource) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *DataSource) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *DataSource) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The API ID for the GraphQL API for the DataSource.
-func (r *DataSource) ApiId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["apiId"])
-}
-
-// The ARN
-func (r *DataSource) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// A description of the DataSource.
-func (r *DataSource) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// DynamoDB settings. See below
-func (r *DataSource) DynamodbConfig() *pulumi.Output {
-	return r.s.State["dynamodbConfig"]
-}
-
-// Amazon Elasticsearch settings. See below
-func (r *DataSource) ElasticsearchConfig() *pulumi.Output {
-	return r.s.State["elasticsearchConfig"]
-}
-
-// HTTP settings. See below
-func (r *DataSource) HttpConfig() *pulumi.Output {
-	return r.s.State["httpConfig"]
-}
-
-// AWS Lambda settings. See below
-func (r *DataSource) LambdaConfig() *pulumi.Output {
-	return r.s.State["lambdaConfig"]
-}
-
-// A user-supplied name for the DataSource.
-func (r *DataSource) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The IAM service role ARN for the data source.
-func (r *DataSource) ServiceRoleArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["serviceRoleArn"])
-}
-
-// The type of the DataSource. Valid values: `AWS_LAMBDA`, `AMAZON_DYNAMODB`, `AMAZON_ELASTICSEARCH`, `HTTP`, `NONE`.
-func (r *DataSource) Type() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["type"])
-}
-
 // Input properties used for looking up and filtering DataSource resources.
 type DataSourceState struct {
 	// The API ID for the GraphQL API for the DataSource.
-	ApiId interface{}
+	ApiId pulumi.StringInput `pulumi:"apiId"`
 	// The ARN
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// A description of the DataSource.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// DynamoDB settings. See below
-	DynamodbConfig interface{}
+	DynamodbConfig pulumi.AnyInput `pulumi:"dynamodbConfig"`
 	// Amazon Elasticsearch settings. See below
-	ElasticsearchConfig interface{}
+	ElasticsearchConfig pulumi.AnyInput `pulumi:"elasticsearchConfig"`
 	// HTTP settings. See below
-	HttpConfig interface{}
+	HttpConfig pulumi.AnyInput `pulumi:"httpConfig"`
 	// AWS Lambda settings. See below
-	LambdaConfig interface{}
+	LambdaConfig pulumi.AnyInput `pulumi:"lambdaConfig"`
 	// A user-supplied name for the DataSource.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The IAM service role ARN for the data source.
-	ServiceRoleArn interface{}
+	ServiceRoleArn pulumi.StringInput `pulumi:"serviceRoleArn"`
 	// The type of the DataSource. Valid values: `AWS_LAMBDA`, `AMAZON_DYNAMODB`, `AMAZON_ELASTICSEARCH`, `HTTP`, `NONE`.
-	Type interface{}
+	Type pulumi.StringInput `pulumi:"type"`
 }
 
 // The set of arguments for constructing a DataSource resource.
 type DataSourceArgs struct {
 	// The API ID for the GraphQL API for the DataSource.
-	ApiId interface{}
+	ApiId pulumi.StringInput `pulumi:"apiId"`
 	// A description of the DataSource.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// DynamoDB settings. See below
-	DynamodbConfig interface{}
+	DynamodbConfig pulumi.AnyInput `pulumi:"dynamodbConfig"`
 	// Amazon Elasticsearch settings. See below
-	ElasticsearchConfig interface{}
+	ElasticsearchConfig pulumi.AnyInput `pulumi:"elasticsearchConfig"`
 	// HTTP settings. See below
-	HttpConfig interface{}
+	HttpConfig pulumi.AnyInput `pulumi:"httpConfig"`
 	// AWS Lambda settings. See below
-	LambdaConfig interface{}
+	LambdaConfig pulumi.AnyInput `pulumi:"lambdaConfig"`
 	// A user-supplied name for the DataSource.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The IAM service role ARN for the data source.
-	ServiceRoleArn interface{}
+	ServiceRoleArn pulumi.StringInput `pulumi:"serviceRoleArn"`
 	// The type of the DataSource. Valid values: `AWS_LAMBDA`, `AMAZON_DYNAMODB`, `AMAZON_ELASTICSEARCH`, `HTTP`, `NONE`.
-	Type interface{}
+	Type pulumi.StringInput `pulumi:"type"`
 }

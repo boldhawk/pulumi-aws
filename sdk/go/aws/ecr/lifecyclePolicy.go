@@ -16,7 +16,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ecr_lifecycle_policy.html.markdown.
 type LifecyclePolicy struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs.
+	Policy pulumi.StringOutput `pulumi:"policy"`
+
+	// The registry ID where the repository was created.
+	RegistryId pulumi.StringOutput `pulumi:"registryId"`
+
+	// Name of the repository to apply the policy.
+	Repository pulumi.StringOutput `pulumi:"repository"`
 }
 
 // NewLifecyclePolicy registers a new resource with the given unique name, arguments, and options.
@@ -28,78 +41,60 @@ func NewLifecyclePolicy(ctx *pulumi.Context,
 	if args == nil || args.Repository == nil {
 		return nil, errors.New("missing required argument 'Repository'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["policy"] = nil
-		inputs["repository"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["policy"] = args.Policy
 		inputs["repository"] = args.Repository
 	}
-	inputs["registryId"] = nil
-	s, err := ctx.RegisterResource("aws:ecr/lifecyclePolicy:LifecyclePolicy", name, true, inputs, opts...)
+	var resource LifecyclePolicy
+	err := ctx.RegisterResource("aws:ecr/lifecyclePolicy:LifecyclePolicy", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &LifecyclePolicy{s: s}, nil
+	return &resource, nil
 }
 
 // GetLifecyclePolicy gets an existing LifecyclePolicy resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetLifecyclePolicy(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *LifecyclePolicyState, opts ...pulumi.ResourceOpt) (*LifecyclePolicy, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["policy"] = state.Policy
 		inputs["registryId"] = state.RegistryId
 		inputs["repository"] = state.Repository
 	}
-	s, err := ctx.ReadResource("aws:ecr/lifecyclePolicy:LifecyclePolicy", name, id, inputs, opts...)
+	var resource LifecyclePolicy
+	err := ctx.ReadResource("aws:ecr/lifecyclePolicy:LifecyclePolicy", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &LifecyclePolicy{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *LifecyclePolicy) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *LifecyclePolicy) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *LifecyclePolicy) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *LifecyclePolicy) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs.
-func (r *LifecyclePolicy) Policy() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["policy"])
-}
-
-// The registry ID where the repository was created.
-func (r *LifecyclePolicy) RegistryId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["registryId"])
-}
-
-// Name of the repository to apply the policy.
-func (r *LifecyclePolicy) Repository() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["repository"])
-}
-
 // Input properties used for looking up and filtering LifecyclePolicy resources.
 type LifecyclePolicyState struct {
 	// The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs.
-	Policy interface{}
+	Policy pulumi.StringInput `pulumi:"policy"`
 	// The registry ID where the repository was created.
-	RegistryId interface{}
+	RegistryId pulumi.StringInput `pulumi:"registryId"`
 	// Name of the repository to apply the policy.
-	Repository interface{}
+	Repository pulumi.StringInput `pulumi:"repository"`
 }
 
 // The set of arguments for constructing a LifecyclePolicy resource.
 type LifecyclePolicyArgs struct {
 	// The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs.
-	Policy interface{}
+	Policy pulumi.StringInput `pulumi:"policy"`
 	// Name of the repository to apply the policy.
-	Repository interface{}
+	Repository pulumi.StringInput `pulumi:"repository"`
 }

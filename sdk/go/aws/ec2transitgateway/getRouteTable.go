@@ -34,23 +34,23 @@ func LookupRouteTable(ctx *pulumi.Context, args *GetRouteTableArgs) (*GetRouteTa
 // A collection of arguments for invoking getRouteTable.
 type GetRouteTableArgs struct {
 	// One or more configuration blocks containing name-values filters. Detailed below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// Identifier of the EC2 Transit Gateway Route Table.
-	Id interface{}
-	Tags interface{}
+	Id pulumi.StringInput `pulumi:"id"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getRouteTable.
 type GetRouteTableResult struct {
 	// Boolean whether this is the default association route table for the EC2 Transit Gateway
-	DefaultAssociationRouteTable interface{}
+	DefaultAssociationRouteTable bool `pulumi:"defaultAssociationRouteTable"`
 	// Boolean whether this is the default propagation route table for the EC2 Transit Gateway
-	DefaultPropagationRouteTable interface{}
-	Filters interface{}
+	DefaultPropagationRouteTable bool `pulumi:"defaultPropagationRouteTable"`
+	Filters []interface{} `pulumi:"filters"`
 	// EC2 Transit Gateway Route Table identifier
-	Id interface{}
+	Id string `pulumi:"id"`
 	// Key-value tags for the EC2 Transit Gateway Route Table
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// EC2 Transit Gateway identifier
-	TransitGatewayId interface{}
+	TransitGatewayId string `pulumi:"transitGatewayId"`
 }

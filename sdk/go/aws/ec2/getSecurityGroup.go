@@ -41,28 +41,28 @@ func LookupSecurityGroup(ctx *pulumi.Context, args *GetSecurityGroupArgs) (*GetS
 // A collection of arguments for invoking getSecurityGroup.
 type GetSecurityGroupArgs struct {
 	// Custom filter block as described below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The id of the specific security group to retrieve.
-	Id interface{}
+	Id pulumi.StringInput `pulumi:"id"`
 	// The name of the field to filter by, as defined by
 	// [the underlying AWS API](http://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeSecurityGroups.html).
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired security group.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The id of the VPC that the desired security group belongs to.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getSecurityGroup.
 type GetSecurityGroupResult struct {
 	// The computed ARN of the security group.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// The description of the security group.
-	Description interface{}
-	Filters interface{}
-	Id interface{}
-	Name interface{}
-	Tags interface{}
-	VpcId interface{}
+	Description string `pulumi:"description"`
+	Filters []interface{} `pulumi:"filters"`
+	Id string `pulumi:"id"`
+	Name string `pulumi:"name"`
+	Tags map[string]interface{} `pulumi:"tags"`
+	VpcId string `pulumi:"vpcId"`
 }

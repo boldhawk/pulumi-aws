@@ -14,7 +14,28 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/datasync_location_nfs.html.markdown.
 type NfsLocation struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Amazon Resource Name (ARN) of the DataSync Location.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Configuration block containing information for connecting to the NFS File System.
+	OnPremConfig pulumi.AnyOutput `pulumi:"onPremConfig"`
+
+	// Specifies the IP address or DNS name of the NFS server. The DataSync Agent(s) use this to mount the NFS server.
+	ServerHostname pulumi.StringOutput `pulumi:"serverHostname"`
+
+	// Subdirectory to perform actions as source or destination. Should be exported by the NFS server.
+	Subdirectory pulumi.StringOutput `pulumi:"subdirectory"`
+
+	// Key-value pairs of resource tags to assign to the DataSync Location.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	Uri pulumi.StringOutput `pulumi:"uri"`
 }
 
 // NewNfsLocation registers a new resource with the given unique name, arguments, and options.
@@ -29,32 +50,26 @@ func NewNfsLocation(ctx *pulumi.Context,
 	if args == nil || args.Subdirectory == nil {
 		return nil, errors.New("missing required argument 'Subdirectory'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["onPremConfig"] = nil
-		inputs["serverHostname"] = nil
-		inputs["subdirectory"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["onPremConfig"] = args.OnPremConfig
 		inputs["serverHostname"] = args.ServerHostname
 		inputs["subdirectory"] = args.Subdirectory
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	inputs["uri"] = nil
-	s, err := ctx.RegisterResource("aws:datasync/nfsLocation:NfsLocation", name, true, inputs, opts...)
+	var resource NfsLocation
+	err := ctx.RegisterResource("aws:datasync/nfsLocation:NfsLocation", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &NfsLocation{s: s}, nil
+	return &resource, nil
 }
 
 // GetNfsLocation gets an existing NfsLocation resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetNfsLocation(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *NfsLocationState, opts ...pulumi.ResourceOpt) (*NfsLocation, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["onPremConfig"] = state.OnPremConfig
@@ -63,75 +78,46 @@ func GetNfsLocation(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["uri"] = state.Uri
 	}
-	s, err := ctx.ReadResource("aws:datasync/nfsLocation:NfsLocation", name, id, inputs, opts...)
+	var resource NfsLocation
+	err := ctx.ReadResource("aws:datasync/nfsLocation:NfsLocation", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &NfsLocation{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *NfsLocation) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *NfsLocation) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *NfsLocation) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *NfsLocation) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Amazon Resource Name (ARN) of the DataSync Location.
-func (r *NfsLocation) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Configuration block containing information for connecting to the NFS File System.
-func (r *NfsLocation) OnPremConfig() *pulumi.Output {
-	return r.s.State["onPremConfig"]
-}
-
-// Specifies the IP address or DNS name of the NFS server. The DataSync Agent(s) use this to mount the NFS server.
-func (r *NfsLocation) ServerHostname() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["serverHostname"])
-}
-
-// Subdirectory to perform actions as source or destination. Should be exported by the NFS server.
-func (r *NfsLocation) Subdirectory() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["subdirectory"])
-}
-
-// Key-value pairs of resource tags to assign to the DataSync Location.
-func (r *NfsLocation) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-func (r *NfsLocation) Uri() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["uri"])
-}
-
 // Input properties used for looking up and filtering NfsLocation resources.
 type NfsLocationState struct {
 	// Amazon Resource Name (ARN) of the DataSync Location.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Configuration block containing information for connecting to the NFS File System.
-	OnPremConfig interface{}
+	OnPremConfig pulumi.AnyInput `pulumi:"onPremConfig"`
 	// Specifies the IP address or DNS name of the NFS server. The DataSync Agent(s) use this to mount the NFS server.
-	ServerHostname interface{}
+	ServerHostname pulumi.StringInput `pulumi:"serverHostname"`
 	// Subdirectory to perform actions as source or destination. Should be exported by the NFS server.
-	Subdirectory interface{}
+	Subdirectory pulumi.StringInput `pulumi:"subdirectory"`
 	// Key-value pairs of resource tags to assign to the DataSync Location.
-	Tags interface{}
-	Uri interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
+	Uri pulumi.StringInput `pulumi:"uri"`
 }
 
 // The set of arguments for constructing a NfsLocation resource.
 type NfsLocationArgs struct {
 	// Configuration block containing information for connecting to the NFS File System.
-	OnPremConfig interface{}
+	OnPremConfig pulumi.AnyInput `pulumi:"onPremConfig"`
 	// Specifies the IP address or DNS name of the NFS server. The DataSync Agent(s) use this to mount the NFS server.
-	ServerHostname interface{}
+	ServerHostname pulumi.StringInput `pulumi:"serverHostname"`
 	// Subdirectory to perform actions as source or destination. Should be exported by the NFS server.
-	Subdirectory interface{}
+	Subdirectory pulumi.StringInput `pulumi:"subdirectory"`
 	// Key-value pairs of resource tags to assign to the DataSync Location.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

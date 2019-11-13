@@ -33,18 +33,18 @@ func LookupVpcs(ctx *pulumi.Context, args *GetVpcsArgs) (*GetVpcsResult, error) 
 // A collection of arguments for invoking getVpcs.
 type GetVpcsArgs struct {
 	// Custom filter block as described below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired vpcs.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpcs.
 type GetVpcsResult struct {
-	Filters interface{}
+	Filters []interface{} `pulumi:"filters"`
 	// A list of all the VPC Ids found. This data source will fail if none are found.
-	Ids interface{}
-	Tags interface{}
+	Ids []interface{} `pulumi:"ids"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

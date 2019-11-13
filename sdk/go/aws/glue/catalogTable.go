@@ -12,7 +12,47 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/glue_catalog_table.html.markdown.
 type CatalogTable struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// ID of the Glue Catalog and database to create the table in. If omitted, this defaults to the AWS Account ID plus the database name.
+	CatalogId pulumi.StringOutput `pulumi:"catalogId"`
+
+	// Name of the metadata database where the table metadata resides. For Hive compatibility, this must be all lowercase.
+	DatabaseName pulumi.StringOutput `pulumi:"databaseName"`
+
+	// Description of the table.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// Name of the SerDe.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Owner of the table.
+	Owner pulumi.StringOutput `pulumi:"owner"`
+
+	// A map of initialization parameters for the SerDe, in key-value form.
+	Parameters pulumi.MapOutput `pulumi:"parameters"`
+
+	// A list of columns by which the table is partitioned. Only primitive types are supported as partition keys.
+	PartitionKeys pulumi.ArrayOutput `pulumi:"partitionKeys"`
+
+	// Retention time for this table.
+	Retention pulumi.IntOutput `pulumi:"retention"`
+
+	// A storage descriptor object containing information about the physical storage of this table. You can refer to the [Glue Developer Guide](https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html#aws-glue-api-catalog-tables-StorageDescriptor) for a full explanation of this object.
+	StorageDescriptor pulumi.AnyOutput `pulumi:"storageDescriptor"`
+
+	// The type of this table (EXTERNAL_TABLE, VIRTUAL_VIEW, etc.).
+	TableType pulumi.StringOutput `pulumi:"tableType"`
+
+	// If the table is a view, the expanded text of the view; otherwise null.
+	ViewExpandedText pulumi.StringOutput `pulumi:"viewExpandedText"`
+
+	// If the table is a view, the original text of the view; otherwise null.
+	ViewOriginalText pulumi.StringOutput `pulumi:"viewOriginalText"`
 }
 
 // NewCatalogTable registers a new resource with the given unique name, arguments, and options.
@@ -21,21 +61,9 @@ func NewCatalogTable(ctx *pulumi.Context,
 	if args == nil || args.DatabaseName == nil {
 		return nil, errors.New("missing required argument 'DatabaseName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["catalogId"] = nil
-		inputs["databaseName"] = nil
-		inputs["description"] = nil
-		inputs["name"] = nil
-		inputs["owner"] = nil
-		inputs["parameters"] = nil
-		inputs["partitionKeys"] = nil
-		inputs["retention"] = nil
-		inputs["storageDescriptor"] = nil
-		inputs["tableType"] = nil
-		inputs["viewExpandedText"] = nil
-		inputs["viewOriginalText"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["catalogId"] = args.CatalogId
 		inputs["databaseName"] = args.DatabaseName
 		inputs["description"] = args.Description
@@ -49,18 +77,19 @@ func NewCatalogTable(ctx *pulumi.Context,
 		inputs["viewExpandedText"] = args.ViewExpandedText
 		inputs["viewOriginalText"] = args.ViewOriginalText
 	}
-	s, err := ctx.RegisterResource("aws:glue/catalogTable:CatalogTable", name, true, inputs, opts...)
+	var resource CatalogTable
+	err := ctx.RegisterResource("aws:glue/catalogTable:CatalogTable", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &CatalogTable{s: s}, nil
+	return &resource, nil
 }
 
 // GetCatalogTable gets an existing CatalogTable resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetCatalogTable(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *CatalogTableState, opts ...pulumi.ResourceOpt) (*CatalogTable, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["catalogId"] = state.CatalogId
 		inputs["databaseName"] = state.DatabaseName
@@ -75,135 +104,75 @@ func GetCatalogTable(ctx *pulumi.Context,
 		inputs["viewExpandedText"] = state.ViewExpandedText
 		inputs["viewOriginalText"] = state.ViewOriginalText
 	}
-	s, err := ctx.ReadResource("aws:glue/catalogTable:CatalogTable", name, id, inputs, opts...)
+	var resource CatalogTable
+	err := ctx.ReadResource("aws:glue/catalogTable:CatalogTable", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &CatalogTable{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *CatalogTable) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *CatalogTable) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *CatalogTable) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *CatalogTable) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// ID of the Glue Catalog and database to create the table in. If omitted, this defaults to the AWS Account ID plus the database name.
-func (r *CatalogTable) CatalogId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["catalogId"])
-}
-
-// Name of the metadata database where the table metadata resides. For Hive compatibility, this must be all lowercase.
-func (r *CatalogTable) DatabaseName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["databaseName"])
-}
-
-// Description of the table.
-func (r *CatalogTable) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// Name of the SerDe.
-func (r *CatalogTable) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Owner of the table.
-func (r *CatalogTable) Owner() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["owner"])
-}
-
-// A map of initialization parameters for the SerDe, in key-value form.
-func (r *CatalogTable) Parameters() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["parameters"])
-}
-
-// A list of columns by which the table is partitioned. Only primitive types are supported as partition keys.
-func (r *CatalogTable) PartitionKeys() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["partitionKeys"])
-}
-
-// Retention time for this table.
-func (r *CatalogTable) Retention() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["retention"])
-}
-
-// A storage descriptor object containing information about the physical storage of this table. You can refer to the [Glue Developer Guide](https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html#aws-glue-api-catalog-tables-StorageDescriptor) for a full explanation of this object.
-func (r *CatalogTable) StorageDescriptor() *pulumi.Output {
-	return r.s.State["storageDescriptor"]
-}
-
-// The type of this table (EXTERNAL_TABLE, VIRTUAL_VIEW, etc.).
-func (r *CatalogTable) TableType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["tableType"])
-}
-
-// If the table is a view, the expanded text of the view; otherwise null.
-func (r *CatalogTable) ViewExpandedText() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["viewExpandedText"])
-}
-
-// If the table is a view, the original text of the view; otherwise null.
-func (r *CatalogTable) ViewOriginalText() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["viewOriginalText"])
-}
-
 // Input properties used for looking up and filtering CatalogTable resources.
 type CatalogTableState struct {
 	// ID of the Glue Catalog and database to create the table in. If omitted, this defaults to the AWS Account ID plus the database name.
-	CatalogId interface{}
+	CatalogId pulumi.StringInput `pulumi:"catalogId"`
 	// Name of the metadata database where the table metadata resides. For Hive compatibility, this must be all lowercase.
-	DatabaseName interface{}
+	DatabaseName pulumi.StringInput `pulumi:"databaseName"`
 	// Description of the table.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// Name of the SerDe.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Owner of the table.
-	Owner interface{}
+	Owner pulumi.StringInput `pulumi:"owner"`
 	// A map of initialization parameters for the SerDe, in key-value form.
-	Parameters interface{}
+	Parameters pulumi.MapInput `pulumi:"parameters"`
 	// A list of columns by which the table is partitioned. Only primitive types are supported as partition keys.
-	PartitionKeys interface{}
+	PartitionKeys pulumi.ArrayInput `pulumi:"partitionKeys"`
 	// Retention time for this table.
-	Retention interface{}
+	Retention pulumi.IntInput `pulumi:"retention"`
 	// A storage descriptor object containing information about the physical storage of this table. You can refer to the [Glue Developer Guide](https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html#aws-glue-api-catalog-tables-StorageDescriptor) for a full explanation of this object.
-	StorageDescriptor interface{}
+	StorageDescriptor pulumi.AnyInput `pulumi:"storageDescriptor"`
 	// The type of this table (EXTERNAL_TABLE, VIRTUAL_VIEW, etc.).
-	TableType interface{}
+	TableType pulumi.StringInput `pulumi:"tableType"`
 	// If the table is a view, the expanded text of the view; otherwise null.
-	ViewExpandedText interface{}
+	ViewExpandedText pulumi.StringInput `pulumi:"viewExpandedText"`
 	// If the table is a view, the original text of the view; otherwise null.
-	ViewOriginalText interface{}
+	ViewOriginalText pulumi.StringInput `pulumi:"viewOriginalText"`
 }
 
 // The set of arguments for constructing a CatalogTable resource.
 type CatalogTableArgs struct {
 	// ID of the Glue Catalog and database to create the table in. If omitted, this defaults to the AWS Account ID plus the database name.
-	CatalogId interface{}
+	CatalogId pulumi.StringInput `pulumi:"catalogId"`
 	// Name of the metadata database where the table metadata resides. For Hive compatibility, this must be all lowercase.
-	DatabaseName interface{}
+	DatabaseName pulumi.StringInput `pulumi:"databaseName"`
 	// Description of the table.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// Name of the SerDe.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Owner of the table.
-	Owner interface{}
+	Owner pulumi.StringInput `pulumi:"owner"`
 	// A map of initialization parameters for the SerDe, in key-value form.
-	Parameters interface{}
+	Parameters pulumi.MapInput `pulumi:"parameters"`
 	// A list of columns by which the table is partitioned. Only primitive types are supported as partition keys.
-	PartitionKeys interface{}
+	PartitionKeys pulumi.ArrayInput `pulumi:"partitionKeys"`
 	// Retention time for this table.
-	Retention interface{}
+	Retention pulumi.IntInput `pulumi:"retention"`
 	// A storage descriptor object containing information about the physical storage of this table. You can refer to the [Glue Developer Guide](https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html#aws-glue-api-catalog-tables-StorageDescriptor) for a full explanation of this object.
-	StorageDescriptor interface{}
+	StorageDescriptor pulumi.AnyInput `pulumi:"storageDescriptor"`
 	// The type of this table (EXTERNAL_TABLE, VIRTUAL_VIEW, etc.).
-	TableType interface{}
+	TableType pulumi.StringInput `pulumi:"tableType"`
 	// If the table is a view, the expanded text of the view; otherwise null.
-	ViewExpandedText interface{}
+	ViewExpandedText pulumi.StringInput `pulumi:"viewExpandedText"`
 	// If the table is a view, the original text of the view; otherwise null.
-	ViewOriginalText interface{}
+	ViewOriginalText pulumi.StringInput `pulumi:"viewOriginalText"`
 }

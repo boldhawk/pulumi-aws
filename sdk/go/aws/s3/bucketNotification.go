@@ -14,7 +14,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/s3_bucket_notification.html.markdown.
 type BucketNotification struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The name of the bucket to put notification configuration.
+	Bucket pulumi.StringOutput `pulumi:"bucket"`
+
+	// Used to configure notifications to a Lambda Function (documented below).
+	LambdaFunctions pulumi.ArrayOutput `pulumi:"lambdaFunctions"`
+
+	// The notification configuration to SQS Queue (documented below).
+	Queues pulumi.ArrayOutput `pulumi:"queues"`
+
+	// The notification configuration to SNS Topic (documented below).
+	Topics pulumi.ArrayOutput `pulumi:"topics"`
 }
 
 // NewBucketNotification registers a new resource with the given unique name, arguments, and options.
@@ -23,93 +39,69 @@ func NewBucketNotification(ctx *pulumi.Context,
 	if args == nil || args.Bucket == nil {
 		return nil, errors.New("missing required argument 'Bucket'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["bucket"] = nil
-		inputs["lambdaFunctions"] = nil
-		inputs["queues"] = nil
-		inputs["topics"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["bucket"] = args.Bucket
 		inputs["lambdaFunctions"] = args.LambdaFunctions
 		inputs["queues"] = args.Queues
 		inputs["topics"] = args.Topics
 	}
-	s, err := ctx.RegisterResource("aws:s3/bucketNotification:BucketNotification", name, true, inputs, opts...)
+	var resource BucketNotification
+	err := ctx.RegisterResource("aws:s3/bucketNotification:BucketNotification", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &BucketNotification{s: s}, nil
+	return &resource, nil
 }
 
 // GetBucketNotification gets an existing BucketNotification resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetBucketNotification(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *BucketNotificationState, opts ...pulumi.ResourceOpt) (*BucketNotification, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["bucket"] = state.Bucket
 		inputs["lambdaFunctions"] = state.LambdaFunctions
 		inputs["queues"] = state.Queues
 		inputs["topics"] = state.Topics
 	}
-	s, err := ctx.ReadResource("aws:s3/bucketNotification:BucketNotification", name, id, inputs, opts...)
+	var resource BucketNotification
+	err := ctx.ReadResource("aws:s3/bucketNotification:BucketNotification", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &BucketNotification{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *BucketNotification) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *BucketNotification) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *BucketNotification) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *BucketNotification) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The name of the bucket to put notification configuration.
-func (r *BucketNotification) Bucket() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["bucket"])
-}
-
-// Used to configure notifications to a Lambda Function (documented below).
-func (r *BucketNotification) LambdaFunctions() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["lambdaFunctions"])
-}
-
-// The notification configuration to SQS Queue (documented below).
-func (r *BucketNotification) Queues() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["queues"])
-}
-
-// The notification configuration to SNS Topic (documented below).
-func (r *BucketNotification) Topics() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["topics"])
-}
-
 // Input properties used for looking up and filtering BucketNotification resources.
 type BucketNotificationState struct {
 	// The name of the bucket to put notification configuration.
-	Bucket interface{}
+	Bucket pulumi.StringInput `pulumi:"bucket"`
 	// Used to configure notifications to a Lambda Function (documented below).
-	LambdaFunctions interface{}
+	LambdaFunctions pulumi.ArrayInput `pulumi:"lambdaFunctions"`
 	// The notification configuration to SQS Queue (documented below).
-	Queues interface{}
+	Queues pulumi.ArrayInput `pulumi:"queues"`
 	// The notification configuration to SNS Topic (documented below).
-	Topics interface{}
+	Topics pulumi.ArrayInput `pulumi:"topics"`
 }
 
 // The set of arguments for constructing a BucketNotification resource.
 type BucketNotificationArgs struct {
 	// The name of the bucket to put notification configuration.
-	Bucket interface{}
+	Bucket pulumi.StringInput `pulumi:"bucket"`
 	// Used to configure notifications to a Lambda Function (documented below).
-	LambdaFunctions interface{}
+	LambdaFunctions pulumi.ArrayInput `pulumi:"lambdaFunctions"`
 	// The notification configuration to SQS Queue (documented below).
-	Queues interface{}
+	Queues pulumi.ArrayInput `pulumi:"queues"`
 	// The notification configuration to SNS Topic (documented below).
-	Topics interface{}
+	Topics pulumi.ArrayInput `pulumi:"topics"`
 }

@@ -12,7 +12,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/api_gateway_method_settings.html.markdown.
 type MethodSettings struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Method path defined as `{resource_path}/{http_method}` for an individual method override, or `*/*` for overriding all methods in the stage.
+	MethodPath pulumi.StringOutput `pulumi:"methodPath"`
+
+	// The ID of the REST API
+	RestApi pulumi.StringOutput `pulumi:"restApi"`
+
+	// The settings block, see below.
+	Settings pulumi.AnyOutput `pulumi:"settings"`
+
+	// The name of the stage
+	StageName pulumi.StringOutput `pulumi:"stageName"`
 }
 
 // NewMethodSettings registers a new resource with the given unique name, arguments, and options.
@@ -30,93 +46,69 @@ func NewMethodSettings(ctx *pulumi.Context,
 	if args == nil || args.StageName == nil {
 		return nil, errors.New("missing required argument 'StageName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["methodPath"] = nil
-		inputs["restApi"] = nil
-		inputs["settings"] = nil
-		inputs["stageName"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["methodPath"] = args.MethodPath
 		inputs["restApi"] = args.RestApi
 		inputs["settings"] = args.Settings
 		inputs["stageName"] = args.StageName
 	}
-	s, err := ctx.RegisterResource("aws:apigateway/methodSettings:MethodSettings", name, true, inputs, opts...)
+	var resource MethodSettings
+	err := ctx.RegisterResource("aws:apigateway/methodSettings:MethodSettings", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &MethodSettings{s: s}, nil
+	return &resource, nil
 }
 
 // GetMethodSettings gets an existing MethodSettings resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetMethodSettings(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *MethodSettingsState, opts ...pulumi.ResourceOpt) (*MethodSettings, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["methodPath"] = state.MethodPath
 		inputs["restApi"] = state.RestApi
 		inputs["settings"] = state.Settings
 		inputs["stageName"] = state.StageName
 	}
-	s, err := ctx.ReadResource("aws:apigateway/methodSettings:MethodSettings", name, id, inputs, opts...)
+	var resource MethodSettings
+	err := ctx.ReadResource("aws:apigateway/methodSettings:MethodSettings", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &MethodSettings{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *MethodSettings) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *MethodSettings) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *MethodSettings) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *MethodSettings) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Method path defined as `{resource_path}/{http_method}` for an individual method override, or `*/*` for overriding all methods in the stage.
-func (r *MethodSettings) MethodPath() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["methodPath"])
-}
-
-// The ID of the REST API
-func (r *MethodSettings) RestApi() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["restApi"])
-}
-
-// The settings block, see below.
-func (r *MethodSettings) Settings() *pulumi.Output {
-	return r.s.State["settings"]
-}
-
-// The name of the stage
-func (r *MethodSettings) StageName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["stageName"])
-}
-
 // Input properties used for looking up and filtering MethodSettings resources.
 type MethodSettingsState struct {
 	// Method path defined as `{resource_path}/{http_method}` for an individual method override, or `*/*` for overriding all methods in the stage.
-	MethodPath interface{}
+	MethodPath pulumi.StringInput `pulumi:"methodPath"`
 	// The ID of the REST API
-	RestApi interface{}
+	RestApi pulumi.StringInput `pulumi:"restApi"`
 	// The settings block, see below.
-	Settings interface{}
+	Settings pulumi.AnyInput `pulumi:"settings"`
 	// The name of the stage
-	StageName interface{}
+	StageName pulumi.StringInput `pulumi:"stageName"`
 }
 
 // The set of arguments for constructing a MethodSettings resource.
 type MethodSettingsArgs struct {
 	// Method path defined as `{resource_path}/{http_method}` for an individual method override, or `*/*` for overriding all methods in the stage.
-	MethodPath interface{}
+	MethodPath pulumi.StringInput `pulumi:"methodPath"`
 	// The ID of the REST API
-	RestApi interface{}
+	RestApi pulumi.StringInput `pulumi:"restApi"`
 	// The settings block, see below.
-	Settings interface{}
+	Settings pulumi.AnyInput `pulumi:"settings"`
 	// The name of the stage
-	StageName interface{}
+	StageName pulumi.StringInput `pulumi:"stageName"`
 }

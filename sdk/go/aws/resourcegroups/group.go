@@ -12,7 +12,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/resourcegroups_group.html.markdown.
 type Group struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN assigned by AWS for this resource group.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// A description of the resource group.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The resource group's name. A resource group name can have a maximum of 127 characters, including letters, numbers, hyphens, dots, and underscores. The name cannot start with `AWS` or `aws`.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A `resourceQuery` block. Resource queries are documented below.
+	ResourceQuery pulumi.AnyOutput `pulumi:"resourceQuery"`
 }
 
 // NewGroup registers a new resource with the given unique name, arguments, and options.
@@ -21,90 +37,67 @@ func NewGroup(ctx *pulumi.Context,
 	if args == nil || args.ResourceQuery == nil {
 		return nil, errors.New("missing required argument 'ResourceQuery'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["description"] = nil
-		inputs["name"] = nil
-		inputs["resourceQuery"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name
 		inputs["resourceQuery"] = args.ResourceQuery
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:resourcegroups/group:Group", name, true, inputs, opts...)
+	var resource Group
+	err := ctx.RegisterResource("aws:resourcegroups/group:Group", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Group{s: s}, nil
+	return &resource, nil
 }
 
 // GetGroup gets an existing Group resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetGroup(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *GroupState, opts ...pulumi.ResourceOpt) (*Group, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["description"] = state.Description
 		inputs["name"] = state.Name
 		inputs["resourceQuery"] = state.ResourceQuery
 	}
-	s, err := ctx.ReadResource("aws:resourcegroups/group:Group", name, id, inputs, opts...)
+	var resource Group
+	err := ctx.ReadResource("aws:resourcegroups/group:Group", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Group{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Group) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Group) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Group) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Group) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN assigned by AWS for this resource group.
-func (r *Group) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// A description of the resource group.
-func (r *Group) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The resource group's name. A resource group name can have a maximum of 127 characters, including letters, numbers, hyphens, dots, and underscores. The name cannot start with `AWS` or `aws`.
-func (r *Group) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A `resourceQuery` block. Resource queries are documented below.
-func (r *Group) ResourceQuery() *pulumi.Output {
-	return r.s.State["resourceQuery"]
-}
-
 // Input properties used for looking up and filtering Group resources.
 type GroupState struct {
 	// The ARN assigned by AWS for this resource group.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// A description of the resource group.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The resource group's name. A resource group name can have a maximum of 127 characters, including letters, numbers, hyphens, dots, and underscores. The name cannot start with `AWS` or `aws`.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A `resourceQuery` block. Resource queries are documented below.
-	ResourceQuery interface{}
+	ResourceQuery pulumi.AnyInput `pulumi:"resourceQuery"`
 }
 
 // The set of arguments for constructing a Group resource.
 type GroupArgs struct {
 	// A description of the resource group.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The resource group's name. A resource group name can have a maximum of 127 characters, including letters, numbers, hyphens, dots, and underscores. The name cannot start with `AWS` or `aws`.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A `resourceQuery` block. Resource queries are documented below.
-	ResourceQuery interface{}
+	ResourceQuery pulumi.AnyInput `pulumi:"resourceQuery"`
 }

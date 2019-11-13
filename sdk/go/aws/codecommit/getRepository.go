@@ -32,20 +32,20 @@ func LookupRepository(ctx *pulumi.Context, args *GetRepositoryArgs) (*GetReposit
 // A collection of arguments for invoking getRepository.
 type GetRepositoryArgs struct {
 	// The name for the repository. This needs to be less than 100 characters.
-	RepositoryName interface{}
+	RepositoryName pulumi.StringInput `pulumi:"repositoryName"`
 }
 
 // A collection of values returned by getRepository.
 type GetRepositoryResult struct {
 	// The ARN of the repository
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// The URL to use for cloning the repository over HTTPS.
-	CloneUrlHttp interface{}
+	CloneUrlHttp string `pulumi:"cloneUrlHttp"`
 	// The URL to use for cloning the repository over SSH.
-	CloneUrlSsh interface{}
+	CloneUrlSsh string `pulumi:"cloneUrlSsh"`
 	// The ID of the repository
-	RepositoryId interface{}
-	RepositoryName interface{}
+	RepositoryId string `pulumi:"repositoryId"`
+	RepositoryName string `pulumi:"repositoryName"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

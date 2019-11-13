@@ -33,19 +33,19 @@ func LookupResource(ctx *pulumi.Context, args *GetResourceArgs) (*GetResourceRes
 // A collection of arguments for invoking getResource.
 type GetResourceArgs struct {
 	// The full path of the resource.  If no path is found, an error will be returned.
-	Path interface{}
+	Path pulumi.StringInput `pulumi:"path"`
 	// The REST API id that owns the resource. If no REST API is found, an error will be returned.
-	RestApiId interface{}
+	RestApiId pulumi.StringInput `pulumi:"restApiId"`
 }
 
 // A collection of values returned by getResource.
 type GetResourceResult struct {
 	// Set to the ID of the parent Resource.
-	ParentId interface{}
-	Path interface{}
+	ParentId string `pulumi:"parentId"`
+	Path string `pulumi:"path"`
 	// Set to the path relative to the parent Resource.
-	PathPart interface{}
-	RestApiId interface{}
+	PathPart string `pulumi:"pathPart"`
+	RestApiId string `pulumi:"restApiId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

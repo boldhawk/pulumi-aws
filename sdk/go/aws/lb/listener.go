@@ -14,7 +14,32 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/lb_listener.html.markdown.
 type Listener struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the listener (matches `id`)
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The ARN of the default SSL server certificate. Exactly one certificate is required if the protocol is HTTPS. For adding additional SSL certificates, see the [`lb.ListenerCertificate` resource](https://www.terraform.io/docs/providers/aws/r/lb_listener_certificate.html).
+	CertificateArn pulumi.StringOutput `pulumi:"certificateArn"`
+
+	// An Action block. Action blocks are documented below.
+	DefaultActions pulumi.ArrayOutput `pulumi:"defaultActions"`
+
+	// The ARN of the load balancer.
+	LoadBalancerArn pulumi.StringOutput `pulumi:"loadBalancerArn"`
+
+	// The port. Specify a value from `1` to `65535` or `#{port}`. Defaults to `#{port}`.
+	Port pulumi.IntOutput `pulumi:"port"`
+
+	// The protocol. Valid values are `HTTP`, `HTTPS`, or `#{protocol}`. Defaults to `#{protocol}`.
+	Protocol pulumi.StringOutput `pulumi:"protocol"`
+
+	// The name of the SSL Policy for the listener. Required if `protocol` is `HTTPS` or `TLS`.
+	SslPolicy pulumi.StringOutput `pulumi:"sslPolicy"`
 }
 
 // NewListener registers a new resource with the given unique name, arguments, and options.
@@ -29,15 +54,8 @@ func NewListener(ctx *pulumi.Context,
 	if args == nil || args.Port == nil {
 		return nil, errors.New("missing required argument 'Port'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["certificateArn"] = nil
-		inputs["defaultActions"] = nil
-		inputs["loadBalancerArn"] = nil
-		inputs["port"] = nil
-		inputs["protocol"] = nil
-		inputs["sslPolicy"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["certificateArn"] = args.CertificateArn
 		inputs["defaultActions"] = args.DefaultActions
 		inputs["loadBalancerArn"] = args.LoadBalancerArn
@@ -45,19 +63,19 @@ func NewListener(ctx *pulumi.Context,
 		inputs["protocol"] = args.Protocol
 		inputs["sslPolicy"] = args.SslPolicy
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:lb/listener:Listener", name, true, inputs, opts...)
+	var resource Listener
+	err := ctx.RegisterResource("aws:lb/listener:Listener", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Listener{s: s}, nil
+	return &resource, nil
 }
 
 // GetListener gets an existing Listener resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetListener(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ListenerState, opts ...pulumi.ResourceOpt) (*Listener, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["certificateArn"] = state.CertificateArn
@@ -67,88 +85,53 @@ func GetListener(ctx *pulumi.Context,
 		inputs["protocol"] = state.Protocol
 		inputs["sslPolicy"] = state.SslPolicy
 	}
-	s, err := ctx.ReadResource("aws:lb/listener:Listener", name, id, inputs, opts...)
+	var resource Listener
+	err := ctx.ReadResource("aws:lb/listener:Listener", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Listener{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Listener) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Listener) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Listener) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Listener) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the listener (matches `id`)
-func (r *Listener) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The ARN of the default SSL server certificate. Exactly one certificate is required if the protocol is HTTPS. For adding additional SSL certificates, see the [`lb.ListenerCertificate` resource](https://www.terraform.io/docs/providers/aws/r/lb_listener_certificate.html).
-func (r *Listener) CertificateArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["certificateArn"])
-}
-
-// An Action block. Action blocks are documented below.
-func (r *Listener) DefaultActions() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["defaultActions"])
-}
-
-// The ARN of the load balancer.
-func (r *Listener) LoadBalancerArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["loadBalancerArn"])
-}
-
-// The port. Specify a value from `1` to `65535` or `#{port}`. Defaults to `#{port}`.
-func (r *Listener) Port() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["port"])
-}
-
-// The protocol. Valid values are `HTTP`, `HTTPS`, or `#{protocol}`. Defaults to `#{protocol}`.
-func (r *Listener) Protocol() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["protocol"])
-}
-
-// The name of the SSL Policy for the listener. Required if `protocol` is `HTTPS` or `TLS`.
-func (r *Listener) SslPolicy() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["sslPolicy"])
-}
-
 // Input properties used for looking up and filtering Listener resources.
 type ListenerState struct {
 	// The ARN of the listener (matches `id`)
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The ARN of the default SSL server certificate. Exactly one certificate is required if the protocol is HTTPS. For adding additional SSL certificates, see the [`lb.ListenerCertificate` resource](https://www.terraform.io/docs/providers/aws/r/lb_listener_certificate.html).
-	CertificateArn interface{}
+	CertificateArn pulumi.StringInput `pulumi:"certificateArn"`
 	// An Action block. Action blocks are documented below.
-	DefaultActions interface{}
+	DefaultActions pulumi.ArrayInput `pulumi:"defaultActions"`
 	// The ARN of the load balancer.
-	LoadBalancerArn interface{}
+	LoadBalancerArn pulumi.StringInput `pulumi:"loadBalancerArn"`
 	// The port. Specify a value from `1` to `65535` or `#{port}`. Defaults to `#{port}`.
-	Port interface{}
+	Port pulumi.IntInput `pulumi:"port"`
 	// The protocol. Valid values are `HTTP`, `HTTPS`, or `#{protocol}`. Defaults to `#{protocol}`.
-	Protocol interface{}
+	Protocol pulumi.StringInput `pulumi:"protocol"`
 	// The name of the SSL Policy for the listener. Required if `protocol` is `HTTPS` or `TLS`.
-	SslPolicy interface{}
+	SslPolicy pulumi.StringInput `pulumi:"sslPolicy"`
 }
 
 // The set of arguments for constructing a Listener resource.
 type ListenerArgs struct {
 	// The ARN of the default SSL server certificate. Exactly one certificate is required if the protocol is HTTPS. For adding additional SSL certificates, see the [`lb.ListenerCertificate` resource](https://www.terraform.io/docs/providers/aws/r/lb_listener_certificate.html).
-	CertificateArn interface{}
+	CertificateArn pulumi.StringInput `pulumi:"certificateArn"`
 	// An Action block. Action blocks are documented below.
-	DefaultActions interface{}
+	DefaultActions pulumi.ArrayInput `pulumi:"defaultActions"`
 	// The ARN of the load balancer.
-	LoadBalancerArn interface{}
+	LoadBalancerArn pulumi.StringInput `pulumi:"loadBalancerArn"`
 	// The port. Specify a value from `1` to `65535` or `#{port}`. Defaults to `#{port}`.
-	Port interface{}
+	Port pulumi.IntInput `pulumi:"port"`
 	// The protocol. Valid values are `HTTP`, `HTTPS`, or `#{protocol}`. Defaults to `#{protocol}`.
-	Protocol interface{}
+	Protocol pulumi.StringInput `pulumi:"protocol"`
 	// The name of the SSL Policy for the listener. Required if `protocol` is `HTTPS` or `TLS`.
-	SslPolicy interface{}
+	SslPolicy pulumi.StringInput `pulumi:"sslPolicy"`
 }

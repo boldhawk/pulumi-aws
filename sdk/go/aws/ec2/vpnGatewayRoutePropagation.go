@@ -16,7 +16,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/vpn_gateway_route_propagation.html.markdown.
 type VpnGatewayRoutePropagation struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The id of the `ec2.RouteTable` to propagate routes into.
+	RouteTableId pulumi.StringOutput `pulumi:"routeTableId"`
+
+	// The id of the `ec2.VpnGateway` to propagate routes from.
+	VpnGatewayId pulumi.StringOutput `pulumi:"vpnGatewayId"`
 }
 
 // NewVpnGatewayRoutePropagation registers a new resource with the given unique name, arguments, and options.
@@ -28,69 +38,57 @@ func NewVpnGatewayRoutePropagation(ctx *pulumi.Context,
 	if args == nil || args.VpnGatewayId == nil {
 		return nil, errors.New("missing required argument 'VpnGatewayId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["routeTableId"] = nil
-		inputs["vpnGatewayId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["routeTableId"] = args.RouteTableId
 		inputs["vpnGatewayId"] = args.VpnGatewayId
 	}
-	s, err := ctx.RegisterResource("aws:ec2/vpnGatewayRoutePropagation:VpnGatewayRoutePropagation", name, true, inputs, opts...)
+	var resource VpnGatewayRoutePropagation
+	err := ctx.RegisterResource("aws:ec2/vpnGatewayRoutePropagation:VpnGatewayRoutePropagation", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &VpnGatewayRoutePropagation{s: s}, nil
+	return &resource, nil
 }
 
 // GetVpnGatewayRoutePropagation gets an existing VpnGatewayRoutePropagation resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetVpnGatewayRoutePropagation(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *VpnGatewayRoutePropagationState, opts ...pulumi.ResourceOpt) (*VpnGatewayRoutePropagation, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["routeTableId"] = state.RouteTableId
 		inputs["vpnGatewayId"] = state.VpnGatewayId
 	}
-	s, err := ctx.ReadResource("aws:ec2/vpnGatewayRoutePropagation:VpnGatewayRoutePropagation", name, id, inputs, opts...)
+	var resource VpnGatewayRoutePropagation
+	err := ctx.ReadResource("aws:ec2/vpnGatewayRoutePropagation:VpnGatewayRoutePropagation", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &VpnGatewayRoutePropagation{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *VpnGatewayRoutePropagation) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *VpnGatewayRoutePropagation) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *VpnGatewayRoutePropagation) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *VpnGatewayRoutePropagation) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The id of the `ec2.RouteTable` to propagate routes into.
-func (r *VpnGatewayRoutePropagation) RouteTableId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["routeTableId"])
-}
-
-// The id of the `ec2.VpnGateway` to propagate routes from.
-func (r *VpnGatewayRoutePropagation) VpnGatewayId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpnGatewayId"])
-}
-
 // Input properties used for looking up and filtering VpnGatewayRoutePropagation resources.
 type VpnGatewayRoutePropagationState struct {
 	// The id of the `ec2.RouteTable` to propagate routes into.
-	RouteTableId interface{}
+	RouteTableId pulumi.StringInput `pulumi:"routeTableId"`
 	// The id of the `ec2.VpnGateway` to propagate routes from.
-	VpnGatewayId interface{}
+	VpnGatewayId pulumi.StringInput `pulumi:"vpnGatewayId"`
 }
 
 // The set of arguments for constructing a VpnGatewayRoutePropagation resource.
 type VpnGatewayRoutePropagationArgs struct {
 	// The id of the `ec2.RouteTable` to propagate routes into.
-	RouteTableId interface{}
+	RouteTableId pulumi.StringInput `pulumi:"routeTableId"`
 	// The id of the `ec2.VpnGateway` to propagate routes from.
-	VpnGatewayId interface{}
+	VpnGatewayId pulumi.StringInput `pulumi:"vpnGatewayId"`
 }

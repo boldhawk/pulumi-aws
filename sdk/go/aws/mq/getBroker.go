@@ -48,33 +48,33 @@ func LookupBroker(ctx *pulumi.Context, args *GetBrokerArgs) (*GetBrokerResult, e
 // A collection of arguments for invoking getBroker.
 type GetBrokerArgs struct {
 	// The unique id of the mq broker.
-	BrokerId interface{}
+	BrokerId pulumi.StringInput `pulumi:"brokerId"`
 	// The unique name of the mq broker.
-	BrokerName interface{}
-	Logs interface{}
-	Tags interface{}
+	BrokerName pulumi.StringInput `pulumi:"brokerName"`
+	Logs pulumi.AnyInput `pulumi:"logs"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getBroker.
 type GetBrokerResult struct {
-	Arn interface{}
-	AutoMinorVersionUpgrade interface{}
-	BrokerId interface{}
-	BrokerName interface{}
-	Configuration interface{}
-	DeploymentMode interface{}
-	EncryptionOptions interface{}
-	EngineType interface{}
-	EngineVersion interface{}
-	HostInstanceType interface{}
-	Instances interface{}
-	Logs interface{}
-	MaintenanceWindowStartTime interface{}
-	PubliclyAccessible interface{}
-	SecurityGroups interface{}
-	SubnetIds interface{}
-	Tags interface{}
-	Users interface{}
+	Arn string `pulumi:"arn"`
+	AutoMinorVersionUpgrade bool `pulumi:"autoMinorVersionUpgrade"`
+	BrokerId string `pulumi:"brokerId"`
+	BrokerName string `pulumi:"brokerName"`
+	Configuration interface{} `pulumi:"configuration"`
+	DeploymentMode string `pulumi:"deploymentMode"`
+	EncryptionOptions []interface{} `pulumi:"encryptionOptions"`
+	EngineType string `pulumi:"engineType"`
+	EngineVersion string `pulumi:"engineVersion"`
+	HostInstanceType string `pulumi:"hostInstanceType"`
+	Instances []interface{} `pulumi:"instances"`
+	Logs interface{} `pulumi:"logs"`
+	MaintenanceWindowStartTime interface{} `pulumi:"maintenanceWindowStartTime"`
+	PubliclyAccessible bool `pulumi:"publiclyAccessible"`
+	SecurityGroups []interface{} `pulumi:"securityGroups"`
+	SubnetIds []interface{} `pulumi:"subnetIds"`
+	Tags map[string]interface{} `pulumi:"tags"`
+	Users []interface{} `pulumi:"users"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

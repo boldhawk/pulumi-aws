@@ -11,28 +11,66 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/cloudformation_stack.html.markdown.
 type Stack struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// A list of capabilities.
+	// Valid values: `CAPABILITY_IAM`, `CAPABILITY_NAMED_IAM`, or `CAPABILITY_AUTO_EXPAND`
+	Capabilities pulumi.ArrayOutput `pulumi:"capabilities"`
+
+	// Set to true to disable rollback of the stack if stack creation failed.
+	// Conflicts with `onFailure`.
+	DisableRollback pulumi.BoolOutput `pulumi:"disableRollback"`
+
+	// The ARN of an IAM role that AWS CloudFormation assumes to create the stack. If you don't specify a value, AWS CloudFormation uses the role that was previously associated with the stack. If no role is available, AWS CloudFormation uses a temporary session that is generated from your user credentials.
+	IamRoleArn pulumi.StringOutput `pulumi:"iamRoleArn"`
+
+	// Stack name.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A list of SNS topic ARNs to publish stack related events.
+	NotificationArns pulumi.ArrayOutput `pulumi:"notificationArns"`
+
+	// Action to be taken if stack creation fails. This must be
+	// one of: `DO_NOTHING`, `ROLLBACK`, or `DELETE`. Conflicts with `disableRollback`.
+	OnFailure pulumi.StringOutput `pulumi:"onFailure"`
+
+	// A map of outputs from the stack.
+	Outputs pulumi.MapOutput `pulumi:"outputs"`
+
+	// A map of Parameter structures that specify input parameters for the stack.
+	Parameters pulumi.MapOutput `pulumi:"parameters"`
+
+	// Structure containing the stack policy body.
+	// Conflicts w/ `policyUrl`.
+	PolicyBody pulumi.StringOutput `pulumi:"policyBody"`
+
+	// Location of a file containing the stack policy.
+	// Conflicts w/ `policyBody`.
+	PolicyUrl pulumi.StringOutput `pulumi:"policyUrl"`
+
+	// A list of tags to associate with this stack.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// Structure containing the template body (max size: 51,200 bytes).
+	TemplateBody pulumi.StringOutput `pulumi:"templateBody"`
+
+	// Location of a file containing the template body (max size: 460,800 bytes).
+	TemplateUrl pulumi.StringOutput `pulumi:"templateUrl"`
+
+	// The amount of time that can pass before the stack status becomes `CREATE_FAILED`.
+	TimeoutInMinutes pulumi.IntOutput `pulumi:"timeoutInMinutes"`
 }
 
 // NewStack registers a new resource with the given unique name, arguments, and options.
 func NewStack(ctx *pulumi.Context,
 	name string, args *StackArgs, opts ...pulumi.ResourceOpt) (*Stack, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["capabilities"] = nil
-		inputs["disableRollback"] = nil
-		inputs["iamRoleArn"] = nil
-		inputs["name"] = nil
-		inputs["notificationArns"] = nil
-		inputs["onFailure"] = nil
-		inputs["parameters"] = nil
-		inputs["policyBody"] = nil
-		inputs["policyUrl"] = nil
-		inputs["tags"] = nil
-		inputs["templateBody"] = nil
-		inputs["templateUrl"] = nil
-		inputs["timeoutInMinutes"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["capabilities"] = args.Capabilities
 		inputs["disableRollback"] = args.DisableRollback
 		inputs["iamRoleArn"] = args.IamRoleArn
@@ -47,19 +85,19 @@ func NewStack(ctx *pulumi.Context,
 		inputs["templateUrl"] = args.TemplateUrl
 		inputs["timeoutInMinutes"] = args.TimeoutInMinutes
 	}
-	inputs["outputs"] = nil
-	s, err := ctx.RegisterResource("aws:cloudformation/stack:Stack", name, true, inputs, opts...)
+	var resource Stack
+	err := ctx.RegisterResource("aws:cloudformation/stack:Stack", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Stack{s: s}, nil
+	return &resource, nil
 }
 
 // GetStack gets an existing Stack resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetStack(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *StackState, opts ...pulumi.ResourceOpt) (*Stack, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["capabilities"] = state.Capabilities
 		inputs["disableRollback"] = state.DisableRollback
@@ -76,166 +114,91 @@ func GetStack(ctx *pulumi.Context,
 		inputs["templateUrl"] = state.TemplateUrl
 		inputs["timeoutInMinutes"] = state.TimeoutInMinutes
 	}
-	s, err := ctx.ReadResource("aws:cloudformation/stack:Stack", name, id, inputs, opts...)
+	var resource Stack
+	err := ctx.ReadResource("aws:cloudformation/stack:Stack", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Stack{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Stack) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Stack) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Stack) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Stack) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// A list of capabilities.
-// Valid values: `CAPABILITY_IAM`, `CAPABILITY_NAMED_IAM`, or `CAPABILITY_AUTO_EXPAND`
-func (r *Stack) Capabilities() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["capabilities"])
-}
-
-// Set to true to disable rollback of the stack if stack creation failed.
-// Conflicts with `onFailure`.
-func (r *Stack) DisableRollback() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["disableRollback"])
-}
-
-// The ARN of an IAM role that AWS CloudFormation assumes to create the stack. If you don't specify a value, AWS CloudFormation uses the role that was previously associated with the stack. If no role is available, AWS CloudFormation uses a temporary session that is generated from your user credentials.
-func (r *Stack) IamRoleArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["iamRoleArn"])
-}
-
-// Stack name.
-func (r *Stack) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A list of SNS topic ARNs to publish stack related events.
-func (r *Stack) NotificationArns() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["notificationArns"])
-}
-
-// Action to be taken if stack creation fails. This must be
-// one of: `DO_NOTHING`, `ROLLBACK`, or `DELETE`. Conflicts with `disableRollback`.
-func (r *Stack) OnFailure() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["onFailure"])
-}
-
-// A map of outputs from the stack.
-func (r *Stack) Outputs() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["outputs"])
-}
-
-// A map of Parameter structures that specify input parameters for the stack.
-func (r *Stack) Parameters() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["parameters"])
-}
-
-// Structure containing the stack policy body.
-// Conflicts w/ `policyUrl`.
-func (r *Stack) PolicyBody() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["policyBody"])
-}
-
-// Location of a file containing the stack policy.
-// Conflicts w/ `policyBody`.
-func (r *Stack) PolicyUrl() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["policyUrl"])
-}
-
-// A list of tags to associate with this stack.
-func (r *Stack) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// Structure containing the template body (max size: 51,200 bytes).
-func (r *Stack) TemplateBody() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["templateBody"])
-}
-
-// Location of a file containing the template body (max size: 460,800 bytes).
-func (r *Stack) TemplateUrl() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["templateUrl"])
-}
-
-// The amount of time that can pass before the stack status becomes `CREATE_FAILED`.
-func (r *Stack) TimeoutInMinutes() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["timeoutInMinutes"])
-}
-
 // Input properties used for looking up and filtering Stack resources.
 type StackState struct {
 	// A list of capabilities.
 	// Valid values: `CAPABILITY_IAM`, `CAPABILITY_NAMED_IAM`, or `CAPABILITY_AUTO_EXPAND`
-	Capabilities interface{}
+	Capabilities pulumi.ArrayInput `pulumi:"capabilities"`
 	// Set to true to disable rollback of the stack if stack creation failed.
 	// Conflicts with `onFailure`.
-	DisableRollback interface{}
+	DisableRollback pulumi.BoolInput `pulumi:"disableRollback"`
 	// The ARN of an IAM role that AWS CloudFormation assumes to create the stack. If you don't specify a value, AWS CloudFormation uses the role that was previously associated with the stack. If no role is available, AWS CloudFormation uses a temporary session that is generated from your user credentials.
-	IamRoleArn interface{}
+	IamRoleArn pulumi.StringInput `pulumi:"iamRoleArn"`
 	// Stack name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A list of SNS topic ARNs to publish stack related events.
-	NotificationArns interface{}
+	NotificationArns pulumi.ArrayInput `pulumi:"notificationArns"`
 	// Action to be taken if stack creation fails. This must be
 	// one of: `DO_NOTHING`, `ROLLBACK`, or `DELETE`. Conflicts with `disableRollback`.
-	OnFailure interface{}
+	OnFailure pulumi.StringInput `pulumi:"onFailure"`
 	// A map of outputs from the stack.
-	Outputs interface{}
+	Outputs pulumi.MapInput `pulumi:"outputs"`
 	// A map of Parameter structures that specify input parameters for the stack.
-	Parameters interface{}
+	Parameters pulumi.MapInput `pulumi:"parameters"`
 	// Structure containing the stack policy body.
 	// Conflicts w/ `policyUrl`.
-	PolicyBody interface{}
+	PolicyBody pulumi.StringInput `pulumi:"policyBody"`
 	// Location of a file containing the stack policy.
 	// Conflicts w/ `policyBody`.
-	PolicyUrl interface{}
+	PolicyUrl pulumi.StringInput `pulumi:"policyUrl"`
 	// A list of tags to associate with this stack.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Structure containing the template body (max size: 51,200 bytes).
-	TemplateBody interface{}
+	TemplateBody pulumi.StringInput `pulumi:"templateBody"`
 	// Location of a file containing the template body (max size: 460,800 bytes).
-	TemplateUrl interface{}
+	TemplateUrl pulumi.StringInput `pulumi:"templateUrl"`
 	// The amount of time that can pass before the stack status becomes `CREATE_FAILED`.
-	TimeoutInMinutes interface{}
+	TimeoutInMinutes pulumi.IntInput `pulumi:"timeoutInMinutes"`
 }
 
 // The set of arguments for constructing a Stack resource.
 type StackArgs struct {
 	// A list of capabilities.
 	// Valid values: `CAPABILITY_IAM`, `CAPABILITY_NAMED_IAM`, or `CAPABILITY_AUTO_EXPAND`
-	Capabilities interface{}
+	Capabilities pulumi.ArrayInput `pulumi:"capabilities"`
 	// Set to true to disable rollback of the stack if stack creation failed.
 	// Conflicts with `onFailure`.
-	DisableRollback interface{}
+	DisableRollback pulumi.BoolInput `pulumi:"disableRollback"`
 	// The ARN of an IAM role that AWS CloudFormation assumes to create the stack. If you don't specify a value, AWS CloudFormation uses the role that was previously associated with the stack. If no role is available, AWS CloudFormation uses a temporary session that is generated from your user credentials.
-	IamRoleArn interface{}
+	IamRoleArn pulumi.StringInput `pulumi:"iamRoleArn"`
 	// Stack name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A list of SNS topic ARNs to publish stack related events.
-	NotificationArns interface{}
+	NotificationArns pulumi.ArrayInput `pulumi:"notificationArns"`
 	// Action to be taken if stack creation fails. This must be
 	// one of: `DO_NOTHING`, `ROLLBACK`, or `DELETE`. Conflicts with `disableRollback`.
-	OnFailure interface{}
+	OnFailure pulumi.StringInput `pulumi:"onFailure"`
 	// A map of Parameter structures that specify input parameters for the stack.
-	Parameters interface{}
+	Parameters pulumi.MapInput `pulumi:"parameters"`
 	// Structure containing the stack policy body.
 	// Conflicts w/ `policyUrl`.
-	PolicyBody interface{}
+	PolicyBody pulumi.StringInput `pulumi:"policyBody"`
 	// Location of a file containing the stack policy.
 	// Conflicts w/ `policyBody`.
-	PolicyUrl interface{}
+	PolicyUrl pulumi.StringInput `pulumi:"policyUrl"`
 	// A list of tags to associate with this stack.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Structure containing the template body (max size: 51,200 bytes).
-	TemplateBody interface{}
+	TemplateBody pulumi.StringInput `pulumi:"templateBody"`
 	// Location of a file containing the template body (max size: 460,800 bytes).
-	TemplateUrl interface{}
+	TemplateUrl pulumi.StringInput `pulumi:"templateUrl"`
 	// The amount of time that can pass before the stack status becomes `CREATE_FAILED`.
-	TimeoutInMinutes interface{}
+	TimeoutInMinutes pulumi.IntInput `pulumi:"timeoutInMinutes"`
 }

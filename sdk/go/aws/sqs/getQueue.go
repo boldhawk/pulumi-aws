@@ -32,16 +32,16 @@ func LookupQueue(ctx *pulumi.Context, args *GetQueueArgs) (*GetQueueResult, erro
 // A collection of arguments for invoking getQueue.
 type GetQueueArgs struct {
 	// The name of the queue to match.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getQueue.
 type GetQueueResult struct {
 	// The Amazon Resource Name (ARN) of the queue.
-	Arn interface{}
-	Name interface{}
+	Arn string `pulumi:"arn"`
+	Name string `pulumi:"name"`
 	// The URL of the queue.
-	Url interface{}
+	Url string `pulumi:"url"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

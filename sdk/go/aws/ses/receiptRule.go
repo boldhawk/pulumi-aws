@@ -12,7 +12,53 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ses_receipt_rule.html.markdown.
 type ReceiptRule struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// A list of Add Header Action blocks. Documented below.
+	AddHeaderActions pulumi.ArrayOutput `pulumi:"addHeaderActions"`
+
+	// The name of the rule to place this rule after
+	After pulumi.StringOutput `pulumi:"after"`
+
+	// A list of Bounce Action blocks. Documented below.
+	BounceActions pulumi.ArrayOutput `pulumi:"bounceActions"`
+
+	// If true, the rule will be enabled
+	Enabled pulumi.BoolOutput `pulumi:"enabled"`
+
+	// A list of Lambda Action blocks. Documented below.
+	LambdaActions pulumi.ArrayOutput `pulumi:"lambdaActions"`
+
+	// The name of the rule
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A list of email addresses
+	Recipients pulumi.ArrayOutput `pulumi:"recipients"`
+
+	// The name of the rule set
+	RuleSetName pulumi.StringOutput `pulumi:"ruleSetName"`
+
+	// A list of S3 Action blocks. Documented below.
+	S3Actions pulumi.ArrayOutput `pulumi:"s3Actions"`
+
+	// If true, incoming emails will be scanned for spam and viruses
+	ScanEnabled pulumi.BoolOutput `pulumi:"scanEnabled"`
+
+	// A list of SNS Action blocks. Documented below.
+	SnsActions pulumi.ArrayOutput `pulumi:"snsActions"`
+
+	// A list of Stop Action blocks. Documented below.
+	StopActions pulumi.ArrayOutput `pulumi:"stopActions"`
+
+	// Require or Optional
+	TlsPolicy pulumi.StringOutput `pulumi:"tlsPolicy"`
+
+	// A list of WorkMail Action blocks. Documented below.
+	WorkmailActions pulumi.ArrayOutput `pulumi:"workmailActions"`
 }
 
 // NewReceiptRule registers a new resource with the given unique name, arguments, and options.
@@ -21,23 +67,9 @@ func NewReceiptRule(ctx *pulumi.Context,
 	if args == nil || args.RuleSetName == nil {
 		return nil, errors.New("missing required argument 'RuleSetName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["addHeaderActions"] = nil
-		inputs["after"] = nil
-		inputs["bounceActions"] = nil
-		inputs["enabled"] = nil
-		inputs["lambdaActions"] = nil
-		inputs["name"] = nil
-		inputs["recipients"] = nil
-		inputs["ruleSetName"] = nil
-		inputs["s3Actions"] = nil
-		inputs["scanEnabled"] = nil
-		inputs["snsActions"] = nil
-		inputs["stopActions"] = nil
-		inputs["tlsPolicy"] = nil
-		inputs["workmailActions"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["addHeaderActions"] = args.AddHeaderActions
 		inputs["after"] = args.After
 		inputs["bounceActions"] = args.BounceActions
@@ -53,18 +85,19 @@ func NewReceiptRule(ctx *pulumi.Context,
 		inputs["tlsPolicy"] = args.TlsPolicy
 		inputs["workmailActions"] = args.WorkmailActions
 	}
-	s, err := ctx.RegisterResource("aws:ses/receiptRule:ReceiptRule", name, true, inputs, opts...)
+	var resource ReceiptRule
+	err := ctx.RegisterResource("aws:ses/receiptRule:ReceiptRule", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ReceiptRule{s: s}, nil
+	return &resource, nil
 }
 
 // GetReceiptRule gets an existing ReceiptRule resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetReceiptRule(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ReceiptRuleState, opts ...pulumi.ResourceOpt) (*ReceiptRule, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["addHeaderActions"] = state.AddHeaderActions
 		inputs["after"] = state.After
@@ -81,153 +114,83 @@ func GetReceiptRule(ctx *pulumi.Context,
 		inputs["tlsPolicy"] = state.TlsPolicy
 		inputs["workmailActions"] = state.WorkmailActions
 	}
-	s, err := ctx.ReadResource("aws:ses/receiptRule:ReceiptRule", name, id, inputs, opts...)
+	var resource ReceiptRule
+	err := ctx.ReadResource("aws:ses/receiptRule:ReceiptRule", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ReceiptRule{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ReceiptRule) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ReceiptRule) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ReceiptRule) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ReceiptRule) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// A list of Add Header Action blocks. Documented below.
-func (r *ReceiptRule) AddHeaderActions() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["addHeaderActions"])
-}
-
-// The name of the rule to place this rule after
-func (r *ReceiptRule) After() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["after"])
-}
-
-// A list of Bounce Action blocks. Documented below.
-func (r *ReceiptRule) BounceActions() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["bounceActions"])
-}
-
-// If true, the rule will be enabled
-func (r *ReceiptRule) Enabled() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["enabled"])
-}
-
-// A list of Lambda Action blocks. Documented below.
-func (r *ReceiptRule) LambdaActions() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["lambdaActions"])
-}
-
-// The name of the rule
-func (r *ReceiptRule) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A list of email addresses
-func (r *ReceiptRule) Recipients() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["recipients"])
-}
-
-// The name of the rule set
-func (r *ReceiptRule) RuleSetName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ruleSetName"])
-}
-
-// A list of S3 Action blocks. Documented below.
-func (r *ReceiptRule) S3Actions() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["s3Actions"])
-}
-
-// If true, incoming emails will be scanned for spam and viruses
-func (r *ReceiptRule) ScanEnabled() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["scanEnabled"])
-}
-
-// A list of SNS Action blocks. Documented below.
-func (r *ReceiptRule) SnsActions() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["snsActions"])
-}
-
-// A list of Stop Action blocks. Documented below.
-func (r *ReceiptRule) StopActions() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["stopActions"])
-}
-
-// Require or Optional
-func (r *ReceiptRule) TlsPolicy() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["tlsPolicy"])
-}
-
-// A list of WorkMail Action blocks. Documented below.
-func (r *ReceiptRule) WorkmailActions() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["workmailActions"])
-}
-
 // Input properties used for looking up and filtering ReceiptRule resources.
 type ReceiptRuleState struct {
 	// A list of Add Header Action blocks. Documented below.
-	AddHeaderActions interface{}
+	AddHeaderActions pulumi.ArrayInput `pulumi:"addHeaderActions"`
 	// The name of the rule to place this rule after
-	After interface{}
+	After pulumi.StringInput `pulumi:"after"`
 	// A list of Bounce Action blocks. Documented below.
-	BounceActions interface{}
+	BounceActions pulumi.ArrayInput `pulumi:"bounceActions"`
 	// If true, the rule will be enabled
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// A list of Lambda Action blocks. Documented below.
-	LambdaActions interface{}
+	LambdaActions pulumi.ArrayInput `pulumi:"lambdaActions"`
 	// The name of the rule
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A list of email addresses
-	Recipients interface{}
+	Recipients pulumi.ArrayInput `pulumi:"recipients"`
 	// The name of the rule set
-	RuleSetName interface{}
+	RuleSetName pulumi.StringInput `pulumi:"ruleSetName"`
 	// A list of S3 Action blocks. Documented below.
-	S3Actions interface{}
+	S3Actions pulumi.ArrayInput `pulumi:"s3Actions"`
 	// If true, incoming emails will be scanned for spam and viruses
-	ScanEnabled interface{}
+	ScanEnabled pulumi.BoolInput `pulumi:"scanEnabled"`
 	// A list of SNS Action blocks. Documented below.
-	SnsActions interface{}
+	SnsActions pulumi.ArrayInput `pulumi:"snsActions"`
 	// A list of Stop Action blocks. Documented below.
-	StopActions interface{}
+	StopActions pulumi.ArrayInput `pulumi:"stopActions"`
 	// Require or Optional
-	TlsPolicy interface{}
+	TlsPolicy pulumi.StringInput `pulumi:"tlsPolicy"`
 	// A list of WorkMail Action blocks. Documented below.
-	WorkmailActions interface{}
+	WorkmailActions pulumi.ArrayInput `pulumi:"workmailActions"`
 }
 
 // The set of arguments for constructing a ReceiptRule resource.
 type ReceiptRuleArgs struct {
 	// A list of Add Header Action blocks. Documented below.
-	AddHeaderActions interface{}
+	AddHeaderActions pulumi.ArrayInput `pulumi:"addHeaderActions"`
 	// The name of the rule to place this rule after
-	After interface{}
+	After pulumi.StringInput `pulumi:"after"`
 	// A list of Bounce Action blocks. Documented below.
-	BounceActions interface{}
+	BounceActions pulumi.ArrayInput `pulumi:"bounceActions"`
 	// If true, the rule will be enabled
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// A list of Lambda Action blocks. Documented below.
-	LambdaActions interface{}
+	LambdaActions pulumi.ArrayInput `pulumi:"lambdaActions"`
 	// The name of the rule
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A list of email addresses
-	Recipients interface{}
+	Recipients pulumi.ArrayInput `pulumi:"recipients"`
 	// The name of the rule set
-	RuleSetName interface{}
+	RuleSetName pulumi.StringInput `pulumi:"ruleSetName"`
 	// A list of S3 Action blocks. Documented below.
-	S3Actions interface{}
+	S3Actions pulumi.ArrayInput `pulumi:"s3Actions"`
 	// If true, incoming emails will be scanned for spam and viruses
-	ScanEnabled interface{}
+	ScanEnabled pulumi.BoolInput `pulumi:"scanEnabled"`
 	// A list of SNS Action blocks. Documented below.
-	SnsActions interface{}
+	SnsActions pulumi.ArrayInput `pulumi:"snsActions"`
 	// A list of Stop Action blocks. Documented below.
-	StopActions interface{}
+	StopActions pulumi.ArrayInput `pulumi:"stopActions"`
 	// Require or Optional
-	TlsPolicy interface{}
+	TlsPolicy pulumi.StringInput `pulumi:"tlsPolicy"`
 	// A list of WorkMail Action blocks. Documented below.
-	WorkmailActions interface{}
+	WorkmailActions pulumi.ArrayInput `pulumi:"workmailActions"`
 }

@@ -12,7 +12,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/media_package_channel.html.markdown.
 type Channel struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the channel
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// A unique identifier describing the channel
+	ChannelId pulumi.StringOutput `pulumi:"channelId"`
+
+	// A description of the channel
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// A single item list of HLS ingest information
+	HlsIngests pulumi.ArrayOutput `pulumi:"hlsIngests"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewChannel registers a new resource with the given unique name, arguments, and options.
@@ -21,30 +40,26 @@ func NewChannel(ctx *pulumi.Context,
 	if args == nil || args.ChannelId == nil {
 		return nil, errors.New("missing required argument 'ChannelId'")
 	}
-	inputs := make(map[string]interface{})
-	inputs["description"] = "Managed by Pulumi"
-	if args == nil {
-		inputs["channelId"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["description"] = pulumi.Any("Managed by Pulumi")
+	if args != nil {
 		inputs["channelId"] = args.ChannelId
 		inputs["description"] = args.Description
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	inputs["hlsIngests"] = nil
-	s, err := ctx.RegisterResource("aws:mediapackage/channel:Channel", name, true, inputs, opts...)
+	var resource Channel
+	err := ctx.RegisterResource("aws:mediapackage/channel:Channel", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Channel{s: s}, nil
+	return &resource, nil
 }
 
 // GetChannel gets an existing Channel resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetChannel(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ChannelState, opts ...pulumi.ResourceOpt) (*Channel, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["channelId"] = state.ChannelId
@@ -52,68 +67,43 @@ func GetChannel(ctx *pulumi.Context,
 		inputs["hlsIngests"] = state.HlsIngests
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:mediapackage/channel:Channel", name, id, inputs, opts...)
+	var resource Channel
+	err := ctx.ReadResource("aws:mediapackage/channel:Channel", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Channel{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Channel) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Channel) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Channel) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Channel) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the channel
-func (r *Channel) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// A unique identifier describing the channel
-func (r *Channel) ChannelId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["channelId"])
-}
-
-// A description of the channel
-func (r *Channel) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// A single item list of HLS ingest information
-func (r *Channel) HlsIngests() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["hlsIngests"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *Channel) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering Channel resources.
 type ChannelState struct {
 	// The ARN of the channel
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// A unique identifier describing the channel
-	ChannelId interface{}
+	ChannelId pulumi.StringInput `pulumi:"channelId"`
 	// A description of the channel
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// A single item list of HLS ingest information
-	HlsIngests interface{}
+	HlsIngests pulumi.ArrayInput `pulumi:"hlsIngests"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a Channel resource.
 type ChannelArgs struct {
 	// A unique identifier describing the channel
-	ChannelId interface{}
+	ChannelId pulumi.StringInput `pulumi:"channelId"`
 	// A description of the channel
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

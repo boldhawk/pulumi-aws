@@ -12,7 +12,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/waf_rule_group.html.markdown.
 type RuleGroup struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// A list of activated rules, see below
+	ActivatedRules pulumi.ArrayOutput `pulumi:"activatedRules"`
+
+	// A friendly name for the metrics from the rule group
+	MetricName pulumi.StringOutput `pulumi:"metricName"`
+
+	// A friendly name of the rule group
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Key-value mapping of resource tags
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewRuleGroup registers a new resource with the given unique name, arguments, and options.
@@ -21,93 +37,70 @@ func NewRuleGroup(ctx *pulumi.Context,
 	if args == nil || args.MetricName == nil {
 		return nil, errors.New("missing required argument 'MetricName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["activatedRules"] = nil
-		inputs["metricName"] = nil
-		inputs["name"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["activatedRules"] = args.ActivatedRules
 		inputs["metricName"] = args.MetricName
 		inputs["name"] = args.Name
 		inputs["tags"] = args.Tags
 	}
-	s, err := ctx.RegisterResource("aws:waf/ruleGroup:RuleGroup", name, true, inputs, opts...)
+	var resource RuleGroup
+	err := ctx.RegisterResource("aws:waf/ruleGroup:RuleGroup", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RuleGroup{s: s}, nil
+	return &resource, nil
 }
 
 // GetRuleGroup gets an existing RuleGroup resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRuleGroup(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RuleGroupState, opts ...pulumi.ResourceOpt) (*RuleGroup, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["activatedRules"] = state.ActivatedRules
 		inputs["metricName"] = state.MetricName
 		inputs["name"] = state.Name
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:waf/ruleGroup:RuleGroup", name, id, inputs, opts...)
+	var resource RuleGroup
+	err := ctx.ReadResource("aws:waf/ruleGroup:RuleGroup", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RuleGroup{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *RuleGroup) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *RuleGroup) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *RuleGroup) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *RuleGroup) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// A list of activated rules, see below
-func (r *RuleGroup) ActivatedRules() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["activatedRules"])
-}
-
-// A friendly name for the metrics from the rule group
-func (r *RuleGroup) MetricName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["metricName"])
-}
-
-// A friendly name of the rule group
-func (r *RuleGroup) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Key-value mapping of resource tags
-func (r *RuleGroup) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering RuleGroup resources.
 type RuleGroupState struct {
 	// A list of activated rules, see below
-	ActivatedRules interface{}
+	ActivatedRules pulumi.ArrayInput `pulumi:"activatedRules"`
 	// A friendly name for the metrics from the rule group
-	MetricName interface{}
+	MetricName pulumi.StringInput `pulumi:"metricName"`
 	// A friendly name of the rule group
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Key-value mapping of resource tags
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a RuleGroup resource.
 type RuleGroupArgs struct {
 	// A list of activated rules, see below
-	ActivatedRules interface{}
+	ActivatedRules pulumi.ArrayInput `pulumi:"activatedRules"`
 	// A friendly name for the metrics from the rule group
-	MetricName interface{}
+	MetricName pulumi.StringInput `pulumi:"metricName"`
 	// A friendly name of the rule group
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Key-value mapping of resource tags
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

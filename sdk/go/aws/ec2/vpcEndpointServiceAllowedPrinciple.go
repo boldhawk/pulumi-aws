@@ -18,7 +18,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/vpc_endpoint_service_allowed_principal.html.markdown.
 type VpcEndpointServiceAllowedPrinciple struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the principal to allow permissions.
+	PrincipalArn pulumi.StringOutput `pulumi:"principalArn"`
+
+	// The ID of the VPC endpoint service to allow permission.
+	VpcEndpointServiceId pulumi.StringOutput `pulumi:"vpcEndpointServiceId"`
 }
 
 // NewVpcEndpointServiceAllowedPrinciple registers a new resource with the given unique name, arguments, and options.
@@ -30,69 +40,57 @@ func NewVpcEndpointServiceAllowedPrinciple(ctx *pulumi.Context,
 	if args == nil || args.VpcEndpointServiceId == nil {
 		return nil, errors.New("missing required argument 'VpcEndpointServiceId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["principalArn"] = nil
-		inputs["vpcEndpointServiceId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["principalArn"] = args.PrincipalArn
 		inputs["vpcEndpointServiceId"] = args.VpcEndpointServiceId
 	}
-	s, err := ctx.RegisterResource("aws:ec2/vpcEndpointServiceAllowedPrinciple:VpcEndpointServiceAllowedPrinciple", name, true, inputs, opts...)
+	var resource VpcEndpointServiceAllowedPrinciple
+	err := ctx.RegisterResource("aws:ec2/vpcEndpointServiceAllowedPrinciple:VpcEndpointServiceAllowedPrinciple", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &VpcEndpointServiceAllowedPrinciple{s: s}, nil
+	return &resource, nil
 }
 
 // GetVpcEndpointServiceAllowedPrinciple gets an existing VpcEndpointServiceAllowedPrinciple resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetVpcEndpointServiceAllowedPrinciple(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *VpcEndpointServiceAllowedPrincipleState, opts ...pulumi.ResourceOpt) (*VpcEndpointServiceAllowedPrinciple, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["principalArn"] = state.PrincipalArn
 		inputs["vpcEndpointServiceId"] = state.VpcEndpointServiceId
 	}
-	s, err := ctx.ReadResource("aws:ec2/vpcEndpointServiceAllowedPrinciple:VpcEndpointServiceAllowedPrinciple", name, id, inputs, opts...)
+	var resource VpcEndpointServiceAllowedPrinciple
+	err := ctx.ReadResource("aws:ec2/vpcEndpointServiceAllowedPrinciple:VpcEndpointServiceAllowedPrinciple", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &VpcEndpointServiceAllowedPrinciple{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *VpcEndpointServiceAllowedPrinciple) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *VpcEndpointServiceAllowedPrinciple) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *VpcEndpointServiceAllowedPrinciple) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *VpcEndpointServiceAllowedPrinciple) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the principal to allow permissions.
-func (r *VpcEndpointServiceAllowedPrinciple) PrincipalArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["principalArn"])
-}
-
-// The ID of the VPC endpoint service to allow permission.
-func (r *VpcEndpointServiceAllowedPrinciple) VpcEndpointServiceId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpcEndpointServiceId"])
-}
-
 // Input properties used for looking up and filtering VpcEndpointServiceAllowedPrinciple resources.
 type VpcEndpointServiceAllowedPrincipleState struct {
 	// The ARN of the principal to allow permissions.
-	PrincipalArn interface{}
+	PrincipalArn pulumi.StringInput `pulumi:"principalArn"`
 	// The ID of the VPC endpoint service to allow permission.
-	VpcEndpointServiceId interface{}
+	VpcEndpointServiceId pulumi.StringInput `pulumi:"vpcEndpointServiceId"`
 }
 
 // The set of arguments for constructing a VpcEndpointServiceAllowedPrinciple resource.
 type VpcEndpointServiceAllowedPrincipleArgs struct {
 	// The ARN of the principal to allow permissions.
-	PrincipalArn interface{}
+	PrincipalArn pulumi.StringInput `pulumi:"principalArn"`
 	// The ID of the VPC endpoint service to allow permission.
-	VpcEndpointServiceId interface{}
+	VpcEndpointServiceId pulumi.StringInput `pulumi:"vpcEndpointServiceId"`
 }

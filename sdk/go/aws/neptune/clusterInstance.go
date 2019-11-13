@@ -15,7 +15,85 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/neptune_cluster_instance.html.markdown.
 type ClusterInstance struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The hostname of the instance. See also `endpoint` and `port`.
+	Address pulumi.StringOutput `pulumi:"address"`
+
+	// Specifies whether any instance modifications
+	// are applied immediately, or during the next maintenance window. Default is`false`.
+	ApplyImmediately pulumi.BoolOutput `pulumi:"applyImmediately"`
+
+	// Amazon Resource Name (ARN) of neptune instance
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Indicates that minor engine upgrades will be applied automatically to the instance during the maintenance window. Default is `true`.
+	AutoMinorVersionUpgrade pulumi.BoolOutput `pulumi:"autoMinorVersionUpgrade"`
+
+	// The EC2 Availability Zone that the neptune instance is created in.
+	AvailabilityZone pulumi.StringOutput `pulumi:"availabilityZone"`
+
+	// The identifier of the [`neptune.Cluster`](https://www.terraform.io/docs/providers/aws/r/neptune_cluster.html) in which to launch this instance.
+	ClusterIdentifier pulumi.StringOutput `pulumi:"clusterIdentifier"`
+
+	// The region-unique, immutable identifier for the neptune instance.
+	DbiResourceId pulumi.StringOutput `pulumi:"dbiResourceId"`
+
+	// The connection endpoint in `address:port` format.
+	Endpoint pulumi.StringOutput `pulumi:"endpoint"`
+
+	// The name of the database engine to be used for the neptune instance. Defaults to `neptune`. Valid Values: `neptune`.
+	Engine pulumi.StringOutput `pulumi:"engine"`
+
+	// The neptune engine version.
+	EngineVersion pulumi.StringOutput `pulumi:"engineVersion"`
+
+	// The indentifier for the neptune instance, if omitted, this provider will assign a random, unique identifier.
+	Identifier pulumi.StringOutput `pulumi:"identifier"`
+
+	// Creates a unique identifier beginning with the specified prefix. Conflicts with `identifier`.
+	IdentifierPrefix pulumi.StringOutput `pulumi:"identifierPrefix"`
+
+	// The instance class to use.
+	InstanceClass pulumi.StringOutput `pulumi:"instanceClass"`
+
+	// The ARN for the KMS encryption key if one is set to the neptune cluster.
+	KmsKeyArn pulumi.StringOutput `pulumi:"kmsKeyArn"`
+
+	// The name of the neptune parameter group to associate with this instance.
+	NeptuneParameterGroupName pulumi.StringOutput `pulumi:"neptuneParameterGroupName"`
+
+	// A subnet group to associate with this neptune instance. **NOTE:** This must match the `neptuneSubnetGroupName` of the attached [`neptune.Cluster`](https://www.terraform.io/docs/providers/aws/r/neptune_cluster.html).
+	NeptuneSubnetGroupName pulumi.StringOutput `pulumi:"neptuneSubnetGroupName"`
+
+	// The port on which the DB accepts connections. Defaults to `8182`.
+	Port pulumi.IntOutput `pulumi:"port"`
+
+	// The daily time range during which automated backups are created if automated backups are enabled. Eg: "04:00-09:00"
+	PreferredBackupWindow pulumi.StringOutput `pulumi:"preferredBackupWindow"`
+
+	// The window to perform maintenance in.
+	// Syntax: "ddd:hh24:mi-ddd:hh24:mi". Eg: "Mon:00:00-Mon:03:00".
+	PreferredMaintenanceWindow pulumi.StringOutput `pulumi:"preferredMaintenanceWindow"`
+
+	// Default 0. Failover Priority setting on instance level. The reader who has lower tier has higher priority to get promoter to writer.
+	PromotionTier pulumi.IntOutput `pulumi:"promotionTier"`
+
+	// Bool to control if instance is publicly accessible. Default is `false`.
+	PubliclyAccessible pulumi.BoolOutput `pulumi:"publiclyAccessible"`
+
+	// Specifies whether the neptune cluster is encrypted.
+	StorageEncrypted pulumi.BoolOutput `pulumi:"storageEncrypted"`
+
+	// A mapping of tags to assign to the instance.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// Boolean indicating if this instance is writable. `False` indicates this instance is a read replica.
+	Writer pulumi.BoolOutput `pulumi:"writer"`
 }
 
 // NewClusterInstance registers a new resource with the given unique name, arguments, and options.
@@ -27,26 +105,8 @@ func NewClusterInstance(ctx *pulumi.Context,
 	if args == nil || args.InstanceClass == nil {
 		return nil, errors.New("missing required argument 'InstanceClass'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["applyImmediately"] = nil
-		inputs["autoMinorVersionUpgrade"] = nil
-		inputs["availabilityZone"] = nil
-		inputs["clusterIdentifier"] = nil
-		inputs["engine"] = nil
-		inputs["engineVersion"] = nil
-		inputs["identifier"] = nil
-		inputs["identifierPrefix"] = nil
-		inputs["instanceClass"] = nil
-		inputs["neptuneParameterGroupName"] = nil
-		inputs["neptuneSubnetGroupName"] = nil
-		inputs["port"] = nil
-		inputs["preferredBackupWindow"] = nil
-		inputs["preferredMaintenanceWindow"] = nil
-		inputs["promotionTier"] = nil
-		inputs["publiclyAccessible"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["applyImmediately"] = args.ApplyImmediately
 		inputs["autoMinorVersionUpgrade"] = args.AutoMinorVersionUpgrade
 		inputs["availabilityZone"] = args.AvailabilityZone
@@ -65,25 +125,19 @@ func NewClusterInstance(ctx *pulumi.Context,
 		inputs["publiclyAccessible"] = args.PubliclyAccessible
 		inputs["tags"] = args.Tags
 	}
-	inputs["address"] = nil
-	inputs["arn"] = nil
-	inputs["dbiResourceId"] = nil
-	inputs["endpoint"] = nil
-	inputs["kmsKeyArn"] = nil
-	inputs["storageEncrypted"] = nil
-	inputs["writer"] = nil
-	s, err := ctx.RegisterResource("aws:neptune/clusterInstance:ClusterInstance", name, true, inputs, opts...)
+	var resource ClusterInstance
+	err := ctx.RegisterResource("aws:neptune/clusterInstance:ClusterInstance", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ClusterInstance{s: s}, nil
+	return &resource, nil
 }
 
 // GetClusterInstance gets an existing ClusterInstance resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetClusterInstance(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ClusterInstanceState, opts ...pulumi.ResourceOpt) (*ClusterInstance, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["address"] = state.Address
 		inputs["applyImmediately"] = state.ApplyImmediately
@@ -110,235 +164,113 @@ func GetClusterInstance(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["writer"] = state.Writer
 	}
-	s, err := ctx.ReadResource("aws:neptune/clusterInstance:ClusterInstance", name, id, inputs, opts...)
+	var resource ClusterInstance
+	err := ctx.ReadResource("aws:neptune/clusterInstance:ClusterInstance", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ClusterInstance{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ClusterInstance) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ClusterInstance) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ClusterInstance) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ClusterInstance) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The hostname of the instance. See also `endpoint` and `port`.
-func (r *ClusterInstance) Address() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["address"])
-}
-
-// Specifies whether any instance modifications
-// are applied immediately, or during the next maintenance window. Default is`false`.
-func (r *ClusterInstance) ApplyImmediately() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["applyImmediately"])
-}
-
-// Amazon Resource Name (ARN) of neptune instance
-func (r *ClusterInstance) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Indicates that minor engine upgrades will be applied automatically to the instance during the maintenance window. Default is `true`.
-func (r *ClusterInstance) AutoMinorVersionUpgrade() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["autoMinorVersionUpgrade"])
-}
-
-// The EC2 Availability Zone that the neptune instance is created in.
-func (r *ClusterInstance) AvailabilityZone() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["availabilityZone"])
-}
-
-// The identifier of the [`neptune.Cluster`](https://www.terraform.io/docs/providers/aws/r/neptune_cluster.html) in which to launch this instance.
-func (r *ClusterInstance) ClusterIdentifier() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["clusterIdentifier"])
-}
-
-// The region-unique, immutable identifier for the neptune instance.
-func (r *ClusterInstance) DbiResourceId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["dbiResourceId"])
-}
-
-// The connection endpoint in `address:port` format.
-func (r *ClusterInstance) Endpoint() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["endpoint"])
-}
-
-// The name of the database engine to be used for the neptune instance. Defaults to `neptune`. Valid Values: `neptune`.
-func (r *ClusterInstance) Engine() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["engine"])
-}
-
-// The neptune engine version.
-func (r *ClusterInstance) EngineVersion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["engineVersion"])
-}
-
-// The indentifier for the neptune instance, if omitted, this provider will assign a random, unique identifier.
-func (r *ClusterInstance) Identifier() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["identifier"])
-}
-
-// Creates a unique identifier beginning with the specified prefix. Conflicts with `identifier`.
-func (r *ClusterInstance) IdentifierPrefix() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["identifierPrefix"])
-}
-
-// The instance class to use.
-func (r *ClusterInstance) InstanceClass() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["instanceClass"])
-}
-
-// The ARN for the KMS encryption key if one is set to the neptune cluster.
-func (r *ClusterInstance) KmsKeyArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["kmsKeyArn"])
-}
-
-// The name of the neptune parameter group to associate with this instance.
-func (r *ClusterInstance) NeptuneParameterGroupName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["neptuneParameterGroupName"])
-}
-
-// A subnet group to associate with this neptune instance. **NOTE:** This must match the `neptuneSubnetGroupName` of the attached [`neptune.Cluster`](https://www.terraform.io/docs/providers/aws/r/neptune_cluster.html).
-func (r *ClusterInstance) NeptuneSubnetGroupName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["neptuneSubnetGroupName"])
-}
-
-// The port on which the DB accepts connections. Defaults to `8182`.
-func (r *ClusterInstance) Port() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["port"])
-}
-
-// The daily time range during which automated backups are created if automated backups are enabled. Eg: "04:00-09:00"
-func (r *ClusterInstance) PreferredBackupWindow() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["preferredBackupWindow"])
-}
-
-// The window to perform maintenance in.
-// Syntax: "ddd:hh24:mi-ddd:hh24:mi". Eg: "Mon:00:00-Mon:03:00".
-func (r *ClusterInstance) PreferredMaintenanceWindow() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["preferredMaintenanceWindow"])
-}
-
-// Default 0. Failover Priority setting on instance level. The reader who has lower tier has higher priority to get promoter to writer.
-func (r *ClusterInstance) PromotionTier() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["promotionTier"])
-}
-
-// Bool to control if instance is publicly accessible. Default is `false`.
-func (r *ClusterInstance) PubliclyAccessible() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["publiclyAccessible"])
-}
-
-// Specifies whether the neptune cluster is encrypted.
-func (r *ClusterInstance) StorageEncrypted() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["storageEncrypted"])
-}
-
-// A mapping of tags to assign to the instance.
-func (r *ClusterInstance) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// Boolean indicating if this instance is writable. `False` indicates this instance is a read replica.
-func (r *ClusterInstance) Writer() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["writer"])
-}
-
 // Input properties used for looking up and filtering ClusterInstance resources.
 type ClusterInstanceState struct {
 	// The hostname of the instance. See also `endpoint` and `port`.
-	Address interface{}
+	Address pulumi.StringInput `pulumi:"address"`
 	// Specifies whether any instance modifications
 	// are applied immediately, or during the next maintenance window. Default is`false`.
-	ApplyImmediately interface{}
+	ApplyImmediately pulumi.BoolInput `pulumi:"applyImmediately"`
 	// Amazon Resource Name (ARN) of neptune instance
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Indicates that minor engine upgrades will be applied automatically to the instance during the maintenance window. Default is `true`.
-	AutoMinorVersionUpgrade interface{}
+	AutoMinorVersionUpgrade pulumi.BoolInput `pulumi:"autoMinorVersionUpgrade"`
 	// The EC2 Availability Zone that the neptune instance is created in.
-	AvailabilityZone interface{}
+	AvailabilityZone pulumi.StringInput `pulumi:"availabilityZone"`
 	// The identifier of the [`neptune.Cluster`](https://www.terraform.io/docs/providers/aws/r/neptune_cluster.html) in which to launch this instance.
-	ClusterIdentifier interface{}
+	ClusterIdentifier pulumi.StringInput `pulumi:"clusterIdentifier"`
 	// The region-unique, immutable identifier for the neptune instance.
-	DbiResourceId interface{}
+	DbiResourceId pulumi.StringInput `pulumi:"dbiResourceId"`
 	// The connection endpoint in `address:port` format.
-	Endpoint interface{}
+	Endpoint pulumi.StringInput `pulumi:"endpoint"`
 	// The name of the database engine to be used for the neptune instance. Defaults to `neptune`. Valid Values: `neptune`.
-	Engine interface{}
+	Engine pulumi.StringInput `pulumi:"engine"`
 	// The neptune engine version.
-	EngineVersion interface{}
+	EngineVersion pulumi.StringInput `pulumi:"engineVersion"`
 	// The indentifier for the neptune instance, if omitted, this provider will assign a random, unique identifier.
-	Identifier interface{}
+	Identifier pulumi.StringInput `pulumi:"identifier"`
 	// Creates a unique identifier beginning with the specified prefix. Conflicts with `identifier`.
-	IdentifierPrefix interface{}
+	IdentifierPrefix pulumi.StringInput `pulumi:"identifierPrefix"`
 	// The instance class to use.
-	InstanceClass interface{}
+	InstanceClass pulumi.StringInput `pulumi:"instanceClass"`
 	// The ARN for the KMS encryption key if one is set to the neptune cluster.
-	KmsKeyArn interface{}
+	KmsKeyArn pulumi.StringInput `pulumi:"kmsKeyArn"`
 	// The name of the neptune parameter group to associate with this instance.
-	NeptuneParameterGroupName interface{}
+	NeptuneParameterGroupName pulumi.StringInput `pulumi:"neptuneParameterGroupName"`
 	// A subnet group to associate with this neptune instance. **NOTE:** This must match the `neptuneSubnetGroupName` of the attached [`neptune.Cluster`](https://www.terraform.io/docs/providers/aws/r/neptune_cluster.html).
-	NeptuneSubnetGroupName interface{}
+	NeptuneSubnetGroupName pulumi.StringInput `pulumi:"neptuneSubnetGroupName"`
 	// The port on which the DB accepts connections. Defaults to `8182`.
-	Port interface{}
+	Port pulumi.IntInput `pulumi:"port"`
 	// The daily time range during which automated backups are created if automated backups are enabled. Eg: "04:00-09:00"
-	PreferredBackupWindow interface{}
+	PreferredBackupWindow pulumi.StringInput `pulumi:"preferredBackupWindow"`
 	// The window to perform maintenance in.
 	// Syntax: "ddd:hh24:mi-ddd:hh24:mi". Eg: "Mon:00:00-Mon:03:00".
-	PreferredMaintenanceWindow interface{}
+	PreferredMaintenanceWindow pulumi.StringInput `pulumi:"preferredMaintenanceWindow"`
 	// Default 0. Failover Priority setting on instance level. The reader who has lower tier has higher priority to get promoter to writer.
-	PromotionTier interface{}
+	PromotionTier pulumi.IntInput `pulumi:"promotionTier"`
 	// Bool to control if instance is publicly accessible. Default is `false`.
-	PubliclyAccessible interface{}
+	PubliclyAccessible pulumi.BoolInput `pulumi:"publiclyAccessible"`
 	// Specifies whether the neptune cluster is encrypted.
-	StorageEncrypted interface{}
+	StorageEncrypted pulumi.BoolInput `pulumi:"storageEncrypted"`
 	// A mapping of tags to assign to the instance.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Boolean indicating if this instance is writable. `False` indicates this instance is a read replica.
-	Writer interface{}
+	Writer pulumi.BoolInput `pulumi:"writer"`
 }
 
 // The set of arguments for constructing a ClusterInstance resource.
 type ClusterInstanceArgs struct {
 	// Specifies whether any instance modifications
 	// are applied immediately, or during the next maintenance window. Default is`false`.
-	ApplyImmediately interface{}
+	ApplyImmediately pulumi.BoolInput `pulumi:"applyImmediately"`
 	// Indicates that minor engine upgrades will be applied automatically to the instance during the maintenance window. Default is `true`.
-	AutoMinorVersionUpgrade interface{}
+	AutoMinorVersionUpgrade pulumi.BoolInput `pulumi:"autoMinorVersionUpgrade"`
 	// The EC2 Availability Zone that the neptune instance is created in.
-	AvailabilityZone interface{}
+	AvailabilityZone pulumi.StringInput `pulumi:"availabilityZone"`
 	// The identifier of the [`neptune.Cluster`](https://www.terraform.io/docs/providers/aws/r/neptune_cluster.html) in which to launch this instance.
-	ClusterIdentifier interface{}
+	ClusterIdentifier pulumi.StringInput `pulumi:"clusterIdentifier"`
 	// The name of the database engine to be used for the neptune instance. Defaults to `neptune`. Valid Values: `neptune`.
-	Engine interface{}
+	Engine pulumi.StringInput `pulumi:"engine"`
 	// The neptune engine version.
-	EngineVersion interface{}
+	EngineVersion pulumi.StringInput `pulumi:"engineVersion"`
 	// The indentifier for the neptune instance, if omitted, this provider will assign a random, unique identifier.
-	Identifier interface{}
+	Identifier pulumi.StringInput `pulumi:"identifier"`
 	// Creates a unique identifier beginning with the specified prefix. Conflicts with `identifier`.
-	IdentifierPrefix interface{}
+	IdentifierPrefix pulumi.StringInput `pulumi:"identifierPrefix"`
 	// The instance class to use.
-	InstanceClass interface{}
+	InstanceClass pulumi.StringInput `pulumi:"instanceClass"`
 	// The name of the neptune parameter group to associate with this instance.
-	NeptuneParameterGroupName interface{}
+	NeptuneParameterGroupName pulumi.StringInput `pulumi:"neptuneParameterGroupName"`
 	// A subnet group to associate with this neptune instance. **NOTE:** This must match the `neptuneSubnetGroupName` of the attached [`neptune.Cluster`](https://www.terraform.io/docs/providers/aws/r/neptune_cluster.html).
-	NeptuneSubnetGroupName interface{}
+	NeptuneSubnetGroupName pulumi.StringInput `pulumi:"neptuneSubnetGroupName"`
 	// The port on which the DB accepts connections. Defaults to `8182`.
-	Port interface{}
+	Port pulumi.IntInput `pulumi:"port"`
 	// The daily time range during which automated backups are created if automated backups are enabled. Eg: "04:00-09:00"
-	PreferredBackupWindow interface{}
+	PreferredBackupWindow pulumi.StringInput `pulumi:"preferredBackupWindow"`
 	// The window to perform maintenance in.
 	// Syntax: "ddd:hh24:mi-ddd:hh24:mi". Eg: "Mon:00:00-Mon:03:00".
-	PreferredMaintenanceWindow interface{}
+	PreferredMaintenanceWindow pulumi.StringInput `pulumi:"preferredMaintenanceWindow"`
 	// Default 0. Failover Priority setting on instance level. The reader who has lower tier has higher priority to get promoter to writer.
-	PromotionTier interface{}
+	PromotionTier pulumi.IntInput `pulumi:"promotionTier"`
 	// Bool to control if instance is publicly accessible. Default is `false`.
-	PubliclyAccessible interface{}
+	PubliclyAccessible pulumi.BoolInput `pulumi:"publiclyAccessible"`
 	// A mapping of tags to assign to the instance.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

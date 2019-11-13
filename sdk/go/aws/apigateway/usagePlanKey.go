@@ -12,7 +12,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/api_gateway_usage_plan_key.html.markdown.
 type UsagePlanKey struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The identifier of the API key resource.
+	KeyId pulumi.StringOutput `pulumi:"keyId"`
+
+	// The type of the API key resource. Currently, the valid key type is API_KEY.
+	KeyType pulumi.StringOutput `pulumi:"keyType"`
+
+	// The name of a usage plan key.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The Id of the usage plan resource representing to associate the key to.
+	UsagePlanId pulumi.StringOutput `pulumi:"usagePlanId"`
+
+	// The value of a usage plan key.
+	Value pulumi.StringOutput `pulumi:"value"`
 }
 
 // NewUsagePlanKey registers a new resource with the given unique name, arguments, and options.
@@ -27,30 +46,25 @@ func NewUsagePlanKey(ctx *pulumi.Context,
 	if args == nil || args.UsagePlanId == nil {
 		return nil, errors.New("missing required argument 'UsagePlanId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["keyId"] = nil
-		inputs["keyType"] = nil
-		inputs["usagePlanId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["keyId"] = args.KeyId
 		inputs["keyType"] = args.KeyType
 		inputs["usagePlanId"] = args.UsagePlanId
 	}
-	inputs["name"] = nil
-	inputs["value"] = nil
-	s, err := ctx.RegisterResource("aws:apigateway/usagePlanKey:UsagePlanKey", name, true, inputs, opts...)
+	var resource UsagePlanKey
+	err := ctx.RegisterResource("aws:apigateway/usagePlanKey:UsagePlanKey", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &UsagePlanKey{s: s}, nil
+	return &resource, nil
 }
 
 // GetUsagePlanKey gets an existing UsagePlanKey resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetUsagePlanKey(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *UsagePlanKeyState, opts ...pulumi.ResourceOpt) (*UsagePlanKey, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["keyId"] = state.KeyId
 		inputs["keyType"] = state.KeyType
@@ -58,68 +72,43 @@ func GetUsagePlanKey(ctx *pulumi.Context,
 		inputs["usagePlanId"] = state.UsagePlanId
 		inputs["value"] = state.Value
 	}
-	s, err := ctx.ReadResource("aws:apigateway/usagePlanKey:UsagePlanKey", name, id, inputs, opts...)
+	var resource UsagePlanKey
+	err := ctx.ReadResource("aws:apigateway/usagePlanKey:UsagePlanKey", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &UsagePlanKey{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *UsagePlanKey) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *UsagePlanKey) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *UsagePlanKey) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *UsagePlanKey) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The identifier of the API key resource.
-func (r *UsagePlanKey) KeyId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["keyId"])
-}
-
-// The type of the API key resource. Currently, the valid key type is API_KEY.
-func (r *UsagePlanKey) KeyType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["keyType"])
-}
-
-// The name of a usage plan key.
-func (r *UsagePlanKey) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The Id of the usage plan resource representing to associate the key to.
-func (r *UsagePlanKey) UsagePlanId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["usagePlanId"])
-}
-
-// The value of a usage plan key.
-func (r *UsagePlanKey) Value() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["value"])
-}
-
 // Input properties used for looking up and filtering UsagePlanKey resources.
 type UsagePlanKeyState struct {
 	// The identifier of the API key resource.
-	KeyId interface{}
+	KeyId pulumi.StringInput `pulumi:"keyId"`
 	// The type of the API key resource. Currently, the valid key type is API_KEY.
-	KeyType interface{}
+	KeyType pulumi.StringInput `pulumi:"keyType"`
 	// The name of a usage plan key.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The Id of the usage plan resource representing to associate the key to.
-	UsagePlanId interface{}
+	UsagePlanId pulumi.StringInput `pulumi:"usagePlanId"`
 	// The value of a usage plan key.
-	Value interface{}
+	Value pulumi.StringInput `pulumi:"value"`
 }
 
 // The set of arguments for constructing a UsagePlanKey resource.
 type UsagePlanKeyArgs struct {
 	// The identifier of the API key resource.
-	KeyId interface{}
+	KeyId pulumi.StringInput `pulumi:"keyId"`
 	// The type of the API key resource. Currently, the valid key type is API_KEY.
-	KeyType interface{}
+	KeyType pulumi.StringInput `pulumi:"keyType"`
 	// The Id of the usage plan resource representing to associate the key to.
-	UsagePlanId interface{}
+	UsagePlanId pulumi.StringInput `pulumi:"usagePlanId"`
 }

@@ -11,84 +11,80 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/waf_ipset.html.markdown.
 type IpSet struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the WAF IPSet.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// One or more pairs specifying the IP address type (IPV4 or IPV6) and the IP address range (in CIDR format) from which web requests originate.
+	IpSetDescriptors pulumi.ArrayOutput `pulumi:"ipSetDescriptors"`
+
+	// The name or description of the IPSet.
+	Name pulumi.StringOutput `pulumi:"name"`
 }
 
 // NewIpSet registers a new resource with the given unique name, arguments, and options.
 func NewIpSet(ctx *pulumi.Context,
 	name string, args *IpSetArgs, opts ...pulumi.ResourceOpt) (*IpSet, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["ipSetDescriptors"] = nil
-		inputs["name"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["ipSetDescriptors"] = args.IpSetDescriptors
 		inputs["name"] = args.Name
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:waf/ipSet:IpSet", name, true, inputs, opts...)
+	var resource IpSet
+	err := ctx.RegisterResource("aws:waf/ipSet:IpSet", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &IpSet{s: s}, nil
+	return &resource, nil
 }
 
 // GetIpSet gets an existing IpSet resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetIpSet(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *IpSetState, opts ...pulumi.ResourceOpt) (*IpSet, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["ipSetDescriptors"] = state.IpSetDescriptors
 		inputs["name"] = state.Name
 	}
-	s, err := ctx.ReadResource("aws:waf/ipSet:IpSet", name, id, inputs, opts...)
+	var resource IpSet
+	err := ctx.ReadResource("aws:waf/ipSet:IpSet", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &IpSet{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *IpSet) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *IpSet) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *IpSet) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *IpSet) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the WAF IPSet.
-func (r *IpSet) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// One or more pairs specifying the IP address type (IPV4 or IPV6) and the IP address range (in CIDR format) from which web requests originate.
-func (r *IpSet) IpSetDescriptors() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["ipSetDescriptors"])
-}
-
-// The name or description of the IPSet.
-func (r *IpSet) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
 // Input properties used for looking up and filtering IpSet resources.
 type IpSetState struct {
 	// The ARN of the WAF IPSet.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// One or more pairs specifying the IP address type (IPV4 or IPV6) and the IP address range (in CIDR format) from which web requests originate.
-	IpSetDescriptors interface{}
+	IpSetDescriptors pulumi.ArrayInput `pulumi:"ipSetDescriptors"`
 	// The name or description of the IPSet.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // The set of arguments for constructing a IpSet resource.
 type IpSetArgs struct {
 	// One or more pairs specifying the IP address type (IPV4 or IPV6) and the IP address range (in CIDR format) from which web requests originate.
-	IpSetDescriptors interface{}
+	IpSetDescriptors pulumi.ArrayInput `pulumi:"ipSetDescriptors"`
 	// The name or description of the IPSet.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }

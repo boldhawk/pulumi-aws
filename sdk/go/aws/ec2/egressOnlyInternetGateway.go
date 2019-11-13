@@ -15,7 +15,14 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/egress_only_internet_gateway.html.markdown.
 type EgressOnlyInternetGateway struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The VPC ID to create in.
+	VpcId pulumi.StringOutput `pulumi:"vpcId"`
 }
 
 // NewEgressOnlyInternetGateway registers a new resource with the given unique name, arguments, and options.
@@ -24,57 +31,51 @@ func NewEgressOnlyInternetGateway(ctx *pulumi.Context,
 	if args == nil || args.VpcId == nil {
 		return nil, errors.New("missing required argument 'VpcId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["vpcId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["vpcId"] = args.VpcId
 	}
-	s, err := ctx.RegisterResource("aws:ec2/egressOnlyInternetGateway:EgressOnlyInternetGateway", name, true, inputs, opts...)
+	var resource EgressOnlyInternetGateway
+	err := ctx.RegisterResource("aws:ec2/egressOnlyInternetGateway:EgressOnlyInternetGateway", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EgressOnlyInternetGateway{s: s}, nil
+	return &resource, nil
 }
 
 // GetEgressOnlyInternetGateway gets an existing EgressOnlyInternetGateway resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetEgressOnlyInternetGateway(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *EgressOnlyInternetGatewayState, opts ...pulumi.ResourceOpt) (*EgressOnlyInternetGateway, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["vpcId"] = state.VpcId
 	}
-	s, err := ctx.ReadResource("aws:ec2/egressOnlyInternetGateway:EgressOnlyInternetGateway", name, id, inputs, opts...)
+	var resource EgressOnlyInternetGateway
+	err := ctx.ReadResource("aws:ec2/egressOnlyInternetGateway:EgressOnlyInternetGateway", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EgressOnlyInternetGateway{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *EgressOnlyInternetGateway) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *EgressOnlyInternetGateway) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *EgressOnlyInternetGateway) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *EgressOnlyInternetGateway) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The VPC ID to create in.
-func (r *EgressOnlyInternetGateway) VpcId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpcId"])
-}
-
 // Input properties used for looking up and filtering EgressOnlyInternetGateway resources.
 type EgressOnlyInternetGatewayState struct {
 	// The VPC ID to create in.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // The set of arguments for constructing a EgressOnlyInternetGateway resource.
 type EgressOnlyInternetGatewayArgs struct {
 	// The VPC ID to create in.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }

@@ -12,7 +12,47 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/budgets_budget.html.markdown.
 type Budget struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ID of the target account for budget. Will use current user's accountId by default if omitted.
+	AccountId pulumi.StringOutput `pulumi:"accountId"`
+
+	// Whether this budget tracks monetary cost or usage.
+	BudgetType pulumi.StringOutput `pulumi:"budgetType"`
+
+	// Map of CostFilters key/value pairs to apply to the budget.
+	CostFilters pulumi.MapOutput `pulumi:"costFilters"`
+
+	// Object containing CostTypes The types of cost included in a budget, such as tax and subscriptions..
+	CostTypes pulumi.AnyOutput `pulumi:"costTypes"`
+
+	// The amount of cost or usage being measured for a budget.
+	LimitAmount pulumi.StringOutput `pulumi:"limitAmount"`
+
+	// The unit of measurement used for the budget forecast, actual spend, or budget threshold, such as dollars or GB. See [Spend](http://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/data-type-spend.html) documentation.
+	LimitUnit pulumi.StringOutput `pulumi:"limitUnit"`
+
+	// The name of a budget. Unique within accounts.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The prefix of the name of a budget. Unique within accounts.
+	NamePrefix pulumi.StringOutput `pulumi:"namePrefix"`
+
+	// Object containing Budget Notifications. Can be used multiple times to define more than one budget notification
+	Notifications pulumi.ArrayOutput `pulumi:"notifications"`
+
+	// The end of the time period covered by the budget. There are no restrictions on the end date. Format: `2017-01-01_12:00`.
+	TimePeriodEnd pulumi.StringOutput `pulumi:"timePeriodEnd"`
+
+	// The start of the time period covered by the budget. The start date must come before the end date. Format: `2017-01-01_12:00`.
+	TimePeriodStart pulumi.StringOutput `pulumi:"timePeriodStart"`
+
+	// The length of time until a budget resets the actual and forecasted spend. Valid values: `MONTHLY`, `QUARTERLY`, `ANNUALLY`.
+	TimeUnit pulumi.StringOutput `pulumi:"timeUnit"`
 }
 
 // NewBudget registers a new resource with the given unique name, arguments, and options.
@@ -33,21 +73,9 @@ func NewBudget(ctx *pulumi.Context,
 	if args == nil || args.TimeUnit == nil {
 		return nil, errors.New("missing required argument 'TimeUnit'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["accountId"] = nil
-		inputs["budgetType"] = nil
-		inputs["costFilters"] = nil
-		inputs["costTypes"] = nil
-		inputs["limitAmount"] = nil
-		inputs["limitUnit"] = nil
-		inputs["name"] = nil
-		inputs["namePrefix"] = nil
-		inputs["notifications"] = nil
-		inputs["timePeriodEnd"] = nil
-		inputs["timePeriodStart"] = nil
-		inputs["timeUnit"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["accountId"] = args.AccountId
 		inputs["budgetType"] = args.BudgetType
 		inputs["costFilters"] = args.CostFilters
@@ -61,18 +89,19 @@ func NewBudget(ctx *pulumi.Context,
 		inputs["timePeriodStart"] = args.TimePeriodStart
 		inputs["timeUnit"] = args.TimeUnit
 	}
-	s, err := ctx.RegisterResource("aws:budgets/budget:Budget", name, true, inputs, opts...)
+	var resource Budget
+	err := ctx.RegisterResource("aws:budgets/budget:Budget", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Budget{s: s}, nil
+	return &resource, nil
 }
 
 // GetBudget gets an existing Budget resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetBudget(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *BudgetState, opts ...pulumi.ResourceOpt) (*Budget, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["accountId"] = state.AccountId
 		inputs["budgetType"] = state.BudgetType
@@ -87,135 +116,75 @@ func GetBudget(ctx *pulumi.Context,
 		inputs["timePeriodStart"] = state.TimePeriodStart
 		inputs["timeUnit"] = state.TimeUnit
 	}
-	s, err := ctx.ReadResource("aws:budgets/budget:Budget", name, id, inputs, opts...)
+	var resource Budget
+	err := ctx.ReadResource("aws:budgets/budget:Budget", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Budget{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Budget) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Budget) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Budget) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Budget) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ID of the target account for budget. Will use current user's accountId by default if omitted.
-func (r *Budget) AccountId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["accountId"])
-}
-
-// Whether this budget tracks monetary cost or usage.
-func (r *Budget) BudgetType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["budgetType"])
-}
-
-// Map of CostFilters key/value pairs to apply to the budget.
-func (r *Budget) CostFilters() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["costFilters"])
-}
-
-// Object containing CostTypes The types of cost included in a budget, such as tax and subscriptions..
-func (r *Budget) CostTypes() *pulumi.Output {
-	return r.s.State["costTypes"]
-}
-
-// The amount of cost or usage being measured for a budget.
-func (r *Budget) LimitAmount() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["limitAmount"])
-}
-
-// The unit of measurement used for the budget forecast, actual spend, or budget threshold, such as dollars or GB. See [Spend](http://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/data-type-spend.html) documentation.
-func (r *Budget) LimitUnit() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["limitUnit"])
-}
-
-// The name of a budget. Unique within accounts.
-func (r *Budget) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The prefix of the name of a budget. Unique within accounts.
-func (r *Budget) NamePrefix() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["namePrefix"])
-}
-
-// Object containing Budget Notifications. Can be used multiple times to define more than one budget notification
-func (r *Budget) Notifications() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["notifications"])
-}
-
-// The end of the time period covered by the budget. There are no restrictions on the end date. Format: `2017-01-01_12:00`.
-func (r *Budget) TimePeriodEnd() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["timePeriodEnd"])
-}
-
-// The start of the time period covered by the budget. The start date must come before the end date. Format: `2017-01-01_12:00`.
-func (r *Budget) TimePeriodStart() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["timePeriodStart"])
-}
-
-// The length of time until a budget resets the actual and forecasted spend. Valid values: `MONTHLY`, `QUARTERLY`, `ANNUALLY`.
-func (r *Budget) TimeUnit() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["timeUnit"])
-}
-
 // Input properties used for looking up and filtering Budget resources.
 type BudgetState struct {
 	// The ID of the target account for budget. Will use current user's accountId by default if omitted.
-	AccountId interface{}
+	AccountId pulumi.StringInput `pulumi:"accountId"`
 	// Whether this budget tracks monetary cost or usage.
-	BudgetType interface{}
+	BudgetType pulumi.StringInput `pulumi:"budgetType"`
 	// Map of CostFilters key/value pairs to apply to the budget.
-	CostFilters interface{}
+	CostFilters pulumi.MapInput `pulumi:"costFilters"`
 	// Object containing CostTypes The types of cost included in a budget, such as tax and subscriptions..
-	CostTypes interface{}
+	CostTypes pulumi.AnyInput `pulumi:"costTypes"`
 	// The amount of cost or usage being measured for a budget.
-	LimitAmount interface{}
+	LimitAmount pulumi.StringInput `pulumi:"limitAmount"`
 	// The unit of measurement used for the budget forecast, actual spend, or budget threshold, such as dollars or GB. See [Spend](http://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/data-type-spend.html) documentation.
-	LimitUnit interface{}
+	LimitUnit pulumi.StringInput `pulumi:"limitUnit"`
 	// The name of a budget. Unique within accounts.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The prefix of the name of a budget. Unique within accounts.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// Object containing Budget Notifications. Can be used multiple times to define more than one budget notification
-	Notifications interface{}
+	Notifications pulumi.ArrayInput `pulumi:"notifications"`
 	// The end of the time period covered by the budget. There are no restrictions on the end date. Format: `2017-01-01_12:00`.
-	TimePeriodEnd interface{}
+	TimePeriodEnd pulumi.StringInput `pulumi:"timePeriodEnd"`
 	// The start of the time period covered by the budget. The start date must come before the end date. Format: `2017-01-01_12:00`.
-	TimePeriodStart interface{}
+	TimePeriodStart pulumi.StringInput `pulumi:"timePeriodStart"`
 	// The length of time until a budget resets the actual and forecasted spend. Valid values: `MONTHLY`, `QUARTERLY`, `ANNUALLY`.
-	TimeUnit interface{}
+	TimeUnit pulumi.StringInput `pulumi:"timeUnit"`
 }
 
 // The set of arguments for constructing a Budget resource.
 type BudgetArgs struct {
 	// The ID of the target account for budget. Will use current user's accountId by default if omitted.
-	AccountId interface{}
+	AccountId pulumi.StringInput `pulumi:"accountId"`
 	// Whether this budget tracks monetary cost or usage.
-	BudgetType interface{}
+	BudgetType pulumi.StringInput `pulumi:"budgetType"`
 	// Map of CostFilters key/value pairs to apply to the budget.
-	CostFilters interface{}
+	CostFilters pulumi.MapInput `pulumi:"costFilters"`
 	// Object containing CostTypes The types of cost included in a budget, such as tax and subscriptions..
-	CostTypes interface{}
+	CostTypes pulumi.AnyInput `pulumi:"costTypes"`
 	// The amount of cost or usage being measured for a budget.
-	LimitAmount interface{}
+	LimitAmount pulumi.StringInput `pulumi:"limitAmount"`
 	// The unit of measurement used for the budget forecast, actual spend, or budget threshold, such as dollars or GB. See [Spend](http://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/data-type-spend.html) documentation.
-	LimitUnit interface{}
+	LimitUnit pulumi.StringInput `pulumi:"limitUnit"`
 	// The name of a budget. Unique within accounts.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The prefix of the name of a budget. Unique within accounts.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// Object containing Budget Notifications. Can be used multiple times to define more than one budget notification
-	Notifications interface{}
+	Notifications pulumi.ArrayInput `pulumi:"notifications"`
 	// The end of the time period covered by the budget. There are no restrictions on the end date. Format: `2017-01-01_12:00`.
-	TimePeriodEnd interface{}
+	TimePeriodEnd pulumi.StringInput `pulumi:"timePeriodEnd"`
 	// The start of the time period covered by the budget. The start date must come before the end date. Format: `2017-01-01_12:00`.
-	TimePeriodStart interface{}
+	TimePeriodStart pulumi.StringInput `pulumi:"timePeriodStart"`
 	// The length of time until a budget resets the actual and forecasted spend. Valid values: `MONTHLY`, `QUARTERLY`, `ANNUALLY`.
-	TimeUnit interface{}
+	TimeUnit pulumi.StringInput `pulumi:"timeUnit"`
 }

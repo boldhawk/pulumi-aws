@@ -42,22 +42,22 @@ func LookupListener(ctx *pulumi.Context, args *GetListenerArgs) (*GetListenerRes
 // A collection of arguments for invoking getListener.
 type GetListenerArgs struct {
 	// The arn of the listener. Required if `loadBalancerArn` and `port` is not set.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The arn of the load balancer. Required if `arn` is not set.
-	LoadBalancerArn interface{}
+	LoadBalancerArn pulumi.StringInput `pulumi:"loadBalancerArn"`
 	// The port of the listener. Required if `arn` is not set.
-	Port interface{}
+	Port pulumi.IntInput `pulumi:"port"`
 }
 
 // A collection of values returned by getListener.
 type GetListenerResult struct {
-	Arn interface{}
-	CertificateArn interface{}
-	DefaultActions interface{}
-	LoadBalancerArn interface{}
-	Port interface{}
-	Protocol interface{}
-	SslPolicy interface{}
+	Arn string `pulumi:"arn"`
+	CertificateArn string `pulumi:"certificateArn"`
+	DefaultActions []interface{} `pulumi:"defaultActions"`
+	LoadBalancerArn string `pulumi:"loadBalancerArn"`
+	Port int `pulumi:"port"`
+	Protocol string `pulumi:"protocol"`
+	SslPolicy string `pulumi:"sslPolicy"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

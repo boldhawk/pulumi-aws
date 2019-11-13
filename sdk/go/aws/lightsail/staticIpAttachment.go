@@ -14,7 +14,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/lightsail_static_ip_attachment.html.markdown.
 type StaticIpAttachment struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The name of the Lightsail instance to attach the IP to
+	InstanceName pulumi.StringOutput `pulumi:"instanceName"`
+
+	// The allocated static IP address
+	IpAddress pulumi.StringOutput `pulumi:"ipAddress"`
+
+	// The name of the allocated static IP
+	StaticIpName pulumi.StringOutput `pulumi:"staticIpName"`
 }
 
 // NewStaticIpAttachment registers a new resource with the given unique name, arguments, and options.
@@ -26,78 +39,60 @@ func NewStaticIpAttachment(ctx *pulumi.Context,
 	if args == nil || args.StaticIpName == nil {
 		return nil, errors.New("missing required argument 'StaticIpName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["instanceName"] = nil
-		inputs["staticIpName"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["instanceName"] = args.InstanceName
 		inputs["staticIpName"] = args.StaticIpName
 	}
-	inputs["ipAddress"] = nil
-	s, err := ctx.RegisterResource("aws:lightsail/staticIpAttachment:StaticIpAttachment", name, true, inputs, opts...)
+	var resource StaticIpAttachment
+	err := ctx.RegisterResource("aws:lightsail/staticIpAttachment:StaticIpAttachment", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &StaticIpAttachment{s: s}, nil
+	return &resource, nil
 }
 
 // GetStaticIpAttachment gets an existing StaticIpAttachment resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetStaticIpAttachment(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *StaticIpAttachmentState, opts ...pulumi.ResourceOpt) (*StaticIpAttachment, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["instanceName"] = state.InstanceName
 		inputs["ipAddress"] = state.IpAddress
 		inputs["staticIpName"] = state.StaticIpName
 	}
-	s, err := ctx.ReadResource("aws:lightsail/staticIpAttachment:StaticIpAttachment", name, id, inputs, opts...)
+	var resource StaticIpAttachment
+	err := ctx.ReadResource("aws:lightsail/staticIpAttachment:StaticIpAttachment", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &StaticIpAttachment{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *StaticIpAttachment) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *StaticIpAttachment) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *StaticIpAttachment) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *StaticIpAttachment) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The name of the Lightsail instance to attach the IP to
-func (r *StaticIpAttachment) InstanceName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["instanceName"])
-}
-
-// The allocated static IP address
-func (r *StaticIpAttachment) IpAddress() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ipAddress"])
-}
-
-// The name of the allocated static IP
-func (r *StaticIpAttachment) StaticIpName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["staticIpName"])
-}
-
 // Input properties used for looking up and filtering StaticIpAttachment resources.
 type StaticIpAttachmentState struct {
 	// The name of the Lightsail instance to attach the IP to
-	InstanceName interface{}
+	InstanceName pulumi.StringInput `pulumi:"instanceName"`
 	// The allocated static IP address
-	IpAddress interface{}
+	IpAddress pulumi.StringInput `pulumi:"ipAddress"`
 	// The name of the allocated static IP
-	StaticIpName interface{}
+	StaticIpName pulumi.StringInput `pulumi:"staticIpName"`
 }
 
 // The set of arguments for constructing a StaticIpAttachment resource.
 type StaticIpAttachmentArgs struct {
 	// The name of the Lightsail instance to attach the IP to
-	InstanceName interface{}
+	InstanceName pulumi.StringInput `pulumi:"instanceName"`
 	// The name of the allocated static IP
-	StaticIpName interface{}
+	StaticIpName pulumi.StringInput `pulumi:"staticIpName"`
 }

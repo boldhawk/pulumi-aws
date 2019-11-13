@@ -50,29 +50,29 @@ func LookupLoadBalancer(ctx *pulumi.Context, args *GetLoadBalancerArgs) (*GetLoa
 // A collection of arguments for invoking getLoadBalancer.
 type GetLoadBalancerArgs struct {
 	// The full ARN of the load balancer.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The unique name of the load balancer.
-	Name interface{}
-	Tags interface{}
+	Name pulumi.StringInput `pulumi:"name"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getLoadBalancer.
 type GetLoadBalancerResult struct {
-	AccessLogs interface{}
-	Arn interface{}
-	ArnSuffix interface{}
-	DnsName interface{}
-	EnableDeletionProtection interface{}
-	IdleTimeout interface{}
-	Internal interface{}
-	LoadBalancerType interface{}
-	Name interface{}
-	SecurityGroups interface{}
-	SubnetMappings interface{}
-	Subnets interface{}
-	Tags interface{}
-	VpcId interface{}
-	ZoneId interface{}
+	AccessLogs interface{} `pulumi:"accessLogs"`
+	Arn string `pulumi:"arn"`
+	ArnSuffix string `pulumi:"arnSuffix"`
+	DnsName string `pulumi:"dnsName"`
+	EnableDeletionProtection bool `pulumi:"enableDeletionProtection"`
+	IdleTimeout int `pulumi:"idleTimeout"`
+	Internal bool `pulumi:"internal"`
+	LoadBalancerType string `pulumi:"loadBalancerType"`
+	Name string `pulumi:"name"`
+	SecurityGroups []interface{} `pulumi:"securityGroups"`
+	SubnetMappings []interface{} `pulumi:"subnetMappings"`
+	Subnets []interface{} `pulumi:"subnets"`
+	Tags map[string]interface{} `pulumi:"tags"`
+	VpcId string `pulumi:"vpcId"`
+	ZoneId string `pulumi:"zoneId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

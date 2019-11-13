@@ -9,7 +9,17 @@ import (
 )
 
 type SnapshotScheduleAssociation struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The cluster identifier.
+	ClusterIdentifier pulumi.StringOutput `pulumi:"clusterIdentifier"`
+
+	// The snapshot schedule identifier.
+	ScheduleIdentifier pulumi.StringOutput `pulumi:"scheduleIdentifier"`
 }
 
 // NewSnapshotScheduleAssociation registers a new resource with the given unique name, arguments, and options.
@@ -21,69 +31,57 @@ func NewSnapshotScheduleAssociation(ctx *pulumi.Context,
 	if args == nil || args.ScheduleIdentifier == nil {
 		return nil, errors.New("missing required argument 'ScheduleIdentifier'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["clusterIdentifier"] = nil
-		inputs["scheduleIdentifier"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["clusterIdentifier"] = args.ClusterIdentifier
 		inputs["scheduleIdentifier"] = args.ScheduleIdentifier
 	}
-	s, err := ctx.RegisterResource("aws:redshift/snapshotScheduleAssociation:SnapshotScheduleAssociation", name, true, inputs, opts...)
+	var resource SnapshotScheduleAssociation
+	err := ctx.RegisterResource("aws:redshift/snapshotScheduleAssociation:SnapshotScheduleAssociation", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SnapshotScheduleAssociation{s: s}, nil
+	return &resource, nil
 }
 
 // GetSnapshotScheduleAssociation gets an existing SnapshotScheduleAssociation resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetSnapshotScheduleAssociation(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *SnapshotScheduleAssociationState, opts ...pulumi.ResourceOpt) (*SnapshotScheduleAssociation, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["clusterIdentifier"] = state.ClusterIdentifier
 		inputs["scheduleIdentifier"] = state.ScheduleIdentifier
 	}
-	s, err := ctx.ReadResource("aws:redshift/snapshotScheduleAssociation:SnapshotScheduleAssociation", name, id, inputs, opts...)
+	var resource SnapshotScheduleAssociation
+	err := ctx.ReadResource("aws:redshift/snapshotScheduleAssociation:SnapshotScheduleAssociation", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SnapshotScheduleAssociation{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *SnapshotScheduleAssociation) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *SnapshotScheduleAssociation) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *SnapshotScheduleAssociation) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *SnapshotScheduleAssociation) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The cluster identifier.
-func (r *SnapshotScheduleAssociation) ClusterIdentifier() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["clusterIdentifier"])
-}
-
-// The snapshot schedule identifier.
-func (r *SnapshotScheduleAssociation) ScheduleIdentifier() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["scheduleIdentifier"])
-}
-
 // Input properties used for looking up and filtering SnapshotScheduleAssociation resources.
 type SnapshotScheduleAssociationState struct {
 	// The cluster identifier.
-	ClusterIdentifier interface{}
+	ClusterIdentifier pulumi.StringInput `pulumi:"clusterIdentifier"`
 	// The snapshot schedule identifier.
-	ScheduleIdentifier interface{}
+	ScheduleIdentifier pulumi.StringInput `pulumi:"scheduleIdentifier"`
 }
 
 // The set of arguments for constructing a SnapshotScheduleAssociation resource.
 type SnapshotScheduleAssociationArgs struct {
 	// The cluster identifier.
-	ClusterIdentifier interface{}
+	ClusterIdentifier pulumi.StringInput `pulumi:"clusterIdentifier"`
 	// The snapshot schedule identifier.
-	ScheduleIdentifier interface{}
+	ScheduleIdentifier pulumi.StringInput `pulumi:"scheduleIdentifier"`
 }

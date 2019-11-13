@@ -45,38 +45,38 @@ func LookupZone(ctx *pulumi.Context, args *GetZoneArgs) (*GetZoneResult, error) 
 // A collection of arguments for invoking getZone.
 type GetZoneArgs struct {
 	// The Hosted Zone name of the desired Hosted Zone.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Used with `name` field to get a private Hosted Zone.
-	PrivateZone interface{}
-	ResourceRecordSetCount interface{}
+	PrivateZone pulumi.BoolInput `pulumi:"privateZone"`
+	ResourceRecordSetCount pulumi.IntInput `pulumi:"resourceRecordSetCount"`
 	// Used with `name` field. A mapping of tags, each pair of which must exactly match
 	// a pair on the desired Hosted Zone.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Used with `name` field to get a private Hosted Zone associated with the vpcId (in this case, privateZone is not mandatory).
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 	// The Hosted Zone id of the desired Hosted Zone.
-	ZoneId interface{}
+	ZoneId pulumi.StringInput `pulumi:"zoneId"`
 }
 
 // A collection of values returned by getZone.
 type GetZoneResult struct {
 	// Caller Reference of the Hosted Zone.
-	CallerReference interface{}
+	CallerReference string `pulumi:"callerReference"`
 	// The comment field of the Hosted Zone.
-	Comment interface{}
+	Comment string `pulumi:"comment"`
 	// The description provided by the service that created the Hosted Zone (e.g. `arn:aws:servicediscovery:us-east-1:1234567890:namespace/ns-xxxxxxxxxxxxxxxx`).
-	LinkedServiceDescription interface{}
+	LinkedServiceDescription string `pulumi:"linkedServiceDescription"`
 	// The service that created the Hosted Zone (e.g. `servicediscovery.amazonaws.com`).
-	LinkedServicePrincipal interface{}
-	Name interface{}
+	LinkedServicePrincipal string `pulumi:"linkedServicePrincipal"`
+	Name string `pulumi:"name"`
 	// The list of DNS name servers for the Hosted Zone.
-	NameServers interface{}
-	PrivateZone interface{}
+	NameServers []interface{} `pulumi:"nameServers"`
+	PrivateZone bool `pulumi:"privateZone"`
 	// The number of Record Set in the Hosted Zone.
-	ResourceRecordSetCount interface{}
-	Tags interface{}
-	VpcId interface{}
-	ZoneId interface{}
+	ResourceRecordSetCount int `pulumi:"resourceRecordSetCount"`
+	Tags map[string]interface{} `pulumi:"tags"`
+	VpcId string `pulumi:"vpcId"`
+	ZoneId string `pulumi:"zoneId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

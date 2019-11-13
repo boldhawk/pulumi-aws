@@ -39,35 +39,35 @@ func LookupReplicationGroup(ctx *pulumi.Context, args *GetReplicationGroupArgs) 
 // A collection of arguments for invoking getReplicationGroup.
 type GetReplicationGroupArgs struct {
 	// The identifier for the replication group.
-	ReplicationGroupId interface{}
+	ReplicationGroupId pulumi.StringInput `pulumi:"replicationGroupId"`
 }
 
 // A collection of values returned by getReplicationGroup.
 type GetReplicationGroupResult struct {
 	// A flag that enables using an AuthToken (password) when issuing Redis commands.
-	AuthTokenEnabled interface{}
+	AuthTokenEnabled bool `pulumi:"authTokenEnabled"`
 	// A flag whether a read-only replica will be automatically promoted to read/write primary if the existing primary fails.
-	AutomaticFailoverEnabled interface{}
+	AutomaticFailoverEnabled bool `pulumi:"automaticFailoverEnabled"`
 	// The configuration endpoint address to allow host discovery.
-	ConfigurationEndpointAddress interface{}
+	ConfigurationEndpointAddress string `pulumi:"configurationEndpointAddress"`
 	// The identifiers of all the nodes that are part of this replication group.
-	MemberClusters interface{}
+	MemberClusters []interface{} `pulumi:"memberClusters"`
 	// The cluster node type.
-	NodeType interface{}
+	NodeType string `pulumi:"nodeType"`
 	// The number of cache clusters that the replication group has.
-	NumberCacheClusters interface{}
+	NumberCacheClusters int `pulumi:"numberCacheClusters"`
 	// The port number on which the configuration endpoint will accept connections.
-	Port interface{}
+	Port int `pulumi:"port"`
 	// The endpoint of the primary node in this node group (shard).
-	PrimaryEndpointAddress interface{}
+	PrimaryEndpointAddress string `pulumi:"primaryEndpointAddress"`
 	// The description of the replication group.
-	ReplicationGroupDescription interface{}
+	ReplicationGroupDescription string `pulumi:"replicationGroupDescription"`
 	// The identifier for the replication group.
-	ReplicationGroupId interface{}
+	ReplicationGroupId string `pulumi:"replicationGroupId"`
 	// The number of days for which ElastiCache retains automatic cache cluster snapshots before deleting them.
-	SnapshotRetentionLimit interface{}
+	SnapshotRetentionLimit int `pulumi:"snapshotRetentionLimit"`
 	// The daily time range (in UTC) during which ElastiCache begins taking a daily snapshot of your node group (shard).
-	SnapshotWindow interface{}
+	SnapshotWindow string `pulumi:"snapshotWindow"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

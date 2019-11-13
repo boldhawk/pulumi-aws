@@ -55,46 +55,46 @@ func LookupSubnet(ctx *pulumi.Context, args *GetSubnetArgs) (*GetSubnetResult, e
 type GetSubnetArgs struct {
 	// The availability zone where the
 	// subnet must reside.
-	AvailabilityZone interface{}
+	AvailabilityZone pulumi.StringInput `pulumi:"availabilityZone"`
 	// The ID of the Availability Zone for the subnet.
-	AvailabilityZoneId interface{}
+	AvailabilityZoneId pulumi.StringInput `pulumi:"availabilityZoneId"`
 	// The cidr block of the desired subnet.
-	CidrBlock interface{}
+	CidrBlock pulumi.StringInput `pulumi:"cidrBlock"`
 	// Boolean constraint for whether the desired
 	// subnet must be the default subnet for its associated availability zone.
-	DefaultForAz interface{}
+	DefaultForAz pulumi.BoolInput `pulumi:"defaultForAz"`
 	// Custom filter block as described below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The id of the specific subnet to retrieve.
-	Id interface{}
+	Id pulumi.StringInput `pulumi:"id"`
 	// The Ipv6 cidr block of the desired subnet
-	Ipv6CidrBlock interface{}
+	Ipv6CidrBlock pulumi.StringInput `pulumi:"ipv6CidrBlock"`
 	// The state that the desired subnet must have.
-	State interface{}
+	State pulumi.StringInput `pulumi:"state"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired subnet.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The id of the VPC that the desired subnet belongs to.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getSubnet.
 type GetSubnetResult struct {
 	// The ARN of the subnet.
-	Arn interface{}
-	AssignIpv6AddressOnCreation interface{}
-	AvailabilityZone interface{}
-	AvailabilityZoneId interface{}
-	CidrBlock interface{}
-	DefaultForAz interface{}
-	Filters interface{}
-	Id interface{}
-	Ipv6CidrBlock interface{}
-	Ipv6CidrBlockAssociationId interface{}
-	MapPublicIpOnLaunch interface{}
+	Arn string `pulumi:"arn"`
+	AssignIpv6AddressOnCreation bool `pulumi:"assignIpv6AddressOnCreation"`
+	AvailabilityZone string `pulumi:"availabilityZone"`
+	AvailabilityZoneId string `pulumi:"availabilityZoneId"`
+	CidrBlock string `pulumi:"cidrBlock"`
+	DefaultForAz bool `pulumi:"defaultForAz"`
+	Filters []interface{} `pulumi:"filters"`
+	Id string `pulumi:"id"`
+	Ipv6CidrBlock string `pulumi:"ipv6CidrBlock"`
+	Ipv6CidrBlockAssociationId string `pulumi:"ipv6CidrBlockAssociationId"`
+	MapPublicIpOnLaunch bool `pulumi:"mapPublicIpOnLaunch"`
 	// The ID of the AWS account that owns the subnet.
-	OwnerId interface{}
-	State interface{}
-	Tags interface{}
-	VpcId interface{}
+	OwnerId string `pulumi:"ownerId"`
+	State string `pulumi:"state"`
+	Tags map[string]interface{} `pulumi:"tags"`
+	VpcId string `pulumi:"vpcId"`
 }

@@ -12,7 +12,48 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/api_gateway_authorizer.html.markdown.
 type Authorizer struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The credentials required for the authorizer.
+	// To specify an IAM Role for API Gateway to assume, use the IAM Role ARN.
+	AuthorizerCredentials pulumi.StringOutput `pulumi:"authorizerCredentials"`
+
+	// The TTL of cached authorizer results in seconds.
+	// Defaults to `300`.
+	AuthorizerResultTtlInSeconds pulumi.IntOutput `pulumi:"authorizerResultTtlInSeconds"`
+
+	// The authorizer's Uniform Resource Identifier (URI).
+	// This must be a well-formed Lambda function URI in the form of `arn:aws:apigateway:{region}:lambda:path/{service_api}`,
+	// e.g. `arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:012345678912:function:my-function/invocations`
+	AuthorizerUri pulumi.StringOutput `pulumi:"authorizerUri"`
+
+	// The source of the identity in an incoming request.
+	// Defaults to `method.request.header.Authorization`. For `REQUEST` type, this may be a comma-separated list of values, including headers, query string parameters and stage variables - e.g. `"method.request.header.SomeHeaderName,method.request.querystring.SomeQueryStringName,stageVariables.SomeStageVariableName"`
+	IdentitySource pulumi.StringOutput `pulumi:"identitySource"`
+
+	// A validation expression for the incoming identity.
+	// For `TOKEN` type, this value should be a regular expression. The incoming token from the client is matched
+	// against this expression, and will proceed if the token matches. If the token doesn't match,
+	// the client receives a 401 Unauthorized response.
+	IdentityValidationExpression pulumi.StringOutput `pulumi:"identityValidationExpression"`
+
+	// The name of the authorizer
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A list of the Amazon Cognito user pool ARNs.
+	// Each element is of this format: `arn:aws:cognito-idp:{region}:{account_id}:userpool/{user_pool_id}`.
+	ProviderArns pulumi.ArrayOutput `pulumi:"providerArns"`
+
+	// The ID of the associated REST API
+	RestApi pulumi.StringOutput `pulumi:"restApi"`
+
+	// The type of the authorizer. Possible values are `TOKEN` for a Lambda function using a single authorization token submitted in a custom header, `REQUEST` for a Lambda function using incoming request parameters, or `COGNITO_USER_POOLS` for using an Amazon Cognito user pool.
+	// Defaults to `TOKEN`.
+	Type pulumi.StringOutput `pulumi:"type"`
 }
 
 // NewAuthorizer registers a new resource with the given unique name, arguments, and options.
@@ -21,18 +62,9 @@ func NewAuthorizer(ctx *pulumi.Context,
 	if args == nil || args.RestApi == nil {
 		return nil, errors.New("missing required argument 'RestApi'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["authorizerCredentials"] = nil
-		inputs["authorizerResultTtlInSeconds"] = nil
-		inputs["authorizerUri"] = nil
-		inputs["identitySource"] = nil
-		inputs["identityValidationExpression"] = nil
-		inputs["name"] = nil
-		inputs["providerArns"] = nil
-		inputs["restApi"] = nil
-		inputs["type"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["authorizerCredentials"] = args.AuthorizerCredentials
 		inputs["authorizerResultTtlInSeconds"] = args.AuthorizerResultTtlInSeconds
 		inputs["authorizerUri"] = args.AuthorizerUri
@@ -43,18 +75,19 @@ func NewAuthorizer(ctx *pulumi.Context,
 		inputs["restApi"] = args.RestApi
 		inputs["type"] = args.Type
 	}
-	s, err := ctx.RegisterResource("aws:apigateway/authorizer:Authorizer", name, true, inputs, opts...)
+	var resource Authorizer
+	err := ctx.RegisterResource("aws:apigateway/authorizer:Authorizer", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Authorizer{s: s}, nil
+	return &resource, nil
 }
 
 // GetAuthorizer gets an existing Authorizer resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAuthorizer(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AuthorizerState, opts ...pulumi.ResourceOpt) (*Authorizer, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["authorizerCredentials"] = state.AuthorizerCredentials
 		inputs["authorizerResultTtlInSeconds"] = state.AuthorizerResultTtlInSeconds
@@ -66,138 +99,83 @@ func GetAuthorizer(ctx *pulumi.Context,
 		inputs["restApi"] = state.RestApi
 		inputs["type"] = state.Type
 	}
-	s, err := ctx.ReadResource("aws:apigateway/authorizer:Authorizer", name, id, inputs, opts...)
+	var resource Authorizer
+	err := ctx.ReadResource("aws:apigateway/authorizer:Authorizer", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Authorizer{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Authorizer) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Authorizer) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Authorizer) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Authorizer) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The credentials required for the authorizer.
-// To specify an IAM Role for API Gateway to assume, use the IAM Role ARN.
-func (r *Authorizer) AuthorizerCredentials() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["authorizerCredentials"])
-}
-
-// The TTL of cached authorizer results in seconds.
-// Defaults to `300`.
-func (r *Authorizer) AuthorizerResultTtlInSeconds() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["authorizerResultTtlInSeconds"])
-}
-
-// The authorizer's Uniform Resource Identifier (URI).
-// This must be a well-formed Lambda function URI in the form of `arn:aws:apigateway:{region}:lambda:path/{service_api}`,
-// e.g. `arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:012345678912:function:my-function/invocations`
-func (r *Authorizer) AuthorizerUri() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["authorizerUri"])
-}
-
-// The source of the identity in an incoming request.
-// Defaults to `method.request.header.Authorization`. For `REQUEST` type, this may be a comma-separated list of values, including headers, query string parameters and stage variables - e.g. `"method.request.header.SomeHeaderName,method.request.querystring.SomeQueryStringName,stageVariables.SomeStageVariableName"`
-func (r *Authorizer) IdentitySource() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["identitySource"])
-}
-
-// A validation expression for the incoming identity.
-// For `TOKEN` type, this value should be a regular expression. The incoming token from the client is matched
-// against this expression, and will proceed if the token matches. If the token doesn't match,
-// the client receives a 401 Unauthorized response.
-func (r *Authorizer) IdentityValidationExpression() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["identityValidationExpression"])
-}
-
-// The name of the authorizer
-func (r *Authorizer) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A list of the Amazon Cognito user pool ARNs.
-// Each element is of this format: `arn:aws:cognito-idp:{region}:{account_id}:userpool/{user_pool_id}`.
-func (r *Authorizer) ProviderArns() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["providerArns"])
-}
-
-// The ID of the associated REST API
-func (r *Authorizer) RestApi() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["restApi"])
-}
-
-// The type of the authorizer. Possible values are `TOKEN` for a Lambda function using a single authorization token submitted in a custom header, `REQUEST` for a Lambda function using incoming request parameters, or `COGNITO_USER_POOLS` for using an Amazon Cognito user pool.
-// Defaults to `TOKEN`.
-func (r *Authorizer) Type() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["type"])
-}
-
 // Input properties used for looking up and filtering Authorizer resources.
 type AuthorizerState struct {
 	// The credentials required for the authorizer.
 	// To specify an IAM Role for API Gateway to assume, use the IAM Role ARN.
-	AuthorizerCredentials interface{}
+	AuthorizerCredentials pulumi.StringInput `pulumi:"authorizerCredentials"`
 	// The TTL of cached authorizer results in seconds.
 	// Defaults to `300`.
-	AuthorizerResultTtlInSeconds interface{}
+	AuthorizerResultTtlInSeconds pulumi.IntInput `pulumi:"authorizerResultTtlInSeconds"`
 	// The authorizer's Uniform Resource Identifier (URI).
 	// This must be a well-formed Lambda function URI in the form of `arn:aws:apigateway:{region}:lambda:path/{service_api}`,
 	// e.g. `arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:012345678912:function:my-function/invocations`
-	AuthorizerUri interface{}
+	AuthorizerUri pulumi.StringInput `pulumi:"authorizerUri"`
 	// The source of the identity in an incoming request.
 	// Defaults to `method.request.header.Authorization`. For `REQUEST` type, this may be a comma-separated list of values, including headers, query string parameters and stage variables - e.g. `"method.request.header.SomeHeaderName,method.request.querystring.SomeQueryStringName,stageVariables.SomeStageVariableName"`
-	IdentitySource interface{}
+	IdentitySource pulumi.StringInput `pulumi:"identitySource"`
 	// A validation expression for the incoming identity.
 	// For `TOKEN` type, this value should be a regular expression. The incoming token from the client is matched
 	// against this expression, and will proceed if the token matches. If the token doesn't match,
 	// the client receives a 401 Unauthorized response.
-	IdentityValidationExpression interface{}
+	IdentityValidationExpression pulumi.StringInput `pulumi:"identityValidationExpression"`
 	// The name of the authorizer
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A list of the Amazon Cognito user pool ARNs.
 	// Each element is of this format: `arn:aws:cognito-idp:{region}:{account_id}:userpool/{user_pool_id}`.
-	ProviderArns interface{}
+	ProviderArns pulumi.ArrayInput `pulumi:"providerArns"`
 	// The ID of the associated REST API
-	RestApi interface{}
+	RestApi pulumi.StringInput `pulumi:"restApi"`
 	// The type of the authorizer. Possible values are `TOKEN` for a Lambda function using a single authorization token submitted in a custom header, `REQUEST` for a Lambda function using incoming request parameters, or `COGNITO_USER_POOLS` for using an Amazon Cognito user pool.
 	// Defaults to `TOKEN`.
-	Type interface{}
+	Type pulumi.StringInput `pulumi:"type"`
 }
 
 // The set of arguments for constructing a Authorizer resource.
 type AuthorizerArgs struct {
 	// The credentials required for the authorizer.
 	// To specify an IAM Role for API Gateway to assume, use the IAM Role ARN.
-	AuthorizerCredentials interface{}
+	AuthorizerCredentials pulumi.StringInput `pulumi:"authorizerCredentials"`
 	// The TTL of cached authorizer results in seconds.
 	// Defaults to `300`.
-	AuthorizerResultTtlInSeconds interface{}
+	AuthorizerResultTtlInSeconds pulumi.IntInput `pulumi:"authorizerResultTtlInSeconds"`
 	// The authorizer's Uniform Resource Identifier (URI).
 	// This must be a well-formed Lambda function URI in the form of `arn:aws:apigateway:{region}:lambda:path/{service_api}`,
 	// e.g. `arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:012345678912:function:my-function/invocations`
-	AuthorizerUri interface{}
+	AuthorizerUri pulumi.StringInput `pulumi:"authorizerUri"`
 	// The source of the identity in an incoming request.
 	// Defaults to `method.request.header.Authorization`. For `REQUEST` type, this may be a comma-separated list of values, including headers, query string parameters and stage variables - e.g. `"method.request.header.SomeHeaderName,method.request.querystring.SomeQueryStringName,stageVariables.SomeStageVariableName"`
-	IdentitySource interface{}
+	IdentitySource pulumi.StringInput `pulumi:"identitySource"`
 	// A validation expression for the incoming identity.
 	// For `TOKEN` type, this value should be a regular expression. The incoming token from the client is matched
 	// against this expression, and will proceed if the token matches. If the token doesn't match,
 	// the client receives a 401 Unauthorized response.
-	IdentityValidationExpression interface{}
+	IdentityValidationExpression pulumi.StringInput `pulumi:"identityValidationExpression"`
 	// The name of the authorizer
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A list of the Amazon Cognito user pool ARNs.
 	// Each element is of this format: `arn:aws:cognito-idp:{region}:{account_id}:userpool/{user_pool_id}`.
-	ProviderArns interface{}
+	ProviderArns pulumi.ArrayInput `pulumi:"providerArns"`
 	// The ID of the associated REST API
-	RestApi interface{}
+	RestApi pulumi.StringInput `pulumi:"restApi"`
 	// The type of the authorizer. Possible values are `TOKEN` for a Lambda function using a single authorization token submitted in a custom header, `REQUEST` for a Lambda function using incoming request parameters, or `COGNITO_USER_POOLS` for using an Amazon Cognito user pool.
 	// Defaults to `TOKEN`.
-	Type interface{}
+	Type pulumi.StringInput `pulumi:"type"`
 }

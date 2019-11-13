@@ -36,23 +36,23 @@ func LookupInvocation(ctx *pulumi.Context, args *GetInvocationArgs) (*GetInvocat
 // A collection of arguments for invoking getInvocation.
 type GetInvocationArgs struct {
 	// The name of the lambda function.
-	FunctionName interface{}
+	FunctionName pulumi.StringInput `pulumi:"functionName"`
 	// A string in JSON format that is passed as payload to the lambda function.
-	Input interface{}
+	Input pulumi.StringInput `pulumi:"input"`
 	// The qualifier (a.k.a version) of the lambda function. Defaults
 	// to `$LATEST`.
-	Qualifier interface{}
+	Qualifier pulumi.StringInput `pulumi:"qualifier"`
 }
 
 // A collection of values returned by getInvocation.
 type GetInvocationResult struct {
-	FunctionName interface{}
-	Input interface{}
-	Qualifier interface{}
+	FunctionName string `pulumi:"functionName"`
+	Input string `pulumi:"input"`
+	Qualifier string `pulumi:"qualifier"`
 	// String result of the lambda function invocation.
-	Result interface{}
+	Result string `pulumi:"result"`
 	// This field is set only if result is a map of primitive types, where the map is string keys and string values.
-	ResultMap interface{}
+	ResultMap map[string]interface{} `pulumi:"resultMap"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

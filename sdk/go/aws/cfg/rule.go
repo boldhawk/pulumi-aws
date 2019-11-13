@@ -14,7 +14,40 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/config_config_rule.html.markdown.
 type Rule struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the config rule
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Description of the rule
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// A string in JSON format that is passed to the AWS Config rule Lambda function.
+	InputParameters pulumi.StringOutput `pulumi:"inputParameters"`
+
+	// The frequency that you want AWS Config to run evaluations for a rule that
+	// is triggered periodically. If specified, requires `messageType` to be `ScheduledNotification`.
+	MaximumExecutionFrequency pulumi.StringOutput `pulumi:"maximumExecutionFrequency"`
+
+	// The name of the rule
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The ID of the config rule
+	RuleId pulumi.StringOutput `pulumi:"ruleId"`
+
+	// Scope defines which resources can trigger an evaluation for the rule as documented below.
+	Scope pulumi.AnyOutput `pulumi:"scope"`
+
+	// Source specifies the rule owner, the rule identifier, and the notifications that cause
+	// the function to evaluate your AWS resources as documented below.
+	Source pulumi.AnyOutput `pulumi:"source"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewRule registers a new resource with the given unique name, arguments, and options.
@@ -23,16 +56,9 @@ func NewRule(ctx *pulumi.Context,
 	if args == nil || args.Source == nil {
 		return nil, errors.New("missing required argument 'Source'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["description"] = nil
-		inputs["inputParameters"] = nil
-		inputs["maximumExecutionFrequency"] = nil
-		inputs["name"] = nil
-		inputs["scope"] = nil
-		inputs["source"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["inputParameters"] = args.InputParameters
 		inputs["maximumExecutionFrequency"] = args.MaximumExecutionFrequency
@@ -41,20 +67,19 @@ func NewRule(ctx *pulumi.Context,
 		inputs["source"] = args.Source
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	inputs["ruleId"] = nil
-	s, err := ctx.RegisterResource("aws:cfg/rule:Rule", name, true, inputs, opts...)
+	var resource Rule
+	err := ctx.RegisterResource("aws:cfg/rule:Rule", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Rule{s: s}, nil
+	return &resource, nil
 }
 
 // GetRule gets an existing Rule resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRule(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RuleState, opts ...pulumi.ResourceOpt) (*Rule, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["description"] = state.Description
@@ -66,110 +91,63 @@ func GetRule(ctx *pulumi.Context,
 		inputs["source"] = state.Source
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:cfg/rule:Rule", name, id, inputs, opts...)
+	var resource Rule
+	err := ctx.ReadResource("aws:cfg/rule:Rule", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Rule{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Rule) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Rule) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Rule) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Rule) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the config rule
-func (r *Rule) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Description of the rule
-func (r *Rule) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// A string in JSON format that is passed to the AWS Config rule Lambda function.
-func (r *Rule) InputParameters() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["inputParameters"])
-}
-
-// The frequency that you want AWS Config to run evaluations for a rule that
-// is triggered periodically. If specified, requires `messageType` to be `ScheduledNotification`.
-func (r *Rule) MaximumExecutionFrequency() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["maximumExecutionFrequency"])
-}
-
-// The name of the rule
-func (r *Rule) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The ID of the config rule
-func (r *Rule) RuleId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ruleId"])
-}
-
-// Scope defines which resources can trigger an evaluation for the rule as documented below.
-func (r *Rule) Scope() *pulumi.Output {
-	return r.s.State["scope"]
-}
-
-// Source specifies the rule owner, the rule identifier, and the notifications that cause
-// the function to evaluate your AWS resources as documented below.
-func (r *Rule) Source() *pulumi.Output {
-	return r.s.State["source"]
-}
-
-// A mapping of tags to assign to the resource.
-func (r *Rule) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering Rule resources.
 type RuleState struct {
 	// The ARN of the config rule
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Description of the rule
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// A string in JSON format that is passed to the AWS Config rule Lambda function.
-	InputParameters interface{}
+	InputParameters pulumi.StringInput `pulumi:"inputParameters"`
 	// The frequency that you want AWS Config to run evaluations for a rule that
 	// is triggered periodically. If specified, requires `messageType` to be `ScheduledNotification`.
-	MaximumExecutionFrequency interface{}
+	MaximumExecutionFrequency pulumi.StringInput `pulumi:"maximumExecutionFrequency"`
 	// The name of the rule
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The ID of the config rule
-	RuleId interface{}
+	RuleId pulumi.StringInput `pulumi:"ruleId"`
 	// Scope defines which resources can trigger an evaluation for the rule as documented below.
-	Scope interface{}
+	Scope pulumi.AnyInput `pulumi:"scope"`
 	// Source specifies the rule owner, the rule identifier, and the notifications that cause
 	// the function to evaluate your AWS resources as documented below.
-	Source interface{}
+	Source pulumi.AnyInput `pulumi:"source"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a Rule resource.
 type RuleArgs struct {
 	// Description of the rule
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// A string in JSON format that is passed to the AWS Config rule Lambda function.
-	InputParameters interface{}
+	InputParameters pulumi.StringInput `pulumi:"inputParameters"`
 	// The frequency that you want AWS Config to run evaluations for a rule that
 	// is triggered periodically. If specified, requires `messageType` to be `ScheduledNotification`.
-	MaximumExecutionFrequency interface{}
+	MaximumExecutionFrequency pulumi.StringInput `pulumi:"maximumExecutionFrequency"`
 	// The name of the rule
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Scope defines which resources can trigger an evaluation for the rule as documented below.
-	Scope interface{}
+	Scope pulumi.AnyInput `pulumi:"scope"`
 	// Source specifies the rule owner, the rule identifier, and the notifications that cause
 	// the function to evaluate your AWS resources as documented below.
-	Source interface{}
+	Source pulumi.AnyInput `pulumi:"source"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

@@ -15,38 +15,57 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/s3_account_public_access_block.html.markdown.
 type AccountPublicAccessBlock struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// AWS account ID to configure. Defaults to automatically determined account ID of the this provider AWS provider.
+	AccountId pulumi.StringOutput `pulumi:"accountId"`
+
+	// Whether Amazon S3 should block public ACLs for buckets in this account. Defaults to `false`. Enabling this setting does not affect existing policies or ACLs. When set to `true` causes the following behavior:
+	// * PUT Bucket acl and PUT Object acl calls will fail if the specified ACL allows public access.
+	// * PUT Object calls will fail if the request includes an object ACL.
+	BlockPublicAcls pulumi.BoolOutput `pulumi:"blockPublicAcls"`
+
+	// Whether Amazon S3 should block public bucket policies for buckets in this account. Defaults to `false`. Enabling this setting does not affect existing bucket policies. When set to `true` causes Amazon S3 to:
+	// * Reject calls to PUT Bucket policy if the specified bucket policy allows public access.
+	BlockPublicPolicy pulumi.BoolOutput `pulumi:"blockPublicPolicy"`
+
+	// Whether Amazon S3 should ignore public ACLs for buckets in this account. Defaults to `false`. Enabling this setting does not affect the persistence of any existing ACLs and doesn't prevent new public ACLs from being set. When set to `true` causes Amazon S3 to:
+	// * Ignore all public ACLs on buckets in this account and any objects that they contain.
+	IgnorePublicAcls pulumi.BoolOutput `pulumi:"ignorePublicAcls"`
+
+	// Whether Amazon S3 should restrict public bucket policies for buckets in this account. Defaults to `false`. Enabling this setting does not affect previously stored bucket policies, except that public and cross-account access within any public bucket policy, including non-public delegation to specific accounts, is blocked. When set to `true`:
+	// * Only the bucket owner and AWS Services can access buckets with public policies.
+	RestrictPublicBuckets pulumi.BoolOutput `pulumi:"restrictPublicBuckets"`
 }
 
 // NewAccountPublicAccessBlock registers a new resource with the given unique name, arguments, and options.
 func NewAccountPublicAccessBlock(ctx *pulumi.Context,
 	name string, args *AccountPublicAccessBlockArgs, opts ...pulumi.ResourceOpt) (*AccountPublicAccessBlock, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["accountId"] = nil
-		inputs["blockPublicAcls"] = nil
-		inputs["blockPublicPolicy"] = nil
-		inputs["ignorePublicAcls"] = nil
-		inputs["restrictPublicBuckets"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["accountId"] = args.AccountId
 		inputs["blockPublicAcls"] = args.BlockPublicAcls
 		inputs["blockPublicPolicy"] = args.BlockPublicPolicy
 		inputs["ignorePublicAcls"] = args.IgnorePublicAcls
 		inputs["restrictPublicBuckets"] = args.RestrictPublicBuckets
 	}
-	s, err := ctx.RegisterResource("aws:s3/accountPublicAccessBlock:AccountPublicAccessBlock", name, true, inputs, opts...)
+	var resource AccountPublicAccessBlock
+	err := ctx.RegisterResource("aws:s3/accountPublicAccessBlock:AccountPublicAccessBlock", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AccountPublicAccessBlock{s: s}, nil
+	return &resource, nil
 }
 
 // GetAccountPublicAccessBlock gets an existing AccountPublicAccessBlock resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAccountPublicAccessBlock(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AccountPublicAccessBlockState, opts ...pulumi.ResourceOpt) (*AccountPublicAccessBlock, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["accountId"] = state.AccountId
 		inputs["blockPublicAcls"] = state.BlockPublicAcls
@@ -54,87 +73,57 @@ func GetAccountPublicAccessBlock(ctx *pulumi.Context,
 		inputs["ignorePublicAcls"] = state.IgnorePublicAcls
 		inputs["restrictPublicBuckets"] = state.RestrictPublicBuckets
 	}
-	s, err := ctx.ReadResource("aws:s3/accountPublicAccessBlock:AccountPublicAccessBlock", name, id, inputs, opts...)
+	var resource AccountPublicAccessBlock
+	err := ctx.ReadResource("aws:s3/accountPublicAccessBlock:AccountPublicAccessBlock", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AccountPublicAccessBlock{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *AccountPublicAccessBlock) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *AccountPublicAccessBlock) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *AccountPublicAccessBlock) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *AccountPublicAccessBlock) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// AWS account ID to configure. Defaults to automatically determined account ID of the this provider AWS provider.
-func (r *AccountPublicAccessBlock) AccountId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["accountId"])
-}
-
-// Whether Amazon S3 should block public ACLs for buckets in this account. Defaults to `false`. Enabling this setting does not affect existing policies or ACLs. When set to `true` causes the following behavior:
-// * PUT Bucket acl and PUT Object acl calls will fail if the specified ACL allows public access.
-// * PUT Object calls will fail if the request includes an object ACL.
-func (r *AccountPublicAccessBlock) BlockPublicAcls() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["blockPublicAcls"])
-}
-
-// Whether Amazon S3 should block public bucket policies for buckets in this account. Defaults to `false`. Enabling this setting does not affect existing bucket policies. When set to `true` causes Amazon S3 to:
-// * Reject calls to PUT Bucket policy if the specified bucket policy allows public access.
-func (r *AccountPublicAccessBlock) BlockPublicPolicy() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["blockPublicPolicy"])
-}
-
-// Whether Amazon S3 should ignore public ACLs for buckets in this account. Defaults to `false`. Enabling this setting does not affect the persistence of any existing ACLs and doesn't prevent new public ACLs from being set. When set to `true` causes Amazon S3 to:
-// * Ignore all public ACLs on buckets in this account and any objects that they contain.
-func (r *AccountPublicAccessBlock) IgnorePublicAcls() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["ignorePublicAcls"])
-}
-
-// Whether Amazon S3 should restrict public bucket policies for buckets in this account. Defaults to `false`. Enabling this setting does not affect previously stored bucket policies, except that public and cross-account access within any public bucket policy, including non-public delegation to specific accounts, is blocked. When set to `true`:
-// * Only the bucket owner and AWS Services can access buckets with public policies.
-func (r *AccountPublicAccessBlock) RestrictPublicBuckets() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["restrictPublicBuckets"])
-}
-
 // Input properties used for looking up and filtering AccountPublicAccessBlock resources.
 type AccountPublicAccessBlockState struct {
 	// AWS account ID to configure. Defaults to automatically determined account ID of the this provider AWS provider.
-	AccountId interface{}
+	AccountId pulumi.StringInput `pulumi:"accountId"`
 	// Whether Amazon S3 should block public ACLs for buckets in this account. Defaults to `false`. Enabling this setting does not affect existing policies or ACLs. When set to `true` causes the following behavior:
 	// * PUT Bucket acl and PUT Object acl calls will fail if the specified ACL allows public access.
 	// * PUT Object calls will fail if the request includes an object ACL.
-	BlockPublicAcls interface{}
+	BlockPublicAcls pulumi.BoolInput `pulumi:"blockPublicAcls"`
 	// Whether Amazon S3 should block public bucket policies for buckets in this account. Defaults to `false`. Enabling this setting does not affect existing bucket policies. When set to `true` causes Amazon S3 to:
 	// * Reject calls to PUT Bucket policy if the specified bucket policy allows public access.
-	BlockPublicPolicy interface{}
+	BlockPublicPolicy pulumi.BoolInput `pulumi:"blockPublicPolicy"`
 	// Whether Amazon S3 should ignore public ACLs for buckets in this account. Defaults to `false`. Enabling this setting does not affect the persistence of any existing ACLs and doesn't prevent new public ACLs from being set. When set to `true` causes Amazon S3 to:
 	// * Ignore all public ACLs on buckets in this account and any objects that they contain.
-	IgnorePublicAcls interface{}
+	IgnorePublicAcls pulumi.BoolInput `pulumi:"ignorePublicAcls"`
 	// Whether Amazon S3 should restrict public bucket policies for buckets in this account. Defaults to `false`. Enabling this setting does not affect previously stored bucket policies, except that public and cross-account access within any public bucket policy, including non-public delegation to specific accounts, is blocked. When set to `true`:
 	// * Only the bucket owner and AWS Services can access buckets with public policies.
-	RestrictPublicBuckets interface{}
+	RestrictPublicBuckets pulumi.BoolInput `pulumi:"restrictPublicBuckets"`
 }
 
 // The set of arguments for constructing a AccountPublicAccessBlock resource.
 type AccountPublicAccessBlockArgs struct {
 	// AWS account ID to configure. Defaults to automatically determined account ID of the this provider AWS provider.
-	AccountId interface{}
+	AccountId pulumi.StringInput `pulumi:"accountId"`
 	// Whether Amazon S3 should block public ACLs for buckets in this account. Defaults to `false`. Enabling this setting does not affect existing policies or ACLs. When set to `true` causes the following behavior:
 	// * PUT Bucket acl and PUT Object acl calls will fail if the specified ACL allows public access.
 	// * PUT Object calls will fail if the request includes an object ACL.
-	BlockPublicAcls interface{}
+	BlockPublicAcls pulumi.BoolInput `pulumi:"blockPublicAcls"`
 	// Whether Amazon S3 should block public bucket policies for buckets in this account. Defaults to `false`. Enabling this setting does not affect existing bucket policies. When set to `true` causes Amazon S3 to:
 	// * Reject calls to PUT Bucket policy if the specified bucket policy allows public access.
-	BlockPublicPolicy interface{}
+	BlockPublicPolicy pulumi.BoolInput `pulumi:"blockPublicPolicy"`
 	// Whether Amazon S3 should ignore public ACLs for buckets in this account. Defaults to `false`. Enabling this setting does not affect the persistence of any existing ACLs and doesn't prevent new public ACLs from being set. When set to `true` causes Amazon S3 to:
 	// * Ignore all public ACLs on buckets in this account and any objects that they contain.
-	IgnorePublicAcls interface{}
+	IgnorePublicAcls pulumi.BoolInput `pulumi:"ignorePublicAcls"`
 	// Whether Amazon S3 should restrict public bucket policies for buckets in this account. Defaults to `false`. Enabling this setting does not affect previously stored bucket policies, except that public and cross-account access within any public bucket policy, including non-public delegation to specific accounts, is blocked. When set to `true`:
 	// * Only the bucket owner and AWS Services can access buckets with public policies.
-	RestrictPublicBuckets interface{}
+	RestrictPublicBuckets pulumi.BoolInput `pulumi:"restrictPublicBuckets"`
 }

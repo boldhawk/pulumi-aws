@@ -35,25 +35,25 @@ type GetInstancesArgs struct {
 	// One or more name/value pairs to use as filters. There are
 	// several valid keys, for a full reference, check out
 	// [describe-instances in the AWS CLI reference][1].
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// A list of instance states that should be applicable to the desired instances. The permitted values are: `pending, running, shutting-down, stopped, stopping, terminated`. The default value is `running`.
-	InstanceStateNames interface{}
+	InstanceStateNames pulumi.ArrayInput `pulumi:"instanceStateNames"`
 	// A mapping of tags, each pair of which must
 	// exactly match a pair on desired instances.
-	InstanceTags interface{}
+	InstanceTags pulumi.MapInput `pulumi:"instanceTags"`
 }
 
 // A collection of values returned by getInstances.
 type GetInstancesResult struct {
-	Filters interface{}
+	Filters []interface{} `pulumi:"filters"`
 	// IDs of instances found through the filter
-	Ids interface{}
-	InstanceStateNames interface{}
-	InstanceTags interface{}
+	Ids []interface{} `pulumi:"ids"`
+	InstanceStateNames []interface{} `pulumi:"instanceStateNames"`
+	InstanceTags map[string]interface{} `pulumi:"instanceTags"`
 	// Private IP addresses of instances found through the filter
-	PrivateIps interface{}
+	PrivateIps []interface{} `pulumi:"privateIps"`
 	// Public IP addresses of instances found through the filter
-	PublicIps interface{}
+	PublicIps []interface{} `pulumi:"publicIps"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

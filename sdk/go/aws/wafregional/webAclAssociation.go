@@ -14,7 +14,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/wafregional_web_acl_association.html.markdown.
 type WebAclAssociation struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// ARN of the resource to associate with. For example, an Application Load Balancer or API Gateway Stage.
+	ResourceArn pulumi.StringOutput `pulumi:"resourceArn"`
+
+	// The ID of the WAF Regional WebACL to create an association.
+	WebAclId pulumi.StringOutput `pulumi:"webAclId"`
 }
 
 // NewWebAclAssociation registers a new resource with the given unique name, arguments, and options.
@@ -26,69 +36,57 @@ func NewWebAclAssociation(ctx *pulumi.Context,
 	if args == nil || args.WebAclId == nil {
 		return nil, errors.New("missing required argument 'WebAclId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["resourceArn"] = nil
-		inputs["webAclId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["resourceArn"] = args.ResourceArn
 		inputs["webAclId"] = args.WebAclId
 	}
-	s, err := ctx.RegisterResource("aws:wafregional/webAclAssociation:WebAclAssociation", name, true, inputs, opts...)
+	var resource WebAclAssociation
+	err := ctx.RegisterResource("aws:wafregional/webAclAssociation:WebAclAssociation", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &WebAclAssociation{s: s}, nil
+	return &resource, nil
 }
 
 // GetWebAclAssociation gets an existing WebAclAssociation resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetWebAclAssociation(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *WebAclAssociationState, opts ...pulumi.ResourceOpt) (*WebAclAssociation, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["resourceArn"] = state.ResourceArn
 		inputs["webAclId"] = state.WebAclId
 	}
-	s, err := ctx.ReadResource("aws:wafregional/webAclAssociation:WebAclAssociation", name, id, inputs, opts...)
+	var resource WebAclAssociation
+	err := ctx.ReadResource("aws:wafregional/webAclAssociation:WebAclAssociation", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &WebAclAssociation{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *WebAclAssociation) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *WebAclAssociation) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *WebAclAssociation) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *WebAclAssociation) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// ARN of the resource to associate with. For example, an Application Load Balancer or API Gateway Stage.
-func (r *WebAclAssociation) ResourceArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["resourceArn"])
-}
-
-// The ID of the WAF Regional WebACL to create an association.
-func (r *WebAclAssociation) WebAclId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["webAclId"])
-}
-
 // Input properties used for looking up and filtering WebAclAssociation resources.
 type WebAclAssociationState struct {
 	// ARN of the resource to associate with. For example, an Application Load Balancer or API Gateway Stage.
-	ResourceArn interface{}
+	ResourceArn pulumi.StringInput `pulumi:"resourceArn"`
 	// The ID of the WAF Regional WebACL to create an association.
-	WebAclId interface{}
+	WebAclId pulumi.StringInput `pulumi:"webAclId"`
 }
 
 // The set of arguments for constructing a WebAclAssociation resource.
 type WebAclAssociationArgs struct {
 	// ARN of the resource to associate with. For example, an Application Load Balancer or API Gateway Stage.
-	ResourceArn interface{}
+	ResourceArn pulumi.StringInput `pulumi:"resourceArn"`
 	// The ID of the WAF Regional WebACL to create an association.
-	WebAclId interface{}
+	WebAclId pulumi.StringInput `pulumi:"webAclId"`
 }

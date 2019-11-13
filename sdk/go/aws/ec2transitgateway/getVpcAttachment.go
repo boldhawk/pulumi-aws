@@ -37,29 +37,29 @@ func LookupVpcAttachment(ctx *pulumi.Context, args *GetVpcAttachmentArgs) (*GetV
 // A collection of arguments for invoking getVpcAttachment.
 type GetVpcAttachmentArgs struct {
 	// One or more configuration blocks containing name-values filters. Detailed below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// Identifier of the EC2 Transit Gateway VPC Attachment.
-	Id interface{}
-	Tags interface{}
+	Id pulumi.StringInput `pulumi:"id"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpcAttachment.
 type GetVpcAttachmentResult struct {
 	// Whether DNS support is enabled.
-	DnsSupport interface{}
-	Filters interface{}
+	DnsSupport string `pulumi:"dnsSupport"`
+	Filters []interface{} `pulumi:"filters"`
 	// EC2 Transit Gateway VPC Attachment identifier
-	Id interface{}
+	Id string `pulumi:"id"`
 	// Whether IPv6 support is enabled.
-	Ipv6Support interface{}
+	Ipv6Support string `pulumi:"ipv6Support"`
 	// Identifiers of EC2 Subnets.
-	SubnetIds interface{}
+	SubnetIds []interface{} `pulumi:"subnetIds"`
 	// Key-value tags for the EC2 Transit Gateway VPC Attachment
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// EC2 Transit Gateway identifier
-	TransitGatewayId interface{}
+	TransitGatewayId string `pulumi:"transitGatewayId"`
 	// Identifier of EC2 VPC.
-	VpcId interface{}
+	VpcId string `pulumi:"vpcId"`
 	// Identifier of the AWS account that owns the EC2 VPC.
-	VpcOwnerId interface{}
+	VpcOwnerId string `pulumi:"vpcOwnerId"`
 }

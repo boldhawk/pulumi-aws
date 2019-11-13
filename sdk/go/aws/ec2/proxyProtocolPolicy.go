@@ -12,7 +12,19 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/proxy_protocol_policy.html.markdown.
 type ProxyProtocolPolicy struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// List of instance ports to which the policy
+	// should be applied. This can be specified if the protocol is SSL or TCP.
+	InstancePorts pulumi.ArrayOutput `pulumi:"instancePorts"`
+
+	// The load balancer to which the policy
+	// should be attached.
+	LoadBalancer pulumi.StringOutput `pulumi:"loadBalancer"`
 }
 
 // NewProxyProtocolPolicy registers a new resource with the given unique name, arguments, and options.
@@ -24,75 +36,61 @@ func NewProxyProtocolPolicy(ctx *pulumi.Context,
 	if args == nil || args.LoadBalancer == nil {
 		return nil, errors.New("missing required argument 'LoadBalancer'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["instancePorts"] = nil
-		inputs["loadBalancer"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["instancePorts"] = args.InstancePorts
 		inputs["loadBalancer"] = args.LoadBalancer
 	}
-	s, err := ctx.RegisterResource("aws:ec2/proxyProtocolPolicy:ProxyProtocolPolicy", name, true, inputs, opts...)
+	var resource ProxyProtocolPolicy
+	err := ctx.RegisterResource("aws:ec2/proxyProtocolPolicy:ProxyProtocolPolicy", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ProxyProtocolPolicy{s: s}, nil
+	return &resource, nil
 }
 
 // GetProxyProtocolPolicy gets an existing ProxyProtocolPolicy resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetProxyProtocolPolicy(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ProxyProtocolPolicyState, opts ...pulumi.ResourceOpt) (*ProxyProtocolPolicy, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["instancePorts"] = state.InstancePorts
 		inputs["loadBalancer"] = state.LoadBalancer
 	}
-	s, err := ctx.ReadResource("aws:ec2/proxyProtocolPolicy:ProxyProtocolPolicy", name, id, inputs, opts...)
+	var resource ProxyProtocolPolicy
+	err := ctx.ReadResource("aws:ec2/proxyProtocolPolicy:ProxyProtocolPolicy", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ProxyProtocolPolicy{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ProxyProtocolPolicy) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ProxyProtocolPolicy) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ProxyProtocolPolicy) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ProxyProtocolPolicy) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// List of instance ports to which the policy
-// should be applied. This can be specified if the protocol is SSL or TCP.
-func (r *ProxyProtocolPolicy) InstancePorts() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["instancePorts"])
-}
-
-// The load balancer to which the policy
-// should be attached.
-func (r *ProxyProtocolPolicy) LoadBalancer() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["loadBalancer"])
-}
-
 // Input properties used for looking up and filtering ProxyProtocolPolicy resources.
 type ProxyProtocolPolicyState struct {
 	// List of instance ports to which the policy
 	// should be applied. This can be specified if the protocol is SSL or TCP.
-	InstancePorts interface{}
+	InstancePorts pulumi.ArrayInput `pulumi:"instancePorts"`
 	// The load balancer to which the policy
 	// should be attached.
-	LoadBalancer interface{}
+	LoadBalancer pulumi.StringInput `pulumi:"loadBalancer"`
 }
 
 // The set of arguments for constructing a ProxyProtocolPolicy resource.
 type ProxyProtocolPolicyArgs struct {
 	// List of instance ports to which the policy
 	// should be applied. This can be specified if the protocol is SSL or TCP.
-	InstancePorts interface{}
+	InstancePorts pulumi.ArrayInput `pulumi:"instancePorts"`
 	// The load balancer to which the policy
 	// should be attached.
-	LoadBalancer interface{}
+	LoadBalancer pulumi.StringInput `pulumi:"loadBalancer"`
 }

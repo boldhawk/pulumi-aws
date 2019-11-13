@@ -13,7 +13,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/shield_protection.html.markdown.
 type Protection struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// A friendly name for the Protection you are creating.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The ARN (Amazon Resource Name) of the resource to be protected.
+	ResourceArn pulumi.StringOutput `pulumi:"resourceArn"`
 }
 
 // NewProtection registers a new resource with the given unique name, arguments, and options.
@@ -22,69 +32,58 @@ func NewProtection(ctx *pulumi.Context,
 	if args == nil || args.ResourceArn == nil {
 		return nil, errors.New("missing required argument 'ResourceArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["name"] = nil
-		inputs["resourceArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["name"] = args.Name
 		inputs["resourceArn"] = args.ResourceArn
 	}
-	s, err := ctx.RegisterResource("aws:shield/protection:Protection", name, true, inputs, opts...)
+	var resource Protection
+	err := ctx.RegisterResource("aws:shield/protection:Protection", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Protection{s: s}, nil
+	return &resource, nil
 }
 
 // GetProtection gets an existing Protection resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetProtection(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ProtectionState, opts ...pulumi.ResourceOpt) (*Protection, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["name"] = state.Name
 		inputs["resourceArn"] = state.ResourceArn
 	}
-	s, err := ctx.ReadResource("aws:shield/protection:Protection", name, id, inputs, opts...)
+	var resource Protection
+	err := ctx.ReadResource("aws:shield/protection:Protection", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Protection{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Protection) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Protection) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Protection) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Protection) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// A friendly name for the Protection you are creating.
-func (r *Protection) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The ARN (Amazon Resource Name) of the resource to be protected.
-func (r *Protection) ResourceArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["resourceArn"])
-}
-
 // Input properties used for looking up and filtering Protection resources.
 type ProtectionState struct {
 	// A friendly name for the Protection you are creating.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The ARN (Amazon Resource Name) of the resource to be protected.
-	ResourceArn interface{}
+	ResourceArn pulumi.StringInput `pulumi:"resourceArn"`
 }
 
 // The set of arguments for constructing a Protection resource.
 type ProtectionArgs struct {
 	// A friendly name for the Protection you are creating.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The ARN (Amazon Resource Name) of the resource to be protected.
-	ResourceArn interface{}
+	ResourceArn pulumi.StringInput `pulumi:"resourceArn"`
 }

@@ -14,7 +14,35 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ram_resource_share_accepter.html.markdown.
 type ResourceShareAccepter struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the resource share invitation.
+	InvitationArn pulumi.StringOutput `pulumi:"invitationArn"`
+
+	// The account ID of the receiver account which accepts the invitation.
+	ReceiverAccountId pulumi.StringOutput `pulumi:"receiverAccountId"`
+
+	// A list of the resource ARNs shared via the resource share.
+	Resources pulumi.ArrayOutput `pulumi:"resources"`
+
+	// The account ID of the sender account which extends the invitation.
+	SenderAccountId pulumi.StringOutput `pulumi:"senderAccountId"`
+
+	// The ARN of the resource share.
+	ShareArn pulumi.StringOutput `pulumi:"shareArn"`
+
+	// The ID of the resource share as displayed in the console.
+	ShareId pulumi.StringOutput `pulumi:"shareId"`
+
+	// The name of the resource share.
+	ShareName pulumi.StringOutput `pulumi:"shareName"`
+
+	// The status of the invitation (e.g., ACCEPTED, REJECTED).
+	Status pulumi.StringOutput `pulumi:"status"`
 }
 
 // NewResourceShareAccepter registers a new resource with the given unique name, arguments, and options.
@@ -23,31 +51,23 @@ func NewResourceShareAccepter(ctx *pulumi.Context,
 	if args == nil || args.ShareArn == nil {
 		return nil, errors.New("missing required argument 'ShareArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["shareArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["shareArn"] = args.ShareArn
 	}
-	inputs["invitationArn"] = nil
-	inputs["receiverAccountId"] = nil
-	inputs["resources"] = nil
-	inputs["senderAccountId"] = nil
-	inputs["shareId"] = nil
-	inputs["shareName"] = nil
-	inputs["status"] = nil
-	s, err := ctx.RegisterResource("aws:ram/resourceShareAccepter:ResourceShareAccepter", name, true, inputs, opts...)
+	var resource ResourceShareAccepter
+	err := ctx.RegisterResource("aws:ram/resourceShareAccepter:ResourceShareAccepter", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ResourceShareAccepter{s: s}, nil
+	return &resource, nil
 }
 
 // GetResourceShareAccepter gets an existing ResourceShareAccepter resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetResourceShareAccepter(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ResourceShareAccepterState, opts ...pulumi.ResourceOpt) (*ResourceShareAccepter, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["invitationArn"] = state.InvitationArn
 		inputs["receiverAccountId"] = state.ReceiverAccountId
@@ -58,85 +78,45 @@ func GetResourceShareAccepter(ctx *pulumi.Context,
 		inputs["shareName"] = state.ShareName
 		inputs["status"] = state.Status
 	}
-	s, err := ctx.ReadResource("aws:ram/resourceShareAccepter:ResourceShareAccepter", name, id, inputs, opts...)
+	var resource ResourceShareAccepter
+	err := ctx.ReadResource("aws:ram/resourceShareAccepter:ResourceShareAccepter", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ResourceShareAccepter{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ResourceShareAccepter) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ResourceShareAccepter) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ResourceShareAccepter) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ResourceShareAccepter) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the resource share invitation.
-func (r *ResourceShareAccepter) InvitationArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["invitationArn"])
-}
-
-// The account ID of the receiver account which accepts the invitation.
-func (r *ResourceShareAccepter) ReceiverAccountId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["receiverAccountId"])
-}
-
-// A list of the resource ARNs shared via the resource share.
-func (r *ResourceShareAccepter) Resources() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["resources"])
-}
-
-// The account ID of the sender account which extends the invitation.
-func (r *ResourceShareAccepter) SenderAccountId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["senderAccountId"])
-}
-
-// The ARN of the resource share.
-func (r *ResourceShareAccepter) ShareArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["shareArn"])
-}
-
-// The ID of the resource share as displayed in the console.
-func (r *ResourceShareAccepter) ShareId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["shareId"])
-}
-
-// The name of the resource share.
-func (r *ResourceShareAccepter) ShareName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["shareName"])
-}
-
-// The status of the invitation (e.g., ACCEPTED, REJECTED).
-func (r *ResourceShareAccepter) Status() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["status"])
-}
-
 // Input properties used for looking up and filtering ResourceShareAccepter resources.
 type ResourceShareAccepterState struct {
 	// The ARN of the resource share invitation.
-	InvitationArn interface{}
+	InvitationArn pulumi.StringInput `pulumi:"invitationArn"`
 	// The account ID of the receiver account which accepts the invitation.
-	ReceiverAccountId interface{}
+	ReceiverAccountId pulumi.StringInput `pulumi:"receiverAccountId"`
 	// A list of the resource ARNs shared via the resource share.
-	Resources interface{}
+	Resources pulumi.ArrayInput `pulumi:"resources"`
 	// The account ID of the sender account which extends the invitation.
-	SenderAccountId interface{}
+	SenderAccountId pulumi.StringInput `pulumi:"senderAccountId"`
 	// The ARN of the resource share.
-	ShareArn interface{}
+	ShareArn pulumi.StringInput `pulumi:"shareArn"`
 	// The ID of the resource share as displayed in the console.
-	ShareId interface{}
+	ShareId pulumi.StringInput `pulumi:"shareId"`
 	// The name of the resource share.
-	ShareName interface{}
+	ShareName pulumi.StringInput `pulumi:"shareName"`
 	// The status of the invitation (e.g., ACCEPTED, REJECTED).
-	Status interface{}
+	Status pulumi.StringInput `pulumi:"status"`
 }
 
 // The set of arguments for constructing a ResourceShareAccepter resource.
 type ResourceShareAccepterArgs struct {
 	// The ARN of the resource share.
-	ShareArn interface{}
+	ShareArn pulumi.StringInput `pulumi:"shareArn"`
 }

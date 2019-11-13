@@ -35,24 +35,24 @@ func LookupResolverRules(ctx *pulumi.Context, args *GetResolverRulesArgs) (*GetR
 // A collection of arguments for invoking getResolverRules.
 type GetResolverRulesArgs struct {
 	// When the desired resolver rules are shared with another AWS account, the account ID of the account that the rules are shared with.
-	OwnerId interface{}
+	OwnerId pulumi.StringInput `pulumi:"ownerId"`
 	// The ID of the outbound resolver endpoint for the desired resolver rules.
-	ResolverEndpointId interface{}
+	ResolverEndpointId pulumi.StringInput `pulumi:"resolverEndpointId"`
 	// The rule type of the desired resolver rules. Valid values are `FORWARD`, `SYSTEM` and `RECURSIVE`.
-	RuleType interface{}
+	RuleType pulumi.StringInput `pulumi:"ruleType"`
 	// Whether the desired resolver rules are shared and, if so, whether the current account is sharing the rules with another account, or another account is sharing the rules with the current account.
 	// Values are `NOT_SHARED`, `SHARED_BY_ME` or `SHARED_WITH_ME`
-	ShareStatus interface{}
+	ShareStatus pulumi.StringInput `pulumi:"shareStatus"`
 }
 
 // A collection of values returned by getResolverRules.
 type GetResolverRulesResult struct {
-	OwnerId interface{}
-	ResolverEndpointId interface{}
+	OwnerId string `pulumi:"ownerId"`
+	ResolverEndpointId string `pulumi:"resolverEndpointId"`
 	// The IDs of the matched resolver rules.
-	ResolverRuleIds interface{}
-	RuleType interface{}
-	ShareStatus interface{}
+	ResolverRuleIds []interface{} `pulumi:"resolverRuleIds"`
+	RuleType string `pulumi:"ruleType"`
+	ShareStatus string `pulumi:"shareStatus"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

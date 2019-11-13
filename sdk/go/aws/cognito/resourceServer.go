@@ -12,7 +12,25 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/cognito_resource_server.html.markdown.
 type ResourceServer struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// An identifier for the resource server.
+	Identifier pulumi.StringOutput `pulumi:"identifier"`
+
+	// A name for the resource server.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A list of Authorization Scope.
+	Scopes pulumi.ArrayOutput `pulumi:"scopes"`
+
+	// A list of all scopes configured for this resource server in the format identifier/scope_name.
+	ScopeIdentifiers pulumi.ArrayOutput `pulumi:"scopeIdentifiers"`
+
+	UserPoolId pulumi.StringOutput `pulumi:"userPoolId"`
 }
 
 // NewResourceServer registers a new resource with the given unique name, arguments, and options.
@@ -24,31 +42,27 @@ func NewResourceServer(ctx *pulumi.Context,
 	if args == nil || args.UserPoolId == nil {
 		return nil, errors.New("missing required argument 'UserPoolId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["identifier"] = nil
-		inputs["name"] = nil
-		inputs["scopes"] = nil
-		inputs["userPoolId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["identifier"] = args.Identifier
 		inputs["name"] = args.Name
 		inputs["scopes"] = args.Scopes
 		inputs["userPoolId"] = args.UserPoolId
 	}
-	inputs["scopeIdentifiers"] = nil
-	s, err := ctx.RegisterResource("aws:cognito/resourceServer:ResourceServer", name, true, inputs, opts...)
+	var resource ResourceServer
+	err := ctx.RegisterResource("aws:cognito/resourceServer:ResourceServer", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ResourceServer{s: s}, nil
+	return &resource, nil
 }
 
 // GetResourceServer gets an existing ResourceServer resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetResourceServer(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ResourceServerState, opts ...pulumi.ResourceOpt) (*ResourceServer, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["identifier"] = state.Identifier
 		inputs["name"] = state.Name
@@ -56,67 +70,43 @@ func GetResourceServer(ctx *pulumi.Context,
 		inputs["scopeIdentifiers"] = state.ScopeIdentifiers
 		inputs["userPoolId"] = state.UserPoolId
 	}
-	s, err := ctx.ReadResource("aws:cognito/resourceServer:ResourceServer", name, id, inputs, opts...)
+	var resource ResourceServer
+	err := ctx.ReadResource("aws:cognito/resourceServer:ResourceServer", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ResourceServer{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ResourceServer) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ResourceServer) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ResourceServer) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ResourceServer) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// An identifier for the resource server.
-func (r *ResourceServer) Identifier() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["identifier"])
-}
-
-// A name for the resource server.
-func (r *ResourceServer) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A list of Authorization Scope.
-func (r *ResourceServer) Scopes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["scopes"])
-}
-
-// A list of all scopes configured for this resource server in the format identifier/scope_name.
-func (r *ResourceServer) ScopeIdentifiers() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["scopeIdentifiers"])
-}
-
-func (r *ResourceServer) UserPoolId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["userPoolId"])
-}
-
 // Input properties used for looking up and filtering ResourceServer resources.
 type ResourceServerState struct {
 	// An identifier for the resource server.
-	Identifier interface{}
+	Identifier pulumi.StringInput `pulumi:"identifier"`
 	// A name for the resource server.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A list of Authorization Scope.
-	Scopes interface{}
+	Scopes pulumi.ArrayInput `pulumi:"scopes"`
 	// A list of all scopes configured for this resource server in the format identifier/scope_name.
-	ScopeIdentifiers interface{}
-	UserPoolId interface{}
+	ScopeIdentifiers pulumi.ArrayInput `pulumi:"scopeIdentifiers"`
+	UserPoolId pulumi.StringInput `pulumi:"userPoolId"`
 }
 
 // The set of arguments for constructing a ResourceServer resource.
 type ResourceServerArgs struct {
 	// An identifier for the resource server.
-	Identifier interface{}
+	Identifier pulumi.StringInput `pulumi:"identifier"`
 	// A name for the resource server.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A list of Authorization Scope.
-	Scopes interface{}
-	UserPoolId interface{}
+	Scopes pulumi.ArrayInput `pulumi:"scopes"`
+	UserPoolId pulumi.StringInput `pulumi:"userPoolId"`
 }

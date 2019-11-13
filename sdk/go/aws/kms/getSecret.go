@@ -27,12 +27,12 @@ func LookupSecret(ctx *pulumi.Context, args *GetSecretArgs) (*GetSecretResult, e
 
 // A collection of arguments for invoking getSecret.
 type GetSecretArgs struct {
-	Secrets interface{}
+	Secrets pulumi.ArrayInput `pulumi:"secrets"`
 }
 
 // A collection of values returned by getSecret.
 type GetSecretResult struct {
-	Secrets interface{}
+	Secrets []interface{} `pulumi:"secrets"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

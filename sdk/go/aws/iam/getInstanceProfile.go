@@ -36,25 +36,25 @@ func LookupInstanceProfile(ctx *pulumi.Context, args *GetInstanceProfileArgs) (*
 // A collection of arguments for invoking getInstanceProfile.
 type GetInstanceProfileArgs struct {
 	// The friendly IAM instance profile name to match.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getInstanceProfile.
 type GetInstanceProfileResult struct {
 	// The Amazon Resource Name (ARN) specifying the instance profile.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// The string representation of the date the instance profile
 	// was created.
-	CreateDate interface{}
-	Name interface{}
+	CreateDate string `pulumi:"createDate"`
+	Name string `pulumi:"name"`
 	// The path to the instance profile.
-	Path interface{}
+	Path string `pulumi:"path"`
 	// The role arn associated with this instance profile.
-	RoleArn interface{}
+	RoleArn string `pulumi:"roleArn"`
 	// The role id associated with this instance profile.
-	RoleId interface{}
+	RoleId string `pulumi:"roleId"`
 	// The role name associated with this instance profile.
-	RoleName interface{}
+	RoleName string `pulumi:"roleName"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

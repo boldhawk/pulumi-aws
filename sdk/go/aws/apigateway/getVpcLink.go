@@ -32,12 +32,12 @@ func LookupVpcLink(ctx *pulumi.Context, args *GetVpcLinkArgs) (*GetVpcLinkResult
 type GetVpcLinkArgs struct {
 	// The name of the API Gateway VPC Link to look up. If no API Gateway VPC Link is found with this name, an error will be returned. 
 	// If multiple API Gateway VPC Links are found with this name, an error will be returned.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getVpcLink.
 type GetVpcLinkResult struct {
 	// Set to the ID of the found API Gateway VPC Link.
-	Id interface{}
-	Name interface{}
+	Id string `pulumi:"id"`
+	Name string `pulumi:"name"`
 }

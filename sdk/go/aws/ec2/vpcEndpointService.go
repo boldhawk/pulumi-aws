@@ -19,7 +19,44 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/vpc_endpoint_service.html.markdown.
 type VpcEndpointService struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Whether or not VPC endpoint connection requests to the service must be accepted by the service owner - `true` or `false`.
+	AcceptanceRequired pulumi.BoolOutput `pulumi:"acceptanceRequired"`
+
+	// The ARNs of one or more principals allowed to discover the endpoint service.
+	AllowedPrincipals pulumi.ArrayOutput `pulumi:"allowedPrincipals"`
+
+	// The Availability Zones in which the service is available.
+	AvailabilityZones pulumi.ArrayOutput `pulumi:"availabilityZones"`
+
+	// The DNS names for the service.
+	BaseEndpointDnsNames pulumi.ArrayOutput `pulumi:"baseEndpointDnsNames"`
+
+	// Whether or not the service manages its VPC endpoints - `true` or `false`.
+	ManagesVpcEndpoints pulumi.BoolOutput `pulumi:"managesVpcEndpoints"`
+
+	// The ARNs of one or more Network Load Balancers for the endpoint service.
+	NetworkLoadBalancerArns pulumi.ArrayOutput `pulumi:"networkLoadBalancerArns"`
+
+	// The private DNS name for the service.
+	PrivateDnsName pulumi.StringOutput `pulumi:"privateDnsName"`
+
+	// The service name.
+	ServiceName pulumi.StringOutput `pulumi:"serviceName"`
+
+	// The service type, `Gateway` or `Interface`.
+	ServiceType pulumi.StringOutput `pulumi:"serviceType"`
+
+	// The state of the VPC endpoint service.
+	State pulumi.StringOutput `pulumi:"state"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewVpcEndpointService registers a new resource with the given unique name, arguments, and options.
@@ -31,37 +68,26 @@ func NewVpcEndpointService(ctx *pulumi.Context,
 	if args == nil || args.NetworkLoadBalancerArns == nil {
 		return nil, errors.New("missing required argument 'NetworkLoadBalancerArns'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["acceptanceRequired"] = nil
-		inputs["allowedPrincipals"] = nil
-		inputs["networkLoadBalancerArns"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["acceptanceRequired"] = args.AcceptanceRequired
 		inputs["allowedPrincipals"] = args.AllowedPrincipals
 		inputs["networkLoadBalancerArns"] = args.NetworkLoadBalancerArns
 		inputs["tags"] = args.Tags
 	}
-	inputs["availabilityZones"] = nil
-	inputs["baseEndpointDnsNames"] = nil
-	inputs["managesVpcEndpoints"] = nil
-	inputs["privateDnsName"] = nil
-	inputs["serviceName"] = nil
-	inputs["serviceType"] = nil
-	inputs["state"] = nil
-	s, err := ctx.RegisterResource("aws:ec2/vpcEndpointService:VpcEndpointService", name, true, inputs, opts...)
+	var resource VpcEndpointService
+	err := ctx.RegisterResource("aws:ec2/vpcEndpointService:VpcEndpointService", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &VpcEndpointService{s: s}, nil
+	return &resource, nil
 }
 
 // GetVpcEndpointService gets an existing VpcEndpointService resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetVpcEndpointService(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *VpcEndpointServiceState, opts ...pulumi.ResourceOpt) (*VpcEndpointService, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["acceptanceRequired"] = state.AcceptanceRequired
 		inputs["allowedPrincipals"] = state.AllowedPrincipals
@@ -75,112 +101,57 @@ func GetVpcEndpointService(ctx *pulumi.Context,
 		inputs["state"] = state.State
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:ec2/vpcEndpointService:VpcEndpointService", name, id, inputs, opts...)
+	var resource VpcEndpointService
+	err := ctx.ReadResource("aws:ec2/vpcEndpointService:VpcEndpointService", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &VpcEndpointService{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *VpcEndpointService) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *VpcEndpointService) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *VpcEndpointService) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *VpcEndpointService) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Whether or not VPC endpoint connection requests to the service must be accepted by the service owner - `true` or `false`.
-func (r *VpcEndpointService) AcceptanceRequired() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["acceptanceRequired"])
-}
-
-// The ARNs of one or more principals allowed to discover the endpoint service.
-func (r *VpcEndpointService) AllowedPrincipals() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["allowedPrincipals"])
-}
-
-// The Availability Zones in which the service is available.
-func (r *VpcEndpointService) AvailabilityZones() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["availabilityZones"])
-}
-
-// The DNS names for the service.
-func (r *VpcEndpointService) BaseEndpointDnsNames() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["baseEndpointDnsNames"])
-}
-
-// Whether or not the service manages its VPC endpoints - `true` or `false`.
-func (r *VpcEndpointService) ManagesVpcEndpoints() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["managesVpcEndpoints"])
-}
-
-// The ARNs of one or more Network Load Balancers for the endpoint service.
-func (r *VpcEndpointService) NetworkLoadBalancerArns() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["networkLoadBalancerArns"])
-}
-
-// The private DNS name for the service.
-func (r *VpcEndpointService) PrivateDnsName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["privateDnsName"])
-}
-
-// The service name.
-func (r *VpcEndpointService) ServiceName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["serviceName"])
-}
-
-// The service type, `Gateway` or `Interface`.
-func (r *VpcEndpointService) ServiceType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["serviceType"])
-}
-
-// The state of the VPC endpoint service.
-func (r *VpcEndpointService) State() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["state"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *VpcEndpointService) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering VpcEndpointService resources.
 type VpcEndpointServiceState struct {
 	// Whether or not VPC endpoint connection requests to the service must be accepted by the service owner - `true` or `false`.
-	AcceptanceRequired interface{}
+	AcceptanceRequired pulumi.BoolInput `pulumi:"acceptanceRequired"`
 	// The ARNs of one or more principals allowed to discover the endpoint service.
-	AllowedPrincipals interface{}
+	AllowedPrincipals pulumi.ArrayInput `pulumi:"allowedPrincipals"`
 	// The Availability Zones in which the service is available.
-	AvailabilityZones interface{}
+	AvailabilityZones pulumi.ArrayInput `pulumi:"availabilityZones"`
 	// The DNS names for the service.
-	BaseEndpointDnsNames interface{}
+	BaseEndpointDnsNames pulumi.ArrayInput `pulumi:"baseEndpointDnsNames"`
 	// Whether or not the service manages its VPC endpoints - `true` or `false`.
-	ManagesVpcEndpoints interface{}
+	ManagesVpcEndpoints pulumi.BoolInput `pulumi:"managesVpcEndpoints"`
 	// The ARNs of one or more Network Load Balancers for the endpoint service.
-	NetworkLoadBalancerArns interface{}
+	NetworkLoadBalancerArns pulumi.ArrayInput `pulumi:"networkLoadBalancerArns"`
 	// The private DNS name for the service.
-	PrivateDnsName interface{}
+	PrivateDnsName pulumi.StringInput `pulumi:"privateDnsName"`
 	// The service name.
-	ServiceName interface{}
+	ServiceName pulumi.StringInput `pulumi:"serviceName"`
 	// The service type, `Gateway` or `Interface`.
-	ServiceType interface{}
+	ServiceType pulumi.StringInput `pulumi:"serviceType"`
 	// The state of the VPC endpoint service.
-	State interface{}
+	State pulumi.StringInput `pulumi:"state"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a VpcEndpointService resource.
 type VpcEndpointServiceArgs struct {
 	// Whether or not VPC endpoint connection requests to the service must be accepted by the service owner - `true` or `false`.
-	AcceptanceRequired interface{}
+	AcceptanceRequired pulumi.BoolInput `pulumi:"acceptanceRequired"`
 	// The ARNs of one or more principals allowed to discover the endpoint service.
-	AllowedPrincipals interface{}
+	AllowedPrincipals pulumi.ArrayInput `pulumi:"allowedPrincipals"`
 	// The ARNs of one or more Network Load Balancers for the endpoint service.
-	NetworkLoadBalancerArns interface{}
+	NetworkLoadBalancerArns pulumi.ArrayInput `pulumi:"networkLoadBalancerArns"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

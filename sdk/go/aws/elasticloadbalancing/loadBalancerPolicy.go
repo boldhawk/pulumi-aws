@@ -12,7 +12,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/load_balancer_policy_legacy.html.markdown.
 type LoadBalancerPolicy struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The load balancer on which the policy is defined.
+	LoadBalancerName pulumi.StringOutput `pulumi:"loadBalancerName"`
+
+	// Policy attribute to apply to the policy.
+	PolicyAttributes pulumi.ArrayOutput `pulumi:"policyAttributes"`
+
+	// The name of the load balancer policy.
+	PolicyName pulumi.StringOutput `pulumi:"policyName"`
+
+	// The policy type.
+	PolicyTypeName pulumi.StringOutput `pulumi:"policyTypeName"`
 }
 
 // NewLoadBalancerPolicy registers a new resource with the given unique name, arguments, and options.
@@ -27,93 +43,69 @@ func NewLoadBalancerPolicy(ctx *pulumi.Context,
 	if args == nil || args.PolicyTypeName == nil {
 		return nil, errors.New("missing required argument 'PolicyTypeName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["loadBalancerName"] = nil
-		inputs["policyAttributes"] = nil
-		inputs["policyName"] = nil
-		inputs["policyTypeName"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["loadBalancerName"] = args.LoadBalancerName
 		inputs["policyAttributes"] = args.PolicyAttributes
 		inputs["policyName"] = args.PolicyName
 		inputs["policyTypeName"] = args.PolicyTypeName
 	}
-	s, err := ctx.RegisterResource("aws:elasticloadbalancing/loadBalancerPolicy:LoadBalancerPolicy", name, true, inputs, opts...)
+	var resource LoadBalancerPolicy
+	err := ctx.RegisterResource("aws:elasticloadbalancing/loadBalancerPolicy:LoadBalancerPolicy", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &LoadBalancerPolicy{s: s}, nil
+	return &resource, nil
 }
 
 // GetLoadBalancerPolicy gets an existing LoadBalancerPolicy resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetLoadBalancerPolicy(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *LoadBalancerPolicyState, opts ...pulumi.ResourceOpt) (*LoadBalancerPolicy, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["loadBalancerName"] = state.LoadBalancerName
 		inputs["policyAttributes"] = state.PolicyAttributes
 		inputs["policyName"] = state.PolicyName
 		inputs["policyTypeName"] = state.PolicyTypeName
 	}
-	s, err := ctx.ReadResource("aws:elasticloadbalancing/loadBalancerPolicy:LoadBalancerPolicy", name, id, inputs, opts...)
+	var resource LoadBalancerPolicy
+	err := ctx.ReadResource("aws:elasticloadbalancing/loadBalancerPolicy:LoadBalancerPolicy", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &LoadBalancerPolicy{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *LoadBalancerPolicy) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *LoadBalancerPolicy) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *LoadBalancerPolicy) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *LoadBalancerPolicy) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The load balancer on which the policy is defined.
-func (r *LoadBalancerPolicy) LoadBalancerName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["loadBalancerName"])
-}
-
-// Policy attribute to apply to the policy.
-func (r *LoadBalancerPolicy) PolicyAttributes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["policyAttributes"])
-}
-
-// The name of the load balancer policy.
-func (r *LoadBalancerPolicy) PolicyName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["policyName"])
-}
-
-// The policy type.
-func (r *LoadBalancerPolicy) PolicyTypeName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["policyTypeName"])
-}
-
 // Input properties used for looking up and filtering LoadBalancerPolicy resources.
 type LoadBalancerPolicyState struct {
 	// The load balancer on which the policy is defined.
-	LoadBalancerName interface{}
+	LoadBalancerName pulumi.StringInput `pulumi:"loadBalancerName"`
 	// Policy attribute to apply to the policy.
-	PolicyAttributes interface{}
+	PolicyAttributes pulumi.ArrayInput `pulumi:"policyAttributes"`
 	// The name of the load balancer policy.
-	PolicyName interface{}
+	PolicyName pulumi.StringInput `pulumi:"policyName"`
 	// The policy type.
-	PolicyTypeName interface{}
+	PolicyTypeName pulumi.StringInput `pulumi:"policyTypeName"`
 }
 
 // The set of arguments for constructing a LoadBalancerPolicy resource.
 type LoadBalancerPolicyArgs struct {
 	// The load balancer on which the policy is defined.
-	LoadBalancerName interface{}
+	LoadBalancerName pulumi.StringInput `pulumi:"loadBalancerName"`
 	// Policy attribute to apply to the policy.
-	PolicyAttributes interface{}
+	PolicyAttributes pulumi.ArrayInput `pulumi:"policyAttributes"`
 	// The name of the load balancer policy.
-	PolicyName interface{}
+	PolicyName pulumi.StringInput `pulumi:"policyName"`
 	// The policy type.
-	PolicyTypeName interface{}
+	PolicyTypeName pulumi.StringInput `pulumi:"policyTypeName"`
 }

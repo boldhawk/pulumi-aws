@@ -11,37 +11,52 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/globalaccelerator_accelerator.html.markdown.
 type Accelerator struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The attributes of the accelerator. Fields documented below.
+	Attributes pulumi.AnyOutput `pulumi:"attributes"`
+
+	// Indicates whether the accelerator is enabled. The value is true or false. The default value is true.
+	Enabled pulumi.BoolOutput `pulumi:"enabled"`
+
+	// The value for the address type must be `IPV4`.
+	IpAddressType pulumi.StringOutput `pulumi:"ipAddressType"`
+
+	// IP address set associated with the accelerator.
+	IpSets pulumi.ArrayOutput `pulumi:"ipSets"`
+
+	// The name of the accelerator.
+	Name pulumi.StringOutput `pulumi:"name"`
 }
 
 // NewAccelerator registers a new resource with the given unique name, arguments, and options.
 func NewAccelerator(ctx *pulumi.Context,
 	name string, args *AcceleratorArgs, opts ...pulumi.ResourceOpt) (*Accelerator, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["attributes"] = nil
-		inputs["enabled"] = nil
-		inputs["ipAddressType"] = nil
-		inputs["name"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["attributes"] = args.Attributes
 		inputs["enabled"] = args.Enabled
 		inputs["ipAddressType"] = args.IpAddressType
 		inputs["name"] = args.Name
 	}
-	inputs["ipSets"] = nil
-	s, err := ctx.RegisterResource("aws:globalaccelerator/accelerator:Accelerator", name, true, inputs, opts...)
+	var resource Accelerator
+	err := ctx.RegisterResource("aws:globalaccelerator/accelerator:Accelerator", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Accelerator{s: s}, nil
+	return &resource, nil
 }
 
 // GetAccelerator gets an existing Accelerator resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAccelerator(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AcceleratorState, opts ...pulumi.ResourceOpt) (*Accelerator, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["attributes"] = state.Attributes
 		inputs["enabled"] = state.Enabled
@@ -49,70 +64,45 @@ func GetAccelerator(ctx *pulumi.Context,
 		inputs["ipSets"] = state.IpSets
 		inputs["name"] = state.Name
 	}
-	s, err := ctx.ReadResource("aws:globalaccelerator/accelerator:Accelerator", name, id, inputs, opts...)
+	var resource Accelerator
+	err := ctx.ReadResource("aws:globalaccelerator/accelerator:Accelerator", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Accelerator{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Accelerator) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Accelerator) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Accelerator) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Accelerator) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The attributes of the accelerator. Fields documented below.
-func (r *Accelerator) Attributes() *pulumi.Output {
-	return r.s.State["attributes"]
-}
-
-// Indicates whether the accelerator is enabled. The value is true or false. The default value is true.
-func (r *Accelerator) Enabled() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["enabled"])
-}
-
-// The value for the address type must be `IPV4`.
-func (r *Accelerator) IpAddressType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ipAddressType"])
-}
-
-// IP address set associated with the accelerator.
-func (r *Accelerator) IpSets() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["ipSets"])
-}
-
-// The name of the accelerator.
-func (r *Accelerator) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
 // Input properties used for looking up and filtering Accelerator resources.
 type AcceleratorState struct {
 	// The attributes of the accelerator. Fields documented below.
-	Attributes interface{}
+	Attributes pulumi.AnyInput `pulumi:"attributes"`
 	// Indicates whether the accelerator is enabled. The value is true or false. The default value is true.
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// The value for the address type must be `IPV4`.
-	IpAddressType interface{}
+	IpAddressType pulumi.StringInput `pulumi:"ipAddressType"`
 	// IP address set associated with the accelerator.
-	IpSets interface{}
+	IpSets pulumi.ArrayInput `pulumi:"ipSets"`
 	// The name of the accelerator.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // The set of arguments for constructing a Accelerator resource.
 type AcceleratorArgs struct {
 	// The attributes of the accelerator. Fields documented below.
-	Attributes interface{}
+	Attributes pulumi.AnyInput `pulumi:"attributes"`
 	// Indicates whether the accelerator is enabled. The value is true or false. The default value is true.
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// The value for the address type must be `IPV4`.
-	IpAddressType interface{}
+	IpAddressType pulumi.StringInput `pulumi:"ipAddressType"`
 	// The name of the accelerator.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }

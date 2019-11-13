@@ -13,7 +13,85 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/spot_fleet_request.html.markdown.
 type SpotFleetRequest struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Indicates how to allocate the target capacity across
+	// the Spot pools specified by the Spot fleet request. The default is
+	// `lowestPrice`.
+	AllocationStrategy pulumi.StringOutput `pulumi:"allocationStrategy"`
+
+	ClientToken pulumi.StringOutput `pulumi:"clientToken"`
+
+	// Indicates whether running Spot
+	// instances should be terminated if the target capacity of the Spot fleet
+	// request is decreased below the current size of the Spot fleet.
+	ExcessCapacityTerminationPolicy pulumi.StringOutput `pulumi:"excessCapacityTerminationPolicy"`
+
+	// The type of fleet request. Indicates whether the Spot Fleet only requests the target
+	// capacity or also attempts to maintain it. Default is `maintain`.
+	FleetType pulumi.StringOutput `pulumi:"fleetType"`
+
+	// Grants the Spot fleet permission to terminate
+	// Spot instances on your behalf when you cancel its Spot fleet request using
+	// CancelSpotFleetRequests or when the Spot fleet request expires, if you set
+	// terminateInstancesWithExpiration.
+	IamFleetRole pulumi.StringOutput `pulumi:"iamFleetRole"`
+
+	// Indicates whether a Spot
+	// instance stops or terminates when it is interrupted. Default is
+	// `terminate`.
+	InstanceInterruptionBehaviour pulumi.StringOutput `pulumi:"instanceInterruptionBehaviour"`
+
+	// 
+	// The number of Spot pools across which to allocate your target Spot capacity.
+	// Valid only when `allocationStrategy` is set to `lowestPrice`. Spot Fleet selects
+	// the cheapest Spot pools and evenly allocates your target Spot capacity across
+	// the number of Spot pools that you specify.
+	InstancePoolsToUseCount pulumi.IntOutput `pulumi:"instancePoolsToUseCount"`
+
+	// Used to define the launch configuration of the
+	// spot-fleet request. Can be specified multiple times to define different bids
+	// across different markets and instance types.
+	LaunchSpecifications pulumi.ArrayOutput `pulumi:"launchSpecifications"`
+
+	// A list of elastic load balancer names to add to the Spot fleet.
+	LoadBalancers pulumi.ArrayOutput `pulumi:"loadBalancers"`
+
+	// Indicates whether Spot fleet should replace unhealthy instances. Default `false`.
+	ReplaceUnhealthyInstances pulumi.BoolOutput `pulumi:"replaceUnhealthyInstances"`
+
+	// The maximum bid price per unit hour.
+	SpotPrice pulumi.StringOutput `pulumi:"spotPrice"`
+
+	// The state of the Spot fleet request.
+	SpotRequestState pulumi.StringOutput `pulumi:"spotRequestState"`
+
+	// The number of units to request. You can choose to set the
+	// target capacity in terms of instances or a performance characteristic that is
+	// important to your application workload, such as vCPUs, memory, or I/O.
+	TargetCapacity pulumi.IntOutput `pulumi:"targetCapacity"`
+
+	// A list of `alb.TargetGroup` ARNs, for use with Application Load Balancing.
+	TargetGroupArns pulumi.ArrayOutput `pulumi:"targetGroupArns"`
+
+	// Indicates whether running Spot
+	// instances should be terminated when the Spot fleet request expires.
+	TerminateInstancesWithExpiration pulumi.BoolOutput `pulumi:"terminateInstancesWithExpiration"`
+
+	// The start date and time of the request, in UTC [RFC3339](https://tools.ietf.org/html/rfc3339#section-5.8) format(for example, YYYY-MM-DDTHH:MM:SSZ). The default is to start fulfilling the request immediately.
+	ValidFrom pulumi.StringOutput `pulumi:"validFrom"`
+
+	// The end date and time of the request, in UTC [RFC3339](https://tools.ietf.org/html/rfc3339#section-5.8) format(for example, YYYY-MM-DDTHH:MM:SSZ). At this point, no new Spot instance requests are placed or enabled to fulfill the request. Defaults to 24 hours.
+	ValidUntil pulumi.StringOutput `pulumi:"validUntil"`
+
+	// If set, this provider will
+	// wait for the Spot Request to be fulfilled, and will throw an error if the
+	// timeout of 10m is reached.
+	WaitForFulfillment pulumi.BoolOutput `pulumi:"waitForFulfillment"`
 }
 
 // NewSpotFleetRequest registers a new resource with the given unique name, arguments, and options.
@@ -28,25 +106,8 @@ func NewSpotFleetRequest(ctx *pulumi.Context,
 	if args == nil || args.TargetCapacity == nil {
 		return nil, errors.New("missing required argument 'TargetCapacity'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["allocationStrategy"] = nil
-		inputs["excessCapacityTerminationPolicy"] = nil
-		inputs["fleetType"] = nil
-		inputs["iamFleetRole"] = nil
-		inputs["instanceInterruptionBehaviour"] = nil
-		inputs["instancePoolsToUseCount"] = nil
-		inputs["launchSpecifications"] = nil
-		inputs["loadBalancers"] = nil
-		inputs["replaceUnhealthyInstances"] = nil
-		inputs["spotPrice"] = nil
-		inputs["targetCapacity"] = nil
-		inputs["targetGroupArns"] = nil
-		inputs["terminateInstancesWithExpiration"] = nil
-		inputs["validFrom"] = nil
-		inputs["validUntil"] = nil
-		inputs["waitForFulfillment"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["allocationStrategy"] = args.AllocationStrategy
 		inputs["excessCapacityTerminationPolicy"] = args.ExcessCapacityTerminationPolicy
 		inputs["fleetType"] = args.FleetType
@@ -64,20 +125,19 @@ func NewSpotFleetRequest(ctx *pulumi.Context,
 		inputs["validUntil"] = args.ValidUntil
 		inputs["waitForFulfillment"] = args.WaitForFulfillment
 	}
-	inputs["clientToken"] = nil
-	inputs["spotRequestState"] = nil
-	s, err := ctx.RegisterResource("aws:ec2/spotFleetRequest:SpotFleetRequest", name, true, inputs, opts...)
+	var resource SpotFleetRequest
+	err := ctx.RegisterResource("aws:ec2/spotFleetRequest:SpotFleetRequest", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SpotFleetRequest{s: s}, nil
+	return &resource, nil
 }
 
 // GetSpotFleetRequest gets an existing SpotFleetRequest resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetSpotFleetRequest(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *SpotFleetRequestState, opts ...pulumi.ResourceOpt) (*SpotFleetRequest, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["allocationStrategy"] = state.AllocationStrategy
 		inputs["clientToken"] = state.ClientToken
@@ -98,191 +158,81 @@ func GetSpotFleetRequest(ctx *pulumi.Context,
 		inputs["validUntil"] = state.ValidUntil
 		inputs["waitForFulfillment"] = state.WaitForFulfillment
 	}
-	s, err := ctx.ReadResource("aws:ec2/spotFleetRequest:SpotFleetRequest", name, id, inputs, opts...)
+	var resource SpotFleetRequest
+	err := ctx.ReadResource("aws:ec2/spotFleetRequest:SpotFleetRequest", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SpotFleetRequest{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *SpotFleetRequest) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *SpotFleetRequest) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *SpotFleetRequest) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *SpotFleetRequest) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Indicates how to allocate the target capacity across
-// the Spot pools specified by the Spot fleet request. The default is
-// `lowestPrice`.
-func (r *SpotFleetRequest) AllocationStrategy() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["allocationStrategy"])
-}
-
-func (r *SpotFleetRequest) ClientToken() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["clientToken"])
-}
-
-// Indicates whether running Spot
-// instances should be terminated if the target capacity of the Spot fleet
-// request is decreased below the current size of the Spot fleet.
-func (r *SpotFleetRequest) ExcessCapacityTerminationPolicy() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["excessCapacityTerminationPolicy"])
-}
-
-// The type of fleet request. Indicates whether the Spot Fleet only requests the target
-// capacity or also attempts to maintain it. Default is `maintain`.
-func (r *SpotFleetRequest) FleetType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["fleetType"])
-}
-
-// Grants the Spot fleet permission to terminate
-// Spot instances on your behalf when you cancel its Spot fleet request using
-// CancelSpotFleetRequests or when the Spot fleet request expires, if you set
-// terminateInstancesWithExpiration.
-func (r *SpotFleetRequest) IamFleetRole() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["iamFleetRole"])
-}
-
-// Indicates whether a Spot
-// instance stops or terminates when it is interrupted. Default is
-// `terminate`.
-func (r *SpotFleetRequest) InstanceInterruptionBehaviour() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["instanceInterruptionBehaviour"])
-}
-
-// 
-// The number of Spot pools across which to allocate your target Spot capacity.
-// Valid only when `allocationStrategy` is set to `lowestPrice`. Spot Fleet selects
-// the cheapest Spot pools and evenly allocates your target Spot capacity across
-// the number of Spot pools that you specify.
-func (r *SpotFleetRequest) InstancePoolsToUseCount() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["instancePoolsToUseCount"])
-}
-
-// Used to define the launch configuration of the
-// spot-fleet request. Can be specified multiple times to define different bids
-// across different markets and instance types.
-func (r *SpotFleetRequest) LaunchSpecifications() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["launchSpecifications"])
-}
-
-// A list of elastic load balancer names to add to the Spot fleet.
-func (r *SpotFleetRequest) LoadBalancers() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["loadBalancers"])
-}
-
-// Indicates whether Spot fleet should replace unhealthy instances. Default `false`.
-func (r *SpotFleetRequest) ReplaceUnhealthyInstances() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["replaceUnhealthyInstances"])
-}
-
-// The maximum bid price per unit hour.
-func (r *SpotFleetRequest) SpotPrice() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["spotPrice"])
-}
-
-// The state of the Spot fleet request.
-func (r *SpotFleetRequest) SpotRequestState() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["spotRequestState"])
-}
-
-// The number of units to request. You can choose to set the
-// target capacity in terms of instances or a performance characteristic that is
-// important to your application workload, such as vCPUs, memory, or I/O.
-func (r *SpotFleetRequest) TargetCapacity() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["targetCapacity"])
-}
-
-// A list of `alb.TargetGroup` ARNs, for use with Application Load Balancing.
-func (r *SpotFleetRequest) TargetGroupArns() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["targetGroupArns"])
-}
-
-// Indicates whether running Spot
-// instances should be terminated when the Spot fleet request expires.
-func (r *SpotFleetRequest) TerminateInstancesWithExpiration() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["terminateInstancesWithExpiration"])
-}
-
-// The start date and time of the request, in UTC [RFC3339](https://tools.ietf.org/html/rfc3339#section-5.8) format(for example, YYYY-MM-DDTHH:MM:SSZ). The default is to start fulfilling the request immediately.
-func (r *SpotFleetRequest) ValidFrom() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["validFrom"])
-}
-
-// The end date and time of the request, in UTC [RFC3339](https://tools.ietf.org/html/rfc3339#section-5.8) format(for example, YYYY-MM-DDTHH:MM:SSZ). At this point, no new Spot instance requests are placed or enabled to fulfill the request. Defaults to 24 hours.
-func (r *SpotFleetRequest) ValidUntil() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["validUntil"])
-}
-
-// If set, this provider will
-// wait for the Spot Request to be fulfilled, and will throw an error if the
-// timeout of 10m is reached.
-func (r *SpotFleetRequest) WaitForFulfillment() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["waitForFulfillment"])
-}
-
 // Input properties used for looking up and filtering SpotFleetRequest resources.
 type SpotFleetRequestState struct {
 	// Indicates how to allocate the target capacity across
 	// the Spot pools specified by the Spot fleet request. The default is
 	// `lowestPrice`.
-	AllocationStrategy interface{}
-	ClientToken interface{}
+	AllocationStrategy pulumi.StringInput `pulumi:"allocationStrategy"`
+	ClientToken pulumi.StringInput `pulumi:"clientToken"`
 	// Indicates whether running Spot
 	// instances should be terminated if the target capacity of the Spot fleet
 	// request is decreased below the current size of the Spot fleet.
-	ExcessCapacityTerminationPolicy interface{}
+	ExcessCapacityTerminationPolicy pulumi.StringInput `pulumi:"excessCapacityTerminationPolicy"`
 	// The type of fleet request. Indicates whether the Spot Fleet only requests the target
 	// capacity or also attempts to maintain it. Default is `maintain`.
-	FleetType interface{}
+	FleetType pulumi.StringInput `pulumi:"fleetType"`
 	// Grants the Spot fleet permission to terminate
 	// Spot instances on your behalf when you cancel its Spot fleet request using
 	// CancelSpotFleetRequests or when the Spot fleet request expires, if you set
 	// terminateInstancesWithExpiration.
-	IamFleetRole interface{}
+	IamFleetRole pulumi.StringInput `pulumi:"iamFleetRole"`
 	// Indicates whether a Spot
 	// instance stops or terminates when it is interrupted. Default is
 	// `terminate`.
-	InstanceInterruptionBehaviour interface{}
+	InstanceInterruptionBehaviour pulumi.StringInput `pulumi:"instanceInterruptionBehaviour"`
 	// 
 	// The number of Spot pools across which to allocate your target Spot capacity.
 	// Valid only when `allocationStrategy` is set to `lowestPrice`. Spot Fleet selects
 	// the cheapest Spot pools and evenly allocates your target Spot capacity across
 	// the number of Spot pools that you specify.
-	InstancePoolsToUseCount interface{}
+	InstancePoolsToUseCount pulumi.IntInput `pulumi:"instancePoolsToUseCount"`
 	// Used to define the launch configuration of the
 	// spot-fleet request. Can be specified multiple times to define different bids
 	// across different markets and instance types.
-	LaunchSpecifications interface{}
+	LaunchSpecifications pulumi.ArrayInput `pulumi:"launchSpecifications"`
 	// A list of elastic load balancer names to add to the Spot fleet.
-	LoadBalancers interface{}
+	LoadBalancers pulumi.ArrayInput `pulumi:"loadBalancers"`
 	// Indicates whether Spot fleet should replace unhealthy instances. Default `false`.
-	ReplaceUnhealthyInstances interface{}
+	ReplaceUnhealthyInstances pulumi.BoolInput `pulumi:"replaceUnhealthyInstances"`
 	// The maximum bid price per unit hour.
-	SpotPrice interface{}
+	SpotPrice pulumi.StringInput `pulumi:"spotPrice"`
 	// The state of the Spot fleet request.
-	SpotRequestState interface{}
+	SpotRequestState pulumi.StringInput `pulumi:"spotRequestState"`
 	// The number of units to request. You can choose to set the
 	// target capacity in terms of instances or a performance characteristic that is
 	// important to your application workload, such as vCPUs, memory, or I/O.
-	TargetCapacity interface{}
+	TargetCapacity pulumi.IntInput `pulumi:"targetCapacity"`
 	// A list of `alb.TargetGroup` ARNs, for use with Application Load Balancing.
-	TargetGroupArns interface{}
+	TargetGroupArns pulumi.ArrayInput `pulumi:"targetGroupArns"`
 	// Indicates whether running Spot
 	// instances should be terminated when the Spot fleet request expires.
-	TerminateInstancesWithExpiration interface{}
+	TerminateInstancesWithExpiration pulumi.BoolInput `pulumi:"terminateInstancesWithExpiration"`
 	// The start date and time of the request, in UTC [RFC3339](https://tools.ietf.org/html/rfc3339#section-5.8) format(for example, YYYY-MM-DDTHH:MM:SSZ). The default is to start fulfilling the request immediately.
-	ValidFrom interface{}
+	ValidFrom pulumi.StringInput `pulumi:"validFrom"`
 	// The end date and time of the request, in UTC [RFC3339](https://tools.ietf.org/html/rfc3339#section-5.8) format(for example, YYYY-MM-DDTHH:MM:SSZ). At this point, no new Spot instance requests are placed or enabled to fulfill the request. Defaults to 24 hours.
-	ValidUntil interface{}
+	ValidUntil pulumi.StringInput `pulumi:"validUntil"`
 	// If set, this provider will
 	// wait for the Spot Request to be fulfilled, and will throw an error if the
 	// timeout of 10m is reached.
-	WaitForFulfillment interface{}
+	WaitForFulfillment pulumi.BoolInput `pulumi:"waitForFulfillment"`
 }
 
 // The set of arguments for constructing a SpotFleetRequest resource.
@@ -290,54 +240,54 @@ type SpotFleetRequestArgs struct {
 	// Indicates how to allocate the target capacity across
 	// the Spot pools specified by the Spot fleet request. The default is
 	// `lowestPrice`.
-	AllocationStrategy interface{}
+	AllocationStrategy pulumi.StringInput `pulumi:"allocationStrategy"`
 	// Indicates whether running Spot
 	// instances should be terminated if the target capacity of the Spot fleet
 	// request is decreased below the current size of the Spot fleet.
-	ExcessCapacityTerminationPolicy interface{}
+	ExcessCapacityTerminationPolicy pulumi.StringInput `pulumi:"excessCapacityTerminationPolicy"`
 	// The type of fleet request. Indicates whether the Spot Fleet only requests the target
 	// capacity or also attempts to maintain it. Default is `maintain`.
-	FleetType interface{}
+	FleetType pulumi.StringInput `pulumi:"fleetType"`
 	// Grants the Spot fleet permission to terminate
 	// Spot instances on your behalf when you cancel its Spot fleet request using
 	// CancelSpotFleetRequests or when the Spot fleet request expires, if you set
 	// terminateInstancesWithExpiration.
-	IamFleetRole interface{}
+	IamFleetRole pulumi.StringInput `pulumi:"iamFleetRole"`
 	// Indicates whether a Spot
 	// instance stops or terminates when it is interrupted. Default is
 	// `terminate`.
-	InstanceInterruptionBehaviour interface{}
+	InstanceInterruptionBehaviour pulumi.StringInput `pulumi:"instanceInterruptionBehaviour"`
 	// 
 	// The number of Spot pools across which to allocate your target Spot capacity.
 	// Valid only when `allocationStrategy` is set to `lowestPrice`. Spot Fleet selects
 	// the cheapest Spot pools and evenly allocates your target Spot capacity across
 	// the number of Spot pools that you specify.
-	InstancePoolsToUseCount interface{}
+	InstancePoolsToUseCount pulumi.IntInput `pulumi:"instancePoolsToUseCount"`
 	// Used to define the launch configuration of the
 	// spot-fleet request. Can be specified multiple times to define different bids
 	// across different markets and instance types.
-	LaunchSpecifications interface{}
+	LaunchSpecifications pulumi.ArrayInput `pulumi:"launchSpecifications"`
 	// A list of elastic load balancer names to add to the Spot fleet.
-	LoadBalancers interface{}
+	LoadBalancers pulumi.ArrayInput `pulumi:"loadBalancers"`
 	// Indicates whether Spot fleet should replace unhealthy instances. Default `false`.
-	ReplaceUnhealthyInstances interface{}
+	ReplaceUnhealthyInstances pulumi.BoolInput `pulumi:"replaceUnhealthyInstances"`
 	// The maximum bid price per unit hour.
-	SpotPrice interface{}
+	SpotPrice pulumi.StringInput `pulumi:"spotPrice"`
 	// The number of units to request. You can choose to set the
 	// target capacity in terms of instances or a performance characteristic that is
 	// important to your application workload, such as vCPUs, memory, or I/O.
-	TargetCapacity interface{}
+	TargetCapacity pulumi.IntInput `pulumi:"targetCapacity"`
 	// A list of `alb.TargetGroup` ARNs, for use with Application Load Balancing.
-	TargetGroupArns interface{}
+	TargetGroupArns pulumi.ArrayInput `pulumi:"targetGroupArns"`
 	// Indicates whether running Spot
 	// instances should be terminated when the Spot fleet request expires.
-	TerminateInstancesWithExpiration interface{}
+	TerminateInstancesWithExpiration pulumi.BoolInput `pulumi:"terminateInstancesWithExpiration"`
 	// The start date and time of the request, in UTC [RFC3339](https://tools.ietf.org/html/rfc3339#section-5.8) format(for example, YYYY-MM-DDTHH:MM:SSZ). The default is to start fulfilling the request immediately.
-	ValidFrom interface{}
+	ValidFrom pulumi.StringInput `pulumi:"validFrom"`
 	// The end date and time of the request, in UTC [RFC3339](https://tools.ietf.org/html/rfc3339#section-5.8) format(for example, YYYY-MM-DDTHH:MM:SSZ). At this point, no new Spot instance requests are placed or enabled to fulfill the request. Defaults to 24 hours.
-	ValidUntil interface{}
+	ValidUntil pulumi.StringInput `pulumi:"validUntil"`
 	// If set, this provider will
 	// wait for the Spot Request to be fulfilled, and will throw an error if the
 	// timeout of 10m is reached.
-	WaitForFulfillment interface{}
+	WaitForFulfillment pulumi.BoolInput `pulumi:"waitForFulfillment"`
 }

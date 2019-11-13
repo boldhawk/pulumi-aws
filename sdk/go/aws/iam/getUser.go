@@ -34,21 +34,21 @@ func LookupUser(ctx *pulumi.Context, args *GetUserArgs) (*GetUserResult, error) 
 // A collection of arguments for invoking getUser.
 type GetUserArgs struct {
 	// The friendly IAM user name to match.
-	UserName interface{}
+	UserName pulumi.StringInput `pulumi:"userName"`
 }
 
 // A collection of values returned by getUser.
 type GetUserResult struct {
 	// The Amazon Resource Name (ARN) assigned by AWS for this user.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// Path in which this user was created.
-	Path interface{}
+	Path string `pulumi:"path"`
 	// The ARN of the policy that is used to set the permissions boundary for the user.
-	PermissionsBoundary interface{}
+	PermissionsBoundary string `pulumi:"permissionsBoundary"`
 	// The unique ID assigned by AWS for this user.
-	UserId interface{}
+	UserId string `pulumi:"userId"`
 	// The name associated to this User
-	UserName interface{}
+	UserName string `pulumi:"userName"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

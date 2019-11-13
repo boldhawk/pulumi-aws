@@ -12,7 +12,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/iot_role_alias.html.markdown.
 type RoleAlias struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The name of the role alias.
+	Alias pulumi.StringOutput `pulumi:"alias"`
+
+	// The ARN assigned by AWS to this role alias.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The duration of the credential, in seconds. If you do not specify a value for this setting, the default maximum of one hour is applied. This setting can have a value from 900 seconds (15 minutes) to 3600 seconds (60 minutes).
+	CredentialDuration pulumi.IntOutput `pulumi:"credentialDuration"`
+
+	// The identity of the role to which the alias refers.
+	RoleArn pulumi.StringOutput `pulumi:"roleArn"`
 }
 
 // NewRoleAlias registers a new resource with the given unique name, arguments, and options.
@@ -24,90 +40,66 @@ func NewRoleAlias(ctx *pulumi.Context,
 	if args == nil || args.RoleArn == nil {
 		return nil, errors.New("missing required argument 'RoleArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["alias"] = nil
-		inputs["credentialDuration"] = nil
-		inputs["roleArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["alias"] = args.Alias
 		inputs["credentialDuration"] = args.CredentialDuration
 		inputs["roleArn"] = args.RoleArn
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:iot/roleAlias:RoleAlias", name, true, inputs, opts...)
+	var resource RoleAlias
+	err := ctx.RegisterResource("aws:iot/roleAlias:RoleAlias", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RoleAlias{s: s}, nil
+	return &resource, nil
 }
 
 // GetRoleAlias gets an existing RoleAlias resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRoleAlias(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RoleAliasState, opts ...pulumi.ResourceOpt) (*RoleAlias, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["alias"] = state.Alias
 		inputs["arn"] = state.Arn
 		inputs["credentialDuration"] = state.CredentialDuration
 		inputs["roleArn"] = state.RoleArn
 	}
-	s, err := ctx.ReadResource("aws:iot/roleAlias:RoleAlias", name, id, inputs, opts...)
+	var resource RoleAlias
+	err := ctx.ReadResource("aws:iot/roleAlias:RoleAlias", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RoleAlias{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *RoleAlias) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *RoleAlias) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *RoleAlias) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *RoleAlias) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The name of the role alias.
-func (r *RoleAlias) Alias() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["alias"])
-}
-
-// The ARN assigned by AWS to this role alias.
-func (r *RoleAlias) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The duration of the credential, in seconds. If you do not specify a value for this setting, the default maximum of one hour is applied. This setting can have a value from 900 seconds (15 minutes) to 3600 seconds (60 minutes).
-func (r *RoleAlias) CredentialDuration() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["credentialDuration"])
-}
-
-// The identity of the role to which the alias refers.
-func (r *RoleAlias) RoleArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["roleArn"])
-}
-
 // Input properties used for looking up and filtering RoleAlias resources.
 type RoleAliasState struct {
 	// The name of the role alias.
-	Alias interface{}
+	Alias pulumi.StringInput `pulumi:"alias"`
 	// The ARN assigned by AWS to this role alias.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The duration of the credential, in seconds. If you do not specify a value for this setting, the default maximum of one hour is applied. This setting can have a value from 900 seconds (15 minutes) to 3600 seconds (60 minutes).
-	CredentialDuration interface{}
+	CredentialDuration pulumi.IntInput `pulumi:"credentialDuration"`
 	// The identity of the role to which the alias refers.
-	RoleArn interface{}
+	RoleArn pulumi.StringInput `pulumi:"roleArn"`
 }
 
 // The set of arguments for constructing a RoleAlias resource.
 type RoleAliasArgs struct {
 	// The name of the role alias.
-	Alias interface{}
+	Alias pulumi.StringInput `pulumi:"alias"`
 	// The duration of the credential, in seconds. If you do not specify a value for this setting, the default maximum of one hour is applied. This setting can have a value from 900 seconds (15 minutes) to 3600 seconds (60 minutes).
-	CredentialDuration interface{}
+	CredentialDuration pulumi.IntInput `pulumi:"credentialDuration"`
 	// The identity of the role to which the alias refers.
-	RoleArn interface{}
+	RoleArn pulumi.StringInput `pulumi:"roleArn"`
 }

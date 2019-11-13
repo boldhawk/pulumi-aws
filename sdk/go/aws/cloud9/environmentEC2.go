@@ -12,7 +12,35 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/cloud9_environment_ec2.html.markdown.
 type EnvironmentEC2 struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the environment.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The number of minutes until the running instance is shut down after the environment has last been used.
+	AutomaticStopTimeMinutes pulumi.IntOutput `pulumi:"automaticStopTimeMinutes"`
+
+	// The description of the environment.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The type of instance to connect to the environment, e.g. `t2.micro`.
+	InstanceType pulumi.StringOutput `pulumi:"instanceType"`
+
+	// The name of the environment.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The ARN of the environment owner. This can be ARN of any AWS IAM principal. Defaults to the environment's creator.
+	OwnerArn pulumi.StringOutput `pulumi:"ownerArn"`
+
+	// The ID of the subnet in Amazon VPC that AWS Cloud9 will use to communicate with the Amazon EC2 instance.
+	SubnetId pulumi.StringOutput `pulumi:"subnetId"`
+
+	// The type of the environment (e.g. `ssh` or `ec2`)
+	Type pulumi.StringOutput `pulumi:"type"`
 }
 
 // NewEnvironmentEC2 registers a new resource with the given unique name, arguments, and options.
@@ -21,15 +49,9 @@ func NewEnvironmentEC2(ctx *pulumi.Context,
 	if args == nil || args.InstanceType == nil {
 		return nil, errors.New("missing required argument 'InstanceType'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["automaticStopTimeMinutes"] = nil
-		inputs["description"] = nil
-		inputs["instanceType"] = nil
-		inputs["name"] = nil
-		inputs["ownerArn"] = nil
-		inputs["subnetId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["automaticStopTimeMinutes"] = args.AutomaticStopTimeMinutes
 		inputs["description"] = args.Description
 		inputs["instanceType"] = args.InstanceType
@@ -37,20 +59,19 @@ func NewEnvironmentEC2(ctx *pulumi.Context,
 		inputs["ownerArn"] = args.OwnerArn
 		inputs["subnetId"] = args.SubnetId
 	}
-	inputs["arn"] = nil
-	inputs["type"] = nil
-	s, err := ctx.RegisterResource("aws:cloud9/environmentEC2:EnvironmentEC2", name, true, inputs, opts...)
+	var resource EnvironmentEC2
+	err := ctx.RegisterResource("aws:cloud9/environmentEC2:EnvironmentEC2", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EnvironmentEC2{s: s}, nil
+	return &resource, nil
 }
 
 // GetEnvironmentEC2 gets an existing EnvironmentEC2 resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetEnvironmentEC2(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *EnvironmentEC2State, opts ...pulumi.ResourceOpt) (*EnvironmentEC2, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["automaticStopTimeMinutes"] = state.AutomaticStopTimeMinutes
@@ -61,95 +82,55 @@ func GetEnvironmentEC2(ctx *pulumi.Context,
 		inputs["subnetId"] = state.SubnetId
 		inputs["type"] = state.Type
 	}
-	s, err := ctx.ReadResource("aws:cloud9/environmentEC2:EnvironmentEC2", name, id, inputs, opts...)
+	var resource EnvironmentEC2
+	err := ctx.ReadResource("aws:cloud9/environmentEC2:EnvironmentEC2", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EnvironmentEC2{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *EnvironmentEC2) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *EnvironmentEC2) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *EnvironmentEC2) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *EnvironmentEC2) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the environment.
-func (r *EnvironmentEC2) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The number of minutes until the running instance is shut down after the environment has last been used.
-func (r *EnvironmentEC2) AutomaticStopTimeMinutes() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["automaticStopTimeMinutes"])
-}
-
-// The description of the environment.
-func (r *EnvironmentEC2) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The type of instance to connect to the environment, e.g. `t2.micro`.
-func (r *EnvironmentEC2) InstanceType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["instanceType"])
-}
-
-// The name of the environment.
-func (r *EnvironmentEC2) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The ARN of the environment owner. This can be ARN of any AWS IAM principal. Defaults to the environment's creator.
-func (r *EnvironmentEC2) OwnerArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ownerArn"])
-}
-
-// The ID of the subnet in Amazon VPC that AWS Cloud9 will use to communicate with the Amazon EC2 instance.
-func (r *EnvironmentEC2) SubnetId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["subnetId"])
-}
-
-// The type of the environment (e.g. `ssh` or `ec2`)
-func (r *EnvironmentEC2) Type() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["type"])
-}
-
 // Input properties used for looking up and filtering EnvironmentEC2 resources.
 type EnvironmentEC2State struct {
 	// The ARN of the environment.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The number of minutes until the running instance is shut down after the environment has last been used.
-	AutomaticStopTimeMinutes interface{}
+	AutomaticStopTimeMinutes pulumi.IntInput `pulumi:"automaticStopTimeMinutes"`
 	// The description of the environment.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The type of instance to connect to the environment, e.g. `t2.micro`.
-	InstanceType interface{}
+	InstanceType pulumi.StringInput `pulumi:"instanceType"`
 	// The name of the environment.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The ARN of the environment owner. This can be ARN of any AWS IAM principal. Defaults to the environment's creator.
-	OwnerArn interface{}
+	OwnerArn pulumi.StringInput `pulumi:"ownerArn"`
 	// The ID of the subnet in Amazon VPC that AWS Cloud9 will use to communicate with the Amazon EC2 instance.
-	SubnetId interface{}
+	SubnetId pulumi.StringInput `pulumi:"subnetId"`
 	// The type of the environment (e.g. `ssh` or `ec2`)
-	Type interface{}
+	Type pulumi.StringInput `pulumi:"type"`
 }
 
 // The set of arguments for constructing a EnvironmentEC2 resource.
 type EnvironmentEC2Args struct {
 	// The number of minutes until the running instance is shut down after the environment has last been used.
-	AutomaticStopTimeMinutes interface{}
+	AutomaticStopTimeMinutes pulumi.IntInput `pulumi:"automaticStopTimeMinutes"`
 	// The description of the environment.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The type of instance to connect to the environment, e.g. `t2.micro`.
-	InstanceType interface{}
+	InstanceType pulumi.StringInput `pulumi:"instanceType"`
 	// The name of the environment.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The ARN of the environment owner. This can be ARN of any AWS IAM principal. Defaults to the environment's creator.
-	OwnerArn interface{}
+	OwnerArn pulumi.StringInput `pulumi:"ownerArn"`
 	// The ID of the subnet in Amazon VPC that AWS Cloud9 will use to communicate with the Amazon EC2 instance.
-	SubnetId interface{}
+	SubnetId pulumi.StringInput `pulumi:"subnetId"`
 }

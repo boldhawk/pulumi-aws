@@ -13,63 +13,64 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ebs_encryption_by_default.html.markdown.
 type EncryptionByDefault struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Whether or not default EBS encryption is enabled. Valid values are `true` or `false`. Defaults to `true`.
+	Enabled pulumi.BoolOutput `pulumi:"enabled"`
 }
 
 // NewEncryptionByDefault registers a new resource with the given unique name, arguments, and options.
 func NewEncryptionByDefault(ctx *pulumi.Context,
 	name string, args *EncryptionByDefaultArgs, opts ...pulumi.ResourceOpt) (*EncryptionByDefault, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["enabled"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["enabled"] = args.Enabled
 	}
-	s, err := ctx.RegisterResource("aws:ebs/encryptionByDefault:EncryptionByDefault", name, true, inputs, opts...)
+	var resource EncryptionByDefault
+	err := ctx.RegisterResource("aws:ebs/encryptionByDefault:EncryptionByDefault", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EncryptionByDefault{s: s}, nil
+	return &resource, nil
 }
 
 // GetEncryptionByDefault gets an existing EncryptionByDefault resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetEncryptionByDefault(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *EncryptionByDefaultState, opts ...pulumi.ResourceOpt) (*EncryptionByDefault, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["enabled"] = state.Enabled
 	}
-	s, err := ctx.ReadResource("aws:ebs/encryptionByDefault:EncryptionByDefault", name, id, inputs, opts...)
+	var resource EncryptionByDefault
+	err := ctx.ReadResource("aws:ebs/encryptionByDefault:EncryptionByDefault", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &EncryptionByDefault{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *EncryptionByDefault) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *EncryptionByDefault) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *EncryptionByDefault) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *EncryptionByDefault) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Whether or not default EBS encryption is enabled. Valid values are `true` or `false`. Defaults to `true`.
-func (r *EncryptionByDefault) Enabled() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["enabled"])
-}
-
 // Input properties used for looking up and filtering EncryptionByDefault resources.
 type EncryptionByDefaultState struct {
 	// Whether or not default EBS encryption is enabled. Valid values are `true` or `false`. Defaults to `true`.
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 }
 
 // The set of arguments for constructing a EncryptionByDefault resource.
 type EncryptionByDefaultArgs struct {
 	// Whether or not default EBS encryption is enabled. Valid values are `true` or `false`. Defaults to `true`.
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 }

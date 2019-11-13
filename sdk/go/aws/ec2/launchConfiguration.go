@@ -68,7 +68,76 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/launch_configuration.html.markdown.
 type LaunchConfiguration struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Associate a public ip address with an instance in a VPC.
+	AssociatePublicIpAddress pulumi.BoolOutput `pulumi:"associatePublicIpAddress"`
+
+	// Additional EBS block devices to attach to the
+	// instance.  See Block Devices below for details.
+	EbsBlockDevices pulumi.ArrayOutput `pulumi:"ebsBlockDevices"`
+
+	// If true, the launched EC2 instance will be EBS-optimized.
+	EbsOptimized pulumi.BoolOutput `pulumi:"ebsOptimized"`
+
+	// Enables/disables detailed monitoring. This is enabled by default.
+	EnableMonitoring pulumi.BoolOutput `pulumi:"enableMonitoring"`
+
+	// Customize Ephemeral (also known as
+	// "Instance Store") volumes on the instance. See Block Devices below for details.
+	EphemeralBlockDevices pulumi.ArrayOutput `pulumi:"ephemeralBlockDevices"`
+
+	// The name attribute of the IAM instance profile to associate
+	// with launched instances.
+	IamInstanceProfile pulumi.StringOutput `pulumi:"iamInstanceProfile"`
+
+	// The EC2 image ID to launch.
+	ImageId pulumi.StringOutput `pulumi:"imageId"`
+
+	// The size of instance to launch.
+	InstanceType pulumi.StringOutput `pulumi:"instanceType"`
+
+	// The key name that should be used for the instance.
+	KeyName pulumi.StringOutput `pulumi:"keyName"`
+
+	// The name of the launch configuration. If you leave
+	// this blank, this provider will auto-generate a unique name.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Creates a unique name beginning with the specified
+	// prefix. Conflicts with `name`.
+	NamePrefix pulumi.StringOutput `pulumi:"namePrefix"`
+
+	// The tenancy of the instance. Valid values are
+	// `"default"` or `"dedicated"`, see [AWS's Create Launch Configuration](http://docs.aws.amazon.com/AutoScaling/latest/APIReference/API_CreateLaunchConfiguration.html)
+	// for more details
+	PlacementTenancy pulumi.StringOutput `pulumi:"placementTenancy"`
+
+	// Customize details about the root block
+	// device of the instance. See Block Devices below for details.
+	RootBlockDevice pulumi.AnyOutput `pulumi:"rootBlockDevice"`
+
+	// A list of associated security group IDS.
+	SecurityGroups pulumi.ArrayOutput `pulumi:"securityGroups"`
+
+	// The maximum price to use for reserving spot instances.
+	SpotPrice pulumi.StringOutput `pulumi:"spotPrice"`
+
+	// The user data to provide when launching the instance. Do not pass gzip-compressed data via this argument; see `userDataBase64` instead.
+	UserData pulumi.StringOutput `pulumi:"userData"`
+
+	// Can be used instead of `userData` to pass base64-encoded binary data directly. Use this instead of `userData` whenever the value is not a valid UTF-8 string. For example, gzip-encoded user data must be base64-encoded and passed via this argument to avoid corruption.
+	UserDataBase64 pulumi.StringOutput `pulumi:"userDataBase64"`
+
+	// The ID of a ClassicLink-enabled VPC. Only applies to EC2-Classic instances. (eg. `vpc-2730681a`)
+	VpcClassicLinkId pulumi.StringOutput `pulumi:"vpcClassicLinkId"`
+
+	// The IDs of one or more security groups for the specified ClassicLink-enabled VPC (eg. `sg-46ae3d11`).
+	VpcClassicLinkSecurityGroups pulumi.ArrayOutput `pulumi:"vpcClassicLinkSecurityGroups"`
 }
 
 // NewLaunchConfiguration registers a new resource with the given unique name, arguments, and options.
@@ -80,28 +149,9 @@ func NewLaunchConfiguration(ctx *pulumi.Context,
 	if args == nil || args.InstanceType == nil {
 		return nil, errors.New("missing required argument 'InstanceType'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["associatePublicIpAddress"] = nil
-		inputs["ebsBlockDevices"] = nil
-		inputs["ebsOptimized"] = nil
-		inputs["enableMonitoring"] = nil
-		inputs["ephemeralBlockDevices"] = nil
-		inputs["iamInstanceProfile"] = nil
-		inputs["imageId"] = nil
-		inputs["instanceType"] = nil
-		inputs["keyName"] = nil
-		inputs["name"] = nil
-		inputs["namePrefix"] = nil
-		inputs["placementTenancy"] = nil
-		inputs["rootBlockDevice"] = nil
-		inputs["securityGroups"] = nil
-		inputs["spotPrice"] = nil
-		inputs["userData"] = nil
-		inputs["userDataBase64"] = nil
-		inputs["vpcClassicLinkId"] = nil
-		inputs["vpcClassicLinkSecurityGroups"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["associatePublicIpAddress"] = args.AssociatePublicIpAddress
 		inputs["ebsBlockDevices"] = args.EbsBlockDevices
 		inputs["ebsOptimized"] = args.EbsOptimized
@@ -122,18 +172,19 @@ func NewLaunchConfiguration(ctx *pulumi.Context,
 		inputs["vpcClassicLinkId"] = args.VpcClassicLinkId
 		inputs["vpcClassicLinkSecurityGroups"] = args.VpcClassicLinkSecurityGroups
 	}
-	s, err := ctx.RegisterResource("aws:ec2/launchConfiguration:LaunchConfiguration", name, true, inputs, opts...)
+	var resource LaunchConfiguration
+	err := ctx.RegisterResource("aws:ec2/launchConfiguration:LaunchConfiguration", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &LaunchConfiguration{s: s}, nil
+	return &resource, nil
 }
 
 // GetLaunchConfiguration gets an existing LaunchConfiguration resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetLaunchConfiguration(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *LaunchConfigurationState, opts ...pulumi.ResourceOpt) (*LaunchConfiguration, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["associatePublicIpAddress"] = state.AssociatePublicIpAddress
 		inputs["ebsBlockDevices"] = state.EbsBlockDevices
@@ -155,222 +206,119 @@ func GetLaunchConfiguration(ctx *pulumi.Context,
 		inputs["vpcClassicLinkId"] = state.VpcClassicLinkId
 		inputs["vpcClassicLinkSecurityGroups"] = state.VpcClassicLinkSecurityGroups
 	}
-	s, err := ctx.ReadResource("aws:ec2/launchConfiguration:LaunchConfiguration", name, id, inputs, opts...)
+	var resource LaunchConfiguration
+	err := ctx.ReadResource("aws:ec2/launchConfiguration:LaunchConfiguration", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &LaunchConfiguration{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *LaunchConfiguration) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *LaunchConfiguration) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *LaunchConfiguration) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *LaunchConfiguration) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Associate a public ip address with an instance in a VPC.
-func (r *LaunchConfiguration) AssociatePublicIpAddress() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["associatePublicIpAddress"])
-}
-
-// Additional EBS block devices to attach to the
-// instance.  See Block Devices below for details.
-func (r *LaunchConfiguration) EbsBlockDevices() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["ebsBlockDevices"])
-}
-
-// If true, the launched EC2 instance will be EBS-optimized.
-func (r *LaunchConfiguration) EbsOptimized() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["ebsOptimized"])
-}
-
-// Enables/disables detailed monitoring. This is enabled by default.
-func (r *LaunchConfiguration) EnableMonitoring() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["enableMonitoring"])
-}
-
-// Customize Ephemeral (also known as
-// "Instance Store") volumes on the instance. See Block Devices below for details.
-func (r *LaunchConfiguration) EphemeralBlockDevices() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["ephemeralBlockDevices"])
-}
-
-// The name attribute of the IAM instance profile to associate
-// with launched instances.
-func (r *LaunchConfiguration) IamInstanceProfile() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["iamInstanceProfile"])
-}
-
-// The EC2 image ID to launch.
-func (r *LaunchConfiguration) ImageId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["imageId"])
-}
-
-// The size of instance to launch.
-func (r *LaunchConfiguration) InstanceType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["instanceType"])
-}
-
-// The key name that should be used for the instance.
-func (r *LaunchConfiguration) KeyName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["keyName"])
-}
-
-// The name of the launch configuration. If you leave
-// this blank, this provider will auto-generate a unique name.
-func (r *LaunchConfiguration) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Creates a unique name beginning with the specified
-// prefix. Conflicts with `name`.
-func (r *LaunchConfiguration) NamePrefix() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["namePrefix"])
-}
-
-// The tenancy of the instance. Valid values are
-// `"default"` or `"dedicated"`, see [AWS's Create Launch Configuration](http://docs.aws.amazon.com/AutoScaling/latest/APIReference/API_CreateLaunchConfiguration.html)
-// for more details
-func (r *LaunchConfiguration) PlacementTenancy() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["placementTenancy"])
-}
-
-// Customize details about the root block
-// device of the instance. See Block Devices below for details.
-func (r *LaunchConfiguration) RootBlockDevice() *pulumi.Output {
-	return r.s.State["rootBlockDevice"]
-}
-
-// A list of associated security group IDS.
-func (r *LaunchConfiguration) SecurityGroups() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["securityGroups"])
-}
-
-// The maximum price to use for reserving spot instances.
-func (r *LaunchConfiguration) SpotPrice() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["spotPrice"])
-}
-
-// The user data to provide when launching the instance. Do not pass gzip-compressed data via this argument; see `userDataBase64` instead.
-func (r *LaunchConfiguration) UserData() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["userData"])
-}
-
-// Can be used instead of `userData` to pass base64-encoded binary data directly. Use this instead of `userData` whenever the value is not a valid UTF-8 string. For example, gzip-encoded user data must be base64-encoded and passed via this argument to avoid corruption.
-func (r *LaunchConfiguration) UserDataBase64() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["userDataBase64"])
-}
-
-// The ID of a ClassicLink-enabled VPC. Only applies to EC2-Classic instances. (eg. `vpc-2730681a`)
-func (r *LaunchConfiguration) VpcClassicLinkId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpcClassicLinkId"])
-}
-
-// The IDs of one or more security groups for the specified ClassicLink-enabled VPC (eg. `sg-46ae3d11`).
-func (r *LaunchConfiguration) VpcClassicLinkSecurityGroups() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["vpcClassicLinkSecurityGroups"])
-}
-
 // Input properties used for looking up and filtering LaunchConfiguration resources.
 type LaunchConfigurationState struct {
 	// Associate a public ip address with an instance in a VPC.
-	AssociatePublicIpAddress interface{}
+	AssociatePublicIpAddress pulumi.BoolInput `pulumi:"associatePublicIpAddress"`
 	// Additional EBS block devices to attach to the
 	// instance.  See Block Devices below for details.
-	EbsBlockDevices interface{}
+	EbsBlockDevices pulumi.ArrayInput `pulumi:"ebsBlockDevices"`
 	// If true, the launched EC2 instance will be EBS-optimized.
-	EbsOptimized interface{}
+	EbsOptimized pulumi.BoolInput `pulumi:"ebsOptimized"`
 	// Enables/disables detailed monitoring. This is enabled by default.
-	EnableMonitoring interface{}
+	EnableMonitoring pulumi.BoolInput `pulumi:"enableMonitoring"`
 	// Customize Ephemeral (also known as
 	// "Instance Store") volumes on the instance. See Block Devices below for details.
-	EphemeralBlockDevices interface{}
+	EphemeralBlockDevices pulumi.ArrayInput `pulumi:"ephemeralBlockDevices"`
 	// The name attribute of the IAM instance profile to associate
 	// with launched instances.
-	IamInstanceProfile interface{}
+	IamInstanceProfile pulumi.StringInput `pulumi:"iamInstanceProfile"`
 	// The EC2 image ID to launch.
-	ImageId interface{}
+	ImageId pulumi.StringInput `pulumi:"imageId"`
 	// The size of instance to launch.
-	InstanceType interface{}
+	InstanceType pulumi.StringInput `pulumi:"instanceType"`
 	// The key name that should be used for the instance.
-	KeyName interface{}
+	KeyName pulumi.StringInput `pulumi:"keyName"`
 	// The name of the launch configuration. If you leave
 	// this blank, this provider will auto-generate a unique name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified
 	// prefix. Conflicts with `name`.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// The tenancy of the instance. Valid values are
 	// `"default"` or `"dedicated"`, see [AWS's Create Launch Configuration](http://docs.aws.amazon.com/AutoScaling/latest/APIReference/API_CreateLaunchConfiguration.html)
 	// for more details
-	PlacementTenancy interface{}
+	PlacementTenancy pulumi.StringInput `pulumi:"placementTenancy"`
 	// Customize details about the root block
 	// device of the instance. See Block Devices below for details.
-	RootBlockDevice interface{}
+	RootBlockDevice pulumi.AnyInput `pulumi:"rootBlockDevice"`
 	// A list of associated security group IDS.
-	SecurityGroups interface{}
+	SecurityGroups pulumi.ArrayInput `pulumi:"securityGroups"`
 	// The maximum price to use for reserving spot instances.
-	SpotPrice interface{}
+	SpotPrice pulumi.StringInput `pulumi:"spotPrice"`
 	// The user data to provide when launching the instance. Do not pass gzip-compressed data via this argument; see `userDataBase64` instead.
-	UserData interface{}
+	UserData pulumi.StringInput `pulumi:"userData"`
 	// Can be used instead of `userData` to pass base64-encoded binary data directly. Use this instead of `userData` whenever the value is not a valid UTF-8 string. For example, gzip-encoded user data must be base64-encoded and passed via this argument to avoid corruption.
-	UserDataBase64 interface{}
+	UserDataBase64 pulumi.StringInput `pulumi:"userDataBase64"`
 	// The ID of a ClassicLink-enabled VPC. Only applies to EC2-Classic instances. (eg. `vpc-2730681a`)
-	VpcClassicLinkId interface{}
+	VpcClassicLinkId pulumi.StringInput `pulumi:"vpcClassicLinkId"`
 	// The IDs of one or more security groups for the specified ClassicLink-enabled VPC (eg. `sg-46ae3d11`).
-	VpcClassicLinkSecurityGroups interface{}
+	VpcClassicLinkSecurityGroups pulumi.ArrayInput `pulumi:"vpcClassicLinkSecurityGroups"`
 }
 
 // The set of arguments for constructing a LaunchConfiguration resource.
 type LaunchConfigurationArgs struct {
 	// Associate a public ip address with an instance in a VPC.
-	AssociatePublicIpAddress interface{}
+	AssociatePublicIpAddress pulumi.BoolInput `pulumi:"associatePublicIpAddress"`
 	// Additional EBS block devices to attach to the
 	// instance.  See Block Devices below for details.
-	EbsBlockDevices interface{}
+	EbsBlockDevices pulumi.ArrayInput `pulumi:"ebsBlockDevices"`
 	// If true, the launched EC2 instance will be EBS-optimized.
-	EbsOptimized interface{}
+	EbsOptimized pulumi.BoolInput `pulumi:"ebsOptimized"`
 	// Enables/disables detailed monitoring. This is enabled by default.
-	EnableMonitoring interface{}
+	EnableMonitoring pulumi.BoolInput `pulumi:"enableMonitoring"`
 	// Customize Ephemeral (also known as
 	// "Instance Store") volumes on the instance. See Block Devices below for details.
-	EphemeralBlockDevices interface{}
+	EphemeralBlockDevices pulumi.ArrayInput `pulumi:"ephemeralBlockDevices"`
 	// The name attribute of the IAM instance profile to associate
 	// with launched instances.
-	IamInstanceProfile interface{}
+	IamInstanceProfile pulumi.StringInput `pulumi:"iamInstanceProfile"`
 	// The EC2 image ID to launch.
-	ImageId interface{}
+	ImageId pulumi.StringInput `pulumi:"imageId"`
 	// The size of instance to launch.
-	InstanceType interface{}
+	InstanceType pulumi.StringInput `pulumi:"instanceType"`
 	// The key name that should be used for the instance.
-	KeyName interface{}
+	KeyName pulumi.StringInput `pulumi:"keyName"`
 	// The name of the launch configuration. If you leave
 	// this blank, this provider will auto-generate a unique name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified
 	// prefix. Conflicts with `name`.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// The tenancy of the instance. Valid values are
 	// `"default"` or `"dedicated"`, see [AWS's Create Launch Configuration](http://docs.aws.amazon.com/AutoScaling/latest/APIReference/API_CreateLaunchConfiguration.html)
 	// for more details
-	PlacementTenancy interface{}
+	PlacementTenancy pulumi.StringInput `pulumi:"placementTenancy"`
 	// Customize details about the root block
 	// device of the instance. See Block Devices below for details.
-	RootBlockDevice interface{}
+	RootBlockDevice pulumi.AnyInput `pulumi:"rootBlockDevice"`
 	// A list of associated security group IDS.
-	SecurityGroups interface{}
+	SecurityGroups pulumi.ArrayInput `pulumi:"securityGroups"`
 	// The maximum price to use for reserving spot instances.
-	SpotPrice interface{}
+	SpotPrice pulumi.StringInput `pulumi:"spotPrice"`
 	// The user data to provide when launching the instance. Do not pass gzip-compressed data via this argument; see `userDataBase64` instead.
-	UserData interface{}
+	UserData pulumi.StringInput `pulumi:"userData"`
 	// Can be used instead of `userData` to pass base64-encoded binary data directly. Use this instead of `userData` whenever the value is not a valid UTF-8 string. For example, gzip-encoded user data must be base64-encoded and passed via this argument to avoid corruption.
-	UserDataBase64 interface{}
+	UserDataBase64 pulumi.StringInput `pulumi:"userDataBase64"`
 	// The ID of a ClassicLink-enabled VPC. Only applies to EC2-Classic instances. (eg. `vpc-2730681a`)
-	VpcClassicLinkId interface{}
+	VpcClassicLinkId pulumi.StringInput `pulumi:"vpcClassicLinkId"`
 	// The IDs of one or more security groups for the specified ClassicLink-enabled VPC (eg. `sg-46ae3d11`).
-	VpcClassicLinkSecurityGroups interface{}
+	VpcClassicLinkSecurityGroups pulumi.ArrayInput `pulumi:"vpcClassicLinkSecurityGroups"`
 }

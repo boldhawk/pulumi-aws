@@ -12,7 +12,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/app_cookie_stickiness_policy_legacy.html.markdown.
 type AppCookieStickinessPolicy struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The application cookie whose lifetime the ELB's cookie should follow.
+	CookieName pulumi.StringOutput `pulumi:"cookieName"`
+
+	// The load balancer port to which the policy
+	// should be applied. This must be an active listener on the load
+	// balancer.
+	LbPort pulumi.IntOutput `pulumi:"lbPort"`
+
+	// The name of load balancer to which the policy
+	// should be attached.
+	LoadBalancer pulumi.StringOutput `pulumi:"loadBalancer"`
+
+	// The name of the stickiness policy.
+	Name pulumi.StringOutput `pulumi:"name"`
 }
 
 // NewAppCookieStickinessPolicy registers a new resource with the given unique name, arguments, and options.
@@ -27,102 +46,76 @@ func NewAppCookieStickinessPolicy(ctx *pulumi.Context,
 	if args == nil || args.LoadBalancer == nil {
 		return nil, errors.New("missing required argument 'LoadBalancer'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["cookieName"] = nil
-		inputs["lbPort"] = nil
-		inputs["loadBalancer"] = nil
-		inputs["name"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["cookieName"] = args.CookieName
 		inputs["lbPort"] = args.LbPort
 		inputs["loadBalancer"] = args.LoadBalancer
 		inputs["name"] = args.Name
 	}
-	s, err := ctx.RegisterResource("aws:elasticloadbalancing/appCookieStickinessPolicy:AppCookieStickinessPolicy", name, true, inputs, opts...)
+	var resource AppCookieStickinessPolicy
+	err := ctx.RegisterResource("aws:elasticloadbalancing/appCookieStickinessPolicy:AppCookieStickinessPolicy", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AppCookieStickinessPolicy{s: s}, nil
+	return &resource, nil
 }
 
 // GetAppCookieStickinessPolicy gets an existing AppCookieStickinessPolicy resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAppCookieStickinessPolicy(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AppCookieStickinessPolicyState, opts ...pulumi.ResourceOpt) (*AppCookieStickinessPolicy, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["cookieName"] = state.CookieName
 		inputs["lbPort"] = state.LbPort
 		inputs["loadBalancer"] = state.LoadBalancer
 		inputs["name"] = state.Name
 	}
-	s, err := ctx.ReadResource("aws:elasticloadbalancing/appCookieStickinessPolicy:AppCookieStickinessPolicy", name, id, inputs, opts...)
+	var resource AppCookieStickinessPolicy
+	err := ctx.ReadResource("aws:elasticloadbalancing/appCookieStickinessPolicy:AppCookieStickinessPolicy", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AppCookieStickinessPolicy{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *AppCookieStickinessPolicy) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *AppCookieStickinessPolicy) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *AppCookieStickinessPolicy) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *AppCookieStickinessPolicy) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The application cookie whose lifetime the ELB's cookie should follow.
-func (r *AppCookieStickinessPolicy) CookieName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["cookieName"])
-}
-
-// The load balancer port to which the policy
-// should be applied. This must be an active listener on the load
-// balancer.
-func (r *AppCookieStickinessPolicy) LbPort() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["lbPort"])
-}
-
-// The name of load balancer to which the policy
-// should be attached.
-func (r *AppCookieStickinessPolicy) LoadBalancer() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["loadBalancer"])
-}
-
-// The name of the stickiness policy.
-func (r *AppCookieStickinessPolicy) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
 // Input properties used for looking up and filtering AppCookieStickinessPolicy resources.
 type AppCookieStickinessPolicyState struct {
 	// The application cookie whose lifetime the ELB's cookie should follow.
-	CookieName interface{}
+	CookieName pulumi.StringInput `pulumi:"cookieName"`
 	// The load balancer port to which the policy
 	// should be applied. This must be an active listener on the load
 	// balancer.
-	LbPort interface{}
+	LbPort pulumi.IntInput `pulumi:"lbPort"`
 	// The name of load balancer to which the policy
 	// should be attached.
-	LoadBalancer interface{}
+	LoadBalancer pulumi.StringInput `pulumi:"loadBalancer"`
 	// The name of the stickiness policy.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // The set of arguments for constructing a AppCookieStickinessPolicy resource.
 type AppCookieStickinessPolicyArgs struct {
 	// The application cookie whose lifetime the ELB's cookie should follow.
-	CookieName interface{}
+	CookieName pulumi.StringInput `pulumi:"cookieName"`
 	// The load balancer port to which the policy
 	// should be applied. This must be an active listener on the load
 	// balancer.
-	LbPort interface{}
+	LbPort pulumi.IntInput `pulumi:"lbPort"`
 	// The name of load balancer to which the policy
 	// should be attached.
-	LoadBalancer interface{}
+	LoadBalancer pulumi.StringInput `pulumi:"loadBalancer"`
 	// The name of the stickiness policy.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }

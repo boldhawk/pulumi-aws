@@ -29,14 +29,14 @@ func LookupService(ctx *pulumi.Context, args *GetServiceArgs) (*GetServiceResult
 // A collection of arguments for invoking getService.
 type GetServiceArgs struct {
 	// Service name to lookup within Service Quotas. Available values can be found with the [AWS CLI service-quotas list-services command](https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-services.html).
-	ServiceName interface{}
+	ServiceName pulumi.StringInput `pulumi:"serviceName"`
 }
 
 // A collection of values returned by getService.
 type GetServiceResult struct {
 	// Code of the service.
-	ServiceCode interface{}
-	ServiceName interface{}
+	ServiceCode string `pulumi:"serviceCode"`
+	ServiceName string `pulumi:"serviceName"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

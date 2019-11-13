@@ -12,7 +12,57 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/api_gateway_stage.html.markdown.
 type Stage struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Enables access logs for the API stage. Detailed below.
+	AccessLogSettings pulumi.AnyOutput `pulumi:"accessLogSettings"`
+
+	// Specifies whether a cache cluster is enabled for the stage
+	CacheClusterEnabled pulumi.BoolOutput `pulumi:"cacheClusterEnabled"`
+
+	// The size of the cache cluster for the stage, if enabled.
+	// Allowed values include `0.5`, `1.6`, `6.1`, `13.5`, `28.4`, `58.2`, `118` and `237`.
+	CacheClusterSize pulumi.StringOutput `pulumi:"cacheClusterSize"`
+
+	// The identifier of a client certificate for the stage.
+	ClientCertificateId pulumi.StringOutput `pulumi:"clientCertificateId"`
+
+	// The ID of the deployment that the stage points to
+	Deployment pulumi.StringOutput `pulumi:"deployment"`
+
+	// The description of the stage
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The version of the associated API documentation
+	DocumentationVersion pulumi.StringOutput `pulumi:"documentationVersion"`
+
+	// The execution ARN to be used in [`lambdaPermission`](https://www.terraform.io/docs/providers/aws/r/lambda_permission.html)'s `sourceArn`
+	// when allowing API Gateway to invoke a Lambda function,
+	// e.g. `arn:aws:execute-api:eu-west-2:123456789012:z4675bid1j/prod`
+	ExecutionArn pulumi.StringOutput `pulumi:"executionArn"`
+
+	// The URL to invoke the API pointing to the stage,
+	// e.g. `https://z4675bid1j.execute-api.eu-west-2.amazonaws.com/prod`
+	InvokeUrl pulumi.StringOutput `pulumi:"invokeUrl"`
+
+	// The ID of the associated REST API
+	RestApi pulumi.StringOutput `pulumi:"restApi"`
+
+	// The name of the stage
+	StageName pulumi.StringOutput `pulumi:"stageName"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// A map that defines the stage variables
+	Variables pulumi.MapOutput `pulumi:"variables"`
+
+	// Whether active tracing with X-ray is enabled. Defaults to `false`.
+	XrayTracingEnabled pulumi.BoolOutput `pulumi:"xrayTracingEnabled"`
 }
 
 // NewStage registers a new resource with the given unique name, arguments, and options.
@@ -27,21 +77,8 @@ func NewStage(ctx *pulumi.Context,
 	if args == nil || args.StageName == nil {
 		return nil, errors.New("missing required argument 'StageName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["accessLogSettings"] = nil
-		inputs["cacheClusterEnabled"] = nil
-		inputs["cacheClusterSize"] = nil
-		inputs["clientCertificateId"] = nil
-		inputs["deployment"] = nil
-		inputs["description"] = nil
-		inputs["documentationVersion"] = nil
-		inputs["restApi"] = nil
-		inputs["stageName"] = nil
-		inputs["tags"] = nil
-		inputs["variables"] = nil
-		inputs["xrayTracingEnabled"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["accessLogSettings"] = args.AccessLogSettings
 		inputs["cacheClusterEnabled"] = args.CacheClusterEnabled
 		inputs["cacheClusterSize"] = args.CacheClusterSize
@@ -55,20 +92,19 @@ func NewStage(ctx *pulumi.Context,
 		inputs["variables"] = args.Variables
 		inputs["xrayTracingEnabled"] = args.XrayTracingEnabled
 	}
-	inputs["executionArn"] = nil
-	inputs["invokeUrl"] = nil
-	s, err := ctx.RegisterResource("aws:apigateway/stage:Stage", name, true, inputs, opts...)
+	var resource Stage
+	err := ctx.RegisterResource("aws:apigateway/stage:Stage", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Stage{s: s}, nil
+	return &resource, nil
 }
 
 // GetStage gets an existing Stage resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetStage(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *StageState, opts ...pulumi.ResourceOpt) (*Stage, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["accessLogSettings"] = state.AccessLogSettings
 		inputs["cacheClusterEnabled"] = state.CacheClusterEnabled
@@ -85,158 +121,84 @@ func GetStage(ctx *pulumi.Context,
 		inputs["variables"] = state.Variables
 		inputs["xrayTracingEnabled"] = state.XrayTracingEnabled
 	}
-	s, err := ctx.ReadResource("aws:apigateway/stage:Stage", name, id, inputs, opts...)
+	var resource Stage
+	err := ctx.ReadResource("aws:apigateway/stage:Stage", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Stage{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Stage) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Stage) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Stage) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Stage) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Enables access logs for the API stage. Detailed below.
-func (r *Stage) AccessLogSettings() *pulumi.Output {
-	return r.s.State["accessLogSettings"]
-}
-
-// Specifies whether a cache cluster is enabled for the stage
-func (r *Stage) CacheClusterEnabled() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["cacheClusterEnabled"])
-}
-
-// The size of the cache cluster for the stage, if enabled.
-// Allowed values include `0.5`, `1.6`, `6.1`, `13.5`, `28.4`, `58.2`, `118` and `237`.
-func (r *Stage) CacheClusterSize() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["cacheClusterSize"])
-}
-
-// The identifier of a client certificate for the stage.
-func (r *Stage) ClientCertificateId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["clientCertificateId"])
-}
-
-// The ID of the deployment that the stage points to
-func (r *Stage) Deployment() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["deployment"])
-}
-
-// The description of the stage
-func (r *Stage) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The version of the associated API documentation
-func (r *Stage) DocumentationVersion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["documentationVersion"])
-}
-
-// The execution ARN to be used in [`lambdaPermission`](https://www.terraform.io/docs/providers/aws/r/lambda_permission.html)'s `sourceArn`
-// when allowing API Gateway to invoke a Lambda function,
-// e.g. `arn:aws:execute-api:eu-west-2:123456789012:z4675bid1j/prod`
-func (r *Stage) ExecutionArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["executionArn"])
-}
-
-// The URL to invoke the API pointing to the stage,
-// e.g. `https://z4675bid1j.execute-api.eu-west-2.amazonaws.com/prod`
-func (r *Stage) InvokeUrl() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["invokeUrl"])
-}
-
-// The ID of the associated REST API
-func (r *Stage) RestApi() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["restApi"])
-}
-
-// The name of the stage
-func (r *Stage) StageName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["stageName"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *Stage) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// A map that defines the stage variables
-func (r *Stage) Variables() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["variables"])
-}
-
-// Whether active tracing with X-ray is enabled. Defaults to `false`.
-func (r *Stage) XrayTracingEnabled() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["xrayTracingEnabled"])
-}
-
 // Input properties used for looking up and filtering Stage resources.
 type StageState struct {
 	// Enables access logs for the API stage. Detailed below.
-	AccessLogSettings interface{}
+	AccessLogSettings pulumi.AnyInput `pulumi:"accessLogSettings"`
 	// Specifies whether a cache cluster is enabled for the stage
-	CacheClusterEnabled interface{}
+	CacheClusterEnabled pulumi.BoolInput `pulumi:"cacheClusterEnabled"`
 	// The size of the cache cluster for the stage, if enabled.
 	// Allowed values include `0.5`, `1.6`, `6.1`, `13.5`, `28.4`, `58.2`, `118` and `237`.
-	CacheClusterSize interface{}
+	CacheClusterSize pulumi.StringInput `pulumi:"cacheClusterSize"`
 	// The identifier of a client certificate for the stage.
-	ClientCertificateId interface{}
+	ClientCertificateId pulumi.StringInput `pulumi:"clientCertificateId"`
 	// The ID of the deployment that the stage points to
-	Deployment interface{}
+	Deployment pulumi.StringInput `pulumi:"deployment"`
 	// The description of the stage
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The version of the associated API documentation
-	DocumentationVersion interface{}
+	DocumentationVersion pulumi.StringInput `pulumi:"documentationVersion"`
 	// The execution ARN to be used in [`lambdaPermission`](https://www.terraform.io/docs/providers/aws/r/lambda_permission.html)'s `sourceArn`
 	// when allowing API Gateway to invoke a Lambda function,
 	// e.g. `arn:aws:execute-api:eu-west-2:123456789012:z4675bid1j/prod`
-	ExecutionArn interface{}
+	ExecutionArn pulumi.StringInput `pulumi:"executionArn"`
 	// The URL to invoke the API pointing to the stage,
 	// e.g. `https://z4675bid1j.execute-api.eu-west-2.amazonaws.com/prod`
-	InvokeUrl interface{}
+	InvokeUrl pulumi.StringInput `pulumi:"invokeUrl"`
 	// The ID of the associated REST API
-	RestApi interface{}
+	RestApi pulumi.StringInput `pulumi:"restApi"`
 	// The name of the stage
-	StageName interface{}
+	StageName pulumi.StringInput `pulumi:"stageName"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// A map that defines the stage variables
-	Variables interface{}
+	Variables pulumi.MapInput `pulumi:"variables"`
 	// Whether active tracing with X-ray is enabled. Defaults to `false`.
-	XrayTracingEnabled interface{}
+	XrayTracingEnabled pulumi.BoolInput `pulumi:"xrayTracingEnabled"`
 }
 
 // The set of arguments for constructing a Stage resource.
 type StageArgs struct {
 	// Enables access logs for the API stage. Detailed below.
-	AccessLogSettings interface{}
+	AccessLogSettings pulumi.AnyInput `pulumi:"accessLogSettings"`
 	// Specifies whether a cache cluster is enabled for the stage
-	CacheClusterEnabled interface{}
+	CacheClusterEnabled pulumi.BoolInput `pulumi:"cacheClusterEnabled"`
 	// The size of the cache cluster for the stage, if enabled.
 	// Allowed values include `0.5`, `1.6`, `6.1`, `13.5`, `28.4`, `58.2`, `118` and `237`.
-	CacheClusterSize interface{}
+	CacheClusterSize pulumi.StringInput `pulumi:"cacheClusterSize"`
 	// The identifier of a client certificate for the stage.
-	ClientCertificateId interface{}
+	ClientCertificateId pulumi.StringInput `pulumi:"clientCertificateId"`
 	// The ID of the deployment that the stage points to
-	Deployment interface{}
+	Deployment pulumi.StringInput `pulumi:"deployment"`
 	// The description of the stage
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The version of the associated API documentation
-	DocumentationVersion interface{}
+	DocumentationVersion pulumi.StringInput `pulumi:"documentationVersion"`
 	// The ID of the associated REST API
-	RestApi interface{}
+	RestApi pulumi.StringInput `pulumi:"restApi"`
 	// The name of the stage
-	StageName interface{}
+	StageName pulumi.StringInput `pulumi:"stageName"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// A map that defines the stage variables
-	Variables interface{}
+	Variables pulumi.MapInput `pulumi:"variables"`
 	// Whether active tracing with X-ray is enabled. Defaults to `false`.
-	XrayTracingEnabled interface{}
+	XrayTracingEnabled pulumi.BoolInput `pulumi:"xrayTracingEnabled"`
 }

@@ -28,12 +28,12 @@ func LookupWebAcl(ctx *pulumi.Context, args *GetWebAclArgs) (*GetWebAclResult, e
 // A collection of arguments for invoking getWebAcl.
 type GetWebAclArgs struct {
 	// The name of the WAF Web ACL.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getWebAcl.
 type GetWebAclResult struct {
-	Name interface{}
+	Name string `pulumi:"name"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

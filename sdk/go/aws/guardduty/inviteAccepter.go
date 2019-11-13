@@ -12,7 +12,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/guardduty_invite_accepter.html.markdown.
 type InviteAccepter struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The detector ID of the member GuardDuty account.
+	DetectorId pulumi.StringOutput `pulumi:"detectorId"`
+
+	// AWS account ID for master account.
+	MasterAccountId pulumi.StringOutput `pulumi:"masterAccountId"`
 }
 
 // NewInviteAccepter registers a new resource with the given unique name, arguments, and options.
@@ -24,69 +34,57 @@ func NewInviteAccepter(ctx *pulumi.Context,
 	if args == nil || args.MasterAccountId == nil {
 		return nil, errors.New("missing required argument 'MasterAccountId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["detectorId"] = nil
-		inputs["masterAccountId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["detectorId"] = args.DetectorId
 		inputs["masterAccountId"] = args.MasterAccountId
 	}
-	s, err := ctx.RegisterResource("aws:guardduty/inviteAccepter:InviteAccepter", name, true, inputs, opts...)
+	var resource InviteAccepter
+	err := ctx.RegisterResource("aws:guardduty/inviteAccepter:InviteAccepter", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &InviteAccepter{s: s}, nil
+	return &resource, nil
 }
 
 // GetInviteAccepter gets an existing InviteAccepter resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetInviteAccepter(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *InviteAccepterState, opts ...pulumi.ResourceOpt) (*InviteAccepter, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["detectorId"] = state.DetectorId
 		inputs["masterAccountId"] = state.MasterAccountId
 	}
-	s, err := ctx.ReadResource("aws:guardduty/inviteAccepter:InviteAccepter", name, id, inputs, opts...)
+	var resource InviteAccepter
+	err := ctx.ReadResource("aws:guardduty/inviteAccepter:InviteAccepter", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &InviteAccepter{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *InviteAccepter) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *InviteAccepter) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *InviteAccepter) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *InviteAccepter) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The detector ID of the member GuardDuty account.
-func (r *InviteAccepter) DetectorId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["detectorId"])
-}
-
-// AWS account ID for master account.
-func (r *InviteAccepter) MasterAccountId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["masterAccountId"])
-}
-
 // Input properties used for looking up and filtering InviteAccepter resources.
 type InviteAccepterState struct {
 	// The detector ID of the member GuardDuty account.
-	DetectorId interface{}
+	DetectorId pulumi.StringInput `pulumi:"detectorId"`
 	// AWS account ID for master account.
-	MasterAccountId interface{}
+	MasterAccountId pulumi.StringInput `pulumi:"masterAccountId"`
 }
 
 // The set of arguments for constructing a InviteAccepter resource.
 type InviteAccepterArgs struct {
 	// The detector ID of the member GuardDuty account.
-	DetectorId interface{}
+	DetectorId pulumi.StringInput `pulumi:"detectorId"`
 	// AWS account ID for master account.
-	MasterAccountId interface{}
+	MasterAccountId pulumi.StringInput `pulumi:"masterAccountId"`
 }

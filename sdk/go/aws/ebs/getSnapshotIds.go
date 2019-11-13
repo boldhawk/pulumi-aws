@@ -36,19 +36,19 @@ type GetSnapshotIdsArgs struct {
 	// One or more name/value pairs to filter off of. There are
 	// several valid keys, for a full reference, check out
 	// [describe-volumes in the AWS CLI reference][1].
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// Returns the snapshots owned by the specified owner id. Multiple owners can be specified.
-	Owners interface{}
+	Owners pulumi.ArrayInput `pulumi:"owners"`
 	// One or more AWS accounts IDs that can create volumes from the snapshot.
-	RestorableByUserIds interface{}
+	RestorableByUserIds pulumi.ArrayInput `pulumi:"restorableByUserIds"`
 }
 
 // A collection of values returned by getSnapshotIds.
 type GetSnapshotIdsResult struct {
-	Filters interface{}
-	Ids interface{}
-	Owners interface{}
-	RestorableByUserIds interface{}
+	Filters []interface{} `pulumi:"filters"`
+	Ids []interface{} `pulumi:"ids"`
+	Owners []interface{} `pulumi:"owners"`
+	RestorableByUserIds []interface{} `pulumi:"restorableByUserIds"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

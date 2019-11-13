@@ -14,7 +14,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/licensemanager_association.html.markdown.
 type Association struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// ARN of the license configuration.
+	LicenseConfigurationArn pulumi.StringOutput `pulumi:"licenseConfigurationArn"`
+
+	// ARN of the resource associated with the license configuration.
+	ResourceArn pulumi.StringOutput `pulumi:"resourceArn"`
 }
 
 // NewAssociation registers a new resource with the given unique name, arguments, and options.
@@ -26,69 +36,57 @@ func NewAssociation(ctx *pulumi.Context,
 	if args == nil || args.ResourceArn == nil {
 		return nil, errors.New("missing required argument 'ResourceArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["licenseConfigurationArn"] = nil
-		inputs["resourceArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["licenseConfigurationArn"] = args.LicenseConfigurationArn
 		inputs["resourceArn"] = args.ResourceArn
 	}
-	s, err := ctx.RegisterResource("aws:licensemanager/association:Association", name, true, inputs, opts...)
+	var resource Association
+	err := ctx.RegisterResource("aws:licensemanager/association:Association", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Association{s: s}, nil
+	return &resource, nil
 }
 
 // GetAssociation gets an existing Association resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAssociation(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AssociationState, opts ...pulumi.ResourceOpt) (*Association, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["licenseConfigurationArn"] = state.LicenseConfigurationArn
 		inputs["resourceArn"] = state.ResourceArn
 	}
-	s, err := ctx.ReadResource("aws:licensemanager/association:Association", name, id, inputs, opts...)
+	var resource Association
+	err := ctx.ReadResource("aws:licensemanager/association:Association", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Association{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Association) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Association) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Association) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Association) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// ARN of the license configuration.
-func (r *Association) LicenseConfigurationArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["licenseConfigurationArn"])
-}
-
-// ARN of the resource associated with the license configuration.
-func (r *Association) ResourceArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["resourceArn"])
-}
-
 // Input properties used for looking up and filtering Association resources.
 type AssociationState struct {
 	// ARN of the license configuration.
-	LicenseConfigurationArn interface{}
+	LicenseConfigurationArn pulumi.StringInput `pulumi:"licenseConfigurationArn"`
 	// ARN of the resource associated with the license configuration.
-	ResourceArn interface{}
+	ResourceArn pulumi.StringInput `pulumi:"resourceArn"`
 }
 
 // The set of arguments for constructing a Association resource.
 type AssociationArgs struct {
 	// ARN of the license configuration.
-	LicenseConfigurationArn interface{}
+	LicenseConfigurationArn pulumi.StringInput `pulumi:"licenseConfigurationArn"`
 	// ARN of the resource associated with the license configuration.
-	ResourceArn interface{}
+	ResourceArn pulumi.StringInput `pulumi:"resourceArn"`
 }

@@ -12,7 +12,32 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/neptune_cluster_parameter_group.html.markdown.
 type ClusterParameterGroup struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the neptune cluster parameter group.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The description of the neptune cluster parameter group. Defaults to "Managed by Pulumi".
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The family of the neptune cluster parameter group.
+	Family pulumi.StringOutput `pulumi:"family"`
+
+	// The name of the neptune parameter.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
+	NamePrefix pulumi.StringOutput `pulumi:"namePrefix"`
+
+	// A list of neptune parameters to apply.
+	Parameters pulumi.ArrayOutput `pulumi:"parameters"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewClusterParameterGroup registers a new resource with the given unique name, arguments, and options.
@@ -21,15 +46,9 @@ func NewClusterParameterGroup(ctx *pulumi.Context,
 	if args == nil || args.Family == nil {
 		return nil, errors.New("missing required argument 'Family'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["description"] = nil
-		inputs["family"] = nil
-		inputs["name"] = nil
-		inputs["namePrefix"] = nil
-		inputs["parameters"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["family"] = args.Family
 		inputs["name"] = args.Name
@@ -37,19 +56,19 @@ func NewClusterParameterGroup(ctx *pulumi.Context,
 		inputs["parameters"] = args.Parameters
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:neptune/clusterParameterGroup:ClusterParameterGroup", name, true, inputs, opts...)
+	var resource ClusterParameterGroup
+	err := ctx.RegisterResource("aws:neptune/clusterParameterGroup:ClusterParameterGroup", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ClusterParameterGroup{s: s}, nil
+	return &resource, nil
 }
 
 // GetClusterParameterGroup gets an existing ClusterParameterGroup resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetClusterParameterGroup(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ClusterParameterGroupState, opts ...pulumi.ResourceOpt) (*ClusterParameterGroup, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["description"] = state.Description
@@ -59,88 +78,53 @@ func GetClusterParameterGroup(ctx *pulumi.Context,
 		inputs["parameters"] = state.Parameters
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:neptune/clusterParameterGroup:ClusterParameterGroup", name, id, inputs, opts...)
+	var resource ClusterParameterGroup
+	err := ctx.ReadResource("aws:neptune/clusterParameterGroup:ClusterParameterGroup", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ClusterParameterGroup{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ClusterParameterGroup) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ClusterParameterGroup) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ClusterParameterGroup) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ClusterParameterGroup) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the neptune cluster parameter group.
-func (r *ClusterParameterGroup) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The description of the neptune cluster parameter group. Defaults to "Managed by Pulumi".
-func (r *ClusterParameterGroup) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The family of the neptune cluster parameter group.
-func (r *ClusterParameterGroup) Family() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["family"])
-}
-
-// The name of the neptune parameter.
-func (r *ClusterParameterGroup) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
-func (r *ClusterParameterGroup) NamePrefix() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["namePrefix"])
-}
-
-// A list of neptune parameters to apply.
-func (r *ClusterParameterGroup) Parameters() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["parameters"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *ClusterParameterGroup) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering ClusterParameterGroup resources.
 type ClusterParameterGroupState struct {
 	// The ARN of the neptune cluster parameter group.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The description of the neptune cluster parameter group. Defaults to "Managed by Pulumi".
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The family of the neptune cluster parameter group.
-	Family interface{}
+	Family pulumi.StringInput `pulumi:"family"`
 	// The name of the neptune parameter.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// A list of neptune parameters to apply.
-	Parameters interface{}
+	Parameters pulumi.ArrayInput `pulumi:"parameters"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a ClusterParameterGroup resource.
 type ClusterParameterGroupArgs struct {
 	// The description of the neptune cluster parameter group. Defaults to "Managed by Pulumi".
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The family of the neptune cluster parameter group.
-	Family interface{}
+	Family pulumi.StringInput `pulumi:"family"`
 	// The name of the neptune parameter.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// A list of neptune parameters to apply.
-	Parameters interface{}
+	Parameters pulumi.ArrayInput `pulumi:"parameters"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

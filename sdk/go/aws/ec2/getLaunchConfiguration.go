@@ -44,45 +44,45 @@ func LookupLaunchConfiguration(ctx *pulumi.Context, args *GetLaunchConfiguration
 // A collection of arguments for invoking getLaunchConfiguration.
 type GetLaunchConfigurationArgs struct {
 	// The name of the launch configuration.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getLaunchConfiguration.
 type GetLaunchConfigurationResult struct {
 	// Whether a Public IP address is associated with the instance.
-	AssociatePublicIpAddress interface{}
+	AssociatePublicIpAddress bool `pulumi:"associatePublicIpAddress"`
 	// The EBS Block Devices attached to the instance.
-	EbsBlockDevices interface{}
+	EbsBlockDevices []interface{} `pulumi:"ebsBlockDevices"`
 	// Whether the launched EC2 instance will be EBS-optimized.
-	EbsOptimized interface{}
+	EbsOptimized bool `pulumi:"ebsOptimized"`
 	// Whether Detailed Monitoring is Enabled.
-	EnableMonitoring interface{}
+	EnableMonitoring bool `pulumi:"enableMonitoring"`
 	// The Ephemeral volumes on the instance.
-	EphemeralBlockDevices interface{}
+	EphemeralBlockDevices []interface{} `pulumi:"ephemeralBlockDevices"`
 	// The IAM Instance Profile to associate with launched instances.
-	IamInstanceProfile interface{}
+	IamInstanceProfile string `pulumi:"iamInstanceProfile"`
 	// The EC2 Image ID of the instance.
-	ImageId interface{}
+	ImageId string `pulumi:"imageId"`
 	// The Instance Type of the instance to launch.
-	InstanceType interface{}
+	InstanceType string `pulumi:"instanceType"`
 	// The Key Name that should be used for the instance.
-	KeyName interface{}
+	KeyName string `pulumi:"keyName"`
 	// The Name of the launch configuration.
-	Name interface{}
+	Name string `pulumi:"name"`
 	// The Tenancy of the instance.
-	PlacementTenancy interface{}
+	PlacementTenancy string `pulumi:"placementTenancy"`
 	// The Root Block Device of the instance.
-	RootBlockDevices interface{}
+	RootBlockDevices []interface{} `pulumi:"rootBlockDevices"`
 	// A list of associated Security Group IDS.
-	SecurityGroups interface{}
+	SecurityGroups []interface{} `pulumi:"securityGroups"`
 	// The Price to use for reserving Spot instances.
-	SpotPrice interface{}
+	SpotPrice string `pulumi:"spotPrice"`
 	// The User Data of the instance.
-	UserData interface{}
+	UserData string `pulumi:"userData"`
 	// The ID of a ClassicLink-enabled VPC.
-	VpcClassicLinkId interface{}
+	VpcClassicLinkId string `pulumi:"vpcClassicLinkId"`
 	// The IDs of one or more Security Groups for the specified ClassicLink-enabled VPC.
-	VpcClassicLinkSecurityGroups interface{}
+	VpcClassicLinkSecurityGroups []interface{} `pulumi:"vpcClassicLinkSecurityGroups"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

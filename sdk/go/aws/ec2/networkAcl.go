@@ -19,7 +19,31 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/network_acl.html.markdown.
 type NetworkAcl struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Specifies an egress rule. Parameters defined below.
+	// This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
+	Egress pulumi.ArrayOutput `pulumi:"egress"`
+
+	// Specifies an ingress rule. Parameters defined below.
+	// This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
+	Ingress pulumi.ArrayOutput `pulumi:"ingress"`
+
+	// The ID of the AWS account that owns the network ACL.
+	OwnerId pulumi.StringOutput `pulumi:"ownerId"`
+
+	// A list of Subnet IDs to apply the ACL to
+	SubnetIds pulumi.ArrayOutput `pulumi:"subnetIds"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// The ID of the associated VPC.
+	VpcId pulumi.StringOutput `pulumi:"vpcId"`
 }
 
 // NewNetworkAcl registers a new resource with the given unique name, arguments, and options.
@@ -28,33 +52,27 @@ func NewNetworkAcl(ctx *pulumi.Context,
 	if args == nil || args.VpcId == nil {
 		return nil, errors.New("missing required argument 'VpcId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["egress"] = nil
-		inputs["ingress"] = nil
-		inputs["subnetIds"] = nil
-		inputs["tags"] = nil
-		inputs["vpcId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["egress"] = args.Egress
 		inputs["ingress"] = args.Ingress
 		inputs["subnetIds"] = args.SubnetIds
 		inputs["tags"] = args.Tags
 		inputs["vpcId"] = args.VpcId
 	}
-	inputs["ownerId"] = nil
-	s, err := ctx.RegisterResource("aws:ec2/networkAcl:NetworkAcl", name, true, inputs, opts...)
+	var resource NetworkAcl
+	err := ctx.RegisterResource("aws:ec2/networkAcl:NetworkAcl", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &NetworkAcl{s: s}, nil
+	return &resource, nil
 }
 
 // GetNetworkAcl gets an existing NetworkAcl resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetNetworkAcl(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *NetworkAclState, opts ...pulumi.ResourceOpt) (*NetworkAcl, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["egress"] = state.Egress
 		inputs["ingress"] = state.Ingress
@@ -63,85 +81,53 @@ func GetNetworkAcl(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["vpcId"] = state.VpcId
 	}
-	s, err := ctx.ReadResource("aws:ec2/networkAcl:NetworkAcl", name, id, inputs, opts...)
+	var resource NetworkAcl
+	err := ctx.ReadResource("aws:ec2/networkAcl:NetworkAcl", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &NetworkAcl{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *NetworkAcl) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *NetworkAcl) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *NetworkAcl) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *NetworkAcl) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Specifies an egress rule. Parameters defined below.
-// This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-func (r *NetworkAcl) Egress() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["egress"])
-}
-
-// Specifies an ingress rule. Parameters defined below.
-// This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-func (r *NetworkAcl) Ingress() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["ingress"])
-}
-
-// The ID of the AWS account that owns the network ACL.
-func (r *NetworkAcl) OwnerId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ownerId"])
-}
-
-// A list of Subnet IDs to apply the ACL to
-func (r *NetworkAcl) SubnetIds() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["subnetIds"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *NetworkAcl) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// The ID of the associated VPC.
-func (r *NetworkAcl) VpcId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpcId"])
-}
-
 // Input properties used for looking up and filtering NetworkAcl resources.
 type NetworkAclState struct {
 	// Specifies an egress rule. Parameters defined below.
 	// This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-	Egress interface{}
+	Egress pulumi.ArrayInput `pulumi:"egress"`
 	// Specifies an ingress rule. Parameters defined below.
 	// This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-	Ingress interface{}
+	Ingress pulumi.ArrayInput `pulumi:"ingress"`
 	// The ID of the AWS account that owns the network ACL.
-	OwnerId interface{}
+	OwnerId pulumi.StringInput `pulumi:"ownerId"`
 	// A list of Subnet IDs to apply the ACL to
-	SubnetIds interface{}
+	SubnetIds pulumi.ArrayInput `pulumi:"subnetIds"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The ID of the associated VPC.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // The set of arguments for constructing a NetworkAcl resource.
 type NetworkAclArgs struct {
 	// Specifies an egress rule. Parameters defined below.
 	// This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-	Egress interface{}
+	Egress pulumi.ArrayInput `pulumi:"egress"`
 	// Specifies an ingress rule. Parameters defined below.
 	// This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-	Ingress interface{}
+	Ingress pulumi.ArrayInput `pulumi:"ingress"`
 	// A list of Subnet IDs to apply the ACL to
-	SubnetIds interface{}
+	SubnetIds pulumi.ArrayInput `pulumi:"subnetIds"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The ID of the associated VPC.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }

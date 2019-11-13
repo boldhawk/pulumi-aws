@@ -52,57 +52,57 @@ func LookupFunction(ctx *pulumi.Context, args *GetFunctionArgs) (*GetFunctionRes
 // A collection of arguments for invoking getFunction.
 type GetFunctionArgs struct {
 	// Name of the lambda function.
-	FunctionName interface{}
+	FunctionName pulumi.StringInput `pulumi:"functionName"`
 	// Alias name or version number of the lambda function. e.g. `$LATEST`, `my-alias`, or `1`
-	Qualifier interface{}
-	Tags interface{}
+	Qualifier pulumi.StringInput `pulumi:"qualifier"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getFunction.
 type GetFunctionResult struct {
 	// Unqualified (no `:QUALIFIER` or `:VERSION` suffix) Amazon Resource Name (ARN) identifying your Lambda Function. See also `qualifiedArn`.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// Configure the function's *dead letter queue*.
-	DeadLetterConfig interface{}
+	DeadLetterConfig interface{} `pulumi:"deadLetterConfig"`
 	// Description of what your Lambda Function does.
-	Description interface{}
+	Description string `pulumi:"description"`
 	// The Lambda environment's configuration settings.
-	Environment interface{}
-	FunctionName interface{}
+	Environment interface{} `pulumi:"environment"`
+	FunctionName string `pulumi:"functionName"`
 	// The function entrypoint in your code.
-	Handler interface{}
+	Handler string `pulumi:"handler"`
 	// The ARN to be used for invoking Lambda Function from API Gateway.
-	InvokeArn interface{}
+	InvokeArn string `pulumi:"invokeArn"`
 	// The ARN for the KMS encryption key.
-	KmsKeyArn interface{}
+	KmsKeyArn string `pulumi:"kmsKeyArn"`
 	// The date this resource was last modified.
-	LastModified interface{}
+	LastModified string `pulumi:"lastModified"`
 	// A list of Lambda Layer ARNs attached to your Lambda Function.
-	Layers interface{}
+	Layers []interface{} `pulumi:"layers"`
 	// Amount of memory in MB your Lambda Function can use at runtime.
-	MemorySize interface{}
+	MemorySize int `pulumi:"memorySize"`
 	// Qualified (`:QUALIFIER` or `:VERSION` suffix) Amazon Resource Name (ARN) identifying your Lambda Function. See also `arn`.
-	QualifiedArn interface{}
-	Qualifier interface{}
+	QualifiedArn string `pulumi:"qualifiedArn"`
+	Qualifier string `pulumi:"qualifier"`
 	// The amount of reserved concurrent executions for this lambda function or `-1` if unreserved.
-	ReservedConcurrentExecutions interface{}
+	ReservedConcurrentExecutions int `pulumi:"reservedConcurrentExecutions"`
 	// IAM role attached to the Lambda Function.
-	Role interface{}
+	Role string `pulumi:"role"`
 	// The runtime environment for the Lambda function..
-	Runtime interface{}
+	Runtime string `pulumi:"runtime"`
 	// Base64-encoded representation of raw SHA-256 sum of the zip file.
-	SourceCodeHash interface{}
+	SourceCodeHash string `pulumi:"sourceCodeHash"`
 	// The size in bytes of the function .zip file.
-	SourceCodeSize interface{}
-	Tags interface{}
+	SourceCodeSize int `pulumi:"sourceCodeSize"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The function execution time at which Lambda should terminate the function.
-	Timeout interface{}
+	Timeout int `pulumi:"timeout"`
 	// Tracing settings of the function.
-	TracingConfig interface{}
+	TracingConfig interface{} `pulumi:"tracingConfig"`
 	// The version of the Lambda function.
-	Version interface{}
+	Version string `pulumi:"version"`
 	// VPC configuration associated with your Lambda function.
-	VpcConfig interface{}
+	VpcConfig interface{} `pulumi:"vpcConfig"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

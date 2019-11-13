@@ -40,29 +40,29 @@ func LookupVpnGateway(ctx *pulumi.Context, args *GetVpnGatewayArgs) (*GetVpnGate
 // A collection of arguments for invoking getVpnGateway.
 type GetVpnGatewayArgs struct {
 	// The Autonomous System Number (ASN) for the Amazon side of the specific VPN Gateway to retrieve.
-	AmazonSideAsn interface{}
+	AmazonSideAsn pulumi.StringInput `pulumi:"amazonSideAsn"`
 	// The ID of a VPC attached to the specific VPN Gateway to retrieve.
-	AttachedVpcId interface{}
+	AttachedVpcId pulumi.StringInput `pulumi:"attachedVpcId"`
 	// The Availability Zone of the specific VPN Gateway to retrieve.
-	AvailabilityZone interface{}
+	AvailabilityZone pulumi.StringInput `pulumi:"availabilityZone"`
 	// Custom filter block as described below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The ID of the specific VPN Gateway to retrieve.
-	Id interface{}
+	Id pulumi.StringInput `pulumi:"id"`
 	// The state of the specific VPN Gateway to retrieve.
-	State interface{}
+	State pulumi.StringInput `pulumi:"state"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired VPN Gateway.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpnGateway.
 type GetVpnGatewayResult struct {
-	AmazonSideAsn interface{}
-	AttachedVpcId interface{}
-	AvailabilityZone interface{}
-	Filters interface{}
-	Id interface{}
-	State interface{}
-	Tags interface{}
+	AmazonSideAsn string `pulumi:"amazonSideAsn"`
+	AttachedVpcId string `pulumi:"attachedVpcId"`
+	AvailabilityZone string `pulumi:"availabilityZone"`
+	Filters []interface{} `pulumi:"filters"`
+	Id string `pulumi:"id"`
+	State string `pulumi:"state"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }

@@ -33,21 +33,21 @@ func LookupPolicy(ctx *pulumi.Context, args *GetPolicyArgs) (*GetPolicyResult, e
 // A collection of arguments for invoking getPolicy.
 type GetPolicyArgs struct {
 	// ARN of the IAM policy.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 }
 
 // A collection of values returned by getPolicy.
 type GetPolicyResult struct {
 	// The Amazon Resource Name (ARN) specifying the policy.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// The description of the policy.
-	Description interface{}
+	Description string `pulumi:"description"`
 	// The name of the IAM policy.
-	Name interface{}
+	Name string `pulumi:"name"`
 	// The path to the policy.
-	Path interface{}
+	Path string `pulumi:"path"`
 	// The policy document of the policy.
-	Policy interface{}
+	Policy string `pulumi:"policy"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

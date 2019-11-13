@@ -9,7 +9,51 @@ import (
 )
 
 type TopicRule struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the topic rule
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	CloudwatchAlarm pulumi.AnyOutput `pulumi:"cloudwatchAlarm"`
+
+	CloudwatchMetric pulumi.AnyOutput `pulumi:"cloudwatchMetric"`
+
+	// The description of the rule.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	Dynamodb pulumi.AnyOutput `pulumi:"dynamodb"`
+
+	Elasticsearch pulumi.AnyOutput `pulumi:"elasticsearch"`
+
+	// Specifies whether the rule is enabled.
+	Enabled pulumi.BoolOutput `pulumi:"enabled"`
+
+	Firehose pulumi.AnyOutput `pulumi:"firehose"`
+
+	Kinesis pulumi.AnyOutput `pulumi:"kinesis"`
+
+	Lambda pulumi.AnyOutput `pulumi:"lambda"`
+
+	// The name of the rule.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	Republish pulumi.AnyOutput `pulumi:"republish"`
+
+	S3 pulumi.AnyOutput `pulumi:"s3"`
+
+	Sns pulumi.AnyOutput `pulumi:"sns"`
+
+	// The SQL statement used to query the topic. For more information, see AWS IoT SQL Reference (http://docs.aws.amazon.com/iot/latest/developerguide/iot-rules.html#aws-iot-sql-reference) in the AWS IoT Developer Guide.
+	Sql pulumi.StringOutput `pulumi:"sql"`
+
+	// The version of the SQL rules engine to use when evaluating the rule.
+	SqlVersion pulumi.StringOutput `pulumi:"sqlVersion"`
+
+	Sqs pulumi.AnyOutput `pulumi:"sqs"`
 }
 
 // NewTopicRule registers a new resource with the given unique name, arguments, and options.
@@ -24,25 +68,9 @@ func NewTopicRule(ctx *pulumi.Context,
 	if args == nil || args.SqlVersion == nil {
 		return nil, errors.New("missing required argument 'SqlVersion'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["cloudwatchAlarm"] = nil
-		inputs["cloudwatchMetric"] = nil
-		inputs["description"] = nil
-		inputs["dynamodb"] = nil
-		inputs["elasticsearch"] = nil
-		inputs["enabled"] = nil
-		inputs["firehose"] = nil
-		inputs["kinesis"] = nil
-		inputs["lambda"] = nil
-		inputs["name"] = nil
-		inputs["republish"] = nil
-		inputs["s3"] = nil
-		inputs["sns"] = nil
-		inputs["sql"] = nil
-		inputs["sqlVersion"] = nil
-		inputs["sqs"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["cloudwatchAlarm"] = args.CloudwatchAlarm
 		inputs["cloudwatchMetric"] = args.CloudwatchMetric
 		inputs["description"] = args.Description
@@ -60,19 +88,19 @@ func NewTopicRule(ctx *pulumi.Context,
 		inputs["sqlVersion"] = args.SqlVersion
 		inputs["sqs"] = args.Sqs
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:iot/topicRule:TopicRule", name, true, inputs, opts...)
+	var resource TopicRule
+	err := ctx.RegisterResource("aws:iot/topicRule:TopicRule", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &TopicRule{s: s}, nil
+	return &resource, nil
 }
 
 // GetTopicRule gets an existing TopicRule resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetTopicRule(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *TopicRuleState, opts ...pulumi.ResourceOpt) (*TopicRule, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["cloudwatchAlarm"] = state.CloudwatchAlarm
@@ -92,145 +120,71 @@ func GetTopicRule(ctx *pulumi.Context,
 		inputs["sqlVersion"] = state.SqlVersion
 		inputs["sqs"] = state.Sqs
 	}
-	s, err := ctx.ReadResource("aws:iot/topicRule:TopicRule", name, id, inputs, opts...)
+	var resource TopicRule
+	err := ctx.ReadResource("aws:iot/topicRule:TopicRule", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &TopicRule{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *TopicRule) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *TopicRule) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *TopicRule) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *TopicRule) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the topic rule
-func (r *TopicRule) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-func (r *TopicRule) CloudwatchAlarm() *pulumi.Output {
-	return r.s.State["cloudwatchAlarm"]
-}
-
-func (r *TopicRule) CloudwatchMetric() *pulumi.Output {
-	return r.s.State["cloudwatchMetric"]
-}
-
-// The description of the rule.
-func (r *TopicRule) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-func (r *TopicRule) Dynamodb() *pulumi.Output {
-	return r.s.State["dynamodb"]
-}
-
-func (r *TopicRule) Elasticsearch() *pulumi.Output {
-	return r.s.State["elasticsearch"]
-}
-
-// Specifies whether the rule is enabled.
-func (r *TopicRule) Enabled() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["enabled"])
-}
-
-func (r *TopicRule) Firehose() *pulumi.Output {
-	return r.s.State["firehose"]
-}
-
-func (r *TopicRule) Kinesis() *pulumi.Output {
-	return r.s.State["kinesis"]
-}
-
-func (r *TopicRule) Lambda() *pulumi.Output {
-	return r.s.State["lambda"]
-}
-
-// The name of the rule.
-func (r *TopicRule) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-func (r *TopicRule) Republish() *pulumi.Output {
-	return r.s.State["republish"]
-}
-
-func (r *TopicRule) S3() *pulumi.Output {
-	return r.s.State["s3"]
-}
-
-func (r *TopicRule) Sns() *pulumi.Output {
-	return r.s.State["sns"]
-}
-
-// The SQL statement used to query the topic. For more information, see AWS IoT SQL Reference (http://docs.aws.amazon.com/iot/latest/developerguide/iot-rules.html#aws-iot-sql-reference) in the AWS IoT Developer Guide.
-func (r *TopicRule) Sql() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["sql"])
-}
-
-// The version of the SQL rules engine to use when evaluating the rule.
-func (r *TopicRule) SqlVersion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["sqlVersion"])
-}
-
-func (r *TopicRule) Sqs() *pulumi.Output {
-	return r.s.State["sqs"]
-}
-
 // Input properties used for looking up and filtering TopicRule resources.
 type TopicRuleState struct {
 	// The ARN of the topic rule
-	Arn interface{}
-	CloudwatchAlarm interface{}
-	CloudwatchMetric interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
+	CloudwatchAlarm pulumi.AnyInput `pulumi:"cloudwatchAlarm"`
+	CloudwatchMetric pulumi.AnyInput `pulumi:"cloudwatchMetric"`
 	// The description of the rule.
-	Description interface{}
-	Dynamodb interface{}
-	Elasticsearch interface{}
+	Description pulumi.StringInput `pulumi:"description"`
+	Dynamodb pulumi.AnyInput `pulumi:"dynamodb"`
+	Elasticsearch pulumi.AnyInput `pulumi:"elasticsearch"`
 	// Specifies whether the rule is enabled.
-	Enabled interface{}
-	Firehose interface{}
-	Kinesis interface{}
-	Lambda interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
+	Firehose pulumi.AnyInput `pulumi:"firehose"`
+	Kinesis pulumi.AnyInput `pulumi:"kinesis"`
+	Lambda pulumi.AnyInput `pulumi:"lambda"`
 	// The name of the rule.
-	Name interface{}
-	Republish interface{}
-	S3 interface{}
-	Sns interface{}
+	Name pulumi.StringInput `pulumi:"name"`
+	Republish pulumi.AnyInput `pulumi:"republish"`
+	S3 pulumi.AnyInput `pulumi:"s3"`
+	Sns pulumi.AnyInput `pulumi:"sns"`
 	// The SQL statement used to query the topic. For more information, see AWS IoT SQL Reference (http://docs.aws.amazon.com/iot/latest/developerguide/iot-rules.html#aws-iot-sql-reference) in the AWS IoT Developer Guide.
-	Sql interface{}
+	Sql pulumi.StringInput `pulumi:"sql"`
 	// The version of the SQL rules engine to use when evaluating the rule.
-	SqlVersion interface{}
-	Sqs interface{}
+	SqlVersion pulumi.StringInput `pulumi:"sqlVersion"`
+	Sqs pulumi.AnyInput `pulumi:"sqs"`
 }
 
 // The set of arguments for constructing a TopicRule resource.
 type TopicRuleArgs struct {
-	CloudwatchAlarm interface{}
-	CloudwatchMetric interface{}
+	CloudwatchAlarm pulumi.AnyInput `pulumi:"cloudwatchAlarm"`
+	CloudwatchMetric pulumi.AnyInput `pulumi:"cloudwatchMetric"`
 	// The description of the rule.
-	Description interface{}
-	Dynamodb interface{}
-	Elasticsearch interface{}
+	Description pulumi.StringInput `pulumi:"description"`
+	Dynamodb pulumi.AnyInput `pulumi:"dynamodb"`
+	Elasticsearch pulumi.AnyInput `pulumi:"elasticsearch"`
 	// Specifies whether the rule is enabled.
-	Enabled interface{}
-	Firehose interface{}
-	Kinesis interface{}
-	Lambda interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
+	Firehose pulumi.AnyInput `pulumi:"firehose"`
+	Kinesis pulumi.AnyInput `pulumi:"kinesis"`
+	Lambda pulumi.AnyInput `pulumi:"lambda"`
 	// The name of the rule.
-	Name interface{}
-	Republish interface{}
-	S3 interface{}
-	Sns interface{}
+	Name pulumi.StringInput `pulumi:"name"`
+	Republish pulumi.AnyInput `pulumi:"republish"`
+	S3 pulumi.AnyInput `pulumi:"s3"`
+	Sns pulumi.AnyInput `pulumi:"sns"`
 	// The SQL statement used to query the topic. For more information, see AWS IoT SQL Reference (http://docs.aws.amazon.com/iot/latest/developerguide/iot-rules.html#aws-iot-sql-reference) in the AWS IoT Developer Guide.
-	Sql interface{}
+	Sql pulumi.StringInput `pulumi:"sql"`
 	// The version of the SQL rules engine to use when evaluating the rule.
-	SqlVersion interface{}
-	Sqs interface{}
+	SqlVersion pulumi.StringInput `pulumi:"sqlVersion"`
+	Sqs pulumi.AnyInput `pulumi:"sqs"`
 }

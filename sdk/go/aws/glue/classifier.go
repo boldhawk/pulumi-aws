@@ -13,38 +13,53 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/glue_classifier.html.markdown.
 type Classifier struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// A classifier for Csv content. Defined below.
+	CsvClassifier pulumi.AnyOutput `pulumi:"csvClassifier"`
+
+	// A classifier that uses grok patterns. Defined below.
+	GrokClassifier pulumi.AnyOutput `pulumi:"grokClassifier"`
+
+	// A classifier for JSON content. Defined below.
+	JsonClassifier pulumi.AnyOutput `pulumi:"jsonClassifier"`
+
+	// The name of the classifier.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A classifier for XML content. Defined below.
+	XmlClassifier pulumi.AnyOutput `pulumi:"xmlClassifier"`
 }
 
 // NewClassifier registers a new resource with the given unique name, arguments, and options.
 func NewClassifier(ctx *pulumi.Context,
 	name string, args *ClassifierArgs, opts ...pulumi.ResourceOpt) (*Classifier, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["csvClassifier"] = nil
-		inputs["grokClassifier"] = nil
-		inputs["jsonClassifier"] = nil
-		inputs["name"] = nil
-		inputs["xmlClassifier"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["csvClassifier"] = args.CsvClassifier
 		inputs["grokClassifier"] = args.GrokClassifier
 		inputs["jsonClassifier"] = args.JsonClassifier
 		inputs["name"] = args.Name
 		inputs["xmlClassifier"] = args.XmlClassifier
 	}
-	s, err := ctx.RegisterResource("aws:glue/classifier:Classifier", name, true, inputs, opts...)
+	var resource Classifier
+	err := ctx.RegisterResource("aws:glue/classifier:Classifier", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Classifier{s: s}, nil
+	return &resource, nil
 }
 
 // GetClassifier gets an existing Classifier resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetClassifier(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ClassifierState, opts ...pulumi.ResourceOpt) (*Classifier, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["csvClassifier"] = state.CsvClassifier
 		inputs["grokClassifier"] = state.GrokClassifier
@@ -52,72 +67,47 @@ func GetClassifier(ctx *pulumi.Context,
 		inputs["name"] = state.Name
 		inputs["xmlClassifier"] = state.XmlClassifier
 	}
-	s, err := ctx.ReadResource("aws:glue/classifier:Classifier", name, id, inputs, opts...)
+	var resource Classifier
+	err := ctx.ReadResource("aws:glue/classifier:Classifier", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Classifier{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Classifier) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Classifier) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Classifier) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Classifier) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// A classifier for Csv content. Defined below.
-func (r *Classifier) CsvClassifier() *pulumi.Output {
-	return r.s.State["csvClassifier"]
-}
-
-// A classifier that uses grok patterns. Defined below.
-func (r *Classifier) GrokClassifier() *pulumi.Output {
-	return r.s.State["grokClassifier"]
-}
-
-// A classifier for JSON content. Defined below.
-func (r *Classifier) JsonClassifier() *pulumi.Output {
-	return r.s.State["jsonClassifier"]
-}
-
-// The name of the classifier.
-func (r *Classifier) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A classifier for XML content. Defined below.
-func (r *Classifier) XmlClassifier() *pulumi.Output {
-	return r.s.State["xmlClassifier"]
-}
-
 // Input properties used for looking up and filtering Classifier resources.
 type ClassifierState struct {
 	// A classifier for Csv content. Defined below.
-	CsvClassifier interface{}
+	CsvClassifier pulumi.AnyInput `pulumi:"csvClassifier"`
 	// A classifier that uses grok patterns. Defined below.
-	GrokClassifier interface{}
+	GrokClassifier pulumi.AnyInput `pulumi:"grokClassifier"`
 	// A classifier for JSON content. Defined below.
-	JsonClassifier interface{}
+	JsonClassifier pulumi.AnyInput `pulumi:"jsonClassifier"`
 	// The name of the classifier.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A classifier for XML content. Defined below.
-	XmlClassifier interface{}
+	XmlClassifier pulumi.AnyInput `pulumi:"xmlClassifier"`
 }
 
 // The set of arguments for constructing a Classifier resource.
 type ClassifierArgs struct {
 	// A classifier for Csv content. Defined below.
-	CsvClassifier interface{}
+	CsvClassifier pulumi.AnyInput `pulumi:"csvClassifier"`
 	// A classifier that uses grok patterns. Defined below.
-	GrokClassifier interface{}
+	GrokClassifier pulumi.AnyInput `pulumi:"grokClassifier"`
 	// A classifier for JSON content. Defined below.
-	JsonClassifier interface{}
+	JsonClassifier pulumi.AnyInput `pulumi:"jsonClassifier"`
 	// The name of the classifier.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A classifier for XML content. Defined below.
-	XmlClassifier interface{}
+	XmlClassifier pulumi.AnyInput `pulumi:"xmlClassifier"`
 }

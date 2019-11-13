@@ -12,7 +12,35 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/codepipeline_webhook.html.markdown.
 type Webhook struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The type of authentication  to use. One of `IP`, `GITHUB_HMAC`, or `UNAUTHENTICATED`.
+	Authentication pulumi.StringOutput `pulumi:"authentication"`
+
+	// An `auth` block. Required for `IP` and `GITHUB_HMAC`. Auth blocks are documented below.
+	AuthenticationConfiguration pulumi.AnyOutput `pulumi:"authenticationConfiguration"`
+
+	// One or more `filter` blocks. Filter blocks are documented below.
+	Filters pulumi.ArrayOutput `pulumi:"filters"`
+
+	// The name of the webhook.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// The name of the action in a pipeline you want to connect to the webhook. The action must be from the source (first) stage of the pipeline.
+	TargetAction pulumi.StringOutput `pulumi:"targetAction"`
+
+	// The name of the pipeline.
+	TargetPipeline pulumi.StringOutput `pulumi:"targetPipeline"`
+
+	// The CodePipeline webhook's URL. POST events to this endpoint to trigger the target.
+	Url pulumi.StringOutput `pulumi:"url"`
 }
 
 // NewWebhook registers a new resource with the given unique name, arguments, and options.
@@ -30,16 +58,9 @@ func NewWebhook(ctx *pulumi.Context,
 	if args == nil || args.TargetPipeline == nil {
 		return nil, errors.New("missing required argument 'TargetPipeline'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["authentication"] = nil
-		inputs["authenticationConfiguration"] = nil
-		inputs["filters"] = nil
-		inputs["name"] = nil
-		inputs["tags"] = nil
-		inputs["targetAction"] = nil
-		inputs["targetPipeline"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["authentication"] = args.Authentication
 		inputs["authenticationConfiguration"] = args.AuthenticationConfiguration
 		inputs["filters"] = args.Filters
@@ -48,19 +69,19 @@ func NewWebhook(ctx *pulumi.Context,
 		inputs["targetAction"] = args.TargetAction
 		inputs["targetPipeline"] = args.TargetPipeline
 	}
-	inputs["url"] = nil
-	s, err := ctx.RegisterResource("aws:codepipeline/webhook:Webhook", name, true, inputs, opts...)
+	var resource Webhook
+	err := ctx.RegisterResource("aws:codepipeline/webhook:Webhook", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Webhook{s: s}, nil
+	return &resource, nil
 }
 
 // GetWebhook gets an existing Webhook resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetWebhook(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *WebhookState, opts ...pulumi.ResourceOpt) (*Webhook, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["authentication"] = state.Authentication
 		inputs["authenticationConfiguration"] = state.AuthenticationConfiguration
@@ -71,97 +92,57 @@ func GetWebhook(ctx *pulumi.Context,
 		inputs["targetPipeline"] = state.TargetPipeline
 		inputs["url"] = state.Url
 	}
-	s, err := ctx.ReadResource("aws:codepipeline/webhook:Webhook", name, id, inputs, opts...)
+	var resource Webhook
+	err := ctx.ReadResource("aws:codepipeline/webhook:Webhook", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Webhook{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Webhook) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Webhook) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Webhook) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Webhook) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The type of authentication  to use. One of `IP`, `GITHUB_HMAC`, or `UNAUTHENTICATED`.
-func (r *Webhook) Authentication() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["authentication"])
-}
-
-// An `auth` block. Required for `IP` and `GITHUB_HMAC`. Auth blocks are documented below.
-func (r *Webhook) AuthenticationConfiguration() *pulumi.Output {
-	return r.s.State["authenticationConfiguration"]
-}
-
-// One or more `filter` blocks. Filter blocks are documented below.
-func (r *Webhook) Filters() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["filters"])
-}
-
-// The name of the webhook.
-func (r *Webhook) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *Webhook) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// The name of the action in a pipeline you want to connect to the webhook. The action must be from the source (first) stage of the pipeline.
-func (r *Webhook) TargetAction() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["targetAction"])
-}
-
-// The name of the pipeline.
-func (r *Webhook) TargetPipeline() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["targetPipeline"])
-}
-
-// The CodePipeline webhook's URL. POST events to this endpoint to trigger the target.
-func (r *Webhook) Url() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["url"])
-}
-
 // Input properties used for looking up and filtering Webhook resources.
 type WebhookState struct {
 	// The type of authentication  to use. One of `IP`, `GITHUB_HMAC`, or `UNAUTHENTICATED`.
-	Authentication interface{}
+	Authentication pulumi.StringInput `pulumi:"authentication"`
 	// An `auth` block. Required for `IP` and `GITHUB_HMAC`. Auth blocks are documented below.
-	AuthenticationConfiguration interface{}
+	AuthenticationConfiguration pulumi.AnyInput `pulumi:"authenticationConfiguration"`
 	// One or more `filter` blocks. Filter blocks are documented below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The name of the webhook.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The name of the action in a pipeline you want to connect to the webhook. The action must be from the source (first) stage of the pipeline.
-	TargetAction interface{}
+	TargetAction pulumi.StringInput `pulumi:"targetAction"`
 	// The name of the pipeline.
-	TargetPipeline interface{}
+	TargetPipeline pulumi.StringInput `pulumi:"targetPipeline"`
 	// The CodePipeline webhook's URL. POST events to this endpoint to trigger the target.
-	Url interface{}
+	Url pulumi.StringInput `pulumi:"url"`
 }
 
 // The set of arguments for constructing a Webhook resource.
 type WebhookArgs struct {
 	// The type of authentication  to use. One of `IP`, `GITHUB_HMAC`, or `UNAUTHENTICATED`.
-	Authentication interface{}
+	Authentication pulumi.StringInput `pulumi:"authentication"`
 	// An `auth` block. Required for `IP` and `GITHUB_HMAC`. Auth blocks are documented below.
-	AuthenticationConfiguration interface{}
+	AuthenticationConfiguration pulumi.AnyInput `pulumi:"authenticationConfiguration"`
 	// One or more `filter` blocks. Filter blocks are documented below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The name of the webhook.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The name of the action in a pipeline you want to connect to the webhook. The action must be from the source (first) stage of the pipeline.
-	TargetAction interface{}
+	TargetAction pulumi.StringInput `pulumi:"targetAction"`
 	// The name of the pipeline.
-	TargetPipeline interface{}
+	TargetPipeline pulumi.StringInput `pulumi:"targetPipeline"`
 }

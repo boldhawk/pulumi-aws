@@ -65,86 +65,86 @@ func LookupInstance(ctx *pulumi.Context, args *GetInstanceArgs) (*GetInstanceRes
 // A collection of arguments for invoking getInstance.
 type GetInstanceArgs struct {
 	// The name of the RDS instance
-	DbInstanceIdentifier interface{}
+	DbInstanceIdentifier pulumi.StringInput `pulumi:"dbInstanceIdentifier"`
 }
 
 // A collection of values returned by getInstance.
 type GetInstanceResult struct {
 	// The hostname of the RDS instance. See also `endpoint` and `port`.
-	Address interface{}
+	Address string `pulumi:"address"`
 	// Specifies the allocated storage size specified in gigabytes.
-	AllocatedStorage interface{}
+	AllocatedStorage int `pulumi:"allocatedStorage"`
 	// Indicates that minor version patches are applied automatically.
-	AutoMinorVersionUpgrade interface{}
+	AutoMinorVersionUpgrade bool `pulumi:"autoMinorVersionUpgrade"`
 	// Specifies the name of the Availability Zone the DB instance is located in.
-	AvailabilityZone interface{}
+	AvailabilityZone string `pulumi:"availabilityZone"`
 	// Specifies the number of days for which automatic DB snapshots are retained.
-	BackupRetentionPeriod interface{}
+	BackupRetentionPeriod int `pulumi:"backupRetentionPeriod"`
 	// Specifies the identifier of the CA certificate for the DB instance.
-	CaCertIdentifier interface{}
+	CaCertIdentifier string `pulumi:"caCertIdentifier"`
 	// If the DB instance is a member of a DB cluster, contains the name of the DB cluster that the DB instance is a member of.
-	DbClusterIdentifier interface{}
+	DbClusterIdentifier string `pulumi:"dbClusterIdentifier"`
 	// The Amazon Resource Name (ARN) for the DB instance.
-	DbInstanceArn interface{}
+	DbInstanceArn string `pulumi:"dbInstanceArn"`
 	// Contains the name of the compute and memory capacity class of the DB instance.
-	DbInstanceClass interface{}
-	DbInstanceIdentifier interface{}
+	DbInstanceClass string `pulumi:"dbInstanceClass"`
+	DbInstanceIdentifier string `pulumi:"dbInstanceIdentifier"`
 	// Specifies the port that the DB instance listens on.
-	DbInstancePort interface{}
+	DbInstancePort int `pulumi:"dbInstancePort"`
 	// Contains the name of the initial database of this instance that was provided at create time, if one was specified when the DB instance was created. This same name is returned for the life of the DB instance.
-	DbName interface{}
+	DbName string `pulumi:"dbName"`
 	// Provides the list of DB parameter groups applied to this DB instance.
-	DbParameterGroups interface{}
+	DbParameterGroups []interface{} `pulumi:"dbParameterGroups"`
 	// Provides List of DB security groups associated to this DB instance.
-	DbSecurityGroups interface{}
+	DbSecurityGroups []interface{} `pulumi:"dbSecurityGroups"`
 	// Specifies the name of the subnet group associated with the DB instance.
-	DbSubnetGroup interface{}
+	DbSubnetGroup string `pulumi:"dbSubnetGroup"`
 	// List of log types to export to cloudwatch.
-	EnabledCloudwatchLogsExports interface{}
+	EnabledCloudwatchLogsExports []interface{} `pulumi:"enabledCloudwatchLogsExports"`
 	// The connection endpoint in `address:port` format.
-	Endpoint interface{}
+	Endpoint string `pulumi:"endpoint"`
 	// Provides the name of the database engine to be used for this DB instance.
-	Engine interface{}
+	Engine string `pulumi:"engine"`
 	// Indicates the database engine version.
-	EngineVersion interface{}
+	EngineVersion string `pulumi:"engineVersion"`
 	// The canonical hosted zone ID of the DB instance (to be used in a Route 53 Alias record).
-	HostedZoneId interface{}
+	HostedZoneId string `pulumi:"hostedZoneId"`
 	// Specifies the Provisioned IOPS (I/O operations per second) value.
-	Iops interface{}
+	Iops int `pulumi:"iops"`
 	// If StorageEncrypted is true, the KMS key identifier for the encrypted DB instance.
-	KmsKeyId interface{}
+	KmsKeyId string `pulumi:"kmsKeyId"`
 	// License model information for this DB instance.
-	LicenseModel interface{}
+	LicenseModel string `pulumi:"licenseModel"`
 	// Contains the master username for the DB instance.
-	MasterUsername interface{}
+	MasterUsername string `pulumi:"masterUsername"`
 	// The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance.
-	MonitoringInterval interface{}
+	MonitoringInterval int `pulumi:"monitoringInterval"`
 	// The ARN for the IAM role that permits RDS to send Enhanced Monitoring metrics to CloudWatch Logs.
-	MonitoringRoleArn interface{}
+	MonitoringRoleArn string `pulumi:"monitoringRoleArn"`
 	// Specifies if the DB instance is a Multi-AZ deployment.
-	MultiAz interface{}
+	MultiAz bool `pulumi:"multiAz"`
 	// Provides the list of option group memberships for this DB instance.
-	OptionGroupMemberships interface{}
+	OptionGroupMemberships []interface{} `pulumi:"optionGroupMemberships"`
 	// The database port.
-	Port interface{}
+	Port int `pulumi:"port"`
 	// Specifies the daily time range during which automated backups are created.
-	PreferredBackupWindow interface{}
+	PreferredBackupWindow string `pulumi:"preferredBackupWindow"`
 	// Specifies the weekly time range during which system maintenance can occur in UTC.
-	PreferredMaintenanceWindow interface{}
+	PreferredMaintenanceWindow string `pulumi:"preferredMaintenanceWindow"`
 	// Specifies the accessibility options for the DB instance.
-	PubliclyAccessible interface{}
+	PubliclyAccessible bool `pulumi:"publiclyAccessible"`
 	// The identifier of the source DB that this is a replica of.
-	ReplicateSourceDb interface{}
+	ReplicateSourceDb string `pulumi:"replicateSourceDb"`
 	// The RDS Resource ID of this instance.
-	ResourceId interface{}
+	ResourceId string `pulumi:"resourceId"`
 	// Specifies whether the DB instance is encrypted.
-	StorageEncrypted interface{}
+	StorageEncrypted bool `pulumi:"storageEncrypted"`
 	// Specifies the storage type associated with DB instance.
-	StorageType interface{}
+	StorageType string `pulumi:"storageType"`
 	// The time zone of the DB instance.
-	Timezone interface{}
+	Timezone string `pulumi:"timezone"`
 	// Provides a list of VPC security group elements that the DB instance belongs to.
-	VpcSecurityGroups interface{}
+	VpcSecurityGroups []interface{} `pulumi:"vpcSecurityGroups"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

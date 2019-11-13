@@ -12,7 +12,29 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/db_subnet_group.html.markdown.
 type SubnetGroup struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the db subnet group.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The description of the DB subnet group. Defaults to "Managed by Pulumi".
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The name of the DB subnet group. If omitted, this provider will assign a random, unique name.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
+	NamePrefix pulumi.StringOutput `pulumi:"namePrefix"`
+
+	// A list of VPC subnet IDs.
+	SubnetIds pulumi.ArrayOutput `pulumi:"subnetIds"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewSubnetGroup registers a new resource with the given unique name, arguments, and options.
@@ -21,33 +43,29 @@ func NewSubnetGroup(ctx *pulumi.Context,
 	if args == nil || args.SubnetIds == nil {
 		return nil, errors.New("missing required argument 'SubnetIds'")
 	}
-	inputs := make(map[string]interface{})
-	inputs["description"] = "Managed by Pulumi"
-	if args == nil {
-		inputs["name"] = nil
-		inputs["namePrefix"] = nil
-		inputs["subnetIds"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["description"] = pulumi.Any("Managed by Pulumi")
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name
 		inputs["namePrefix"] = args.NamePrefix
 		inputs["subnetIds"] = args.SubnetIds
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:rds/subnetGroup:SubnetGroup", name, true, inputs, opts...)
+	var resource SubnetGroup
+	err := ctx.RegisterResource("aws:rds/subnetGroup:SubnetGroup", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SubnetGroup{s: s}, nil
+	return &resource, nil
 }
 
 // GetSubnetGroup gets an existing SubnetGroup resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetSubnetGroup(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *SubnetGroupState, opts ...pulumi.ResourceOpt) (*SubnetGroup, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["description"] = state.Description
@@ -56,79 +74,49 @@ func GetSubnetGroup(ctx *pulumi.Context,
 		inputs["subnetIds"] = state.SubnetIds
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:rds/subnetGroup:SubnetGroup", name, id, inputs, opts...)
+	var resource SubnetGroup
+	err := ctx.ReadResource("aws:rds/subnetGroup:SubnetGroup", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SubnetGroup{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *SubnetGroup) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *SubnetGroup) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *SubnetGroup) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *SubnetGroup) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the db subnet group.
-func (r *SubnetGroup) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The description of the DB subnet group. Defaults to "Managed by Pulumi".
-func (r *SubnetGroup) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The name of the DB subnet group. If omitted, this provider will assign a random, unique name.
-func (r *SubnetGroup) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
-func (r *SubnetGroup) NamePrefix() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["namePrefix"])
-}
-
-// A list of VPC subnet IDs.
-func (r *SubnetGroup) SubnetIds() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["subnetIds"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *SubnetGroup) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering SubnetGroup resources.
 type SubnetGroupState struct {
 	// The ARN of the db subnet group.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The description of the DB subnet group. Defaults to "Managed by Pulumi".
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name of the DB subnet group. If omitted, this provider will assign a random, unique name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// A list of VPC subnet IDs.
-	SubnetIds interface{}
+	SubnetIds pulumi.ArrayInput `pulumi:"subnetIds"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a SubnetGroup resource.
 type SubnetGroupArgs struct {
 	// The description of the DB subnet group. Defaults to "Managed by Pulumi".
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name of the DB subnet group. If omitted, this provider will assign a random, unique name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified prefix. Conflicts with `name`.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// A list of VPC subnet IDs.
-	SubnetIds interface{}
+	SubnetIds pulumi.ArrayInput `pulumi:"subnetIds"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

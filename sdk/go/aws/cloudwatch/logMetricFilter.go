@@ -12,7 +12,25 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/cloudwatch_log_metric_filter.html.markdown.
 type LogMetricFilter struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The name of the log group to associate the metric filter with.
+	LogGroupName pulumi.StringOutput `pulumi:"logGroupName"`
+
+	// A block defining collection of information
+	// needed to define how metric data gets emitted. See below.
+	MetricTransformation pulumi.AnyOutput `pulumi:"metricTransformation"`
+
+	// A name for the metric filter.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A valid [CloudWatch Logs filter pattern](https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/FilterAndPatternSyntax.html)
+	// for extracting metric data out of ingested log events.
+	Pattern pulumi.StringOutput `pulumi:"pattern"`
 }
 
 // NewLogMetricFilter registers a new resource with the given unique name, arguments, and options.
@@ -27,99 +45,74 @@ func NewLogMetricFilter(ctx *pulumi.Context,
 	if args == nil || args.Pattern == nil {
 		return nil, errors.New("missing required argument 'Pattern'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["logGroupName"] = nil
-		inputs["metricTransformation"] = nil
-		inputs["name"] = nil
-		inputs["pattern"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["logGroupName"] = args.LogGroupName
 		inputs["metricTransformation"] = args.MetricTransformation
 		inputs["name"] = args.Name
 		inputs["pattern"] = args.Pattern
 	}
-	s, err := ctx.RegisterResource("aws:cloudwatch/logMetricFilter:LogMetricFilter", name, true, inputs, opts...)
+	var resource LogMetricFilter
+	err := ctx.RegisterResource("aws:cloudwatch/logMetricFilter:LogMetricFilter", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &LogMetricFilter{s: s}, nil
+	return &resource, nil
 }
 
 // GetLogMetricFilter gets an existing LogMetricFilter resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetLogMetricFilter(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *LogMetricFilterState, opts ...pulumi.ResourceOpt) (*LogMetricFilter, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["logGroupName"] = state.LogGroupName
 		inputs["metricTransformation"] = state.MetricTransformation
 		inputs["name"] = state.Name
 		inputs["pattern"] = state.Pattern
 	}
-	s, err := ctx.ReadResource("aws:cloudwatch/logMetricFilter:LogMetricFilter", name, id, inputs, opts...)
+	var resource LogMetricFilter
+	err := ctx.ReadResource("aws:cloudwatch/logMetricFilter:LogMetricFilter", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &LogMetricFilter{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *LogMetricFilter) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *LogMetricFilter) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *LogMetricFilter) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *LogMetricFilter) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The name of the log group to associate the metric filter with.
-func (r *LogMetricFilter) LogGroupName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["logGroupName"])
-}
-
-// A block defining collection of information
-// needed to define how metric data gets emitted. See below.
-func (r *LogMetricFilter) MetricTransformation() *pulumi.Output {
-	return r.s.State["metricTransformation"]
-}
-
-// A name for the metric filter.
-func (r *LogMetricFilter) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A valid [CloudWatch Logs filter pattern](https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/FilterAndPatternSyntax.html)
-// for extracting metric data out of ingested log events.
-func (r *LogMetricFilter) Pattern() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["pattern"])
-}
-
 // Input properties used for looking up and filtering LogMetricFilter resources.
 type LogMetricFilterState struct {
 	// The name of the log group to associate the metric filter with.
-	LogGroupName interface{}
+	LogGroupName pulumi.StringInput `pulumi:"logGroupName"`
 	// A block defining collection of information
 	// needed to define how metric data gets emitted. See below.
-	MetricTransformation interface{}
+	MetricTransformation pulumi.AnyInput `pulumi:"metricTransformation"`
 	// A name for the metric filter.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A valid [CloudWatch Logs filter pattern](https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/FilterAndPatternSyntax.html)
 	// for extracting metric data out of ingested log events.
-	Pattern interface{}
+	Pattern pulumi.StringInput `pulumi:"pattern"`
 }
 
 // The set of arguments for constructing a LogMetricFilter resource.
 type LogMetricFilterArgs struct {
 	// The name of the log group to associate the metric filter with.
-	LogGroupName interface{}
+	LogGroupName pulumi.StringInput `pulumi:"logGroupName"`
 	// A block defining collection of information
 	// needed to define how metric data gets emitted. See below.
-	MetricTransformation interface{}
+	MetricTransformation pulumi.AnyInput `pulumi:"metricTransformation"`
 	// A name for the metric filter.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A valid [CloudWatch Logs filter pattern](https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/FilterAndPatternSyntax.html)
 	// for extracting metric data out of ingested log events.
-	Pattern interface{}
+	Pattern pulumi.StringInput `pulumi:"pattern"`
 }

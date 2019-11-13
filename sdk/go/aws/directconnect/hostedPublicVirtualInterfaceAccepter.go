@@ -13,7 +13,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/dx_hosted_public_virtual_interface_accepter.html.markdown.
 type HostedPublicVirtualInterfaceAccepter struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the virtual interface.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// The ID of the Direct Connect virtual interface to accept.
+	VirtualInterfaceId pulumi.StringOutput `pulumi:"virtualInterfaceId"`
 }
 
 // NewHostedPublicVirtualInterfaceAccepter registers a new resource with the given unique name, arguments, and options.
@@ -22,78 +35,60 @@ func NewHostedPublicVirtualInterfaceAccepter(ctx *pulumi.Context,
 	if args == nil || args.VirtualInterfaceId == nil {
 		return nil, errors.New("missing required argument 'VirtualInterfaceId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["tags"] = nil
-		inputs["virtualInterfaceId"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["tags"] = args.Tags
 		inputs["virtualInterfaceId"] = args.VirtualInterfaceId
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:directconnect/hostedPublicVirtualInterfaceAccepter:HostedPublicVirtualInterfaceAccepter", name, true, inputs, opts...)
+	var resource HostedPublicVirtualInterfaceAccepter
+	err := ctx.RegisterResource("aws:directconnect/hostedPublicVirtualInterfaceAccepter:HostedPublicVirtualInterfaceAccepter", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &HostedPublicVirtualInterfaceAccepter{s: s}, nil
+	return &resource, nil
 }
 
 // GetHostedPublicVirtualInterfaceAccepter gets an existing HostedPublicVirtualInterfaceAccepter resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetHostedPublicVirtualInterfaceAccepter(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *HostedPublicVirtualInterfaceAccepterState, opts ...pulumi.ResourceOpt) (*HostedPublicVirtualInterfaceAccepter, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["tags"] = state.Tags
 		inputs["virtualInterfaceId"] = state.VirtualInterfaceId
 	}
-	s, err := ctx.ReadResource("aws:directconnect/hostedPublicVirtualInterfaceAccepter:HostedPublicVirtualInterfaceAccepter", name, id, inputs, opts...)
+	var resource HostedPublicVirtualInterfaceAccepter
+	err := ctx.ReadResource("aws:directconnect/hostedPublicVirtualInterfaceAccepter:HostedPublicVirtualInterfaceAccepter", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &HostedPublicVirtualInterfaceAccepter{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *HostedPublicVirtualInterfaceAccepter) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *HostedPublicVirtualInterfaceAccepter) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *HostedPublicVirtualInterfaceAccepter) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *HostedPublicVirtualInterfaceAccepter) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the virtual interface.
-func (r *HostedPublicVirtualInterfaceAccepter) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *HostedPublicVirtualInterfaceAccepter) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// The ID of the Direct Connect virtual interface to accept.
-func (r *HostedPublicVirtualInterfaceAccepter) VirtualInterfaceId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["virtualInterfaceId"])
-}
-
 // Input properties used for looking up and filtering HostedPublicVirtualInterfaceAccepter resources.
 type HostedPublicVirtualInterfaceAccepterState struct {
 	// The ARN of the virtual interface.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The ID of the Direct Connect virtual interface to accept.
-	VirtualInterfaceId interface{}
+	VirtualInterfaceId pulumi.StringInput `pulumi:"virtualInterfaceId"`
 }
 
 // The set of arguments for constructing a HostedPublicVirtualInterfaceAccepter resource.
 type HostedPublicVirtualInterfaceAccepterArgs struct {
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The ID of the Direct Connect virtual interface to accept.
-	VirtualInterfaceId interface{}
+	VirtualInterfaceId pulumi.StringInput `pulumi:"virtualInterfaceId"`
 }

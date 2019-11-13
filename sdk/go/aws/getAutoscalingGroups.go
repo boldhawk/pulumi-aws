@@ -31,16 +31,16 @@ func LookupAutoscalingGroups(ctx *pulumi.Context, args *GetAutoscalingGroupsArgs
 // A collection of arguments for invoking getAutoscalingGroups.
 type GetAutoscalingGroupsArgs struct {
 	// A filter used to scope the list e.g. by tags. See [related docs](http://docs.aws.amazon.com/AutoScaling/latest/APIReference/API_Filter.html).
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 }
 
 // A collection of values returned by getAutoscalingGroups.
 type GetAutoscalingGroupsResult struct {
 	// A list of the Autoscaling Groups Arns in the current region.
-	Arns interface{}
-	Filters interface{}
+	Arns []interface{} `pulumi:"arns"`
+	Filters []interface{} `pulumi:"filters"`
 	// A list of the Autoscaling Groups in the current region.
-	Names interface{}
+	Names []interface{} `pulumi:"names"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

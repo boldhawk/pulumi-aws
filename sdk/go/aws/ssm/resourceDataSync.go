@@ -22,7 +22,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ssm_resource_data_sync.html.markdown.
 type ResourceDataSync struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Name for the configuration.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Amazon S3 configuration details for the sync.
+	S3Destination pulumi.AnyOutput `pulumi:"s3Destination"`
 }
 
 // NewResourceDataSync registers a new resource with the given unique name, arguments, and options.
@@ -31,69 +41,58 @@ func NewResourceDataSync(ctx *pulumi.Context,
 	if args == nil || args.S3Destination == nil {
 		return nil, errors.New("missing required argument 'S3Destination'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["name"] = nil
-		inputs["s3Destination"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["name"] = args.Name
 		inputs["s3Destination"] = args.S3Destination
 	}
-	s, err := ctx.RegisterResource("aws:ssm/resourceDataSync:ResourceDataSync", name, true, inputs, opts...)
+	var resource ResourceDataSync
+	err := ctx.RegisterResource("aws:ssm/resourceDataSync:ResourceDataSync", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ResourceDataSync{s: s}, nil
+	return &resource, nil
 }
 
 // GetResourceDataSync gets an existing ResourceDataSync resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetResourceDataSync(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ResourceDataSyncState, opts ...pulumi.ResourceOpt) (*ResourceDataSync, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["name"] = state.Name
 		inputs["s3Destination"] = state.S3Destination
 	}
-	s, err := ctx.ReadResource("aws:ssm/resourceDataSync:ResourceDataSync", name, id, inputs, opts...)
+	var resource ResourceDataSync
+	err := ctx.ReadResource("aws:ssm/resourceDataSync:ResourceDataSync", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ResourceDataSync{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ResourceDataSync) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ResourceDataSync) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ResourceDataSync) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ResourceDataSync) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Name for the configuration.
-func (r *ResourceDataSync) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Amazon S3 configuration details for the sync.
-func (r *ResourceDataSync) S3Destination() *pulumi.Output {
-	return r.s.State["s3Destination"]
-}
-
 // Input properties used for looking up and filtering ResourceDataSync resources.
 type ResourceDataSyncState struct {
 	// Name for the configuration.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Amazon S3 configuration details for the sync.
-	S3Destination interface{}
+	S3Destination pulumi.AnyInput `pulumi:"s3Destination"`
 }
 
 // The set of arguments for constructing a ResourceDataSync resource.
 type ResourceDataSyncArgs struct {
 	// Name for the configuration.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Amazon S3 configuration details for the sync.
-	S3Destination interface{}
+	S3Destination pulumi.AnyInput `pulumi:"s3Destination"`
 }

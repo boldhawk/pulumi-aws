@@ -41,7 +41,29 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/default_route_table.html.markdown.
 type DefaultRouteTable struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ID of the Default Routing Table.
+	DefaultRouteTableId pulumi.StringOutput `pulumi:"defaultRouteTableId"`
+
+	// The ID of the AWS account that owns the route table
+	OwnerId pulumi.StringOutput `pulumi:"ownerId"`
+
+	// A list of virtual gateways for propagation.
+	PropagatingVgws pulumi.ArrayOutput `pulumi:"propagatingVgws"`
+
+	// A list of route objects. Their keys are documented below.
+	// This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
+	Routes pulumi.ArrayOutput `pulumi:"routes"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	VpcId pulumi.StringOutput `pulumi:"vpcId"`
 }
 
 // NewDefaultRouteTable registers a new resource with the given unique name, arguments, and options.
@@ -50,32 +72,26 @@ func NewDefaultRouteTable(ctx *pulumi.Context,
 	if args == nil || args.DefaultRouteTableId == nil {
 		return nil, errors.New("missing required argument 'DefaultRouteTableId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["defaultRouteTableId"] = nil
-		inputs["propagatingVgws"] = nil
-		inputs["routes"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["defaultRouteTableId"] = args.DefaultRouteTableId
 		inputs["propagatingVgws"] = args.PropagatingVgws
 		inputs["routes"] = args.Routes
 		inputs["tags"] = args.Tags
 	}
-	inputs["ownerId"] = nil
-	inputs["vpcId"] = nil
-	s, err := ctx.RegisterResource("aws:ec2/defaultRouteTable:DefaultRouteTable", name, true, inputs, opts...)
+	var resource DefaultRouteTable
+	err := ctx.RegisterResource("aws:ec2/defaultRouteTable:DefaultRouteTable", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DefaultRouteTable{s: s}, nil
+	return &resource, nil
 }
 
 // GetDefaultRouteTable gets an existing DefaultRouteTable resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetDefaultRouteTable(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *DefaultRouteTableState, opts ...pulumi.ResourceOpt) (*DefaultRouteTable, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["defaultRouteTableId"] = state.DefaultRouteTableId
 		inputs["ownerId"] = state.OwnerId
@@ -84,78 +100,48 @@ func GetDefaultRouteTable(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["vpcId"] = state.VpcId
 	}
-	s, err := ctx.ReadResource("aws:ec2/defaultRouteTable:DefaultRouteTable", name, id, inputs, opts...)
+	var resource DefaultRouteTable
+	err := ctx.ReadResource("aws:ec2/defaultRouteTable:DefaultRouteTable", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DefaultRouteTable{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *DefaultRouteTable) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *DefaultRouteTable) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *DefaultRouteTable) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *DefaultRouteTable) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ID of the Default Routing Table.
-func (r *DefaultRouteTable) DefaultRouteTableId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["defaultRouteTableId"])
-}
-
-// The ID of the AWS account that owns the route table
-func (r *DefaultRouteTable) OwnerId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ownerId"])
-}
-
-// A list of virtual gateways for propagation.
-func (r *DefaultRouteTable) PropagatingVgws() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["propagatingVgws"])
-}
-
-// A list of route objects. Their keys are documented below.
-// This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-func (r *DefaultRouteTable) Routes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["routes"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *DefaultRouteTable) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-func (r *DefaultRouteTable) VpcId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpcId"])
-}
-
 // Input properties used for looking up and filtering DefaultRouteTable resources.
 type DefaultRouteTableState struct {
 	// The ID of the Default Routing Table.
-	DefaultRouteTableId interface{}
+	DefaultRouteTableId pulumi.StringInput `pulumi:"defaultRouteTableId"`
 	// The ID of the AWS account that owns the route table
-	OwnerId interface{}
+	OwnerId pulumi.StringInput `pulumi:"ownerId"`
 	// A list of virtual gateways for propagation.
-	PropagatingVgws interface{}
+	PropagatingVgws pulumi.ArrayInput `pulumi:"propagatingVgws"`
 	// A list of route objects. Their keys are documented below.
 	// This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-	Routes interface{}
+	Routes pulumi.ArrayInput `pulumi:"routes"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
-	VpcId interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // The set of arguments for constructing a DefaultRouteTable resource.
 type DefaultRouteTableArgs struct {
 	// The ID of the Default Routing Table.
-	DefaultRouteTableId interface{}
+	DefaultRouteTableId pulumi.StringInput `pulumi:"defaultRouteTableId"`
 	// A list of virtual gateways for propagation.
-	PropagatingVgws interface{}
+	PropagatingVgws pulumi.ArrayInput `pulumi:"propagatingVgws"`
 	// A list of route objects. Their keys are documented below.
 	// This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-	Routes interface{}
+	Routes pulumi.ArrayInput `pulumi:"routes"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

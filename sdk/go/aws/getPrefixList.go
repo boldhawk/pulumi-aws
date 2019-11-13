@@ -37,19 +37,19 @@ func LookupPrefixList(ctx *pulumi.Context, args *GetPrefixListArgs) (*GetPrefixL
 // A collection of arguments for invoking getPrefixList.
 type GetPrefixListArgs struct {
 	// The name of the prefix list to select.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The ID of the prefix list to select.
-	PrefixListId interface{}
+	PrefixListId pulumi.StringInput `pulumi:"prefixListId"`
 }
 
 // A collection of values returned by getPrefixList.
 type GetPrefixListResult struct {
 	// The list of CIDR blocks for the AWS service associated
 	// with the prefix list.
-	CidrBlocks interface{}
+	CidrBlocks []interface{} `pulumi:"cidrBlocks"`
 	// The name of the selected prefix list.
-	Name interface{}
-	PrefixListId interface{}
+	Name string `pulumi:"name"`
+	PrefixListId string `pulumi:"prefixListId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

@@ -12,7 +12,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/load_balancer_listener_policy_legacy.html.markdown.
 type ListenerPolicy struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The load balancer to attach the policy to.
+	LoadBalancerName pulumi.StringOutput `pulumi:"loadBalancerName"`
+
+	// The load balancer listener port to apply the policy to.
+	LoadBalancerPort pulumi.IntOutput `pulumi:"loadBalancerPort"`
+
+	// List of Policy Names to apply to the backend server.
+	PolicyNames pulumi.ArrayOutput `pulumi:"policyNames"`
 }
 
 // NewListenerPolicy registers a new resource with the given unique name, arguments, and options.
@@ -24,81 +37,63 @@ func NewListenerPolicy(ctx *pulumi.Context,
 	if args == nil || args.LoadBalancerPort == nil {
 		return nil, errors.New("missing required argument 'LoadBalancerPort'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["loadBalancerName"] = nil
-		inputs["loadBalancerPort"] = nil
-		inputs["policyNames"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["loadBalancerName"] = args.LoadBalancerName
 		inputs["loadBalancerPort"] = args.LoadBalancerPort
 		inputs["policyNames"] = args.PolicyNames
 	}
-	s, err := ctx.RegisterResource("aws:elasticloadbalancing/listenerPolicy:ListenerPolicy", name, true, inputs, opts...)
+	var resource ListenerPolicy
+	err := ctx.RegisterResource("aws:elasticloadbalancing/listenerPolicy:ListenerPolicy", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ListenerPolicy{s: s}, nil
+	return &resource, nil
 }
 
 // GetListenerPolicy gets an existing ListenerPolicy resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetListenerPolicy(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ListenerPolicyState, opts ...pulumi.ResourceOpt) (*ListenerPolicy, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["loadBalancerName"] = state.LoadBalancerName
 		inputs["loadBalancerPort"] = state.LoadBalancerPort
 		inputs["policyNames"] = state.PolicyNames
 	}
-	s, err := ctx.ReadResource("aws:elasticloadbalancing/listenerPolicy:ListenerPolicy", name, id, inputs, opts...)
+	var resource ListenerPolicy
+	err := ctx.ReadResource("aws:elasticloadbalancing/listenerPolicy:ListenerPolicy", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ListenerPolicy{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ListenerPolicy) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ListenerPolicy) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ListenerPolicy) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ListenerPolicy) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The load balancer to attach the policy to.
-func (r *ListenerPolicy) LoadBalancerName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["loadBalancerName"])
-}
-
-// The load balancer listener port to apply the policy to.
-func (r *ListenerPolicy) LoadBalancerPort() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["loadBalancerPort"])
-}
-
-// List of Policy Names to apply to the backend server.
-func (r *ListenerPolicy) PolicyNames() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["policyNames"])
-}
-
 // Input properties used for looking up and filtering ListenerPolicy resources.
 type ListenerPolicyState struct {
 	// The load balancer to attach the policy to.
-	LoadBalancerName interface{}
+	LoadBalancerName pulumi.StringInput `pulumi:"loadBalancerName"`
 	// The load balancer listener port to apply the policy to.
-	LoadBalancerPort interface{}
+	LoadBalancerPort pulumi.IntInput `pulumi:"loadBalancerPort"`
 	// List of Policy Names to apply to the backend server.
-	PolicyNames interface{}
+	PolicyNames pulumi.ArrayInput `pulumi:"policyNames"`
 }
 
 // The set of arguments for constructing a ListenerPolicy resource.
 type ListenerPolicyArgs struct {
 	// The load balancer to attach the policy to.
-	LoadBalancerName interface{}
+	LoadBalancerName pulumi.StringInput `pulumi:"loadBalancerName"`
 	// The load balancer listener port to apply the policy to.
-	LoadBalancerPort interface{}
+	LoadBalancerPort pulumi.IntInput `pulumi:"loadBalancerPort"`
 	// List of Policy Names to apply to the backend server.
-	PolicyNames interface{}
+	PolicyNames pulumi.ArrayInput `pulumi:"policyNames"`
 }

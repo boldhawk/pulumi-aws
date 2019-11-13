@@ -12,7 +12,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/lb_ssl_negotiation_policy.html.markdown.
 type SslNegotiationPolicy struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// An SSL Negotiation policy attribute. Each has two properties:
+	Attributes pulumi.ArrayOutput `pulumi:"attributes"`
+
+	// The load balancer port to which the policy
+	// should be applied. This must be an active listener on the load
+	// balancer.
+	LbPort pulumi.IntOutput `pulumi:"lbPort"`
+
+	// The load balancer to which the policy
+	// should be attached.
+	LoadBalancer pulumi.StringOutput `pulumi:"loadBalancer"`
+
+	// The name of the attribute
+	Name pulumi.StringOutput `pulumi:"name"`
 }
 
 // NewSslNegotiationPolicy registers a new resource with the given unique name, arguments, and options.
@@ -24,102 +43,76 @@ func NewSslNegotiationPolicy(ctx *pulumi.Context,
 	if args == nil || args.LoadBalancer == nil {
 		return nil, errors.New("missing required argument 'LoadBalancer'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["attributes"] = nil
-		inputs["lbPort"] = nil
-		inputs["loadBalancer"] = nil
-		inputs["name"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["attributes"] = args.Attributes
 		inputs["lbPort"] = args.LbPort
 		inputs["loadBalancer"] = args.LoadBalancer
 		inputs["name"] = args.Name
 	}
-	s, err := ctx.RegisterResource("aws:elb/sslNegotiationPolicy:SslNegotiationPolicy", name, true, inputs, opts...)
+	var resource SslNegotiationPolicy
+	err := ctx.RegisterResource("aws:elb/sslNegotiationPolicy:SslNegotiationPolicy", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SslNegotiationPolicy{s: s}, nil
+	return &resource, nil
 }
 
 // GetSslNegotiationPolicy gets an existing SslNegotiationPolicy resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetSslNegotiationPolicy(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *SslNegotiationPolicyState, opts ...pulumi.ResourceOpt) (*SslNegotiationPolicy, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["attributes"] = state.Attributes
 		inputs["lbPort"] = state.LbPort
 		inputs["loadBalancer"] = state.LoadBalancer
 		inputs["name"] = state.Name
 	}
-	s, err := ctx.ReadResource("aws:elb/sslNegotiationPolicy:SslNegotiationPolicy", name, id, inputs, opts...)
+	var resource SslNegotiationPolicy
+	err := ctx.ReadResource("aws:elb/sslNegotiationPolicy:SslNegotiationPolicy", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SslNegotiationPolicy{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *SslNegotiationPolicy) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *SslNegotiationPolicy) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *SslNegotiationPolicy) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *SslNegotiationPolicy) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// An SSL Negotiation policy attribute. Each has two properties:
-func (r *SslNegotiationPolicy) Attributes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["attributes"])
-}
-
-// The load balancer port to which the policy
-// should be applied. This must be an active listener on the load
-// balancer.
-func (r *SslNegotiationPolicy) LbPort() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["lbPort"])
-}
-
-// The load balancer to which the policy
-// should be attached.
-func (r *SslNegotiationPolicy) LoadBalancer() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["loadBalancer"])
-}
-
-// The name of the attribute
-func (r *SslNegotiationPolicy) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
 // Input properties used for looking up and filtering SslNegotiationPolicy resources.
 type SslNegotiationPolicyState struct {
 	// An SSL Negotiation policy attribute. Each has two properties:
-	Attributes interface{}
+	Attributes pulumi.ArrayInput `pulumi:"attributes"`
 	// The load balancer port to which the policy
 	// should be applied. This must be an active listener on the load
 	// balancer.
-	LbPort interface{}
+	LbPort pulumi.IntInput `pulumi:"lbPort"`
 	// The load balancer to which the policy
 	// should be attached.
-	LoadBalancer interface{}
+	LoadBalancer pulumi.StringInput `pulumi:"loadBalancer"`
 	// The name of the attribute
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // The set of arguments for constructing a SslNegotiationPolicy resource.
 type SslNegotiationPolicyArgs struct {
 	// An SSL Negotiation policy attribute. Each has two properties:
-	Attributes interface{}
+	Attributes pulumi.ArrayInput `pulumi:"attributes"`
 	// The load balancer port to which the policy
 	// should be applied. This must be an active listener on the load
 	// balancer.
-	LbPort interface{}
+	LbPort pulumi.IntInput `pulumi:"lbPort"`
 	// The load balancer to which the policy
 	// should be attached.
-	LoadBalancer interface{}
+	LoadBalancer pulumi.StringInput `pulumi:"loadBalancer"`
 	// The name of the attribute
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }

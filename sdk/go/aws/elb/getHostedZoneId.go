@@ -30,12 +30,12 @@ func LookupHostedZoneId(ctx *pulumi.Context, args *GetHostedZoneIdArgs) (*GetHos
 type GetHostedZoneIdArgs struct {
 	// Name of the region whose AWS ELB HostedZoneId is desired.
 	// Defaults to the region from the AWS provider configuration.
-	Region interface{}
+	Region pulumi.StringInput `pulumi:"region"`
 }
 
 // A collection of values returned by getHostedZoneId.
 type GetHostedZoneIdResult struct {
-	Region interface{}
+	Region string `pulumi:"region"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

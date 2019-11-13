@@ -12,7 +12,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/inspector_assessment_template.html.markdown.
 type AssessmentTemplate struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The template assessment ARN.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The duration of the inspector run.
+	Duration pulumi.IntOutput `pulumi:"duration"`
+
+	// The name of the assessment template.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The rules to be used during the run.
+	RulesPackageArns pulumi.ArrayOutput `pulumi:"rulesPackageArns"`
+
+	// The assessment target ARN to attach the template to.
+	TargetArn pulumi.StringOutput `pulumi:"targetArn"`
 }
 
 // NewAssessmentTemplate registers a new resource with the given unique name, arguments, and options.
@@ -27,31 +46,27 @@ func NewAssessmentTemplate(ctx *pulumi.Context,
 	if args == nil || args.TargetArn == nil {
 		return nil, errors.New("missing required argument 'TargetArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["duration"] = nil
-		inputs["name"] = nil
-		inputs["rulesPackageArns"] = nil
-		inputs["targetArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["duration"] = args.Duration
 		inputs["name"] = args.Name
 		inputs["rulesPackageArns"] = args.RulesPackageArns
 		inputs["targetArn"] = args.TargetArn
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:inspector/assessmentTemplate:AssessmentTemplate", name, true, inputs, opts...)
+	var resource AssessmentTemplate
+	err := ctx.RegisterResource("aws:inspector/assessmentTemplate:AssessmentTemplate", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AssessmentTemplate{s: s}, nil
+	return &resource, nil
 }
 
 // GetAssessmentTemplate gets an existing AssessmentTemplate resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAssessmentTemplate(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AssessmentTemplateState, opts ...pulumi.ResourceOpt) (*AssessmentTemplate, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["duration"] = state.Duration
@@ -59,70 +74,45 @@ func GetAssessmentTemplate(ctx *pulumi.Context,
 		inputs["rulesPackageArns"] = state.RulesPackageArns
 		inputs["targetArn"] = state.TargetArn
 	}
-	s, err := ctx.ReadResource("aws:inspector/assessmentTemplate:AssessmentTemplate", name, id, inputs, opts...)
+	var resource AssessmentTemplate
+	err := ctx.ReadResource("aws:inspector/assessmentTemplate:AssessmentTemplate", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AssessmentTemplate{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *AssessmentTemplate) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *AssessmentTemplate) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *AssessmentTemplate) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *AssessmentTemplate) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The template assessment ARN.
-func (r *AssessmentTemplate) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The duration of the inspector run.
-func (r *AssessmentTemplate) Duration() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["duration"])
-}
-
-// The name of the assessment template.
-func (r *AssessmentTemplate) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The rules to be used during the run.
-func (r *AssessmentTemplate) RulesPackageArns() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["rulesPackageArns"])
-}
-
-// The assessment target ARN to attach the template to.
-func (r *AssessmentTemplate) TargetArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["targetArn"])
-}
-
 // Input properties used for looking up and filtering AssessmentTemplate resources.
 type AssessmentTemplateState struct {
 	// The template assessment ARN.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The duration of the inspector run.
-	Duration interface{}
+	Duration pulumi.IntInput `pulumi:"duration"`
 	// The name of the assessment template.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The rules to be used during the run.
-	RulesPackageArns interface{}
+	RulesPackageArns pulumi.ArrayInput `pulumi:"rulesPackageArns"`
 	// The assessment target ARN to attach the template to.
-	TargetArn interface{}
+	TargetArn pulumi.StringInput `pulumi:"targetArn"`
 }
 
 // The set of arguments for constructing a AssessmentTemplate resource.
 type AssessmentTemplateArgs struct {
 	// The duration of the inspector run.
-	Duration interface{}
+	Duration pulumi.IntInput `pulumi:"duration"`
 	// The name of the assessment template.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The rules to be used during the run.
-	RulesPackageArns interface{}
+	RulesPackageArns pulumi.ArrayInput `pulumi:"rulesPackageArns"`
 	// The assessment target ARN to attach the template to.
-	TargetArn interface{}
+	TargetArn pulumi.StringInput `pulumi:"targetArn"`
 }

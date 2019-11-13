@@ -30,15 +30,15 @@ func LookupUserPools(ctx *pulumi.Context, args *GetUserPoolsArgs) (*GetUserPools
 // A collection of arguments for invoking getUserPools.
 type GetUserPoolsArgs struct {
 	// Name of the cognito user pools. Name is not a unique attribute for cognito user pool, so multiple pools might be returned with given name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getUserPools.
 type GetUserPoolsResult struct {
-	Arns interface{}
+	Arns []interface{} `pulumi:"arns"`
 	// The list of cognito user pool ids.
-	Ids interface{}
-	Name interface{}
+	Ids []interface{} `pulumi:"ids"`
+	Name string `pulumi:"name"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

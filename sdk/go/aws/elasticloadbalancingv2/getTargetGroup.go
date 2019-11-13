@@ -49,28 +49,28 @@ func LookupTargetGroup(ctx *pulumi.Context, args *GetTargetGroupArgs) (*GetTarge
 // A collection of arguments for invoking getTargetGroup.
 type GetTargetGroupArgs struct {
 	// The full ARN of the target group.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The unique name of the target group.
-	Name interface{}
-	Tags interface{}
+	Name pulumi.StringInput `pulumi:"name"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getTargetGroup.
 type GetTargetGroupResult struct {
-	Arn interface{}
-	ArnSuffix interface{}
-	DeregistrationDelay interface{}
-	HealthCheck interface{}
-	LambdaMultiValueHeadersEnabled interface{}
-	Name interface{}
-	Port interface{}
-	Protocol interface{}
-	ProxyProtocolV2 interface{}
-	SlowStart interface{}
-	Stickiness interface{}
-	Tags interface{}
-	TargetType interface{}
-	VpcId interface{}
+	Arn string `pulumi:"arn"`
+	ArnSuffix string `pulumi:"arnSuffix"`
+	DeregistrationDelay int `pulumi:"deregistrationDelay"`
+	HealthCheck interface{} `pulumi:"healthCheck"`
+	LambdaMultiValueHeadersEnabled bool `pulumi:"lambdaMultiValueHeadersEnabled"`
+	Name string `pulumi:"name"`
+	Port int `pulumi:"port"`
+	Protocol string `pulumi:"protocol"`
+	ProxyProtocolV2 bool `pulumi:"proxyProtocolV2"`
+	SlowStart int `pulumi:"slowStart"`
+	Stickiness interface{} `pulumi:"stickiness"`
+	Tags map[string]interface{} `pulumi:"tags"`
+	TargetType string `pulumi:"targetType"`
+	VpcId string `pulumi:"vpcId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

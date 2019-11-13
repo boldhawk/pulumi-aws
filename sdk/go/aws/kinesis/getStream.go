@@ -39,29 +39,29 @@ func LookupStream(ctx *pulumi.Context, args *GetStreamArgs) (*GetStreamResult, e
 // A collection of arguments for invoking getStream.
 type GetStreamArgs struct {
 	// The name of the Kinesis Stream.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getStream.
 type GetStreamResult struct {
 	// The Amazon Resource Name (ARN) of the Kinesis Stream (same as id).
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// The list of shard ids in the CLOSED state. See [Shard State][2] for more.
-	ClosedShards interface{}
+	ClosedShards []interface{} `pulumi:"closedShards"`
 	// The approximate UNIX timestamp that the stream was created.
-	CreationTimestamp interface{}
+	CreationTimestamp int `pulumi:"creationTimestamp"`
 	// The name of the Kinesis Stream.
-	Name interface{}
+	Name string `pulumi:"name"`
 	// The list of shard ids in the OPEN state. See [Shard State][2] for more.
-	OpenShards interface{}
+	OpenShards []interface{} `pulumi:"openShards"`
 	// Length of time (in hours) data records are accessible after they are added to the stream.
-	RetentionPeriod interface{}
+	RetentionPeriod int `pulumi:"retentionPeriod"`
 	// A list of shard-level CloudWatch metrics which are enabled for the stream. See [Monitoring with CloudWatch][3] for more.
-	ShardLevelMetrics interface{}
+	ShardLevelMetrics []interface{} `pulumi:"shardLevelMetrics"`
 	// The current status of the stream. The stream status is one of CREATING, DELETING, ACTIVE, or UPDATING.
-	Status interface{}
+	Status string `pulumi:"status"`
 	// A mapping of tags to assigned to the stream.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

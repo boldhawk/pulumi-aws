@@ -12,7 +12,29 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/iam_user_ssh_key.html.markdown.
 type SshKey struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Specifies the public key encoding format to use in the response. To retrieve the public key in ssh-rsa format, use `SSH`. To retrieve the public key in PEM format, use `PEM`.
+	Encoding pulumi.StringOutput `pulumi:"encoding"`
+
+	// The MD5 message digest of the SSH public key.
+	Fingerprint pulumi.StringOutput `pulumi:"fingerprint"`
+
+	// The SSH public key. The public key must be encoded in ssh-rsa format or PEM format.
+	PublicKey pulumi.StringOutput `pulumi:"publicKey"`
+
+	// The unique identifier for the SSH public key.
+	SshPublicKeyId pulumi.StringOutput `pulumi:"sshPublicKeyId"`
+
+	// The status to assign to the SSH public key. Active means the key can be used for authentication with an AWS CodeCommit repository. Inactive means the key cannot be used. Default is `active`.
+	Status pulumi.StringOutput `pulumi:"status"`
+
+	// The name of the IAM user to associate the SSH public key with.
+	Username pulumi.StringOutput `pulumi:"username"`
 }
 
 // NewSshKey registers a new resource with the given unique name, arguments, and options.
@@ -27,32 +49,26 @@ func NewSshKey(ctx *pulumi.Context,
 	if args == nil || args.Username == nil {
 		return nil, errors.New("missing required argument 'Username'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["encoding"] = nil
-		inputs["publicKey"] = nil
-		inputs["status"] = nil
-		inputs["username"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["encoding"] = args.Encoding
 		inputs["publicKey"] = args.PublicKey
 		inputs["status"] = args.Status
 		inputs["username"] = args.Username
 	}
-	inputs["fingerprint"] = nil
-	inputs["sshPublicKeyId"] = nil
-	s, err := ctx.RegisterResource("aws:iam/sshKey:SshKey", name, true, inputs, opts...)
+	var resource SshKey
+	err := ctx.RegisterResource("aws:iam/sshKey:SshKey", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SshKey{s: s}, nil
+	return &resource, nil
 }
 
 // GetSshKey gets an existing SshKey resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetSshKey(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *SshKeyState, opts ...pulumi.ResourceOpt) (*SshKey, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["encoding"] = state.Encoding
 		inputs["fingerprint"] = state.Fingerprint
@@ -61,77 +77,47 @@ func GetSshKey(ctx *pulumi.Context,
 		inputs["status"] = state.Status
 		inputs["username"] = state.Username
 	}
-	s, err := ctx.ReadResource("aws:iam/sshKey:SshKey", name, id, inputs, opts...)
+	var resource SshKey
+	err := ctx.ReadResource("aws:iam/sshKey:SshKey", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SshKey{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *SshKey) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *SshKey) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *SshKey) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *SshKey) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Specifies the public key encoding format to use in the response. To retrieve the public key in ssh-rsa format, use `SSH`. To retrieve the public key in PEM format, use `PEM`.
-func (r *SshKey) Encoding() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["encoding"])
-}
-
-// The MD5 message digest of the SSH public key.
-func (r *SshKey) Fingerprint() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["fingerprint"])
-}
-
-// The SSH public key. The public key must be encoded in ssh-rsa format or PEM format.
-func (r *SshKey) PublicKey() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["publicKey"])
-}
-
-// The unique identifier for the SSH public key.
-func (r *SshKey) SshPublicKeyId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["sshPublicKeyId"])
-}
-
-// The status to assign to the SSH public key. Active means the key can be used for authentication with an AWS CodeCommit repository. Inactive means the key cannot be used. Default is `active`.
-func (r *SshKey) Status() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["status"])
-}
-
-// The name of the IAM user to associate the SSH public key with.
-func (r *SshKey) Username() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["username"])
-}
-
 // Input properties used for looking up and filtering SshKey resources.
 type SshKeyState struct {
 	// Specifies the public key encoding format to use in the response. To retrieve the public key in ssh-rsa format, use `SSH`. To retrieve the public key in PEM format, use `PEM`.
-	Encoding interface{}
+	Encoding pulumi.StringInput `pulumi:"encoding"`
 	// The MD5 message digest of the SSH public key.
-	Fingerprint interface{}
+	Fingerprint pulumi.StringInput `pulumi:"fingerprint"`
 	// The SSH public key. The public key must be encoded in ssh-rsa format or PEM format.
-	PublicKey interface{}
+	PublicKey pulumi.StringInput `pulumi:"publicKey"`
 	// The unique identifier for the SSH public key.
-	SshPublicKeyId interface{}
+	SshPublicKeyId pulumi.StringInput `pulumi:"sshPublicKeyId"`
 	// The status to assign to the SSH public key. Active means the key can be used for authentication with an AWS CodeCommit repository. Inactive means the key cannot be used. Default is `active`.
-	Status interface{}
+	Status pulumi.StringInput `pulumi:"status"`
 	// The name of the IAM user to associate the SSH public key with.
-	Username interface{}
+	Username pulumi.StringInput `pulumi:"username"`
 }
 
 // The set of arguments for constructing a SshKey resource.
 type SshKeyArgs struct {
 	// Specifies the public key encoding format to use in the response. To retrieve the public key in ssh-rsa format, use `SSH`. To retrieve the public key in PEM format, use `PEM`.
-	Encoding interface{}
+	Encoding pulumi.StringInput `pulumi:"encoding"`
 	// The SSH public key. The public key must be encoded in ssh-rsa format or PEM format.
-	PublicKey interface{}
+	PublicKey pulumi.StringInput `pulumi:"publicKey"`
 	// The status to assign to the SSH public key. Active means the key can be used for authentication with an AWS CodeCommit repository. Inactive means the key cannot be used. Default is `active`.
-	Status interface{}
+	Status pulumi.StringInput `pulumi:"status"`
 	// The name of the IAM user to associate the SSH public key with.
-	Username interface{}
+	Username pulumi.StringInput `pulumi:"username"`
 }

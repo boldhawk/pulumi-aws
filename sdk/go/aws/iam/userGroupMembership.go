@@ -17,7 +17,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/iam_user_group_membership.html.markdown.
 type UserGroupMembership struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// A list of [IAM Groups][1] to add the user to
+	Groups pulumi.ArrayOutput `pulumi:"groups"`
+
+	// The name of the [IAM User][2] to add to groups
+	User pulumi.StringOutput `pulumi:"user"`
 }
 
 // NewUserGroupMembership registers a new resource with the given unique name, arguments, and options.
@@ -29,69 +39,57 @@ func NewUserGroupMembership(ctx *pulumi.Context,
 	if args == nil || args.User == nil {
 		return nil, errors.New("missing required argument 'User'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["groups"] = nil
-		inputs["user"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["groups"] = args.Groups
 		inputs["user"] = args.User
 	}
-	s, err := ctx.RegisterResource("aws:iam/userGroupMembership:UserGroupMembership", name, true, inputs, opts...)
+	var resource UserGroupMembership
+	err := ctx.RegisterResource("aws:iam/userGroupMembership:UserGroupMembership", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &UserGroupMembership{s: s}, nil
+	return &resource, nil
 }
 
 // GetUserGroupMembership gets an existing UserGroupMembership resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetUserGroupMembership(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *UserGroupMembershipState, opts ...pulumi.ResourceOpt) (*UserGroupMembership, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["groups"] = state.Groups
 		inputs["user"] = state.User
 	}
-	s, err := ctx.ReadResource("aws:iam/userGroupMembership:UserGroupMembership", name, id, inputs, opts...)
+	var resource UserGroupMembership
+	err := ctx.ReadResource("aws:iam/userGroupMembership:UserGroupMembership", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &UserGroupMembership{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *UserGroupMembership) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *UserGroupMembership) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *UserGroupMembership) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *UserGroupMembership) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// A list of [IAM Groups][1] to add the user to
-func (r *UserGroupMembership) Groups() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["groups"])
-}
-
-// The name of the [IAM User][2] to add to groups
-func (r *UserGroupMembership) User() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["user"])
-}
-
 // Input properties used for looking up and filtering UserGroupMembership resources.
 type UserGroupMembershipState struct {
 	// A list of [IAM Groups][1] to add the user to
-	Groups interface{}
+	Groups pulumi.ArrayInput `pulumi:"groups"`
 	// The name of the [IAM User][2] to add to groups
-	User interface{}
+	User pulumi.StringInput `pulumi:"user"`
 }
 
 // The set of arguments for constructing a UserGroupMembership resource.
 type UserGroupMembershipArgs struct {
 	// A list of [IAM Groups][1] to add the user to
-	Groups interface{}
+	Groups pulumi.ArrayInput `pulumi:"groups"`
 	// The name of the [IAM User][2] to add to groups
-	User interface{}
+	User pulumi.StringInput `pulumi:"user"`
 }

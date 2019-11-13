@@ -11,96 +11,89 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/sagemaker_notebook_instance_lifecycle_configuration.html.markdown.
 type NotebookInstanceLifecycleConfiguration struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The Amazon Resource Name (ARN) assigned by AWS to this lifecycle configuration.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The name of the lifecycle configuration (must be unique). If omitted, this provider will assign a random, unique name.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A shell script (base64-encoded) that runs only once when the SageMaker Notebook Instance is created.
+	OnCreate pulumi.StringOutput `pulumi:"onCreate"`
+
+	// A shell script (base64-encoded) that runs every time the SageMaker Notebook Instance is started including the time it's created.
+	OnStart pulumi.StringOutput `pulumi:"onStart"`
 }
 
 // NewNotebookInstanceLifecycleConfiguration registers a new resource with the given unique name, arguments, and options.
 func NewNotebookInstanceLifecycleConfiguration(ctx *pulumi.Context,
 	name string, args *NotebookInstanceLifecycleConfigurationArgs, opts ...pulumi.ResourceOpt) (*NotebookInstanceLifecycleConfiguration, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["name"] = nil
-		inputs["onCreate"] = nil
-		inputs["onStart"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["name"] = args.Name
 		inputs["onCreate"] = args.OnCreate
 		inputs["onStart"] = args.OnStart
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:sagemaker/notebookInstanceLifecycleConfiguration:NotebookInstanceLifecycleConfiguration", name, true, inputs, opts...)
+	var resource NotebookInstanceLifecycleConfiguration
+	err := ctx.RegisterResource("aws:sagemaker/notebookInstanceLifecycleConfiguration:NotebookInstanceLifecycleConfiguration", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &NotebookInstanceLifecycleConfiguration{s: s}, nil
+	return &resource, nil
 }
 
 // GetNotebookInstanceLifecycleConfiguration gets an existing NotebookInstanceLifecycleConfiguration resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetNotebookInstanceLifecycleConfiguration(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *NotebookInstanceLifecycleConfigurationState, opts ...pulumi.ResourceOpt) (*NotebookInstanceLifecycleConfiguration, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["name"] = state.Name
 		inputs["onCreate"] = state.OnCreate
 		inputs["onStart"] = state.OnStart
 	}
-	s, err := ctx.ReadResource("aws:sagemaker/notebookInstanceLifecycleConfiguration:NotebookInstanceLifecycleConfiguration", name, id, inputs, opts...)
+	var resource NotebookInstanceLifecycleConfiguration
+	err := ctx.ReadResource("aws:sagemaker/notebookInstanceLifecycleConfiguration:NotebookInstanceLifecycleConfiguration", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &NotebookInstanceLifecycleConfiguration{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *NotebookInstanceLifecycleConfiguration) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *NotebookInstanceLifecycleConfiguration) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *NotebookInstanceLifecycleConfiguration) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *NotebookInstanceLifecycleConfiguration) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The Amazon Resource Name (ARN) assigned by AWS to this lifecycle configuration.
-func (r *NotebookInstanceLifecycleConfiguration) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The name of the lifecycle configuration (must be unique). If omitted, this provider will assign a random, unique name.
-func (r *NotebookInstanceLifecycleConfiguration) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A shell script (base64-encoded) that runs only once when the SageMaker Notebook Instance is created.
-func (r *NotebookInstanceLifecycleConfiguration) OnCreate() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["onCreate"])
-}
-
-// A shell script (base64-encoded) that runs every time the SageMaker Notebook Instance is started including the time it's created.
-func (r *NotebookInstanceLifecycleConfiguration) OnStart() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["onStart"])
-}
-
 // Input properties used for looking up and filtering NotebookInstanceLifecycleConfiguration resources.
 type NotebookInstanceLifecycleConfigurationState struct {
 	// The Amazon Resource Name (ARN) assigned by AWS to this lifecycle configuration.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The name of the lifecycle configuration (must be unique). If omitted, this provider will assign a random, unique name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A shell script (base64-encoded) that runs only once when the SageMaker Notebook Instance is created.
-	OnCreate interface{}
+	OnCreate pulumi.StringInput `pulumi:"onCreate"`
 	// A shell script (base64-encoded) that runs every time the SageMaker Notebook Instance is started including the time it's created.
-	OnStart interface{}
+	OnStart pulumi.StringInput `pulumi:"onStart"`
 }
 
 // The set of arguments for constructing a NotebookInstanceLifecycleConfiguration resource.
 type NotebookInstanceLifecycleConfigurationArgs struct {
 	// The name of the lifecycle configuration (must be unique). If omitted, this provider will assign a random, unique name.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A shell script (base64-encoded) that runs only once when the SageMaker Notebook Instance is created.
-	OnCreate interface{}
+	OnCreate pulumi.StringInput `pulumi:"onCreate"`
 	// A shell script (base64-encoded) that runs every time the SageMaker Notebook Instance is started including the time it's created.
-	OnStart interface{}
+	OnStart pulumi.StringInput `pulumi:"onStart"`
 }

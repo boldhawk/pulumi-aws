@@ -41,34 +41,34 @@ func LookupResolverRule(ctx *pulumi.Context, args *GetResolverRuleArgs) (*GetRes
 // A collection of arguments for invoking getResolverRule.
 type GetResolverRuleArgs struct {
 	// The domain name the desired resolver rule forwards DNS queries for. Conflicts with `resolverRuleId`.
-	DomainName interface{}
+	DomainName pulumi.StringInput `pulumi:"domainName"`
 	// The friendly name of the desired resolver rule. Conflicts with `resolverRuleId`.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The ID of the outbound resolver endpoint of the desired resolver rule. Conflicts with `resolverRuleId`.
-	ResolverEndpointId interface{}
+	ResolverEndpointId pulumi.StringInput `pulumi:"resolverEndpointId"`
 	// The ID of the desired resolver rule. Conflicts with `domainName`, `name`, `resolverEndpointId` and `ruleType`.
-	ResolverRuleId interface{}
+	ResolverRuleId pulumi.StringInput `pulumi:"resolverRuleId"`
 	// The rule type of the desired resolver rule. Valid values are `FORWARD`, `SYSTEM` and `RECURSIVE`. Conflicts with `resolverRuleId`.
-	RuleType interface{}
-	Tags interface{}
+	RuleType pulumi.StringInput `pulumi:"ruleType"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getResolverRule.
 type GetResolverRuleResult struct {
 	// The ARN (Amazon Resource Name) for the resolver rule.
-	Arn interface{}
-	DomainName interface{}
-	Name interface{}
+	Arn string `pulumi:"arn"`
+	DomainName string `pulumi:"domainName"`
+	Name string `pulumi:"name"`
 	// When a rule is shared with another AWS account, the account ID of the account that the rule is shared with.
-	OwnerId interface{}
-	ResolverEndpointId interface{}
-	ResolverRuleId interface{}
-	RuleType interface{}
+	OwnerId string `pulumi:"ownerId"`
+	ResolverEndpointId string `pulumi:"resolverEndpointId"`
+	ResolverRuleId string `pulumi:"resolverRuleId"`
+	RuleType string `pulumi:"ruleType"`
 	// Whether the rules is shared and, if so, whether the current account is sharing the rule with another account, or another account is sharing the rule with the current account.
 	// Values are `NOT_SHARED`, `SHARED_BY_ME` or `SHARED_WITH_ME`
-	ShareStatus interface{}
+	ShareStatus string `pulumi:"shareStatus"`
 	// A mapping of tags assigned to the resolver rule.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

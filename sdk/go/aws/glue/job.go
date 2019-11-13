@@ -12,7 +12,47 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/glue_job.html.markdown.
 type Job struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// **DEPRECATED** (Optional) The number of AWS Glue data processing units (DPUs) to allocate to this Job. At least 2 DPUs need to be allocated; the default is 10. A DPU is a relative measure of processing power that consists of 4 vCPUs of compute capacity and 16 GB of memory.
+	AllocatedCapacity pulumi.IntOutput `pulumi:"allocatedCapacity"`
+
+	// The command of the job. Defined below.
+	Command pulumi.AnyOutput `pulumi:"command"`
+
+	// The list of connections used for this job.
+	Connections pulumi.ArrayOutput `pulumi:"connections"`
+
+	// The map of default arguments for this job. You can specify arguments here that your own job-execution script consumes, as well as arguments that AWS Glue itself consumes. For information about how to specify and consume your own Job arguments, see the [Calling AWS Glue APIs in Python](http://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html) topic in the developer guide. For information about the key-value pairs that AWS Glue consumes to set up your job, see the [Special Parameters Used by AWS Glue](http://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-glue-arguments.html) topic in the developer guide.
+	DefaultArguments pulumi.MapOutput `pulumi:"defaultArguments"`
+
+	// Description of the job.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// Execution property of the job. Defined below.
+	ExecutionProperty pulumi.AnyOutput `pulumi:"executionProperty"`
+
+	// The maximum number of AWS Glue data processing units (DPUs) that can be allocated when this job runs.
+	MaxCapacity pulumi.Float64Output `pulumi:"maxCapacity"`
+
+	// The maximum number of times to retry this job if it fails.
+	MaxRetries pulumi.IntOutput `pulumi:"maxRetries"`
+
+	// The name of the job command. Defaults to `glueetl`
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The ARN of the IAM role associated with this job.
+	RoleArn pulumi.StringOutput `pulumi:"roleArn"`
+
+	// The name of the Security Configuration to be associated with the job.
+	SecurityConfiguration pulumi.StringOutput `pulumi:"securityConfiguration"`
+
+	// The job timeout in minutes. The default is 2880 minutes (48 hours).
+	Timeout pulumi.IntOutput `pulumi:"timeout"`
 }
 
 // NewJob registers a new resource with the given unique name, arguments, and options.
@@ -24,21 +64,9 @@ func NewJob(ctx *pulumi.Context,
 	if args == nil || args.RoleArn == nil {
 		return nil, errors.New("missing required argument 'RoleArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["allocatedCapacity"] = nil
-		inputs["command"] = nil
-		inputs["connections"] = nil
-		inputs["defaultArguments"] = nil
-		inputs["description"] = nil
-		inputs["executionProperty"] = nil
-		inputs["maxCapacity"] = nil
-		inputs["maxRetries"] = nil
-		inputs["name"] = nil
-		inputs["roleArn"] = nil
-		inputs["securityConfiguration"] = nil
-		inputs["timeout"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["allocatedCapacity"] = args.AllocatedCapacity
 		inputs["command"] = args.Command
 		inputs["connections"] = args.Connections
@@ -52,18 +80,19 @@ func NewJob(ctx *pulumi.Context,
 		inputs["securityConfiguration"] = args.SecurityConfiguration
 		inputs["timeout"] = args.Timeout
 	}
-	s, err := ctx.RegisterResource("aws:glue/job:Job", name, true, inputs, opts...)
+	var resource Job
+	err := ctx.RegisterResource("aws:glue/job:Job", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Job{s: s}, nil
+	return &resource, nil
 }
 
 // GetJob gets an existing Job resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetJob(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *JobState, opts ...pulumi.ResourceOpt) (*Job, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["allocatedCapacity"] = state.AllocatedCapacity
 		inputs["command"] = state.Command
@@ -78,135 +107,75 @@ func GetJob(ctx *pulumi.Context,
 		inputs["securityConfiguration"] = state.SecurityConfiguration
 		inputs["timeout"] = state.Timeout
 	}
-	s, err := ctx.ReadResource("aws:glue/job:Job", name, id, inputs, opts...)
+	var resource Job
+	err := ctx.ReadResource("aws:glue/job:Job", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Job{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Job) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Job) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Job) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Job) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// **DEPRECATED** (Optional) The number of AWS Glue data processing units (DPUs) to allocate to this Job. At least 2 DPUs need to be allocated; the default is 10. A DPU is a relative measure of processing power that consists of 4 vCPUs of compute capacity and 16 GB of memory.
-func (r *Job) AllocatedCapacity() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["allocatedCapacity"])
-}
-
-// The command of the job. Defined below.
-func (r *Job) Command() *pulumi.Output {
-	return r.s.State["command"]
-}
-
-// The list of connections used for this job.
-func (r *Job) Connections() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["connections"])
-}
-
-// The map of default arguments for this job. You can specify arguments here that your own job-execution script consumes, as well as arguments that AWS Glue itself consumes. For information about how to specify and consume your own Job arguments, see the [Calling AWS Glue APIs in Python](http://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html) topic in the developer guide. For information about the key-value pairs that AWS Glue consumes to set up your job, see the [Special Parameters Used by AWS Glue](http://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-glue-arguments.html) topic in the developer guide.
-func (r *Job) DefaultArguments() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["defaultArguments"])
-}
-
-// Description of the job.
-func (r *Job) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// Execution property of the job. Defined below.
-func (r *Job) ExecutionProperty() *pulumi.Output {
-	return r.s.State["executionProperty"]
-}
-
-// The maximum number of AWS Glue data processing units (DPUs) that can be allocated when this job runs.
-func (r *Job) MaxCapacity() *pulumi.Float64Output {
-	return (*pulumi.Float64Output)(r.s.State["maxCapacity"])
-}
-
-// The maximum number of times to retry this job if it fails.
-func (r *Job) MaxRetries() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["maxRetries"])
-}
-
-// The name of the job command. Defaults to `glueetl`
-func (r *Job) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The ARN of the IAM role associated with this job.
-func (r *Job) RoleArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["roleArn"])
-}
-
-// The name of the Security Configuration to be associated with the job.
-func (r *Job) SecurityConfiguration() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["securityConfiguration"])
-}
-
-// The job timeout in minutes. The default is 2880 minutes (48 hours).
-func (r *Job) Timeout() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["timeout"])
-}
-
 // Input properties used for looking up and filtering Job resources.
 type JobState struct {
 	// **DEPRECATED** (Optional) The number of AWS Glue data processing units (DPUs) to allocate to this Job. At least 2 DPUs need to be allocated; the default is 10. A DPU is a relative measure of processing power that consists of 4 vCPUs of compute capacity and 16 GB of memory.
-	AllocatedCapacity interface{}
+	AllocatedCapacity pulumi.IntInput `pulumi:"allocatedCapacity"`
 	// The command of the job. Defined below.
-	Command interface{}
+	Command pulumi.AnyInput `pulumi:"command"`
 	// The list of connections used for this job.
-	Connections interface{}
+	Connections pulumi.ArrayInput `pulumi:"connections"`
 	// The map of default arguments for this job. You can specify arguments here that your own job-execution script consumes, as well as arguments that AWS Glue itself consumes. For information about how to specify and consume your own Job arguments, see the [Calling AWS Glue APIs in Python](http://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html) topic in the developer guide. For information about the key-value pairs that AWS Glue consumes to set up your job, see the [Special Parameters Used by AWS Glue](http://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-glue-arguments.html) topic in the developer guide.
-	DefaultArguments interface{}
+	DefaultArguments pulumi.MapInput `pulumi:"defaultArguments"`
 	// Description of the job.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// Execution property of the job. Defined below.
-	ExecutionProperty interface{}
+	ExecutionProperty pulumi.AnyInput `pulumi:"executionProperty"`
 	// The maximum number of AWS Glue data processing units (DPUs) that can be allocated when this job runs.
-	MaxCapacity interface{}
+	MaxCapacity pulumi.Float64Input `pulumi:"maxCapacity"`
 	// The maximum number of times to retry this job if it fails.
-	MaxRetries interface{}
+	MaxRetries pulumi.IntInput `pulumi:"maxRetries"`
 	// The name of the job command. Defaults to `glueetl`
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The ARN of the IAM role associated with this job.
-	RoleArn interface{}
+	RoleArn pulumi.StringInput `pulumi:"roleArn"`
 	// The name of the Security Configuration to be associated with the job.
-	SecurityConfiguration interface{}
+	SecurityConfiguration pulumi.StringInput `pulumi:"securityConfiguration"`
 	// The job timeout in minutes. The default is 2880 minutes (48 hours).
-	Timeout interface{}
+	Timeout pulumi.IntInput `pulumi:"timeout"`
 }
 
 // The set of arguments for constructing a Job resource.
 type JobArgs struct {
 	// **DEPRECATED** (Optional) The number of AWS Glue data processing units (DPUs) to allocate to this Job. At least 2 DPUs need to be allocated; the default is 10. A DPU is a relative measure of processing power that consists of 4 vCPUs of compute capacity and 16 GB of memory.
-	AllocatedCapacity interface{}
+	AllocatedCapacity pulumi.IntInput `pulumi:"allocatedCapacity"`
 	// The command of the job. Defined below.
-	Command interface{}
+	Command pulumi.AnyInput `pulumi:"command"`
 	// The list of connections used for this job.
-	Connections interface{}
+	Connections pulumi.ArrayInput `pulumi:"connections"`
 	// The map of default arguments for this job. You can specify arguments here that your own job-execution script consumes, as well as arguments that AWS Glue itself consumes. For information about how to specify and consume your own Job arguments, see the [Calling AWS Glue APIs in Python](http://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html) topic in the developer guide. For information about the key-value pairs that AWS Glue consumes to set up your job, see the [Special Parameters Used by AWS Glue](http://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-glue-arguments.html) topic in the developer guide.
-	DefaultArguments interface{}
+	DefaultArguments pulumi.MapInput `pulumi:"defaultArguments"`
 	// Description of the job.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// Execution property of the job. Defined below.
-	ExecutionProperty interface{}
+	ExecutionProperty pulumi.AnyInput `pulumi:"executionProperty"`
 	// The maximum number of AWS Glue data processing units (DPUs) that can be allocated when this job runs.
-	MaxCapacity interface{}
+	MaxCapacity pulumi.Float64Input `pulumi:"maxCapacity"`
 	// The maximum number of times to retry this job if it fails.
-	MaxRetries interface{}
+	MaxRetries pulumi.IntInput `pulumi:"maxRetries"`
 	// The name of the job command. Defaults to `glueetl`
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The ARN of the IAM role associated with this job.
-	RoleArn interface{}
+	RoleArn pulumi.StringInput `pulumi:"roleArn"`
 	// The name of the Security Configuration to be associated with the job.
-	SecurityConfiguration interface{}
+	SecurityConfiguration pulumi.StringInput `pulumi:"securityConfiguration"`
 	// The job timeout in minutes. The default is 2880 minutes (48 hours).
-	Timeout interface{}
+	Timeout pulumi.IntInput `pulumi:"timeout"`
 }

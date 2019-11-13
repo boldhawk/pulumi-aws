@@ -12,7 +12,84 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/opsworks_rails_app_layer.html.markdown.
 type RailsAppLayer struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Keyword for the app server to use. Defaults to "apachePassenger".
+	AppServer pulumi.StringOutput `pulumi:"appServer"`
+
+	// Whether to automatically assign an elastic IP address to the layer's instances.
+	AutoAssignElasticIps pulumi.BoolOutput `pulumi:"autoAssignElasticIps"`
+
+	// For stacks belonging to a VPC, whether to automatically assign a public IP address to each of the layer's instances.
+	AutoAssignPublicIps pulumi.BoolOutput `pulumi:"autoAssignPublicIps"`
+
+	// Whether to enable auto-healing for the layer.
+	AutoHealing pulumi.BoolOutput `pulumi:"autoHealing"`
+
+	// When OpsWorks is managing Bundler, which version to use. Defaults to "1.5.3".
+	BundlerVersion pulumi.StringOutput `pulumi:"bundlerVersion"`
+
+	CustomConfigureRecipes pulumi.ArrayOutput `pulumi:"customConfigureRecipes"`
+
+	CustomDeployRecipes pulumi.ArrayOutput `pulumi:"customDeployRecipes"`
+
+	// The ARN of an IAM profile that will be used for the layer's instances.
+	CustomInstanceProfileArn pulumi.StringOutput `pulumi:"customInstanceProfileArn"`
+
+	// Custom JSON attributes to apply to the layer.
+	CustomJson pulumi.StringOutput `pulumi:"customJson"`
+
+	// Ids for a set of security groups to apply to the layer's instances.
+	CustomSecurityGroupIds pulumi.ArrayOutput `pulumi:"customSecurityGroupIds"`
+
+	CustomSetupRecipes pulumi.ArrayOutput `pulumi:"customSetupRecipes"`
+
+	CustomShutdownRecipes pulumi.ArrayOutput `pulumi:"customShutdownRecipes"`
+
+	CustomUndeployRecipes pulumi.ArrayOutput `pulumi:"customUndeployRecipes"`
+
+	// Whether to enable Elastic Load Balancing connection draining.
+	DrainElbOnShutdown pulumi.BoolOutput `pulumi:"drainElbOnShutdown"`
+
+	// `ebsVolume` blocks, as described below, will each create an EBS volume and connect it to the layer's instances.
+	EbsVolumes pulumi.ArrayOutput `pulumi:"ebsVolumes"`
+
+	// Name of an Elastic Load Balancer to attach to this layer
+	ElasticLoadBalancer pulumi.StringOutput `pulumi:"elasticLoadBalancer"`
+
+	// Whether to install OS and package updates on each instance when it boots.
+	InstallUpdatesOnBoot pulumi.BoolOutput `pulumi:"installUpdatesOnBoot"`
+
+	// The time, in seconds, that OpsWorks will wait for Chef to complete after triggering the Shutdown event.
+	InstanceShutdownTimeout pulumi.IntOutput `pulumi:"instanceShutdownTimeout"`
+
+	// Whether OpsWorks should manage bundler. On by default.
+	ManageBundler pulumi.BoolOutput `pulumi:"manageBundler"`
+
+	// A human-readable name for the layer.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The version of Passenger to use. Defaults to "4.0.46".
+	PassengerVersion pulumi.StringOutput `pulumi:"passengerVersion"`
+
+	// The version of Ruby to use. Defaults to "2.0.0".
+	RubyVersion pulumi.StringOutput `pulumi:"rubyVersion"`
+
+	// The version of RubyGems to use. Defaults to "2.2.2".
+	RubygemsVersion pulumi.StringOutput `pulumi:"rubygemsVersion"`
+
+	// The id of the stack the layer will belong to.
+	StackId pulumi.StringOutput `pulumi:"stackId"`
+
+	// Names of a set of system packages to install on the layer's instances.
+	SystemPackages pulumi.ArrayOutput `pulumi:"systemPackages"`
+
+	// Whether to use EBS-optimized instances.
+	UseEbsOptimizedInstances pulumi.BoolOutput `pulumi:"useEbsOptimizedInstances"`
 }
 
 // NewRailsAppLayer registers a new resource with the given unique name, arguments, and options.
@@ -21,35 +98,9 @@ func NewRailsAppLayer(ctx *pulumi.Context,
 	if args == nil || args.StackId == nil {
 		return nil, errors.New("missing required argument 'StackId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["appServer"] = nil
-		inputs["autoAssignElasticIps"] = nil
-		inputs["autoAssignPublicIps"] = nil
-		inputs["autoHealing"] = nil
-		inputs["bundlerVersion"] = nil
-		inputs["customConfigureRecipes"] = nil
-		inputs["customDeployRecipes"] = nil
-		inputs["customInstanceProfileArn"] = nil
-		inputs["customJson"] = nil
-		inputs["customSecurityGroupIds"] = nil
-		inputs["customSetupRecipes"] = nil
-		inputs["customShutdownRecipes"] = nil
-		inputs["customUndeployRecipes"] = nil
-		inputs["drainElbOnShutdown"] = nil
-		inputs["ebsVolumes"] = nil
-		inputs["elasticLoadBalancer"] = nil
-		inputs["installUpdatesOnBoot"] = nil
-		inputs["instanceShutdownTimeout"] = nil
-		inputs["manageBundler"] = nil
-		inputs["name"] = nil
-		inputs["passengerVersion"] = nil
-		inputs["rubyVersion"] = nil
-		inputs["rubygemsVersion"] = nil
-		inputs["stackId"] = nil
-		inputs["systemPackages"] = nil
-		inputs["useEbsOptimizedInstances"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["appServer"] = args.AppServer
 		inputs["autoAssignElasticIps"] = args.AutoAssignElasticIps
 		inputs["autoAssignPublicIps"] = args.AutoAssignPublicIps
@@ -77,18 +128,19 @@ func NewRailsAppLayer(ctx *pulumi.Context,
 		inputs["systemPackages"] = args.SystemPackages
 		inputs["useEbsOptimizedInstances"] = args.UseEbsOptimizedInstances
 	}
-	s, err := ctx.RegisterResource("aws:opsworks/railsAppLayer:RailsAppLayer", name, true, inputs, opts...)
+	var resource RailsAppLayer
+	err := ctx.RegisterResource("aws:opsworks/railsAppLayer:RailsAppLayer", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RailsAppLayer{s: s}, nil
+	return &resource, nil
 }
 
 // GetRailsAppLayer gets an existing RailsAppLayer resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRailsAppLayer(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RailsAppLayerState, opts ...pulumi.ResourceOpt) (*RailsAppLayer, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["appServer"] = state.AppServer
 		inputs["autoAssignElasticIps"] = state.AutoAssignElasticIps
@@ -117,246 +169,121 @@ func GetRailsAppLayer(ctx *pulumi.Context,
 		inputs["systemPackages"] = state.SystemPackages
 		inputs["useEbsOptimizedInstances"] = state.UseEbsOptimizedInstances
 	}
-	s, err := ctx.ReadResource("aws:opsworks/railsAppLayer:RailsAppLayer", name, id, inputs, opts...)
+	var resource RailsAppLayer
+	err := ctx.ReadResource("aws:opsworks/railsAppLayer:RailsAppLayer", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RailsAppLayer{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *RailsAppLayer) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *RailsAppLayer) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *RailsAppLayer) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *RailsAppLayer) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Keyword for the app server to use. Defaults to "apachePassenger".
-func (r *RailsAppLayer) AppServer() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["appServer"])
-}
-
-// Whether to automatically assign an elastic IP address to the layer's instances.
-func (r *RailsAppLayer) AutoAssignElasticIps() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["autoAssignElasticIps"])
-}
-
-// For stacks belonging to a VPC, whether to automatically assign a public IP address to each of the layer's instances.
-func (r *RailsAppLayer) AutoAssignPublicIps() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["autoAssignPublicIps"])
-}
-
-// Whether to enable auto-healing for the layer.
-func (r *RailsAppLayer) AutoHealing() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["autoHealing"])
-}
-
-// When OpsWorks is managing Bundler, which version to use. Defaults to "1.5.3".
-func (r *RailsAppLayer) BundlerVersion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["bundlerVersion"])
-}
-
-func (r *RailsAppLayer) CustomConfigureRecipes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["customConfigureRecipes"])
-}
-
-func (r *RailsAppLayer) CustomDeployRecipes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["customDeployRecipes"])
-}
-
-// The ARN of an IAM profile that will be used for the layer's instances.
-func (r *RailsAppLayer) CustomInstanceProfileArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["customInstanceProfileArn"])
-}
-
-// Custom JSON attributes to apply to the layer.
-func (r *RailsAppLayer) CustomJson() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["customJson"])
-}
-
-// Ids for a set of security groups to apply to the layer's instances.
-func (r *RailsAppLayer) CustomSecurityGroupIds() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["customSecurityGroupIds"])
-}
-
-func (r *RailsAppLayer) CustomSetupRecipes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["customSetupRecipes"])
-}
-
-func (r *RailsAppLayer) CustomShutdownRecipes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["customShutdownRecipes"])
-}
-
-func (r *RailsAppLayer) CustomUndeployRecipes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["customUndeployRecipes"])
-}
-
-// Whether to enable Elastic Load Balancing connection draining.
-func (r *RailsAppLayer) DrainElbOnShutdown() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["drainElbOnShutdown"])
-}
-
-// `ebsVolume` blocks, as described below, will each create an EBS volume and connect it to the layer's instances.
-func (r *RailsAppLayer) EbsVolumes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["ebsVolumes"])
-}
-
-// Name of an Elastic Load Balancer to attach to this layer
-func (r *RailsAppLayer) ElasticLoadBalancer() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["elasticLoadBalancer"])
-}
-
-// Whether to install OS and package updates on each instance when it boots.
-func (r *RailsAppLayer) InstallUpdatesOnBoot() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["installUpdatesOnBoot"])
-}
-
-// The time, in seconds, that OpsWorks will wait for Chef to complete after triggering the Shutdown event.
-func (r *RailsAppLayer) InstanceShutdownTimeout() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["instanceShutdownTimeout"])
-}
-
-// Whether OpsWorks should manage bundler. On by default.
-func (r *RailsAppLayer) ManageBundler() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["manageBundler"])
-}
-
-// A human-readable name for the layer.
-func (r *RailsAppLayer) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The version of Passenger to use. Defaults to "4.0.46".
-func (r *RailsAppLayer) PassengerVersion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["passengerVersion"])
-}
-
-// The version of Ruby to use. Defaults to "2.0.0".
-func (r *RailsAppLayer) RubyVersion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["rubyVersion"])
-}
-
-// The version of RubyGems to use. Defaults to "2.2.2".
-func (r *RailsAppLayer) RubygemsVersion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["rubygemsVersion"])
-}
-
-// The id of the stack the layer will belong to.
-func (r *RailsAppLayer) StackId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["stackId"])
-}
-
-// Names of a set of system packages to install on the layer's instances.
-func (r *RailsAppLayer) SystemPackages() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["systemPackages"])
-}
-
-// Whether to use EBS-optimized instances.
-func (r *RailsAppLayer) UseEbsOptimizedInstances() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["useEbsOptimizedInstances"])
-}
-
 // Input properties used for looking up and filtering RailsAppLayer resources.
 type RailsAppLayerState struct {
 	// Keyword for the app server to use. Defaults to "apachePassenger".
-	AppServer interface{}
+	AppServer pulumi.StringInput `pulumi:"appServer"`
 	// Whether to automatically assign an elastic IP address to the layer's instances.
-	AutoAssignElasticIps interface{}
+	AutoAssignElasticIps pulumi.BoolInput `pulumi:"autoAssignElasticIps"`
 	// For stacks belonging to a VPC, whether to automatically assign a public IP address to each of the layer's instances.
-	AutoAssignPublicIps interface{}
+	AutoAssignPublicIps pulumi.BoolInput `pulumi:"autoAssignPublicIps"`
 	// Whether to enable auto-healing for the layer.
-	AutoHealing interface{}
+	AutoHealing pulumi.BoolInput `pulumi:"autoHealing"`
 	// When OpsWorks is managing Bundler, which version to use. Defaults to "1.5.3".
-	BundlerVersion interface{}
-	CustomConfigureRecipes interface{}
-	CustomDeployRecipes interface{}
+	BundlerVersion pulumi.StringInput `pulumi:"bundlerVersion"`
+	CustomConfigureRecipes pulumi.ArrayInput `pulumi:"customConfigureRecipes"`
+	CustomDeployRecipes pulumi.ArrayInput `pulumi:"customDeployRecipes"`
 	// The ARN of an IAM profile that will be used for the layer's instances.
-	CustomInstanceProfileArn interface{}
+	CustomInstanceProfileArn pulumi.StringInput `pulumi:"customInstanceProfileArn"`
 	// Custom JSON attributes to apply to the layer.
-	CustomJson interface{}
+	CustomJson pulumi.StringInput `pulumi:"customJson"`
 	// Ids for a set of security groups to apply to the layer's instances.
-	CustomSecurityGroupIds interface{}
-	CustomSetupRecipes interface{}
-	CustomShutdownRecipes interface{}
-	CustomUndeployRecipes interface{}
+	CustomSecurityGroupIds pulumi.ArrayInput `pulumi:"customSecurityGroupIds"`
+	CustomSetupRecipes pulumi.ArrayInput `pulumi:"customSetupRecipes"`
+	CustomShutdownRecipes pulumi.ArrayInput `pulumi:"customShutdownRecipes"`
+	CustomUndeployRecipes pulumi.ArrayInput `pulumi:"customUndeployRecipes"`
 	// Whether to enable Elastic Load Balancing connection draining.
-	DrainElbOnShutdown interface{}
+	DrainElbOnShutdown pulumi.BoolInput `pulumi:"drainElbOnShutdown"`
 	// `ebsVolume` blocks, as described below, will each create an EBS volume and connect it to the layer's instances.
-	EbsVolumes interface{}
+	EbsVolumes pulumi.ArrayInput `pulumi:"ebsVolumes"`
 	// Name of an Elastic Load Balancer to attach to this layer
-	ElasticLoadBalancer interface{}
+	ElasticLoadBalancer pulumi.StringInput `pulumi:"elasticLoadBalancer"`
 	// Whether to install OS and package updates on each instance when it boots.
-	InstallUpdatesOnBoot interface{}
+	InstallUpdatesOnBoot pulumi.BoolInput `pulumi:"installUpdatesOnBoot"`
 	// The time, in seconds, that OpsWorks will wait for Chef to complete after triggering the Shutdown event.
-	InstanceShutdownTimeout interface{}
+	InstanceShutdownTimeout pulumi.IntInput `pulumi:"instanceShutdownTimeout"`
 	// Whether OpsWorks should manage bundler. On by default.
-	ManageBundler interface{}
+	ManageBundler pulumi.BoolInput `pulumi:"manageBundler"`
 	// A human-readable name for the layer.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The version of Passenger to use. Defaults to "4.0.46".
-	PassengerVersion interface{}
+	PassengerVersion pulumi.StringInput `pulumi:"passengerVersion"`
 	// The version of Ruby to use. Defaults to "2.0.0".
-	RubyVersion interface{}
+	RubyVersion pulumi.StringInput `pulumi:"rubyVersion"`
 	// The version of RubyGems to use. Defaults to "2.2.2".
-	RubygemsVersion interface{}
+	RubygemsVersion pulumi.StringInput `pulumi:"rubygemsVersion"`
 	// The id of the stack the layer will belong to.
-	StackId interface{}
+	StackId pulumi.StringInput `pulumi:"stackId"`
 	// Names of a set of system packages to install on the layer's instances.
-	SystemPackages interface{}
+	SystemPackages pulumi.ArrayInput `pulumi:"systemPackages"`
 	// Whether to use EBS-optimized instances.
-	UseEbsOptimizedInstances interface{}
+	UseEbsOptimizedInstances pulumi.BoolInput `pulumi:"useEbsOptimizedInstances"`
 }
 
 // The set of arguments for constructing a RailsAppLayer resource.
 type RailsAppLayerArgs struct {
 	// Keyword for the app server to use. Defaults to "apachePassenger".
-	AppServer interface{}
+	AppServer pulumi.StringInput `pulumi:"appServer"`
 	// Whether to automatically assign an elastic IP address to the layer's instances.
-	AutoAssignElasticIps interface{}
+	AutoAssignElasticIps pulumi.BoolInput `pulumi:"autoAssignElasticIps"`
 	// For stacks belonging to a VPC, whether to automatically assign a public IP address to each of the layer's instances.
-	AutoAssignPublicIps interface{}
+	AutoAssignPublicIps pulumi.BoolInput `pulumi:"autoAssignPublicIps"`
 	// Whether to enable auto-healing for the layer.
-	AutoHealing interface{}
+	AutoHealing pulumi.BoolInput `pulumi:"autoHealing"`
 	// When OpsWorks is managing Bundler, which version to use. Defaults to "1.5.3".
-	BundlerVersion interface{}
-	CustomConfigureRecipes interface{}
-	CustomDeployRecipes interface{}
+	BundlerVersion pulumi.StringInput `pulumi:"bundlerVersion"`
+	CustomConfigureRecipes pulumi.ArrayInput `pulumi:"customConfigureRecipes"`
+	CustomDeployRecipes pulumi.ArrayInput `pulumi:"customDeployRecipes"`
 	// The ARN of an IAM profile that will be used for the layer's instances.
-	CustomInstanceProfileArn interface{}
+	CustomInstanceProfileArn pulumi.StringInput `pulumi:"customInstanceProfileArn"`
 	// Custom JSON attributes to apply to the layer.
-	CustomJson interface{}
+	CustomJson pulumi.StringInput `pulumi:"customJson"`
 	// Ids for a set of security groups to apply to the layer's instances.
-	CustomSecurityGroupIds interface{}
-	CustomSetupRecipes interface{}
-	CustomShutdownRecipes interface{}
-	CustomUndeployRecipes interface{}
+	CustomSecurityGroupIds pulumi.ArrayInput `pulumi:"customSecurityGroupIds"`
+	CustomSetupRecipes pulumi.ArrayInput `pulumi:"customSetupRecipes"`
+	CustomShutdownRecipes pulumi.ArrayInput `pulumi:"customShutdownRecipes"`
+	CustomUndeployRecipes pulumi.ArrayInput `pulumi:"customUndeployRecipes"`
 	// Whether to enable Elastic Load Balancing connection draining.
-	DrainElbOnShutdown interface{}
+	DrainElbOnShutdown pulumi.BoolInput `pulumi:"drainElbOnShutdown"`
 	// `ebsVolume` blocks, as described below, will each create an EBS volume and connect it to the layer's instances.
-	EbsVolumes interface{}
+	EbsVolumes pulumi.ArrayInput `pulumi:"ebsVolumes"`
 	// Name of an Elastic Load Balancer to attach to this layer
-	ElasticLoadBalancer interface{}
+	ElasticLoadBalancer pulumi.StringInput `pulumi:"elasticLoadBalancer"`
 	// Whether to install OS and package updates on each instance when it boots.
-	InstallUpdatesOnBoot interface{}
+	InstallUpdatesOnBoot pulumi.BoolInput `pulumi:"installUpdatesOnBoot"`
 	// The time, in seconds, that OpsWorks will wait for Chef to complete after triggering the Shutdown event.
-	InstanceShutdownTimeout interface{}
+	InstanceShutdownTimeout pulumi.IntInput `pulumi:"instanceShutdownTimeout"`
 	// Whether OpsWorks should manage bundler. On by default.
-	ManageBundler interface{}
+	ManageBundler pulumi.BoolInput `pulumi:"manageBundler"`
 	// A human-readable name for the layer.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The version of Passenger to use. Defaults to "4.0.46".
-	PassengerVersion interface{}
+	PassengerVersion pulumi.StringInput `pulumi:"passengerVersion"`
 	// The version of Ruby to use. Defaults to "2.0.0".
-	RubyVersion interface{}
+	RubyVersion pulumi.StringInput `pulumi:"rubyVersion"`
 	// The version of RubyGems to use. Defaults to "2.2.2".
-	RubygemsVersion interface{}
+	RubygemsVersion pulumi.StringInput `pulumi:"rubygemsVersion"`
 	// The id of the stack the layer will belong to.
-	StackId interface{}
+	StackId pulumi.StringInput `pulumi:"stackId"`
 	// Names of a set of system packages to install on the layer's instances.
-	SystemPackages interface{}
+	SystemPackages pulumi.ArrayInput `pulumi:"systemPackages"`
 	// Whether to use EBS-optimized instances.
-	UseEbsOptimizedInstances interface{}
+	UseEbsOptimizedInstances pulumi.BoolInput `pulumi:"useEbsOptimizedInstances"`
 }

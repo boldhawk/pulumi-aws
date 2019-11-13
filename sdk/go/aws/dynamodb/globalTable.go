@@ -14,7 +14,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/dynamodb_global_table.html.markdown.
 type GlobalTable struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the DynamoDB Global Table
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The name of the global table. Must match underlying DynamoDB Table names in all regions.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Underlying DynamoDB Table. At least 1 replica must be defined. See below.
+	Replicas pulumi.ArrayOutput `pulumi:"replicas"`
 }
 
 // NewGlobalTable registers a new resource with the given unique name, arguments, and options.
@@ -23,78 +36,61 @@ func NewGlobalTable(ctx *pulumi.Context,
 	if args == nil || args.Replicas == nil {
 		return nil, errors.New("missing required argument 'Replicas'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["name"] = nil
-		inputs["replicas"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["name"] = args.Name
 		inputs["replicas"] = args.Replicas
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:dynamodb/globalTable:GlobalTable", name, true, inputs, opts...)
+	var resource GlobalTable
+	err := ctx.RegisterResource("aws:dynamodb/globalTable:GlobalTable", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &GlobalTable{s: s}, nil
+	return &resource, nil
 }
 
 // GetGlobalTable gets an existing GlobalTable resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetGlobalTable(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *GlobalTableState, opts ...pulumi.ResourceOpt) (*GlobalTable, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["name"] = state.Name
 		inputs["replicas"] = state.Replicas
 	}
-	s, err := ctx.ReadResource("aws:dynamodb/globalTable:GlobalTable", name, id, inputs, opts...)
+	var resource GlobalTable
+	err := ctx.ReadResource("aws:dynamodb/globalTable:GlobalTable", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &GlobalTable{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *GlobalTable) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *GlobalTable) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *GlobalTable) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *GlobalTable) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the DynamoDB Global Table
-func (r *GlobalTable) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The name of the global table. Must match underlying DynamoDB Table names in all regions.
-func (r *GlobalTable) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Underlying DynamoDB Table. At least 1 replica must be defined. See below.
-func (r *GlobalTable) Replicas() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["replicas"])
-}
-
 // Input properties used for looking up and filtering GlobalTable resources.
 type GlobalTableState struct {
 	// The ARN of the DynamoDB Global Table
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The name of the global table. Must match underlying DynamoDB Table names in all regions.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Underlying DynamoDB Table. At least 1 replica must be defined. See below.
-	Replicas interface{}
+	Replicas pulumi.ArrayInput `pulumi:"replicas"`
 }
 
 // The set of arguments for constructing a GlobalTable resource.
 type GlobalTableArgs struct {
 	// The name of the global table. Must match underlying DynamoDB Table names in all regions.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Underlying DynamoDB Table. At least 1 replica must be defined. See below.
-	Replicas interface{}
+	Replicas pulumi.ArrayInput `pulumi:"replicas"`
 }

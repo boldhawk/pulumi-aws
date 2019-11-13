@@ -12,7 +12,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/load_balancer_backend_server_policy_legacy.html.markdown.
 type LoadBalancerBackendServerPolicy struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The instance port to apply the policy to.
+	InstancePort pulumi.IntOutput `pulumi:"instancePort"`
+
+	// The load balancer to attach the policy to.
+	LoadBalancerName pulumi.StringOutput `pulumi:"loadBalancerName"`
+
+	// List of Policy Names to apply to the backend server.
+	PolicyNames pulumi.ArrayOutput `pulumi:"policyNames"`
 }
 
 // NewLoadBalancerBackendServerPolicy registers a new resource with the given unique name, arguments, and options.
@@ -24,81 +37,63 @@ func NewLoadBalancerBackendServerPolicy(ctx *pulumi.Context,
 	if args == nil || args.LoadBalancerName == nil {
 		return nil, errors.New("missing required argument 'LoadBalancerName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["instancePort"] = nil
-		inputs["loadBalancerName"] = nil
-		inputs["policyNames"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["instancePort"] = args.InstancePort
 		inputs["loadBalancerName"] = args.LoadBalancerName
 		inputs["policyNames"] = args.PolicyNames
 	}
-	s, err := ctx.RegisterResource("aws:elasticloadbalancing/loadBalancerBackendServerPolicy:LoadBalancerBackendServerPolicy", name, true, inputs, opts...)
+	var resource LoadBalancerBackendServerPolicy
+	err := ctx.RegisterResource("aws:elasticloadbalancing/loadBalancerBackendServerPolicy:LoadBalancerBackendServerPolicy", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &LoadBalancerBackendServerPolicy{s: s}, nil
+	return &resource, nil
 }
 
 // GetLoadBalancerBackendServerPolicy gets an existing LoadBalancerBackendServerPolicy resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetLoadBalancerBackendServerPolicy(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *LoadBalancerBackendServerPolicyState, opts ...pulumi.ResourceOpt) (*LoadBalancerBackendServerPolicy, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["instancePort"] = state.InstancePort
 		inputs["loadBalancerName"] = state.LoadBalancerName
 		inputs["policyNames"] = state.PolicyNames
 	}
-	s, err := ctx.ReadResource("aws:elasticloadbalancing/loadBalancerBackendServerPolicy:LoadBalancerBackendServerPolicy", name, id, inputs, opts...)
+	var resource LoadBalancerBackendServerPolicy
+	err := ctx.ReadResource("aws:elasticloadbalancing/loadBalancerBackendServerPolicy:LoadBalancerBackendServerPolicy", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &LoadBalancerBackendServerPolicy{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *LoadBalancerBackendServerPolicy) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *LoadBalancerBackendServerPolicy) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *LoadBalancerBackendServerPolicy) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *LoadBalancerBackendServerPolicy) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The instance port to apply the policy to.
-func (r *LoadBalancerBackendServerPolicy) InstancePort() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["instancePort"])
-}
-
-// The load balancer to attach the policy to.
-func (r *LoadBalancerBackendServerPolicy) LoadBalancerName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["loadBalancerName"])
-}
-
-// List of Policy Names to apply to the backend server.
-func (r *LoadBalancerBackendServerPolicy) PolicyNames() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["policyNames"])
-}
-
 // Input properties used for looking up and filtering LoadBalancerBackendServerPolicy resources.
 type LoadBalancerBackendServerPolicyState struct {
 	// The instance port to apply the policy to.
-	InstancePort interface{}
+	InstancePort pulumi.IntInput `pulumi:"instancePort"`
 	// The load balancer to attach the policy to.
-	LoadBalancerName interface{}
+	LoadBalancerName pulumi.StringInput `pulumi:"loadBalancerName"`
 	// List of Policy Names to apply to the backend server.
-	PolicyNames interface{}
+	PolicyNames pulumi.ArrayInput `pulumi:"policyNames"`
 }
 
 // The set of arguments for constructing a LoadBalancerBackendServerPolicy resource.
 type LoadBalancerBackendServerPolicyArgs struct {
 	// The instance port to apply the policy to.
-	InstancePort interface{}
+	InstancePort pulumi.IntInput `pulumi:"instancePort"`
 	// The load balancer to attach the policy to.
-	LoadBalancerName interface{}
+	LoadBalancerName pulumi.StringInput `pulumi:"loadBalancerName"`
 	// List of Policy Names to apply to the backend server.
-	PolicyNames interface{}
+	PolicyNames pulumi.ArrayInput `pulumi:"policyNames"`
 }

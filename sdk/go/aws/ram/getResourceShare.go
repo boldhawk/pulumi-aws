@@ -35,24 +35,24 @@ func LookupResourceShare(ctx *pulumi.Context, args *GetResourceShareArgs) (*GetR
 // A collection of arguments for invoking getResourceShare.
 type GetResourceShareArgs struct {
 	// A filter used to scope the list e.g. by tags. See [related docs] (https://docs.aws.amazon.com/ram/latest/APIReference/API_TagFilter.html).
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The name of the tag key to filter on.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The owner of the resource share. Valid values are SELF or OTHER-ACCOUNTS
-	ResourceOwner interface{}
+	ResourceOwner pulumi.StringInput `pulumi:"resourceOwner"`
 }
 
 // A collection of values returned by getResourceShare.
 type GetResourceShareResult struct {
 	// The Amazon Resource Name (ARN) of the resource share.
-	Arn interface{}
-	Filters interface{}
+	Arn string `pulumi:"arn"`
+	Filters []interface{} `pulumi:"filters"`
 	// The Amazon Resource Name (ARN) of the resource share.
-	Id interface{}
-	Name interface{}
-	ResourceOwner interface{}
+	Id string `pulumi:"id"`
+	Name string `pulumi:"name"`
+	ResourceOwner string `pulumi:"resourceOwner"`
 	// The Status of the RAM share.
-	Status interface{}
+	Status string `pulumi:"status"`
 	// The Tags attached to the RAM share
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 }

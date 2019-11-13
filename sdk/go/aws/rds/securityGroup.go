@@ -15,7 +15,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/db_security_group.html.markdown.
 type SecurityGroup struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The arn of the DB security group.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The description of the DB security group. Defaults to "Managed by Pulumi".
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// A list of ingress rules.
+	Ingress pulumi.ArrayOutput `pulumi:"ingress"`
+
+	// The name of the DB security group.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewSecurityGroup registers a new resource with the given unique name, arguments, and options.
@@ -24,31 +43,28 @@ func NewSecurityGroup(ctx *pulumi.Context,
 	if args == nil || args.Ingress == nil {
 		return nil, errors.New("missing required argument 'Ingress'")
 	}
-	inputs := make(map[string]interface{})
-	inputs["description"] = "Managed by Pulumi"
-	if args == nil {
-		inputs["ingress"] = nil
-		inputs["name"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["description"] = pulumi.Any("Managed by Pulumi")
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["ingress"] = args.Ingress
 		inputs["name"] = args.Name
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:rds/securityGroup:SecurityGroup", name, true, inputs, opts...)
+	var resource SecurityGroup
+	err := ctx.RegisterResource("aws:rds/securityGroup:SecurityGroup", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SecurityGroup{s: s}, nil
+	return &resource, nil
 }
 
 // GetSecurityGroup gets an existing SecurityGroup resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetSecurityGroup(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *SecurityGroupState, opts ...pulumi.ResourceOpt) (*SecurityGroup, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["description"] = state.Description
@@ -56,70 +72,45 @@ func GetSecurityGroup(ctx *pulumi.Context,
 		inputs["name"] = state.Name
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:rds/securityGroup:SecurityGroup", name, id, inputs, opts...)
+	var resource SecurityGroup
+	err := ctx.ReadResource("aws:rds/securityGroup:SecurityGroup", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SecurityGroup{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *SecurityGroup) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *SecurityGroup) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *SecurityGroup) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *SecurityGroup) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The arn of the DB security group.
-func (r *SecurityGroup) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The description of the DB security group. Defaults to "Managed by Pulumi".
-func (r *SecurityGroup) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// A list of ingress rules.
-func (r *SecurityGroup) Ingress() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["ingress"])
-}
-
-// The name of the DB security group.
-func (r *SecurityGroup) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *SecurityGroup) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering SecurityGroup resources.
 type SecurityGroupState struct {
 	// The arn of the DB security group.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The description of the DB security group. Defaults to "Managed by Pulumi".
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// A list of ingress rules.
-	Ingress interface{}
+	Ingress pulumi.ArrayInput `pulumi:"ingress"`
 	// The name of the DB security group.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a SecurityGroup resource.
 type SecurityGroupArgs struct {
 	// The description of the DB security group. Defaults to "Managed by Pulumi".
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// A list of ingress rules.
-	Ingress interface{}
+	Ingress pulumi.ArrayInput `pulumi:"ingress"`
 	// The name of the DB security group.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

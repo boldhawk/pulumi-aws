@@ -11,37 +11,52 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/config_configuration_aggregator.html.markdown.
 type ConfigurationAggregator struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The account(s) to aggregate config data from as documented below.
+	AccountAggregationSource pulumi.AnyOutput `pulumi:"accountAggregationSource"`
+
+	// The ARN of the aggregator
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The name of the configuration aggregator.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The organization to aggregate config data from as documented below.
+	OrganizationAggregationSource pulumi.AnyOutput `pulumi:"organizationAggregationSource"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewConfigurationAggregator registers a new resource with the given unique name, arguments, and options.
 func NewConfigurationAggregator(ctx *pulumi.Context,
 	name string, args *ConfigurationAggregatorArgs, opts ...pulumi.ResourceOpt) (*ConfigurationAggregator, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["accountAggregationSource"] = nil
-		inputs["name"] = nil
-		inputs["organizationAggregationSource"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["accountAggregationSource"] = args.AccountAggregationSource
 		inputs["name"] = args.Name
 		inputs["organizationAggregationSource"] = args.OrganizationAggregationSource
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:cfg/configurationAggregator:ConfigurationAggregator", name, true, inputs, opts...)
+	var resource ConfigurationAggregator
+	err := ctx.RegisterResource("aws:cfg/configurationAggregator:ConfigurationAggregator", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ConfigurationAggregator{s: s}, nil
+	return &resource, nil
 }
 
 // GetConfigurationAggregator gets an existing ConfigurationAggregator resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetConfigurationAggregator(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ConfigurationAggregatorState, opts ...pulumi.ResourceOpt) (*ConfigurationAggregator, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["accountAggregationSource"] = state.AccountAggregationSource
 		inputs["arn"] = state.Arn
@@ -49,70 +64,45 @@ func GetConfigurationAggregator(ctx *pulumi.Context,
 		inputs["organizationAggregationSource"] = state.OrganizationAggregationSource
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:cfg/configurationAggregator:ConfigurationAggregator", name, id, inputs, opts...)
+	var resource ConfigurationAggregator
+	err := ctx.ReadResource("aws:cfg/configurationAggregator:ConfigurationAggregator", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ConfigurationAggregator{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ConfigurationAggregator) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ConfigurationAggregator) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ConfigurationAggregator) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ConfigurationAggregator) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The account(s) to aggregate config data from as documented below.
-func (r *ConfigurationAggregator) AccountAggregationSource() *pulumi.Output {
-	return r.s.State["accountAggregationSource"]
-}
-
-// The ARN of the aggregator
-func (r *ConfigurationAggregator) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The name of the configuration aggregator.
-func (r *ConfigurationAggregator) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The organization to aggregate config data from as documented below.
-func (r *ConfigurationAggregator) OrganizationAggregationSource() *pulumi.Output {
-	return r.s.State["organizationAggregationSource"]
-}
-
-// A mapping of tags to assign to the resource.
-func (r *ConfigurationAggregator) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering ConfigurationAggregator resources.
 type ConfigurationAggregatorState struct {
 	// The account(s) to aggregate config data from as documented below.
-	AccountAggregationSource interface{}
+	AccountAggregationSource pulumi.AnyInput `pulumi:"accountAggregationSource"`
 	// The ARN of the aggregator
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The name of the configuration aggregator.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The organization to aggregate config data from as documented below.
-	OrganizationAggregationSource interface{}
+	OrganizationAggregationSource pulumi.AnyInput `pulumi:"organizationAggregationSource"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a ConfigurationAggregator resource.
 type ConfigurationAggregatorArgs struct {
 	// The account(s) to aggregate config data from as documented below.
-	AccountAggregationSource interface{}
+	AccountAggregationSource pulumi.AnyInput `pulumi:"accountAggregationSource"`
 	// The name of the configuration aggregator.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The organization to aggregate config data from as documented below.
-	OrganizationAggregationSource interface{}
+	OrganizationAggregationSource pulumi.AnyInput `pulumi:"organizationAggregationSource"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

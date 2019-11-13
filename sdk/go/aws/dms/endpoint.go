@@ -15,7 +15,62 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/dms_endpoint.html.markdown.
 type Endpoint struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The Amazon Resource Name (ARN) for the certificate.
+	CertificateArn pulumi.StringOutput `pulumi:"certificateArn"`
+
+	// The name of the endpoint database.
+	DatabaseName pulumi.StringOutput `pulumi:"databaseName"`
+
+	// The Amazon Resource Name (ARN) for the endpoint.
+	EndpointArn pulumi.StringOutput `pulumi:"endpointArn"`
+
+	// The database endpoint identifier.
+	EndpointId pulumi.StringOutput `pulumi:"endpointId"`
+
+	// The type of endpoint. Can be one of `source | target`.
+	EndpointType pulumi.StringOutput `pulumi:"endpointType"`
+
+	// The type of engine for the endpoint. Can be one of `aurora | azuredb | db2 | docdb | dynamodb | mariadb | mongodb | mysql | oracle | postgres | redshift | s3 | sqlserver | sybase`.
+	EngineName pulumi.StringOutput `pulumi:"engineName"`
+
+	// Additional attributes associated with the connection. For available attributes see [Using Extra Connection Attributes with AWS Database Migration Service](http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ConnectionAttributes.html).
+	ExtraConnectionAttributes pulumi.StringOutput `pulumi:"extraConnectionAttributes"`
+
+	// The Amazon Resource Name (ARN) for the KMS key that will be used to encrypt the connection parameters. If you do not specify a value for `kmsKeyArn`, then AWS DMS will use your default encryption key. AWS KMS creates the default encryption key for your AWS account. Your AWS account has a different default encryption key for each AWS region.
+	KmsKeyArn pulumi.StringOutput `pulumi:"kmsKeyArn"`
+
+	// Settings for the source MongoDB endpoint. Available settings are `authType` (default: `password`), `authMechanism` (default: `default`), `nestingLevel` (default: `none`), `extractDocId` (default: `false`), `docsToInvestigate` (default: `1000`) and `authSource` (default: `admin`). For more details, see [Using MongoDB as a Source for AWS DMS](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.MongoDB.html).
+	MongodbSettings pulumi.AnyOutput `pulumi:"mongodbSettings"`
+
+	// The password to be used to login to the endpoint database.
+	Password pulumi.StringOutput `pulumi:"password"`
+
+	// The port used by the endpoint database.
+	Port pulumi.IntOutput `pulumi:"port"`
+
+	// Settings for the target S3 endpoint. Available settings are `serviceAccessRoleArn`, `externalTableDefinition`, `csvRowDelimiter` (default: `\\n`), `csvDelimiter` (default: `,`), `bucketFolder`, `bucketName` and `compressionType` (default: `NONE`). For more details, see [Using Amazon S3 as a Target for AWS Database Migration Service](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.S3.html).
+	S3Settings pulumi.AnyOutput `pulumi:"s3Settings"`
+
+	// The host name of the server.
+	ServerName pulumi.StringOutput `pulumi:"serverName"`
+
+	// The Amazon Resource Name (ARN) used by the service access IAM role for dynamodb endpoints.
+	ServiceAccessRole pulumi.StringOutput `pulumi:"serviceAccessRole"`
+
+	// The SSL mode to use for the connection. Can be one of `none | require | verify-ca | verify-full`
+	SslMode pulumi.StringOutput `pulumi:"sslMode"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// The user name to be used to login to the endpoint database.
+	Username pulumi.StringOutput `pulumi:"username"`
 }
 
 // NewEndpoint registers a new resource with the given unique name, arguments, and options.
@@ -30,25 +85,8 @@ func NewEndpoint(ctx *pulumi.Context,
 	if args == nil || args.EngineName == nil {
 		return nil, errors.New("missing required argument 'EngineName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["certificateArn"] = nil
-		inputs["databaseName"] = nil
-		inputs["endpointId"] = nil
-		inputs["endpointType"] = nil
-		inputs["engineName"] = nil
-		inputs["extraConnectionAttributes"] = nil
-		inputs["kmsKeyArn"] = nil
-		inputs["mongodbSettings"] = nil
-		inputs["password"] = nil
-		inputs["port"] = nil
-		inputs["s3Settings"] = nil
-		inputs["serverName"] = nil
-		inputs["serviceAccessRole"] = nil
-		inputs["sslMode"] = nil
-		inputs["tags"] = nil
-		inputs["username"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["certificateArn"] = args.CertificateArn
 		inputs["databaseName"] = args.DatabaseName
 		inputs["endpointId"] = args.EndpointId
@@ -66,19 +104,19 @@ func NewEndpoint(ctx *pulumi.Context,
 		inputs["tags"] = args.Tags
 		inputs["username"] = args.Username
 	}
-	inputs["endpointArn"] = nil
-	s, err := ctx.RegisterResource("aws:dms/endpoint:Endpoint", name, true, inputs, opts...)
+	var resource Endpoint
+	err := ctx.RegisterResource("aws:dms/endpoint:Endpoint", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Endpoint{s: s}, nil
+	return &resource, nil
 }
 
 // GetEndpoint gets an existing Endpoint resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetEndpoint(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *EndpointState, opts ...pulumi.ResourceOpt) (*Endpoint, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["certificateArn"] = state.CertificateArn
 		inputs["databaseName"] = state.DatabaseName
@@ -98,178 +136,93 @@ func GetEndpoint(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["username"] = state.Username
 	}
-	s, err := ctx.ReadResource("aws:dms/endpoint:Endpoint", name, id, inputs, opts...)
+	var resource Endpoint
+	err := ctx.ReadResource("aws:dms/endpoint:Endpoint", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Endpoint{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Endpoint) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Endpoint) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Endpoint) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Endpoint) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The Amazon Resource Name (ARN) for the certificate.
-func (r *Endpoint) CertificateArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["certificateArn"])
-}
-
-// The name of the endpoint database.
-func (r *Endpoint) DatabaseName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["databaseName"])
-}
-
-// The Amazon Resource Name (ARN) for the endpoint.
-func (r *Endpoint) EndpointArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["endpointArn"])
-}
-
-// The database endpoint identifier.
-func (r *Endpoint) EndpointId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["endpointId"])
-}
-
-// The type of endpoint. Can be one of `source | target`.
-func (r *Endpoint) EndpointType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["endpointType"])
-}
-
-// The type of engine for the endpoint. Can be one of `aurora | azuredb | db2 | docdb | dynamodb | mariadb | mongodb | mysql | oracle | postgres | redshift | s3 | sqlserver | sybase`.
-func (r *Endpoint) EngineName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["engineName"])
-}
-
-// Additional attributes associated with the connection. For available attributes see [Using Extra Connection Attributes with AWS Database Migration Service](http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ConnectionAttributes.html).
-func (r *Endpoint) ExtraConnectionAttributes() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["extraConnectionAttributes"])
-}
-
-// The Amazon Resource Name (ARN) for the KMS key that will be used to encrypt the connection parameters. If you do not specify a value for `kmsKeyArn`, then AWS DMS will use your default encryption key. AWS KMS creates the default encryption key for your AWS account. Your AWS account has a different default encryption key for each AWS region.
-func (r *Endpoint) KmsKeyArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["kmsKeyArn"])
-}
-
-// Settings for the source MongoDB endpoint. Available settings are `authType` (default: `password`), `authMechanism` (default: `default`), `nestingLevel` (default: `none`), `extractDocId` (default: `false`), `docsToInvestigate` (default: `1000`) and `authSource` (default: `admin`). For more details, see [Using MongoDB as a Source for AWS DMS](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.MongoDB.html).
-func (r *Endpoint) MongodbSettings() *pulumi.Output {
-	return r.s.State["mongodbSettings"]
-}
-
-// The password to be used to login to the endpoint database.
-func (r *Endpoint) Password() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["password"])
-}
-
-// The port used by the endpoint database.
-func (r *Endpoint) Port() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["port"])
-}
-
-// Settings for the target S3 endpoint. Available settings are `serviceAccessRoleArn`, `externalTableDefinition`, `csvRowDelimiter` (default: `\\n`), `csvDelimiter` (default: `,`), `bucketFolder`, `bucketName` and `compressionType` (default: `NONE`). For more details, see [Using Amazon S3 as a Target for AWS Database Migration Service](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.S3.html).
-func (r *Endpoint) S3Settings() *pulumi.Output {
-	return r.s.State["s3Settings"]
-}
-
-// The host name of the server.
-func (r *Endpoint) ServerName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["serverName"])
-}
-
-// The Amazon Resource Name (ARN) used by the service access IAM role for dynamodb endpoints.
-func (r *Endpoint) ServiceAccessRole() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["serviceAccessRole"])
-}
-
-// The SSL mode to use for the connection. Can be one of `none | require | verify-ca | verify-full`
-func (r *Endpoint) SslMode() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["sslMode"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *Endpoint) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// The user name to be used to login to the endpoint database.
-func (r *Endpoint) Username() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["username"])
-}
-
 // Input properties used for looking up and filtering Endpoint resources.
 type EndpointState struct {
 	// The Amazon Resource Name (ARN) for the certificate.
-	CertificateArn interface{}
+	CertificateArn pulumi.StringInput `pulumi:"certificateArn"`
 	// The name of the endpoint database.
-	DatabaseName interface{}
+	DatabaseName pulumi.StringInput `pulumi:"databaseName"`
 	// The Amazon Resource Name (ARN) for the endpoint.
-	EndpointArn interface{}
+	EndpointArn pulumi.StringInput `pulumi:"endpointArn"`
 	// The database endpoint identifier.
-	EndpointId interface{}
+	EndpointId pulumi.StringInput `pulumi:"endpointId"`
 	// The type of endpoint. Can be one of `source | target`.
-	EndpointType interface{}
+	EndpointType pulumi.StringInput `pulumi:"endpointType"`
 	// The type of engine for the endpoint. Can be one of `aurora | azuredb | db2 | docdb | dynamodb | mariadb | mongodb | mysql | oracle | postgres | redshift | s3 | sqlserver | sybase`.
-	EngineName interface{}
+	EngineName pulumi.StringInput `pulumi:"engineName"`
 	// Additional attributes associated with the connection. For available attributes see [Using Extra Connection Attributes with AWS Database Migration Service](http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ConnectionAttributes.html).
-	ExtraConnectionAttributes interface{}
+	ExtraConnectionAttributes pulumi.StringInput `pulumi:"extraConnectionAttributes"`
 	// The Amazon Resource Name (ARN) for the KMS key that will be used to encrypt the connection parameters. If you do not specify a value for `kmsKeyArn`, then AWS DMS will use your default encryption key. AWS KMS creates the default encryption key for your AWS account. Your AWS account has a different default encryption key for each AWS region.
-	KmsKeyArn interface{}
+	KmsKeyArn pulumi.StringInput `pulumi:"kmsKeyArn"`
 	// Settings for the source MongoDB endpoint. Available settings are `authType` (default: `password`), `authMechanism` (default: `default`), `nestingLevel` (default: `none`), `extractDocId` (default: `false`), `docsToInvestigate` (default: `1000`) and `authSource` (default: `admin`). For more details, see [Using MongoDB as a Source for AWS DMS](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.MongoDB.html).
-	MongodbSettings interface{}
+	MongodbSettings pulumi.AnyInput `pulumi:"mongodbSettings"`
 	// The password to be used to login to the endpoint database.
-	Password interface{}
+	Password pulumi.StringInput `pulumi:"password"`
 	// The port used by the endpoint database.
-	Port interface{}
+	Port pulumi.IntInput `pulumi:"port"`
 	// Settings for the target S3 endpoint. Available settings are `serviceAccessRoleArn`, `externalTableDefinition`, `csvRowDelimiter` (default: `\\n`), `csvDelimiter` (default: `,`), `bucketFolder`, `bucketName` and `compressionType` (default: `NONE`). For more details, see [Using Amazon S3 as a Target for AWS Database Migration Service](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.S3.html).
-	S3Settings interface{}
+	S3Settings pulumi.AnyInput `pulumi:"s3Settings"`
 	// The host name of the server.
-	ServerName interface{}
+	ServerName pulumi.StringInput `pulumi:"serverName"`
 	// The Amazon Resource Name (ARN) used by the service access IAM role for dynamodb endpoints.
-	ServiceAccessRole interface{}
+	ServiceAccessRole pulumi.StringInput `pulumi:"serviceAccessRole"`
 	// The SSL mode to use for the connection. Can be one of `none | require | verify-ca | verify-full`
-	SslMode interface{}
+	SslMode pulumi.StringInput `pulumi:"sslMode"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The user name to be used to login to the endpoint database.
-	Username interface{}
+	Username pulumi.StringInput `pulumi:"username"`
 }
 
 // The set of arguments for constructing a Endpoint resource.
 type EndpointArgs struct {
 	// The Amazon Resource Name (ARN) for the certificate.
-	CertificateArn interface{}
+	CertificateArn pulumi.StringInput `pulumi:"certificateArn"`
 	// The name of the endpoint database.
-	DatabaseName interface{}
+	DatabaseName pulumi.StringInput `pulumi:"databaseName"`
 	// The database endpoint identifier.
-	EndpointId interface{}
+	EndpointId pulumi.StringInput `pulumi:"endpointId"`
 	// The type of endpoint. Can be one of `source | target`.
-	EndpointType interface{}
+	EndpointType pulumi.StringInput `pulumi:"endpointType"`
 	// The type of engine for the endpoint. Can be one of `aurora | azuredb | db2 | docdb | dynamodb | mariadb | mongodb | mysql | oracle | postgres | redshift | s3 | sqlserver | sybase`.
-	EngineName interface{}
+	EngineName pulumi.StringInput `pulumi:"engineName"`
 	// Additional attributes associated with the connection. For available attributes see [Using Extra Connection Attributes with AWS Database Migration Service](http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ConnectionAttributes.html).
-	ExtraConnectionAttributes interface{}
+	ExtraConnectionAttributes pulumi.StringInput `pulumi:"extraConnectionAttributes"`
 	// The Amazon Resource Name (ARN) for the KMS key that will be used to encrypt the connection parameters. If you do not specify a value for `kmsKeyArn`, then AWS DMS will use your default encryption key. AWS KMS creates the default encryption key for your AWS account. Your AWS account has a different default encryption key for each AWS region.
-	KmsKeyArn interface{}
+	KmsKeyArn pulumi.StringInput `pulumi:"kmsKeyArn"`
 	// Settings for the source MongoDB endpoint. Available settings are `authType` (default: `password`), `authMechanism` (default: `default`), `nestingLevel` (default: `none`), `extractDocId` (default: `false`), `docsToInvestigate` (default: `1000`) and `authSource` (default: `admin`). For more details, see [Using MongoDB as a Source for AWS DMS](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.MongoDB.html).
-	MongodbSettings interface{}
+	MongodbSettings pulumi.AnyInput `pulumi:"mongodbSettings"`
 	// The password to be used to login to the endpoint database.
-	Password interface{}
+	Password pulumi.StringInput `pulumi:"password"`
 	// The port used by the endpoint database.
-	Port interface{}
+	Port pulumi.IntInput `pulumi:"port"`
 	// Settings for the target S3 endpoint. Available settings are `serviceAccessRoleArn`, `externalTableDefinition`, `csvRowDelimiter` (default: `\\n`), `csvDelimiter` (default: `,`), `bucketFolder`, `bucketName` and `compressionType` (default: `NONE`). For more details, see [Using Amazon S3 as a Target for AWS Database Migration Service](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.S3.html).
-	S3Settings interface{}
+	S3Settings pulumi.AnyInput `pulumi:"s3Settings"`
 	// The host name of the server.
-	ServerName interface{}
+	ServerName pulumi.StringInput `pulumi:"serverName"`
 	// The Amazon Resource Name (ARN) used by the service access IAM role for dynamodb endpoints.
-	ServiceAccessRole interface{}
+	ServiceAccessRole pulumi.StringInput `pulumi:"serviceAccessRole"`
 	// The SSL mode to use for the connection. Can be one of `none | require | verify-ca | verify-full`
-	SslMode interface{}
+	SslMode pulumi.StringInput `pulumi:"sslMode"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The user name to be used to login to the endpoint database.
-	Username interface{}
+	Username pulumi.StringInput `pulumi:"username"`
 }

@@ -35,7 +35,34 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/default_network_acl.html.markdown.
 type DefaultNetworkAcl struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The Network ACL ID to manage. This
+	// attribute is exported from `ec2.Vpc`, or manually found via the AWS Console.
+	DefaultNetworkAclId pulumi.StringOutput `pulumi:"defaultNetworkAclId"`
+
+	// Specifies an egress rule. Parameters defined below.
+	Egress pulumi.ArrayOutput `pulumi:"egress"`
+
+	// Specifies an ingress rule. Parameters defined below.
+	Ingress pulumi.ArrayOutput `pulumi:"ingress"`
+
+	// The ID of the AWS account that owns the Default Network ACL
+	OwnerId pulumi.StringOutput `pulumi:"ownerId"`
+
+	// A list of Subnet IDs to apply the ACL to. See the
+	// notes below on managing Subnets in the Default Network ACL
+	SubnetIds pulumi.ArrayOutput `pulumi:"subnetIds"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// The ID of the associated VPC
+	VpcId pulumi.StringOutput `pulumi:"vpcId"`
 }
 
 // NewDefaultNetworkAcl registers a new resource with the given unique name, arguments, and options.
@@ -44,34 +71,27 @@ func NewDefaultNetworkAcl(ctx *pulumi.Context,
 	if args == nil || args.DefaultNetworkAclId == nil {
 		return nil, errors.New("missing required argument 'DefaultNetworkAclId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["defaultNetworkAclId"] = nil
-		inputs["egress"] = nil
-		inputs["ingress"] = nil
-		inputs["subnetIds"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["defaultNetworkAclId"] = args.DefaultNetworkAclId
 		inputs["egress"] = args.Egress
 		inputs["ingress"] = args.Ingress
 		inputs["subnetIds"] = args.SubnetIds
 		inputs["tags"] = args.Tags
 	}
-	inputs["ownerId"] = nil
-	inputs["vpcId"] = nil
-	s, err := ctx.RegisterResource("aws:ec2/defaultNetworkAcl:DefaultNetworkAcl", name, true, inputs, opts...)
+	var resource DefaultNetworkAcl
+	err := ctx.RegisterResource("aws:ec2/defaultNetworkAcl:DefaultNetworkAcl", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DefaultNetworkAcl{s: s}, nil
+	return &resource, nil
 }
 
 // GetDefaultNetworkAcl gets an existing DefaultNetworkAcl resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetDefaultNetworkAcl(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *DefaultNetworkAclState, opts ...pulumi.ResourceOpt) (*DefaultNetworkAcl, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["defaultNetworkAclId"] = state.DefaultNetworkAclId
 		inputs["egress"] = state.Egress
@@ -81,92 +101,55 @@ func GetDefaultNetworkAcl(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["vpcId"] = state.VpcId
 	}
-	s, err := ctx.ReadResource("aws:ec2/defaultNetworkAcl:DefaultNetworkAcl", name, id, inputs, opts...)
+	var resource DefaultNetworkAcl
+	err := ctx.ReadResource("aws:ec2/defaultNetworkAcl:DefaultNetworkAcl", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DefaultNetworkAcl{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *DefaultNetworkAcl) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *DefaultNetworkAcl) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *DefaultNetworkAcl) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *DefaultNetworkAcl) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The Network ACL ID to manage. This
-// attribute is exported from `ec2.Vpc`, or manually found via the AWS Console.
-func (r *DefaultNetworkAcl) DefaultNetworkAclId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["defaultNetworkAclId"])
-}
-
-// Specifies an egress rule. Parameters defined below.
-func (r *DefaultNetworkAcl) Egress() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["egress"])
-}
-
-// Specifies an ingress rule. Parameters defined below.
-func (r *DefaultNetworkAcl) Ingress() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["ingress"])
-}
-
-// The ID of the AWS account that owns the Default Network ACL
-func (r *DefaultNetworkAcl) OwnerId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ownerId"])
-}
-
-// A list of Subnet IDs to apply the ACL to. See the
-// notes below on managing Subnets in the Default Network ACL
-func (r *DefaultNetworkAcl) SubnetIds() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["subnetIds"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *DefaultNetworkAcl) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// The ID of the associated VPC
-func (r *DefaultNetworkAcl) VpcId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpcId"])
-}
-
 // Input properties used for looking up and filtering DefaultNetworkAcl resources.
 type DefaultNetworkAclState struct {
 	// The Network ACL ID to manage. This
 	// attribute is exported from `ec2.Vpc`, or manually found via the AWS Console.
-	DefaultNetworkAclId interface{}
+	DefaultNetworkAclId pulumi.StringInput `pulumi:"defaultNetworkAclId"`
 	// Specifies an egress rule. Parameters defined below.
-	Egress interface{}
+	Egress pulumi.ArrayInput `pulumi:"egress"`
 	// Specifies an ingress rule. Parameters defined below.
-	Ingress interface{}
+	Ingress pulumi.ArrayInput `pulumi:"ingress"`
 	// The ID of the AWS account that owns the Default Network ACL
-	OwnerId interface{}
+	OwnerId pulumi.StringInput `pulumi:"ownerId"`
 	// A list of Subnet IDs to apply the ACL to. See the
 	// notes below on managing Subnets in the Default Network ACL
-	SubnetIds interface{}
+	SubnetIds pulumi.ArrayInput `pulumi:"subnetIds"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The ID of the associated VPC
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // The set of arguments for constructing a DefaultNetworkAcl resource.
 type DefaultNetworkAclArgs struct {
 	// The Network ACL ID to manage. This
 	// attribute is exported from `ec2.Vpc`, or manually found via the AWS Console.
-	DefaultNetworkAclId interface{}
+	DefaultNetworkAclId pulumi.StringInput `pulumi:"defaultNetworkAclId"`
 	// Specifies an egress rule. Parameters defined below.
-	Egress interface{}
+	Egress pulumi.ArrayInput `pulumi:"egress"`
 	// Specifies an ingress rule. Parameters defined below.
-	Ingress interface{}
+	Ingress pulumi.ArrayInput `pulumi:"ingress"`
 	// A list of Subnet IDs to apply the ACL to. See the
 	// notes below on managing Subnets in the Default Network ACL
-	SubnetIds interface{}
+	SubnetIds pulumi.ArrayInput `pulumi:"subnetIds"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

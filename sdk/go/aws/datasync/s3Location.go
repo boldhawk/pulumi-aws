@@ -12,7 +12,28 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/datasync_location_s3.html.markdown.
 type S3Location struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Amazon Resource Name (ARN) of the DataSync Location.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Amazon Resource Name (ARN) of the S3 Bucket.
+	S3BucketArn pulumi.StringOutput `pulumi:"s3BucketArn"`
+
+	// Configuration block containing information for connecting to S3.
+	S3Config pulumi.AnyOutput `pulumi:"s3Config"`
+
+	// Prefix to perform actions as source or destination.
+	Subdirectory pulumi.StringOutput `pulumi:"subdirectory"`
+
+	// Key-value pairs of resource tags to assign to the DataSync Location.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	Uri pulumi.StringOutput `pulumi:"uri"`
 }
 
 // NewS3Location registers a new resource with the given unique name, arguments, and options.
@@ -27,32 +48,26 @@ func NewS3Location(ctx *pulumi.Context,
 	if args == nil || args.Subdirectory == nil {
 		return nil, errors.New("missing required argument 'Subdirectory'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["s3BucketArn"] = nil
-		inputs["s3Config"] = nil
-		inputs["subdirectory"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["s3BucketArn"] = args.S3BucketArn
 		inputs["s3Config"] = args.S3Config
 		inputs["subdirectory"] = args.Subdirectory
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	inputs["uri"] = nil
-	s, err := ctx.RegisterResource("aws:datasync/s3Location:S3Location", name, true, inputs, opts...)
+	var resource S3Location
+	err := ctx.RegisterResource("aws:datasync/s3Location:S3Location", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &S3Location{s: s}, nil
+	return &resource, nil
 }
 
 // GetS3Location gets an existing S3Location resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetS3Location(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *S3LocationState, opts ...pulumi.ResourceOpt) (*S3Location, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["s3BucketArn"] = state.S3BucketArn
@@ -61,75 +76,46 @@ func GetS3Location(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["uri"] = state.Uri
 	}
-	s, err := ctx.ReadResource("aws:datasync/s3Location:S3Location", name, id, inputs, opts...)
+	var resource S3Location
+	err := ctx.ReadResource("aws:datasync/s3Location:S3Location", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &S3Location{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *S3Location) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *S3Location) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *S3Location) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *S3Location) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Amazon Resource Name (ARN) of the DataSync Location.
-func (r *S3Location) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Amazon Resource Name (ARN) of the S3 Bucket.
-func (r *S3Location) S3BucketArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["s3BucketArn"])
-}
-
-// Configuration block containing information for connecting to S3.
-func (r *S3Location) S3Config() *pulumi.Output {
-	return r.s.State["s3Config"]
-}
-
-// Prefix to perform actions as source or destination.
-func (r *S3Location) Subdirectory() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["subdirectory"])
-}
-
-// Key-value pairs of resource tags to assign to the DataSync Location.
-func (r *S3Location) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-func (r *S3Location) Uri() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["uri"])
-}
-
 // Input properties used for looking up and filtering S3Location resources.
 type S3LocationState struct {
 	// Amazon Resource Name (ARN) of the DataSync Location.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Amazon Resource Name (ARN) of the S3 Bucket.
-	S3BucketArn interface{}
+	S3BucketArn pulumi.StringInput `pulumi:"s3BucketArn"`
 	// Configuration block containing information for connecting to S3.
-	S3Config interface{}
+	S3Config pulumi.AnyInput `pulumi:"s3Config"`
 	// Prefix to perform actions as source or destination.
-	Subdirectory interface{}
+	Subdirectory pulumi.StringInput `pulumi:"subdirectory"`
 	// Key-value pairs of resource tags to assign to the DataSync Location.
-	Tags interface{}
-	Uri interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
+	Uri pulumi.StringInput `pulumi:"uri"`
 }
 
 // The set of arguments for constructing a S3Location resource.
 type S3LocationArgs struct {
 	// Amazon Resource Name (ARN) of the S3 Bucket.
-	S3BucketArn interface{}
+	S3BucketArn pulumi.StringInput `pulumi:"s3BucketArn"`
 	// Configuration block containing information for connecting to S3.
-	S3Config interface{}
+	S3Config pulumi.AnyInput `pulumi:"s3Config"`
 	// Prefix to perform actions as source or destination.
-	Subdirectory interface{}
+	Subdirectory pulumi.StringInput `pulumi:"subdirectory"`
 	// Key-value pairs of resource tags to assign to the DataSync Location.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

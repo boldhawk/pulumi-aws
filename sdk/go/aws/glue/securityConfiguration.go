@@ -12,7 +12,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/glue_security_configuration.html.markdown.
 type SecurityConfiguration struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Configuration block containing encryption configuration. Detailed below.
+	EncryptionConfiguration pulumi.AnyOutput `pulumi:"encryptionConfiguration"`
+
+	// Name of the security configuration.
+	Name pulumi.StringOutput `pulumi:"name"`
 }
 
 // NewSecurityConfiguration registers a new resource with the given unique name, arguments, and options.
@@ -21,69 +31,58 @@ func NewSecurityConfiguration(ctx *pulumi.Context,
 	if args == nil || args.EncryptionConfiguration == nil {
 		return nil, errors.New("missing required argument 'EncryptionConfiguration'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["encryptionConfiguration"] = nil
-		inputs["name"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["encryptionConfiguration"] = args.EncryptionConfiguration
 		inputs["name"] = args.Name
 	}
-	s, err := ctx.RegisterResource("aws:glue/securityConfiguration:SecurityConfiguration", name, true, inputs, opts...)
+	var resource SecurityConfiguration
+	err := ctx.RegisterResource("aws:glue/securityConfiguration:SecurityConfiguration", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SecurityConfiguration{s: s}, nil
+	return &resource, nil
 }
 
 // GetSecurityConfiguration gets an existing SecurityConfiguration resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetSecurityConfiguration(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *SecurityConfigurationState, opts ...pulumi.ResourceOpt) (*SecurityConfiguration, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["encryptionConfiguration"] = state.EncryptionConfiguration
 		inputs["name"] = state.Name
 	}
-	s, err := ctx.ReadResource("aws:glue/securityConfiguration:SecurityConfiguration", name, id, inputs, opts...)
+	var resource SecurityConfiguration
+	err := ctx.ReadResource("aws:glue/securityConfiguration:SecurityConfiguration", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &SecurityConfiguration{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *SecurityConfiguration) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *SecurityConfiguration) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *SecurityConfiguration) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *SecurityConfiguration) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Configuration block containing encryption configuration. Detailed below.
-func (r *SecurityConfiguration) EncryptionConfiguration() *pulumi.Output {
-	return r.s.State["encryptionConfiguration"]
-}
-
-// Name of the security configuration.
-func (r *SecurityConfiguration) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
 // Input properties used for looking up and filtering SecurityConfiguration resources.
 type SecurityConfigurationState struct {
 	// Configuration block containing encryption configuration. Detailed below.
-	EncryptionConfiguration interface{}
+	EncryptionConfiguration pulumi.AnyInput `pulumi:"encryptionConfiguration"`
 	// Name of the security configuration.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // The set of arguments for constructing a SecurityConfiguration resource.
 type SecurityConfigurationArgs struct {
 	// Configuration block containing encryption configuration. Detailed below.
-	EncryptionConfiguration interface{}
+	EncryptionConfiguration pulumi.AnyInput `pulumi:"encryptionConfiguration"`
 	// Name of the security configuration.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }

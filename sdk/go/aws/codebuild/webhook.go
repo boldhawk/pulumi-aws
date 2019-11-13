@@ -12,7 +12,29 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/codebuild_webhook.html.markdown.
 type Webhook struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// A regular expression used to determine which branches get built. Default is all branches are built. It is recommended to use `filterGroup` over `branchFilter`.
+	BranchFilter pulumi.StringOutput `pulumi:"branchFilter"`
+
+	// Information about the webhook's trigger. Filter group blocks are documented below.
+	FilterGroups pulumi.ArrayOutput `pulumi:"filterGroups"`
+
+	// The CodeBuild endpoint where webhook events are sent.
+	PayloadUrl pulumi.StringOutput `pulumi:"payloadUrl"`
+
+	// The name of the build project.
+	ProjectName pulumi.StringOutput `pulumi:"projectName"`
+
+	// The secret token of the associated repository. Not returned by the CodeBuild API for all source types.
+	Secret pulumi.StringOutput `pulumi:"secret"`
+
+	// The URL to the webhook.
+	Url pulumi.StringOutput `pulumi:"url"`
 }
 
 // NewWebhook registers a new resource with the given unique name, arguments, and options.
@@ -21,31 +43,25 @@ func NewWebhook(ctx *pulumi.Context,
 	if args == nil || args.ProjectName == nil {
 		return nil, errors.New("missing required argument 'ProjectName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["branchFilter"] = nil
-		inputs["filterGroups"] = nil
-		inputs["projectName"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["branchFilter"] = args.BranchFilter
 		inputs["filterGroups"] = args.FilterGroups
 		inputs["projectName"] = args.ProjectName
 	}
-	inputs["payloadUrl"] = nil
-	inputs["secret"] = nil
-	inputs["url"] = nil
-	s, err := ctx.RegisterResource("aws:codebuild/webhook:Webhook", name, true, inputs, opts...)
+	var resource Webhook
+	err := ctx.RegisterResource("aws:codebuild/webhook:Webhook", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Webhook{s: s}, nil
+	return &resource, nil
 }
 
 // GetWebhook gets an existing Webhook resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetWebhook(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *WebhookState, opts ...pulumi.ResourceOpt) (*Webhook, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["branchFilter"] = state.BranchFilter
 		inputs["filterGroups"] = state.FilterGroups
@@ -54,75 +70,45 @@ func GetWebhook(ctx *pulumi.Context,
 		inputs["secret"] = state.Secret
 		inputs["url"] = state.Url
 	}
-	s, err := ctx.ReadResource("aws:codebuild/webhook:Webhook", name, id, inputs, opts...)
+	var resource Webhook
+	err := ctx.ReadResource("aws:codebuild/webhook:Webhook", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Webhook{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Webhook) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Webhook) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Webhook) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Webhook) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// A regular expression used to determine which branches get built. Default is all branches are built. It is recommended to use `filterGroup` over `branchFilter`.
-func (r *Webhook) BranchFilter() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["branchFilter"])
-}
-
-// Information about the webhook's trigger. Filter group blocks are documented below.
-func (r *Webhook) FilterGroups() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["filterGroups"])
-}
-
-// The CodeBuild endpoint where webhook events are sent.
-func (r *Webhook) PayloadUrl() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["payloadUrl"])
-}
-
-// The name of the build project.
-func (r *Webhook) ProjectName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["projectName"])
-}
-
-// The secret token of the associated repository. Not returned by the CodeBuild API for all source types.
-func (r *Webhook) Secret() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["secret"])
-}
-
-// The URL to the webhook.
-func (r *Webhook) Url() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["url"])
-}
-
 // Input properties used for looking up and filtering Webhook resources.
 type WebhookState struct {
 	// A regular expression used to determine which branches get built. Default is all branches are built. It is recommended to use `filterGroup` over `branchFilter`.
-	BranchFilter interface{}
+	BranchFilter pulumi.StringInput `pulumi:"branchFilter"`
 	// Information about the webhook's trigger. Filter group blocks are documented below.
-	FilterGroups interface{}
+	FilterGroups pulumi.ArrayInput `pulumi:"filterGroups"`
 	// The CodeBuild endpoint where webhook events are sent.
-	PayloadUrl interface{}
+	PayloadUrl pulumi.StringInput `pulumi:"payloadUrl"`
 	// The name of the build project.
-	ProjectName interface{}
+	ProjectName pulumi.StringInput `pulumi:"projectName"`
 	// The secret token of the associated repository. Not returned by the CodeBuild API for all source types.
-	Secret interface{}
+	Secret pulumi.StringInput `pulumi:"secret"`
 	// The URL to the webhook.
-	Url interface{}
+	Url pulumi.StringInput `pulumi:"url"`
 }
 
 // The set of arguments for constructing a Webhook resource.
 type WebhookArgs struct {
 	// A regular expression used to determine which branches get built. Default is all branches are built. It is recommended to use `filterGroup` over `branchFilter`.
-	BranchFilter interface{}
+	BranchFilter pulumi.StringInput `pulumi:"branchFilter"`
 	// Information about the webhook's trigger. Filter group blocks are documented below.
-	FilterGroups interface{}
+	FilterGroups pulumi.ArrayInput `pulumi:"filterGroups"`
 	// The name of the build project.
-	ProjectName interface{}
+	ProjectName pulumi.StringInput `pulumi:"projectName"`
 }

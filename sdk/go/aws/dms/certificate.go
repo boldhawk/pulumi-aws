@@ -15,7 +15,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/dms_certificate.html.markdown.
 type Certificate struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The Amazon Resource Name (ARN) for the certificate.
+	CertificateArn pulumi.StringOutput `pulumi:"certificateArn"`
+
+	// The certificate identifier.
+	CertificateId pulumi.StringOutput `pulumi:"certificateId"`
+
+	// The contents of the .pem X.509 certificate file for the certificate. Either `certificatePem` or `certificateWallet` must be set.
+	CertificatePem pulumi.StringOutput `pulumi:"certificatePem"`
+
+	// The contents of the Oracle Wallet certificate for use with SSL. Either `certificatePem` or `certificateWallet` must be set.
+	CertificateWallet pulumi.StringOutput `pulumi:"certificateWallet"`
 }
 
 // NewCertificate registers a new resource with the given unique name, arguments, and options.
@@ -24,90 +40,66 @@ func NewCertificate(ctx *pulumi.Context,
 	if args == nil || args.CertificateId == nil {
 		return nil, errors.New("missing required argument 'CertificateId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["certificateId"] = nil
-		inputs["certificatePem"] = nil
-		inputs["certificateWallet"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["certificateId"] = args.CertificateId
 		inputs["certificatePem"] = args.CertificatePem
 		inputs["certificateWallet"] = args.CertificateWallet
 	}
-	inputs["certificateArn"] = nil
-	s, err := ctx.RegisterResource("aws:dms/certificate:Certificate", name, true, inputs, opts...)
+	var resource Certificate
+	err := ctx.RegisterResource("aws:dms/certificate:Certificate", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Certificate{s: s}, nil
+	return &resource, nil
 }
 
 // GetCertificate gets an existing Certificate resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetCertificate(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *CertificateState, opts ...pulumi.ResourceOpt) (*Certificate, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["certificateArn"] = state.CertificateArn
 		inputs["certificateId"] = state.CertificateId
 		inputs["certificatePem"] = state.CertificatePem
 		inputs["certificateWallet"] = state.CertificateWallet
 	}
-	s, err := ctx.ReadResource("aws:dms/certificate:Certificate", name, id, inputs, opts...)
+	var resource Certificate
+	err := ctx.ReadResource("aws:dms/certificate:Certificate", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Certificate{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Certificate) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Certificate) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Certificate) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Certificate) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The Amazon Resource Name (ARN) for the certificate.
-func (r *Certificate) CertificateArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["certificateArn"])
-}
-
-// The certificate identifier.
-func (r *Certificate) CertificateId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["certificateId"])
-}
-
-// The contents of the .pem X.509 certificate file for the certificate. Either `certificatePem` or `certificateWallet` must be set.
-func (r *Certificate) CertificatePem() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["certificatePem"])
-}
-
-// The contents of the Oracle Wallet certificate for use with SSL. Either `certificatePem` or `certificateWallet` must be set.
-func (r *Certificate) CertificateWallet() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["certificateWallet"])
-}
-
 // Input properties used for looking up and filtering Certificate resources.
 type CertificateState struct {
 	// The Amazon Resource Name (ARN) for the certificate.
-	CertificateArn interface{}
+	CertificateArn pulumi.StringInput `pulumi:"certificateArn"`
 	// The certificate identifier.
-	CertificateId interface{}
+	CertificateId pulumi.StringInput `pulumi:"certificateId"`
 	// The contents of the .pem X.509 certificate file for the certificate. Either `certificatePem` or `certificateWallet` must be set.
-	CertificatePem interface{}
+	CertificatePem pulumi.StringInput `pulumi:"certificatePem"`
 	// The contents of the Oracle Wallet certificate for use with SSL. Either `certificatePem` or `certificateWallet` must be set.
-	CertificateWallet interface{}
+	CertificateWallet pulumi.StringInput `pulumi:"certificateWallet"`
 }
 
 // The set of arguments for constructing a Certificate resource.
 type CertificateArgs struct {
 	// The certificate identifier.
-	CertificateId interface{}
+	CertificateId pulumi.StringInput `pulumi:"certificateId"`
 	// The contents of the .pem X.509 certificate file for the certificate. Either `certificatePem` or `certificateWallet` must be set.
-	CertificatePem interface{}
+	CertificatePem pulumi.StringInput `pulumi:"certificatePem"`
 	// The contents of the Oracle Wallet certificate for use with SSL. Either `certificatePem` or `certificateWallet` must be set.
-	CertificateWallet interface{}
+	CertificateWallet pulumi.StringInput `pulumi:"certificateWallet"`
 }

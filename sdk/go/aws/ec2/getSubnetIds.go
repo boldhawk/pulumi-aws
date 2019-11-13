@@ -35,21 +35,21 @@ func LookupSubnetIds(ctx *pulumi.Context, args *GetSubnetIdsArgs) (*GetSubnetIds
 // A collection of arguments for invoking getSubnetIds.
 type GetSubnetIdsArgs struct {
 	// Custom filter block as described below.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired subnets.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The VPC ID that you want to filter from.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getSubnetIds.
 type GetSubnetIdsResult struct {
-	Filters interface{}
+	Filters []interface{} `pulumi:"filters"`
 	// A set of all the subnet ids found. This data source will fail if none are found.
-	Ids interface{}
-	Tags interface{}
-	VpcId interface{}
+	Ids []interface{} `pulumi:"ids"`
+	Tags map[string]interface{} `pulumi:"tags"`
+	VpcId string `pulumi:"vpcId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

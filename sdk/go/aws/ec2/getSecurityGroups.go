@@ -35,21 +35,21 @@ type GetSecurityGroupsArgs struct {
 	// One or more name/value pairs to use as filters. There are
 	// several valid keys, for a full reference, check out
 	// [describe-security-groups in the AWS CLI reference][1].
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match for
 	// desired security groups.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getSecurityGroups.
 type GetSecurityGroupsResult struct {
-	Filters interface{}
+	Filters []interface{} `pulumi:"filters"`
 	// IDs of the matches security groups.
-	Ids interface{}
-	Tags interface{}
+	Ids []interface{} `pulumi:"ids"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The VPC IDs of the matched security groups. The data source's tag or filter *will span VPCs*
 	// unless the `vpc-id` filter is also used.
-	VpcIds interface{}
+	VpcIds []interface{} `pulumi:"vpcIds"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

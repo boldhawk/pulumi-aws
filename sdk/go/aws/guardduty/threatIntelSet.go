@@ -14,7 +14,26 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/guardduty_threatintelset.html.markdown.
 type ThreatIntelSet struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Specifies whether GuardDuty is to start using the uploaded ThreatIntelSet.
+	Activate pulumi.BoolOutput `pulumi:"activate"`
+
+	// The detector ID of the GuardDuty.
+	DetectorId pulumi.StringOutput `pulumi:"detectorId"`
+
+	// The format of the file that contains the ThreatIntelSet. Valid values: `TXT` | `STIX` | `OTX_CSV` | `ALIEN_VAULT` | `PROOF_POINT` | `FIRE_EYE`
+	Format pulumi.StringOutput `pulumi:"format"`
+
+	// The URI of the file that contains the ThreatIntelSet.
+	Location pulumi.StringOutput `pulumi:"location"`
+
+	// The friendly name to identify the ThreatIntelSet.
+	Name pulumi.StringOutput `pulumi:"name"`
 }
 
 // NewThreatIntelSet registers a new resource with the given unique name, arguments, and options.
@@ -32,32 +51,28 @@ func NewThreatIntelSet(ctx *pulumi.Context,
 	if args == nil || args.Location == nil {
 		return nil, errors.New("missing required argument 'Location'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["activate"] = nil
-		inputs["detectorId"] = nil
-		inputs["format"] = nil
-		inputs["location"] = nil
-		inputs["name"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["activate"] = args.Activate
 		inputs["detectorId"] = args.DetectorId
 		inputs["format"] = args.Format
 		inputs["location"] = args.Location
 		inputs["name"] = args.Name
 	}
-	s, err := ctx.RegisterResource("aws:guardduty/threatIntelSet:ThreatIntelSet", name, true, inputs, opts...)
+	var resource ThreatIntelSet
+	err := ctx.RegisterResource("aws:guardduty/threatIntelSet:ThreatIntelSet", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ThreatIntelSet{s: s}, nil
+	return &resource, nil
 }
 
 // GetThreatIntelSet gets an existing ThreatIntelSet resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetThreatIntelSet(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ThreatIntelSetState, opts ...pulumi.ResourceOpt) (*ThreatIntelSet, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["activate"] = state.Activate
 		inputs["detectorId"] = state.DetectorId
@@ -65,72 +80,47 @@ func GetThreatIntelSet(ctx *pulumi.Context,
 		inputs["location"] = state.Location
 		inputs["name"] = state.Name
 	}
-	s, err := ctx.ReadResource("aws:guardduty/threatIntelSet:ThreatIntelSet", name, id, inputs, opts...)
+	var resource ThreatIntelSet
+	err := ctx.ReadResource("aws:guardduty/threatIntelSet:ThreatIntelSet", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ThreatIntelSet{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ThreatIntelSet) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ThreatIntelSet) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ThreatIntelSet) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ThreatIntelSet) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Specifies whether GuardDuty is to start using the uploaded ThreatIntelSet.
-func (r *ThreatIntelSet) Activate() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["activate"])
-}
-
-// The detector ID of the GuardDuty.
-func (r *ThreatIntelSet) DetectorId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["detectorId"])
-}
-
-// The format of the file that contains the ThreatIntelSet. Valid values: `TXT` | `STIX` | `OTX_CSV` | `ALIEN_VAULT` | `PROOF_POINT` | `FIRE_EYE`
-func (r *ThreatIntelSet) Format() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["format"])
-}
-
-// The URI of the file that contains the ThreatIntelSet.
-func (r *ThreatIntelSet) Location() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["location"])
-}
-
-// The friendly name to identify the ThreatIntelSet.
-func (r *ThreatIntelSet) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
 // Input properties used for looking up and filtering ThreatIntelSet resources.
 type ThreatIntelSetState struct {
 	// Specifies whether GuardDuty is to start using the uploaded ThreatIntelSet.
-	Activate interface{}
+	Activate pulumi.BoolInput `pulumi:"activate"`
 	// The detector ID of the GuardDuty.
-	DetectorId interface{}
+	DetectorId pulumi.StringInput `pulumi:"detectorId"`
 	// The format of the file that contains the ThreatIntelSet. Valid values: `TXT` | `STIX` | `OTX_CSV` | `ALIEN_VAULT` | `PROOF_POINT` | `FIRE_EYE`
-	Format interface{}
+	Format pulumi.StringInput `pulumi:"format"`
 	// The URI of the file that contains the ThreatIntelSet.
-	Location interface{}
+	Location pulumi.StringInput `pulumi:"location"`
 	// The friendly name to identify the ThreatIntelSet.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // The set of arguments for constructing a ThreatIntelSet resource.
 type ThreatIntelSetArgs struct {
 	// Specifies whether GuardDuty is to start using the uploaded ThreatIntelSet.
-	Activate interface{}
+	Activate pulumi.BoolInput `pulumi:"activate"`
 	// The detector ID of the GuardDuty.
-	DetectorId interface{}
+	DetectorId pulumi.StringInput `pulumi:"detectorId"`
 	// The format of the file that contains the ThreatIntelSet. Valid values: `TXT` | `STIX` | `OTX_CSV` | `ALIEN_VAULT` | `PROOF_POINT` | `FIRE_EYE`
-	Format interface{}
+	Format pulumi.StringInput `pulumi:"format"`
 	// The URI of the file that contains the ThreatIntelSet.
-	Location interface{}
+	Location pulumi.StringInput `pulumi:"location"`
 	// The friendly name to identify the ThreatIntelSet.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }

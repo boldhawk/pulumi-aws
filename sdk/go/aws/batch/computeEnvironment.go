@@ -18,7 +18,38 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/batch_compute_environment.html.markdown.
 type ComputeEnvironment struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The Amazon Resource Name (ARN) of the compute environment.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The name for your compute environment. Up to 128 letters (uppercase and lowercase), numbers, and underscores are allowed.
+	ComputeEnvironmentName pulumi.StringOutput `pulumi:"computeEnvironmentName"`
+
+	// Details of the compute resources managed by the compute environment. This parameter is required for managed compute environments. See details below.
+	ComputeResources pulumi.AnyOutput `pulumi:"computeResources"`
+
+	// The Amazon Resource Name (ARN) of the underlying Amazon ECS cluster used by the compute environment.
+	EcsClusterArn pulumi.StringOutput `pulumi:"ecsClusterArn"`
+
+	// The full Amazon Resource Name (ARN) of the IAM role that allows AWS Batch to make calls to other AWS services on your behalf.
+	ServiceRole pulumi.StringOutput `pulumi:"serviceRole"`
+
+	// The state of the compute environment. If the state is `ENABLED`, then the compute environment accepts jobs from a queue and can scale out automatically based on queues. Valid items are `ENABLED` or `DISABLED`. Defaults to `ENABLED`.
+	State pulumi.StringOutput `pulumi:"state"`
+
+	// The current status of the compute environment (for example, CREATING or VALID).
+	Status pulumi.StringOutput `pulumi:"status"`
+
+	// A short, human-readable string to provide additional details about the current status of the compute environment.
+	StatusReason pulumi.StringOutput `pulumi:"statusReason"`
+
+	// The type of compute environment. Valid items are `EC2` or `SPOT`.
+	Type pulumi.StringOutput `pulumi:"type"`
 }
 
 // NewComputeEnvironment registers a new resource with the given unique name, arguments, and options.
@@ -33,36 +64,27 @@ func NewComputeEnvironment(ctx *pulumi.Context,
 	if args == nil || args.Type == nil {
 		return nil, errors.New("missing required argument 'Type'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["computeEnvironmentName"] = nil
-		inputs["computeResources"] = nil
-		inputs["serviceRole"] = nil
-		inputs["state"] = nil
-		inputs["type"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["computeEnvironmentName"] = args.ComputeEnvironmentName
 		inputs["computeResources"] = args.ComputeResources
 		inputs["serviceRole"] = args.ServiceRole
 		inputs["state"] = args.State
 		inputs["type"] = args.Type
 	}
-	inputs["arn"] = nil
-	inputs["ecsClusterArn"] = nil
-	inputs["status"] = nil
-	inputs["statusReason"] = nil
-	s, err := ctx.RegisterResource("aws:batch/computeEnvironment:ComputeEnvironment", name, true, inputs, opts...)
+	var resource ComputeEnvironment
+	err := ctx.RegisterResource("aws:batch/computeEnvironment:ComputeEnvironment", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ComputeEnvironment{s: s}, nil
+	return &resource, nil
 }
 
 // GetComputeEnvironment gets an existing ComputeEnvironment resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetComputeEnvironment(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ComputeEnvironmentState, opts ...pulumi.ResourceOpt) (*ComputeEnvironment, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["computeEnvironmentName"] = state.ComputeEnvironmentName
@@ -74,100 +96,55 @@ func GetComputeEnvironment(ctx *pulumi.Context,
 		inputs["statusReason"] = state.StatusReason
 		inputs["type"] = state.Type
 	}
-	s, err := ctx.ReadResource("aws:batch/computeEnvironment:ComputeEnvironment", name, id, inputs, opts...)
+	var resource ComputeEnvironment
+	err := ctx.ReadResource("aws:batch/computeEnvironment:ComputeEnvironment", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ComputeEnvironment{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ComputeEnvironment) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ComputeEnvironment) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ComputeEnvironment) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ComputeEnvironment) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The Amazon Resource Name (ARN) of the compute environment.
-func (r *ComputeEnvironment) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The name for your compute environment. Up to 128 letters (uppercase and lowercase), numbers, and underscores are allowed.
-func (r *ComputeEnvironment) ComputeEnvironmentName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["computeEnvironmentName"])
-}
-
-// Details of the compute resources managed by the compute environment. This parameter is required for managed compute environments. See details below.
-func (r *ComputeEnvironment) ComputeResources() *pulumi.Output {
-	return r.s.State["computeResources"]
-}
-
-// The Amazon Resource Name (ARN) of the underlying Amazon ECS cluster used by the compute environment.
-func (r *ComputeEnvironment) EcsClusterArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ecsClusterArn"])
-}
-
-// The full Amazon Resource Name (ARN) of the IAM role that allows AWS Batch to make calls to other AWS services on your behalf.
-func (r *ComputeEnvironment) ServiceRole() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["serviceRole"])
-}
-
-// The state of the compute environment. If the state is `ENABLED`, then the compute environment accepts jobs from a queue and can scale out automatically based on queues. Valid items are `ENABLED` or `DISABLED`. Defaults to `ENABLED`.
-func (r *ComputeEnvironment) State() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["state"])
-}
-
-// The current status of the compute environment (for example, CREATING or VALID).
-func (r *ComputeEnvironment) Status() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["status"])
-}
-
-// A short, human-readable string to provide additional details about the current status of the compute environment.
-func (r *ComputeEnvironment) StatusReason() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["statusReason"])
-}
-
-// The type of compute environment. Valid items are `EC2` or `SPOT`.
-func (r *ComputeEnvironment) Type() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["type"])
-}
-
 // Input properties used for looking up and filtering ComputeEnvironment resources.
 type ComputeEnvironmentState struct {
 	// The Amazon Resource Name (ARN) of the compute environment.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The name for your compute environment. Up to 128 letters (uppercase and lowercase), numbers, and underscores are allowed.
-	ComputeEnvironmentName interface{}
+	ComputeEnvironmentName pulumi.StringInput `pulumi:"computeEnvironmentName"`
 	// Details of the compute resources managed by the compute environment. This parameter is required for managed compute environments. See details below.
-	ComputeResources interface{}
+	ComputeResources pulumi.AnyInput `pulumi:"computeResources"`
 	// The Amazon Resource Name (ARN) of the underlying Amazon ECS cluster used by the compute environment.
-	EcsClusterArn interface{}
+	EcsClusterArn pulumi.StringInput `pulumi:"ecsClusterArn"`
 	// The full Amazon Resource Name (ARN) of the IAM role that allows AWS Batch to make calls to other AWS services on your behalf.
-	ServiceRole interface{}
+	ServiceRole pulumi.StringInput `pulumi:"serviceRole"`
 	// The state of the compute environment. If the state is `ENABLED`, then the compute environment accepts jobs from a queue and can scale out automatically based on queues. Valid items are `ENABLED` or `DISABLED`. Defaults to `ENABLED`.
-	State interface{}
+	State pulumi.StringInput `pulumi:"state"`
 	// The current status of the compute environment (for example, CREATING or VALID).
-	Status interface{}
+	Status pulumi.StringInput `pulumi:"status"`
 	// A short, human-readable string to provide additional details about the current status of the compute environment.
-	StatusReason interface{}
+	StatusReason pulumi.StringInput `pulumi:"statusReason"`
 	// The type of compute environment. Valid items are `EC2` or `SPOT`.
-	Type interface{}
+	Type pulumi.StringInput `pulumi:"type"`
 }
 
 // The set of arguments for constructing a ComputeEnvironment resource.
 type ComputeEnvironmentArgs struct {
 	// The name for your compute environment. Up to 128 letters (uppercase and lowercase), numbers, and underscores are allowed.
-	ComputeEnvironmentName interface{}
+	ComputeEnvironmentName pulumi.StringInput `pulumi:"computeEnvironmentName"`
 	// Details of the compute resources managed by the compute environment. This parameter is required for managed compute environments. See details below.
-	ComputeResources interface{}
+	ComputeResources pulumi.AnyInput `pulumi:"computeResources"`
 	// The full Amazon Resource Name (ARN) of the IAM role that allows AWS Batch to make calls to other AWS services on your behalf.
-	ServiceRole interface{}
+	ServiceRole pulumi.StringInput `pulumi:"serviceRole"`
 	// The state of the compute environment. If the state is `ENABLED`, then the compute environment accepts jobs from a queue and can scale out automatically based on queues. Valid items are `ENABLED` or `DISABLED`. Defaults to `ENABLED`.
-	State interface{}
+	State pulumi.StringInput `pulumi:"state"`
 	// The type of compute environment. Valid items are `EC2` or `SPOT`.
-	Type interface{}
+	Type pulumi.StringInput `pulumi:"type"`
 }

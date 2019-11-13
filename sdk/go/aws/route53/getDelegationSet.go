@@ -31,12 +31,12 @@ func LookupDelegationSet(ctx *pulumi.Context, args *GetDelegationSetArgs) (*GetD
 // A collection of arguments for invoking getDelegationSet.
 type GetDelegationSetArgs struct {
 	// The Hosted Zone id of the desired delegation set.
-	Id interface{}
+	Id pulumi.StringInput `pulumi:"id"`
 }
 
 // A collection of values returned by getDelegationSet.
 type GetDelegationSetResult struct {
-	CallerReference interface{}
-	Id interface{}
-	NameServers interface{}
+	CallerReference string `pulumi:"callerReference"`
+	Id string `pulumi:"id"`
+	NameServers []interface{} `pulumi:"nameServers"`
 }

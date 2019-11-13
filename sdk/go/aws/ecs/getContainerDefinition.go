@@ -39,31 +39,31 @@ func LookupContainerDefinition(ctx *pulumi.Context, args *GetContainerDefinition
 // A collection of arguments for invoking getContainerDefinition.
 type GetContainerDefinitionArgs struct {
 	// The name of the container definition
-	ContainerName interface{}
+	ContainerName pulumi.StringInput `pulumi:"containerName"`
 	// The ARN of the task definition which contains the container
-	TaskDefinition interface{}
+	TaskDefinition pulumi.StringInput `pulumi:"taskDefinition"`
 }
 
 // A collection of values returned by getContainerDefinition.
 type GetContainerDefinitionResult struct {
-	ContainerName interface{}
+	ContainerName string `pulumi:"containerName"`
 	// The CPU limit for this container definition
-	Cpu interface{}
+	Cpu int `pulumi:"cpu"`
 	// Indicator if networking is disabled
-	DisableNetworking interface{}
+	DisableNetworking bool `pulumi:"disableNetworking"`
 	// Set docker labels
-	DockerLabels interface{}
+	DockerLabels map[string]interface{} `pulumi:"dockerLabels"`
 	// The environment in use
-	Environment interface{}
+	Environment map[string]interface{} `pulumi:"environment"`
 	// The docker image in use, including the digest
-	Image interface{}
+	Image string `pulumi:"image"`
 	// The digest of the docker image in use
-	ImageDigest interface{}
+	ImageDigest string `pulumi:"imageDigest"`
 	// The memory limit for this container definition
-	Memory interface{}
+	Memory int `pulumi:"memory"`
 	// The soft limit (in MiB) of memory to reserve for the container. When system memory is under contention, Docker attempts to keep the container memory to this soft limit
-	MemoryReservation interface{}
-	TaskDefinition interface{}
+	MemoryReservation int `pulumi:"memoryReservation"`
+	TaskDefinition string `pulumi:"taskDefinition"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

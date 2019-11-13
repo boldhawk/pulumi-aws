@@ -14,7 +14,22 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/config_configuration_recorder.html.markdown.
 type Recorder struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The name of the recorder. Defaults to `default`. Changing it recreates the resource.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Recording group - see below.
+	RecordingGroup pulumi.AnyOutput `pulumi:"recordingGroup"`
+
+	// Amazon Resource Name (ARN) of the IAM role.
+	// used to make read or write requests to the delivery channel and to describe the AWS resources associated with the account.
+	// See [AWS Docs](http://docs.aws.amazon.com/config/latest/developerguide/iamrole-permissions.html) for more details.
+	RoleArn pulumi.StringOutput `pulumi:"roleArn"`
 }
 
 // NewRecorder registers a new resource with the given unique name, arguments, and options.
@@ -23,87 +38,68 @@ func NewRecorder(ctx *pulumi.Context,
 	if args == nil || args.RoleArn == nil {
 		return nil, errors.New("missing required argument 'RoleArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["name"] = nil
-		inputs["recordingGroup"] = nil
-		inputs["roleArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["name"] = args.Name
 		inputs["recordingGroup"] = args.RecordingGroup
 		inputs["roleArn"] = args.RoleArn
 	}
-	s, err := ctx.RegisterResource("aws:cfg/recorder:Recorder", name, true, inputs, opts...)
+	var resource Recorder
+	err := ctx.RegisterResource("aws:cfg/recorder:Recorder", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Recorder{s: s}, nil
+	return &resource, nil
 }
 
 // GetRecorder gets an existing Recorder resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRecorder(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RecorderState, opts ...pulumi.ResourceOpt) (*Recorder, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["name"] = state.Name
 		inputs["recordingGroup"] = state.RecordingGroup
 		inputs["roleArn"] = state.RoleArn
 	}
-	s, err := ctx.ReadResource("aws:cfg/recorder:Recorder", name, id, inputs, opts...)
+	var resource Recorder
+	err := ctx.ReadResource("aws:cfg/recorder:Recorder", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Recorder{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Recorder) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Recorder) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Recorder) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Recorder) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The name of the recorder. Defaults to `default`. Changing it recreates the resource.
-func (r *Recorder) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Recording group - see below.
-func (r *Recorder) RecordingGroup() *pulumi.Output {
-	return r.s.State["recordingGroup"]
-}
-
-// Amazon Resource Name (ARN) of the IAM role.
-// used to make read or write requests to the delivery channel and to describe the AWS resources associated with the account.
-// See [AWS Docs](http://docs.aws.amazon.com/config/latest/developerguide/iamrole-permissions.html) for more details.
-func (r *Recorder) RoleArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["roleArn"])
-}
-
 // Input properties used for looking up and filtering Recorder resources.
 type RecorderState struct {
 	// The name of the recorder. Defaults to `default`. Changing it recreates the resource.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Recording group - see below.
-	RecordingGroup interface{}
+	RecordingGroup pulumi.AnyInput `pulumi:"recordingGroup"`
 	// Amazon Resource Name (ARN) of the IAM role.
 	// used to make read or write requests to the delivery channel and to describe the AWS resources associated with the account.
 	// See [AWS Docs](http://docs.aws.amazon.com/config/latest/developerguide/iamrole-permissions.html) for more details.
-	RoleArn interface{}
+	RoleArn pulumi.StringInput `pulumi:"roleArn"`
 }
 
 // The set of arguments for constructing a Recorder resource.
 type RecorderArgs struct {
 	// The name of the recorder. Defaults to `default`. Changing it recreates the resource.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Recording group - see below.
-	RecordingGroup interface{}
+	RecordingGroup pulumi.AnyInput `pulumi:"recordingGroup"`
 	// Amazon Resource Name (ARN) of the IAM role.
 	// used to make read or write requests to the delivery channel and to describe the AWS resources associated with the account.
 	// See [AWS Docs](http://docs.aws.amazon.com/config/latest/developerguide/iamrole-permissions.html) for more details.
-	RoleArn interface{}
+	RoleArn pulumi.StringInput `pulumi:"roleArn"`
 }

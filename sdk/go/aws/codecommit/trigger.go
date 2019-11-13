@@ -16,7 +16,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/codecommit_trigger.html.markdown.
 type Trigger struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	ConfigurationId pulumi.StringOutput `pulumi:"configurationId"`
+
+	// The name for the repository. This needs to be less than 100 characters.
+	RepositoryName pulumi.StringOutput `pulumi:"repositoryName"`
+
+	Triggers pulumi.ArrayOutput `pulumi:"triggers"`
 }
 
 // NewTrigger registers a new resource with the given unique name, arguments, and options.
@@ -28,73 +39,57 @@ func NewTrigger(ctx *pulumi.Context,
 	if args == nil || args.Triggers == nil {
 		return nil, errors.New("missing required argument 'Triggers'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["repositoryName"] = nil
-		inputs["triggers"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["repositoryName"] = args.RepositoryName
 		inputs["triggers"] = args.Triggers
 	}
-	inputs["configurationId"] = nil
-	s, err := ctx.RegisterResource("aws:codecommit/trigger:Trigger", name, true, inputs, opts...)
+	var resource Trigger
+	err := ctx.RegisterResource("aws:codecommit/trigger:Trigger", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Trigger{s: s}, nil
+	return &resource, nil
 }
 
 // GetTrigger gets an existing Trigger resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetTrigger(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *TriggerState, opts ...pulumi.ResourceOpt) (*Trigger, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["configurationId"] = state.ConfigurationId
 		inputs["repositoryName"] = state.RepositoryName
 		inputs["triggers"] = state.Triggers
 	}
-	s, err := ctx.ReadResource("aws:codecommit/trigger:Trigger", name, id, inputs, opts...)
+	var resource Trigger
+	err := ctx.ReadResource("aws:codecommit/trigger:Trigger", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Trigger{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Trigger) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Trigger) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Trigger) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Trigger) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-func (r *Trigger) ConfigurationId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["configurationId"])
-}
-
-// The name for the repository. This needs to be less than 100 characters.
-func (r *Trigger) RepositoryName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["repositoryName"])
-}
-
-func (r *Trigger) Triggers() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["triggers"])
-}
-
 // Input properties used for looking up and filtering Trigger resources.
 type TriggerState struct {
-	ConfigurationId interface{}
+	ConfigurationId pulumi.StringInput `pulumi:"configurationId"`
 	// The name for the repository. This needs to be less than 100 characters.
-	RepositoryName interface{}
-	Triggers interface{}
+	RepositoryName pulumi.StringInput `pulumi:"repositoryName"`
+	Triggers pulumi.ArrayInput `pulumi:"triggers"`
 }
 
 // The set of arguments for constructing a Trigger resource.
 type TriggerArgs struct {
 	// The name for the repository. This needs to be less than 100 characters.
-	RepositoryName interface{}
-	Triggers interface{}
+	RepositoryName pulumi.StringInput `pulumi:"repositoryName"`
+	Triggers pulumi.ArrayInput `pulumi:"triggers"`
 }

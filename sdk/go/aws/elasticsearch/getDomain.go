@@ -48,51 +48,51 @@ func LookupDomain(ctx *pulumi.Context, args *GetDomainArgs) (*GetDomainResult, e
 // A collection of arguments for invoking getDomain.
 type GetDomainArgs struct {
 	// Name of the domain.
-	DomainName interface{}
-	Tags interface{}
+	DomainName pulumi.StringInput `pulumi:"domainName"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getDomain.
 type GetDomainResult struct {
 	// The policy document attached to the domain.
-	AccessPolicies interface{}
+	AccessPolicies string `pulumi:"accessPolicies"`
 	// Key-value string pairs to specify advanced configuration options.
-	AdvancedOptions interface{}
+	AdvancedOptions map[string]interface{} `pulumi:"advancedOptions"`
 	// The Amazon Resource Name (ARN) of the domain.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// Cluster configuration of the domain.
-	ClusterConfigs interface{}
+	ClusterConfigs []interface{} `pulumi:"clusterConfigs"`
 	// Domain Amazon Cognito Authentication options for Kibana.
-	CognitoOptions interface{}
+	CognitoOptions []interface{} `pulumi:"cognitoOptions"`
 	// Status of the creation of the domain.
-	Created interface{}
+	Created bool `pulumi:"created"`
 	// Status of the deletion of the domain.
-	Deleted interface{}
+	Deleted bool `pulumi:"deleted"`
 	// Unique identifier for the domain.
-	DomainId interface{}
-	DomainName interface{}
+	DomainId string `pulumi:"domainId"`
+	DomainName string `pulumi:"domainName"`
 	// EBS Options for the instances in the domain.
-	EbsOptions interface{}
+	EbsOptions []interface{} `pulumi:"ebsOptions"`
 	// ElasticSearch version for the domain.
-	ElasticsearchVersion interface{}
+	ElasticsearchVersion string `pulumi:"elasticsearchVersion"`
 	// Domain encryption at rest related options.
-	EncryptionAtRests interface{}
+	EncryptionAtRests []interface{} `pulumi:"encryptionAtRests"`
 	// Domain-specific endpoint used to submit index, search, and data upload requests.
-	Endpoint interface{}
+	Endpoint string `pulumi:"endpoint"`
 	// Domain-specific endpoint used to access the Kibana application.
-	KibanaEndpoint interface{}
+	KibanaEndpoint string `pulumi:"kibanaEndpoint"`
 	// Domain log publishing related options.
-	LogPublishingOptions interface{}
+	LogPublishingOptions []interface{} `pulumi:"logPublishingOptions"`
 	// Domain in transit encryption related options.
-	NodeToNodeEncryptions interface{}
+	NodeToNodeEncryptions []interface{} `pulumi:"nodeToNodeEncryptions"`
 	// Status of a configuration change in the domain.
 	// * `snapshotOptions` – Domain snapshot related options.
-	Processing interface{}
-	SnapshotOptions interface{}
+	Processing string `pulumi:"processing"`
+	SnapshotOptions []interface{} `pulumi:"snapshotOptions"`
 	// The tags assigned to the domain.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// VPC Options for private Elasticsearch domains.
-	VpcOptions interface{}
+	VpcOptions []interface{} `pulumi:"vpcOptions"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

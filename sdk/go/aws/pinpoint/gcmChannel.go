@@ -15,7 +15,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/pinpoint_gcm_channel.html.markdown.
 type GcmChannel struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Platform credential API key from Google.
+	ApiKey pulumi.StringOutput `pulumi:"apiKey"`
+
+	// The application ID.
+	ApplicationId pulumi.StringOutput `pulumi:"applicationId"`
+
+	// Whether the channel is enabled or disabled. Defaults to `true`.
+	Enabled pulumi.BoolOutput `pulumi:"enabled"`
 }
 
 // NewGcmChannel registers a new resource with the given unique name, arguments, and options.
@@ -27,81 +40,63 @@ func NewGcmChannel(ctx *pulumi.Context,
 	if args == nil || args.ApplicationId == nil {
 		return nil, errors.New("missing required argument 'ApplicationId'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["apiKey"] = nil
-		inputs["applicationId"] = nil
-		inputs["enabled"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["apiKey"] = args.ApiKey
 		inputs["applicationId"] = args.ApplicationId
 		inputs["enabled"] = args.Enabled
 	}
-	s, err := ctx.RegisterResource("aws:pinpoint/gcmChannel:GcmChannel", name, true, inputs, opts...)
+	var resource GcmChannel
+	err := ctx.RegisterResource("aws:pinpoint/gcmChannel:GcmChannel", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &GcmChannel{s: s}, nil
+	return &resource, nil
 }
 
 // GetGcmChannel gets an existing GcmChannel resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetGcmChannel(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *GcmChannelState, opts ...pulumi.ResourceOpt) (*GcmChannel, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["apiKey"] = state.ApiKey
 		inputs["applicationId"] = state.ApplicationId
 		inputs["enabled"] = state.Enabled
 	}
-	s, err := ctx.ReadResource("aws:pinpoint/gcmChannel:GcmChannel", name, id, inputs, opts...)
+	var resource GcmChannel
+	err := ctx.ReadResource("aws:pinpoint/gcmChannel:GcmChannel", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &GcmChannel{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *GcmChannel) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *GcmChannel) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *GcmChannel) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *GcmChannel) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Platform credential API key from Google.
-func (r *GcmChannel) ApiKey() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["apiKey"])
-}
-
-// The application ID.
-func (r *GcmChannel) ApplicationId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["applicationId"])
-}
-
-// Whether the channel is enabled or disabled. Defaults to `true`.
-func (r *GcmChannel) Enabled() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["enabled"])
-}
-
 // Input properties used for looking up and filtering GcmChannel resources.
 type GcmChannelState struct {
 	// Platform credential API key from Google.
-	ApiKey interface{}
+	ApiKey pulumi.StringInput `pulumi:"apiKey"`
 	// The application ID.
-	ApplicationId interface{}
+	ApplicationId pulumi.StringInput `pulumi:"applicationId"`
 	// Whether the channel is enabled or disabled. Defaults to `true`.
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 }
 
 // The set of arguments for constructing a GcmChannel resource.
 type GcmChannelArgs struct {
 	// Platform credential API key from Google.
-	ApiKey interface{}
+	ApiKey pulumi.StringInput `pulumi:"apiKey"`
 	// The application ID.
-	ApplicationId interface{}
+	ApplicationId pulumi.StringInput `pulumi:"applicationId"`
 	// Whether the channel is enabled or disabled. Defaults to `true`.
-	Enabled interface{}
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
 }

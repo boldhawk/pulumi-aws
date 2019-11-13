@@ -34,22 +34,22 @@ func LookupScript(ctx *pulumi.Context, args *GetScriptArgs) (*GetScriptResult, e
 // A collection of arguments for invoking getScript.
 type GetScriptArgs struct {
 	// A list of the edges in the DAG. Defined below.
-	DagEdges interface{}
+	DagEdges pulumi.ArrayInput `pulumi:"dagEdges"`
 	// A list of the nodes in the DAG. Defined below.
-	DagNodes interface{}
+	DagNodes pulumi.ArrayInput `pulumi:"dagNodes"`
 	// The programming language of the resulting code from the DAG. Defaults to `PYTHON`. Valid values are `PYTHON` and `SCALA`.
-	Language interface{}
+	Language pulumi.StringInput `pulumi:"language"`
 }
 
 // A collection of values returned by getScript.
 type GetScriptResult struct {
-	DagEdges interface{}
-	DagNodes interface{}
-	Language interface{}
+	DagEdges []interface{} `pulumi:"dagEdges"`
+	DagNodes []interface{} `pulumi:"dagNodes"`
+	Language string `pulumi:"language"`
 	// The Python script generated from the DAG when the `language` argument is set to `PYTHON`.
-	PythonScript interface{}
+	PythonScript string `pulumi:"pythonScript"`
 	// The Scala code generated from the DAG when the `language` argument is set to `SCALA`.
-	ScalaCode interface{}
+	ScalaCode string `pulumi:"scalaCode"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

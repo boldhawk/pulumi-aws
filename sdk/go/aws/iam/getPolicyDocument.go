@@ -67,30 +67,30 @@ type GetPolicyDocumentArgs struct {
 	// current policy document.  Statements with non-blank `sid`s in the override
 	// document will overwrite statements with the same `sid` in the current document.
 	// Statements without an `sid` cannot be overwritten.
-	OverrideJson interface{}
+	OverrideJson pulumi.StringInput `pulumi:"overrideJson"`
 	// An ID for the policy document.
-	PolicyId interface{}
+	PolicyId pulumi.StringInput `pulumi:"policyId"`
 	// An IAM policy document to import as a base for the
 	// current policy document.  Statements with non-blank `sid`s in the current
 	// policy document will overwrite statements with the same `sid` in the source
 	// json.  Statements without an `sid` cannot be overwritten.
-	SourceJson interface{}
+	SourceJson pulumi.StringInput `pulumi:"sourceJson"`
 	// A nested configuration block (described below)
 	// configuring one *statement* to be included in the policy document.
-	Statements interface{}
+	Statements pulumi.ArrayInput `pulumi:"statements"`
 	// IAM policy document version. Valid values: `2008-10-17`, `2012-10-17`. Defaults to `2012-10-17`. For more information, see the [AWS IAM User Guide](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_version.html).
-	Version interface{}
+	Version pulumi.StringInput `pulumi:"version"`
 }
 
 // A collection of values returned by getPolicyDocument.
 type GetPolicyDocumentResult struct {
 	// The above arguments serialized as a standard JSON policy document.
-	Json interface{}
-	OverrideJson interface{}
-	PolicyId interface{}
-	SourceJson interface{}
-	Statements interface{}
-	Version interface{}
+	Json string `pulumi:"json"`
+	OverrideJson string `pulumi:"overrideJson"`
+	PolicyId string `pulumi:"policyId"`
+	SourceJson string `pulumi:"sourceJson"`
+	Statements []interface{} `pulumi:"statements"`
+	Version string `pulumi:"version"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

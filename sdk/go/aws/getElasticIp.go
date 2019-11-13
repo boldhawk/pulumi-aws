@@ -42,40 +42,40 @@ func LookupElasticIp(ctx *pulumi.Context, args *GetElasticIpArgs) (*GetElasticIp
 // A collection of arguments for invoking getElasticIp.
 type GetElasticIpArgs struct {
 	// One or more name/value pairs to use as filters. There are several valid keys, for a full reference, check out the [EC2 API Reference](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeAddresses.html).
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The allocation id of the specific VPC EIP to retrieve. If a classic EIP is required, do NOT set `id`, only set `publicIp`
-	Id interface{}
+	Id pulumi.StringInput `pulumi:"id"`
 	// The public IP of the specific EIP to retrieve.
-	PublicIp interface{}
+	PublicIp pulumi.StringInput `pulumi:"publicIp"`
 	// A mapping of tags, each pair of which must exactly match a pair on the desired Elastic IP
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getElasticIp.
 type GetElasticIpResult struct {
 	// The ID representing the association of the address with an instance in a VPC.
-	AssociationId interface{}
+	AssociationId string `pulumi:"associationId"`
 	// Indicates whether the address is for use in EC2-Classic (standard) or in a VPC (vpc).
-	Domain interface{}
-	Filters interface{}
+	Domain string `pulumi:"domain"`
+	Filters []interface{} `pulumi:"filters"`
 	// If VPC Elastic IP, the allocation identifier. If EC2-Classic Elastic IP, the public IP address.
-	Id interface{}
+	Id string `pulumi:"id"`
 	// The ID of the instance that the address is associated with (if any).
-	InstanceId interface{}
+	InstanceId string `pulumi:"instanceId"`
 	// The ID of the network interface.
-	NetworkInterfaceId interface{}
+	NetworkInterfaceId string `pulumi:"networkInterfaceId"`
 	// The ID of the AWS account that owns the network interface.
-	NetworkInterfaceOwnerId interface{}
+	NetworkInterfaceOwnerId string `pulumi:"networkInterfaceOwnerId"`
 	// The Private DNS associated with the Elastic IP address.
-	PrivateDns interface{}
+	PrivateDns string `pulumi:"privateDns"`
 	// The private IP address associated with the Elastic IP address.
-	PrivateIp interface{}
+	PrivateIp string `pulumi:"privateIp"`
 	// Public DNS associated with the Elastic IP address.
-	PublicDns interface{}
+	PublicDns string `pulumi:"publicDns"`
 	// Public IP address of Elastic IP.
-	PublicIp interface{}
+	PublicIp string `pulumi:"publicIp"`
 	// The ID of an address pool.
-	PublicIpv4Pool interface{}
+	PublicIpv4Pool string `pulumi:"publicIpv4Pool"`
 	// Key-value map of tags associated with Elastic IP.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 }

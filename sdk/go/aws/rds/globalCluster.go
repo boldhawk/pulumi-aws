@@ -16,7 +16,35 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/rds_global_cluster.html.markdown.
 type GlobalCluster struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// RDS Global Cluster Amazon Resource Name (ARN)
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Name for an automatically created database on cluster creation.
+	DatabaseName pulumi.StringOutput `pulumi:"databaseName"`
+
+	// If the Global Cluster should have deletion protection enabled. The database can't be deleted when this value is set to `true`. The default is `false`.
+	DeletionProtection pulumi.BoolOutput `pulumi:"deletionProtection"`
+
+	// Name of the database engine to be used for this DB cluster. Valid values: `aurora`. Defaults to `aurora`.
+	Engine pulumi.StringOutput `pulumi:"engine"`
+
+	// Engine version of the Aurora global database.
+	EngineVersion pulumi.StringOutput `pulumi:"engineVersion"`
+
+	// The global cluster identifier.
+	GlobalClusterIdentifier pulumi.StringOutput `pulumi:"globalClusterIdentifier"`
+
+	// AWS Region-unique, immutable identifier for the global database cluster. This identifier is found in AWS CloudTrail log entries whenever the AWS KMS key for the DB cluster is accessed
+	GlobalClusterResourceId pulumi.StringOutput `pulumi:"globalClusterResourceId"`
+
+	// Specifies whether the DB cluster is encrypted. The default is `false`.
+	StorageEncrypted pulumi.BoolOutput `pulumi:"storageEncrypted"`
 }
 
 // NewGlobalCluster registers a new resource with the given unique name, arguments, and options.
@@ -25,15 +53,8 @@ func NewGlobalCluster(ctx *pulumi.Context,
 	if args == nil || args.GlobalClusterIdentifier == nil {
 		return nil, errors.New("missing required argument 'GlobalClusterIdentifier'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["databaseName"] = nil
-		inputs["deletionProtection"] = nil
-		inputs["engine"] = nil
-		inputs["engineVersion"] = nil
-		inputs["globalClusterIdentifier"] = nil
-		inputs["storageEncrypted"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["databaseName"] = args.DatabaseName
 		inputs["deletionProtection"] = args.DeletionProtection
 		inputs["engine"] = args.Engine
@@ -41,20 +62,19 @@ func NewGlobalCluster(ctx *pulumi.Context,
 		inputs["globalClusterIdentifier"] = args.GlobalClusterIdentifier
 		inputs["storageEncrypted"] = args.StorageEncrypted
 	}
-	inputs["arn"] = nil
-	inputs["globalClusterResourceId"] = nil
-	s, err := ctx.RegisterResource("aws:rds/globalCluster:GlobalCluster", name, true, inputs, opts...)
+	var resource GlobalCluster
+	err := ctx.RegisterResource("aws:rds/globalCluster:GlobalCluster", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &GlobalCluster{s: s}, nil
+	return &resource, nil
 }
 
 // GetGlobalCluster gets an existing GlobalCluster resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetGlobalCluster(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *GlobalClusterState, opts ...pulumi.ResourceOpt) (*GlobalCluster, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["databaseName"] = state.DatabaseName
@@ -65,95 +85,55 @@ func GetGlobalCluster(ctx *pulumi.Context,
 		inputs["globalClusterResourceId"] = state.GlobalClusterResourceId
 		inputs["storageEncrypted"] = state.StorageEncrypted
 	}
-	s, err := ctx.ReadResource("aws:rds/globalCluster:GlobalCluster", name, id, inputs, opts...)
+	var resource GlobalCluster
+	err := ctx.ReadResource("aws:rds/globalCluster:GlobalCluster", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &GlobalCluster{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *GlobalCluster) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *GlobalCluster) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *GlobalCluster) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *GlobalCluster) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// RDS Global Cluster Amazon Resource Name (ARN)
-func (r *GlobalCluster) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Name for an automatically created database on cluster creation.
-func (r *GlobalCluster) DatabaseName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["databaseName"])
-}
-
-// If the Global Cluster should have deletion protection enabled. The database can't be deleted when this value is set to `true`. The default is `false`.
-func (r *GlobalCluster) DeletionProtection() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["deletionProtection"])
-}
-
-// Name of the database engine to be used for this DB cluster. Valid values: `aurora`. Defaults to `aurora`.
-func (r *GlobalCluster) Engine() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["engine"])
-}
-
-// Engine version of the Aurora global database.
-func (r *GlobalCluster) EngineVersion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["engineVersion"])
-}
-
-// The global cluster identifier.
-func (r *GlobalCluster) GlobalClusterIdentifier() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["globalClusterIdentifier"])
-}
-
-// AWS Region-unique, immutable identifier for the global database cluster. This identifier is found in AWS CloudTrail log entries whenever the AWS KMS key for the DB cluster is accessed
-func (r *GlobalCluster) GlobalClusterResourceId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["globalClusterResourceId"])
-}
-
-// Specifies whether the DB cluster is encrypted. The default is `false`.
-func (r *GlobalCluster) StorageEncrypted() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["storageEncrypted"])
-}
-
 // Input properties used for looking up and filtering GlobalCluster resources.
 type GlobalClusterState struct {
 	// RDS Global Cluster Amazon Resource Name (ARN)
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Name for an automatically created database on cluster creation.
-	DatabaseName interface{}
+	DatabaseName pulumi.StringInput `pulumi:"databaseName"`
 	// If the Global Cluster should have deletion protection enabled. The database can't be deleted when this value is set to `true`. The default is `false`.
-	DeletionProtection interface{}
+	DeletionProtection pulumi.BoolInput `pulumi:"deletionProtection"`
 	// Name of the database engine to be used for this DB cluster. Valid values: `aurora`. Defaults to `aurora`.
-	Engine interface{}
+	Engine pulumi.StringInput `pulumi:"engine"`
 	// Engine version of the Aurora global database.
-	EngineVersion interface{}
+	EngineVersion pulumi.StringInput `pulumi:"engineVersion"`
 	// The global cluster identifier.
-	GlobalClusterIdentifier interface{}
+	GlobalClusterIdentifier pulumi.StringInput `pulumi:"globalClusterIdentifier"`
 	// AWS Region-unique, immutable identifier for the global database cluster. This identifier is found in AWS CloudTrail log entries whenever the AWS KMS key for the DB cluster is accessed
-	GlobalClusterResourceId interface{}
+	GlobalClusterResourceId pulumi.StringInput `pulumi:"globalClusterResourceId"`
 	// Specifies whether the DB cluster is encrypted. The default is `false`.
-	StorageEncrypted interface{}
+	StorageEncrypted pulumi.BoolInput `pulumi:"storageEncrypted"`
 }
 
 // The set of arguments for constructing a GlobalCluster resource.
 type GlobalClusterArgs struct {
 	// Name for an automatically created database on cluster creation.
-	DatabaseName interface{}
+	DatabaseName pulumi.StringInput `pulumi:"databaseName"`
 	// If the Global Cluster should have deletion protection enabled. The database can't be deleted when this value is set to `true`. The default is `false`.
-	DeletionProtection interface{}
+	DeletionProtection pulumi.BoolInput `pulumi:"deletionProtection"`
 	// Name of the database engine to be used for this DB cluster. Valid values: `aurora`. Defaults to `aurora`.
-	Engine interface{}
+	Engine pulumi.StringInput `pulumi:"engine"`
 	// Engine version of the Aurora global database.
-	EngineVersion interface{}
+	EngineVersion pulumi.StringInput `pulumi:"engineVersion"`
 	// The global cluster identifier.
-	GlobalClusterIdentifier interface{}
+	GlobalClusterIdentifier pulumi.StringInput `pulumi:"globalClusterIdentifier"`
 	// Specifies whether the DB cluster is encrypted. The default is `false`.
-	StorageEncrypted interface{}
+	StorageEncrypted pulumi.BoolInput `pulumi:"storageEncrypted"`
 }

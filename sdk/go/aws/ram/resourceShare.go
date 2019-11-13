@@ -11,96 +11,89 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ram_resource_share.html.markdown.
 type ResourceShare struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Indicates whether principals outside your organization can be associated with a resource share.
+	AllowExternalPrincipals pulumi.BoolOutput `pulumi:"allowExternalPrincipals"`
+
+	// The Amazon Resource Name (ARN) of the resource share.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The name of the resource share.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// A mapping of tags to assign to the resource share.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewResourceShare registers a new resource with the given unique name, arguments, and options.
 func NewResourceShare(ctx *pulumi.Context,
 	name string, args *ResourceShareArgs, opts ...pulumi.ResourceOpt) (*ResourceShare, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["allowExternalPrincipals"] = nil
-		inputs["name"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["allowExternalPrincipals"] = args.AllowExternalPrincipals
 		inputs["name"] = args.Name
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:ram/resourceShare:ResourceShare", name, true, inputs, opts...)
+	var resource ResourceShare
+	err := ctx.RegisterResource("aws:ram/resourceShare:ResourceShare", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ResourceShare{s: s}, nil
+	return &resource, nil
 }
 
 // GetResourceShare gets an existing ResourceShare resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetResourceShare(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ResourceShareState, opts ...pulumi.ResourceOpt) (*ResourceShare, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["allowExternalPrincipals"] = state.AllowExternalPrincipals
 		inputs["arn"] = state.Arn
 		inputs["name"] = state.Name
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:ram/resourceShare:ResourceShare", name, id, inputs, opts...)
+	var resource ResourceShare
+	err := ctx.ReadResource("aws:ram/resourceShare:ResourceShare", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ResourceShare{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ResourceShare) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ResourceShare) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ResourceShare) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ResourceShare) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Indicates whether principals outside your organization can be associated with a resource share.
-func (r *ResourceShare) AllowExternalPrincipals() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["allowExternalPrincipals"])
-}
-
-// The Amazon Resource Name (ARN) of the resource share.
-func (r *ResourceShare) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The name of the resource share.
-func (r *ResourceShare) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// A mapping of tags to assign to the resource share.
-func (r *ResourceShare) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering ResourceShare resources.
 type ResourceShareState struct {
 	// Indicates whether principals outside your organization can be associated with a resource share.
-	AllowExternalPrincipals interface{}
+	AllowExternalPrincipals pulumi.BoolInput `pulumi:"allowExternalPrincipals"`
 	// The Amazon Resource Name (ARN) of the resource share.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The name of the resource share.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A mapping of tags to assign to the resource share.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a ResourceShare resource.
 type ResourceShareArgs struct {
 	// Indicates whether principals outside your organization can be associated with a resource share.
-	AllowExternalPrincipals interface{}
+	AllowExternalPrincipals pulumi.BoolInput `pulumi:"allowExternalPrincipals"`
 	// The name of the resource share.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// A mapping of tags to assign to the resource share.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

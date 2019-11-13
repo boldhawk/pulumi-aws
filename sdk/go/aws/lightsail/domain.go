@@ -18,7 +18,17 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/lightsail_domain.html.markdown.
 type Domain struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the Lightsail domain
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The name of the Lightsail domain to manage
+	DomainName pulumi.StringOutput `pulumi:"domainName"`
 }
 
 // NewDomain registers a new resource with the given unique name, arguments, and options.
@@ -27,66 +37,54 @@ func NewDomain(ctx *pulumi.Context,
 	if args == nil || args.DomainName == nil {
 		return nil, errors.New("missing required argument 'DomainName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["domainName"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["domainName"] = args.DomainName
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:lightsail/domain:Domain", name, true, inputs, opts...)
+	var resource Domain
+	err := ctx.RegisterResource("aws:lightsail/domain:Domain", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Domain{s: s}, nil
+	return &resource, nil
 }
 
 // GetDomain gets an existing Domain resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetDomain(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *DomainState, opts ...pulumi.ResourceOpt) (*Domain, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["domainName"] = state.DomainName
 	}
-	s, err := ctx.ReadResource("aws:lightsail/domain:Domain", name, id, inputs, opts...)
+	var resource Domain
+	err := ctx.ReadResource("aws:lightsail/domain:Domain", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Domain{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Domain) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Domain) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Domain) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Domain) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the Lightsail domain
-func (r *Domain) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The name of the Lightsail domain to manage
-func (r *Domain) DomainName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["domainName"])
-}
-
 // Input properties used for looking up and filtering Domain resources.
 type DomainState struct {
 	// The ARN of the Lightsail domain
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The name of the Lightsail domain to manage
-	DomainName interface{}
+	DomainName pulumi.StringInput `pulumi:"domainName"`
 }
 
 // The set of arguments for constructing a Domain resource.
 type DomainArgs struct {
 	// The name of the Lightsail domain to manage
-	DomainName interface{}
+	DomainName pulumi.StringInput `pulumi:"domainName"`
 }

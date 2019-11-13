@@ -37,28 +37,28 @@ func LookupFileSystem(ctx *pulumi.Context, args *GetFileSystemArgs) (*GetFileSys
 // A collection of arguments for invoking getFileSystem.
 type GetFileSystemArgs struct {
 	// Restricts the list to the file system with this creation token.
-	CreationToken interface{}
+	CreationToken pulumi.StringInput `pulumi:"creationToken"`
 	// The ID that identifies the file system (e.g. fs-ccfc0d65).
-	FileSystemId interface{}
-	Tags interface{}
+	FileSystemId pulumi.StringInput `pulumi:"fileSystemId"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getFileSystem.
 type GetFileSystemResult struct {
 	// Amazon Resource Name of the file system.
-	Arn interface{}
-	CreationToken interface{}
+	Arn string `pulumi:"arn"`
+	CreationToken string `pulumi:"creationToken"`
 	// The DNS name for the filesystem per [documented convention](http://docs.aws.amazon.com/efs/latest/ug/mounting-fs-mount-cmd-dns-name.html).
-	DnsName interface{}
+	DnsName string `pulumi:"dnsName"`
 	// Whether EFS is encrypted.
-	Encrypted interface{}
-	FileSystemId interface{}
+	Encrypted bool `pulumi:"encrypted"`
+	FileSystemId string `pulumi:"fileSystemId"`
 	// The ARN for the KMS encryption key.
-	KmsKeyId interface{}
+	KmsKeyId string `pulumi:"kmsKeyId"`
 	// The PerformanceMode of the file system.
-	PerformanceMode interface{}
+	PerformanceMode string `pulumi:"performanceMode"`
 	// The list of tags assigned to the file system.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

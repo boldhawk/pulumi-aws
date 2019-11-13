@@ -16,7 +16,35 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/db_option_group.html.markdown.
 type OptionGroup struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the db option group.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Specifies the name of the engine that this option group should be associated with.
+	EngineName pulumi.StringOutput `pulumi:"engineName"`
+
+	// Specifies the major version of the engine that this option group should be associated with.
+	MajorEngineVersion pulumi.StringOutput `pulumi:"majorEngineVersion"`
+
+	// The Name of the setting.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Creates a unique name beginning with the specified prefix. Conflicts with `name`. Must be lowercase, to match as it is stored in AWS.
+	NamePrefix pulumi.StringOutput `pulumi:"namePrefix"`
+
+	// A list of Options to apply.
+	Options pulumi.ArrayOutput `pulumi:"options"`
+
+	// The description of the option group. Defaults to "Managed by Pulumi".
+	OptionGroupDescription pulumi.StringOutput `pulumi:"optionGroupDescription"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewOptionGroup registers a new resource with the given unique name, arguments, and options.
@@ -28,16 +56,10 @@ func NewOptionGroup(ctx *pulumi.Context,
 	if args == nil || args.MajorEngineVersion == nil {
 		return nil, errors.New("missing required argument 'MajorEngineVersion'")
 	}
-	inputs := make(map[string]interface{})
-	inputs["optionGroupDescription"] = "Managed by Pulumi"
-	if args == nil {
-		inputs["engineName"] = nil
-		inputs["majorEngineVersion"] = nil
-		inputs["name"] = nil
-		inputs["namePrefix"] = nil
-		inputs["options"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	inputs["optionGroupDescription"] = pulumi.Any("Managed by Pulumi")
+	if args != nil {
 		inputs["engineName"] = args.EngineName
 		inputs["majorEngineVersion"] = args.MajorEngineVersion
 		inputs["name"] = args.Name
@@ -46,19 +68,19 @@ func NewOptionGroup(ctx *pulumi.Context,
 		inputs["optionGroupDescription"] = args.OptionGroupDescription
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:rds/optionGroup:OptionGroup", name, true, inputs, opts...)
+	var resource OptionGroup
+	err := ctx.RegisterResource("aws:rds/optionGroup:OptionGroup", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &OptionGroup{s: s}, nil
+	return &resource, nil
 }
 
 // GetOptionGroup gets an existing OptionGroup resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetOptionGroup(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *OptionGroupState, opts ...pulumi.ResourceOpt) (*OptionGroup, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["engineName"] = state.EngineName
@@ -69,97 +91,57 @@ func GetOptionGroup(ctx *pulumi.Context,
 		inputs["optionGroupDescription"] = state.OptionGroupDescription
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:rds/optionGroup:OptionGroup", name, id, inputs, opts...)
+	var resource OptionGroup
+	err := ctx.ReadResource("aws:rds/optionGroup:OptionGroup", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &OptionGroup{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *OptionGroup) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *OptionGroup) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *OptionGroup) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *OptionGroup) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the db option group.
-func (r *OptionGroup) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Specifies the name of the engine that this option group should be associated with.
-func (r *OptionGroup) EngineName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["engineName"])
-}
-
-// Specifies the major version of the engine that this option group should be associated with.
-func (r *OptionGroup) MajorEngineVersion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["majorEngineVersion"])
-}
-
-// The Name of the setting.
-func (r *OptionGroup) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Creates a unique name beginning with the specified prefix. Conflicts with `name`. Must be lowercase, to match as it is stored in AWS.
-func (r *OptionGroup) NamePrefix() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["namePrefix"])
-}
-
-// A list of Options to apply.
-func (r *OptionGroup) Options() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["options"])
-}
-
-// The description of the option group. Defaults to "Managed by Pulumi".
-func (r *OptionGroup) OptionGroupDescription() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["optionGroupDescription"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *OptionGroup) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering OptionGroup resources.
 type OptionGroupState struct {
 	// The ARN of the db option group.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Specifies the name of the engine that this option group should be associated with.
-	EngineName interface{}
+	EngineName pulumi.StringInput `pulumi:"engineName"`
 	// Specifies the major version of the engine that this option group should be associated with.
-	MajorEngineVersion interface{}
+	MajorEngineVersion pulumi.StringInput `pulumi:"majorEngineVersion"`
 	// The Name of the setting.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified prefix. Conflicts with `name`. Must be lowercase, to match as it is stored in AWS.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// A list of Options to apply.
-	Options interface{}
+	Options pulumi.ArrayInput `pulumi:"options"`
 	// The description of the option group. Defaults to "Managed by Pulumi".
-	OptionGroupDescription interface{}
+	OptionGroupDescription pulumi.StringInput `pulumi:"optionGroupDescription"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a OptionGroup resource.
 type OptionGroupArgs struct {
 	// Specifies the name of the engine that this option group should be associated with.
-	EngineName interface{}
+	EngineName pulumi.StringInput `pulumi:"engineName"`
 	// Specifies the major version of the engine that this option group should be associated with.
-	MajorEngineVersion interface{}
+	MajorEngineVersion pulumi.StringInput `pulumi:"majorEngineVersion"`
 	// The Name of the setting.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Creates a unique name beginning with the specified prefix. Conflicts with `name`. Must be lowercase, to match as it is stored in AWS.
-	NamePrefix interface{}
+	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
 	// A list of Options to apply.
-	Options interface{}
+	Options pulumi.ArrayInput `pulumi:"options"`
 	// The description of the option group. Defaults to "Managed by Pulumi".
-	OptionGroupDescription interface{}
+	OptionGroupDescription pulumi.StringInput `pulumi:"optionGroupDescription"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

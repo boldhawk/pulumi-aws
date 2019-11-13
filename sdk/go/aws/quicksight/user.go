@@ -12,7 +12,38 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/quicksight_user.html.markdown.
 type User struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Amazon Resource Name (ARN) of the user
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The ID for the AWS account that the group is in. Currently, you use the ID for the AWS account that contains your Amazon QuickSight account.
+	AwsAccountId pulumi.StringOutput `pulumi:"awsAccountId"`
+
+	// The email address of the user that you want to register.
+	Email pulumi.StringOutput `pulumi:"email"`
+
+	// The ARN of the IAM user or role that you are registering with Amazon QuickSight.
+	IamArn pulumi.StringOutput `pulumi:"iamArn"`
+
+	// Amazon QuickSight supports several ways of managing the identity of users. This parameter accepts two values: `IAM` and `QUICKSIGHT`.
+	IdentityType pulumi.StringOutput `pulumi:"identityType"`
+
+	// The namespace. Currently, you should set this to `default`.
+	Namespace pulumi.StringOutput `pulumi:"namespace"`
+
+	// The name of the IAM session to use when assuming roles that can embed QuickSight dashboards.
+	SessionName pulumi.StringOutput `pulumi:"sessionName"`
+
+	// The Amazon QuickSight user name that you want to create for the user you are registering.
+	UserName pulumi.StringOutput `pulumi:"userName"`
+
+	// The Amazon QuickSight role of the user. The user role can be one of the following: `READER`, `AUTHOR`, or `ADMIN`
+	UserRole pulumi.StringOutput `pulumi:"userRole"`
 }
 
 // NewUser registers a new resource with the given unique name, arguments, and options.
@@ -27,17 +58,8 @@ func NewUser(ctx *pulumi.Context,
 	if args == nil || args.UserRole == nil {
 		return nil, errors.New("missing required argument 'UserRole'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["awsAccountId"] = nil
-		inputs["email"] = nil
-		inputs["iamArn"] = nil
-		inputs["identityType"] = nil
-		inputs["namespace"] = nil
-		inputs["sessionName"] = nil
-		inputs["userName"] = nil
-		inputs["userRole"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["awsAccountId"] = args.AwsAccountId
 		inputs["email"] = args.Email
 		inputs["iamArn"] = args.IamArn
@@ -47,19 +69,19 @@ func NewUser(ctx *pulumi.Context,
 		inputs["userName"] = args.UserName
 		inputs["userRole"] = args.UserRole
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:quicksight/user:User", name, true, inputs, opts...)
+	var resource User
+	err := ctx.RegisterResource("aws:quicksight/user:User", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &User{s: s}, nil
+	return &resource, nil
 }
 
 // GetUser gets an existing User resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetUser(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *UserState, opts ...pulumi.ResourceOpt) (*User, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["awsAccountId"] = state.AwsAccountId
@@ -71,106 +93,61 @@ func GetUser(ctx *pulumi.Context,
 		inputs["userName"] = state.UserName
 		inputs["userRole"] = state.UserRole
 	}
-	s, err := ctx.ReadResource("aws:quicksight/user:User", name, id, inputs, opts...)
+	var resource User
+	err := ctx.ReadResource("aws:quicksight/user:User", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &User{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *User) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *User) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *User) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *User) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Amazon Resource Name (ARN) of the user
-func (r *User) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The ID for the AWS account that the group is in. Currently, you use the ID for the AWS account that contains your Amazon QuickSight account.
-func (r *User) AwsAccountId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["awsAccountId"])
-}
-
-// The email address of the user that you want to register.
-func (r *User) Email() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["email"])
-}
-
-// The ARN of the IAM user or role that you are registering with Amazon QuickSight.
-func (r *User) IamArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["iamArn"])
-}
-
-// Amazon QuickSight supports several ways of managing the identity of users. This parameter accepts two values: `IAM` and `QUICKSIGHT`.
-func (r *User) IdentityType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["identityType"])
-}
-
-// The namespace. Currently, you should set this to `default`.
-func (r *User) Namespace() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["namespace"])
-}
-
-// The name of the IAM session to use when assuming roles that can embed QuickSight dashboards.
-func (r *User) SessionName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["sessionName"])
-}
-
-// The Amazon QuickSight user name that you want to create for the user you are registering.
-func (r *User) UserName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["userName"])
-}
-
-// The Amazon QuickSight role of the user. The user role can be one of the following: `READER`, `AUTHOR`, or `ADMIN`
-func (r *User) UserRole() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["userRole"])
-}
-
 // Input properties used for looking up and filtering User resources.
 type UserState struct {
 	// Amazon Resource Name (ARN) of the user
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The ID for the AWS account that the group is in. Currently, you use the ID for the AWS account that contains your Amazon QuickSight account.
-	AwsAccountId interface{}
+	AwsAccountId pulumi.StringInput `pulumi:"awsAccountId"`
 	// The email address of the user that you want to register.
-	Email interface{}
+	Email pulumi.StringInput `pulumi:"email"`
 	// The ARN of the IAM user or role that you are registering with Amazon QuickSight.
-	IamArn interface{}
+	IamArn pulumi.StringInput `pulumi:"iamArn"`
 	// Amazon QuickSight supports several ways of managing the identity of users. This parameter accepts two values: `IAM` and `QUICKSIGHT`.
-	IdentityType interface{}
+	IdentityType pulumi.StringInput `pulumi:"identityType"`
 	// The namespace. Currently, you should set this to `default`.
-	Namespace interface{}
+	Namespace pulumi.StringInput `pulumi:"namespace"`
 	// The name of the IAM session to use when assuming roles that can embed QuickSight dashboards.
-	SessionName interface{}
+	SessionName pulumi.StringInput `pulumi:"sessionName"`
 	// The Amazon QuickSight user name that you want to create for the user you are registering.
-	UserName interface{}
+	UserName pulumi.StringInput `pulumi:"userName"`
 	// The Amazon QuickSight role of the user. The user role can be one of the following: `READER`, `AUTHOR`, or `ADMIN`
-	UserRole interface{}
+	UserRole pulumi.StringInput `pulumi:"userRole"`
 }
 
 // The set of arguments for constructing a User resource.
 type UserArgs struct {
 	// The ID for the AWS account that the group is in. Currently, you use the ID for the AWS account that contains your Amazon QuickSight account.
-	AwsAccountId interface{}
+	AwsAccountId pulumi.StringInput `pulumi:"awsAccountId"`
 	// The email address of the user that you want to register.
-	Email interface{}
+	Email pulumi.StringInput `pulumi:"email"`
 	// The ARN of the IAM user or role that you are registering with Amazon QuickSight.
-	IamArn interface{}
+	IamArn pulumi.StringInput `pulumi:"iamArn"`
 	// Amazon QuickSight supports several ways of managing the identity of users. This parameter accepts two values: `IAM` and `QUICKSIGHT`.
-	IdentityType interface{}
+	IdentityType pulumi.StringInput `pulumi:"identityType"`
 	// The namespace. Currently, you should set this to `default`.
-	Namespace interface{}
+	Namespace pulumi.StringInput `pulumi:"namespace"`
 	// The name of the IAM session to use when assuming roles that can embed QuickSight dashboards.
-	SessionName interface{}
+	SessionName pulumi.StringInput `pulumi:"sessionName"`
 	// The Amazon QuickSight user name that you want to create for the user you are registering.
-	UserName interface{}
+	UserName pulumi.StringInput `pulumi:"userName"`
 	// The Amazon QuickSight role of the user. The user role can be one of the following: `READER`, `AUTHOR`, or `ADMIN`
-	UserRole interface{}
+	UserRole pulumi.StringInput `pulumi:"userRole"`
 }

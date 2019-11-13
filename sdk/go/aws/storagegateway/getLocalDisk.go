@@ -33,20 +33,20 @@ func LookupLocalDisk(ctx *pulumi.Context, args *GetLocalDiskArgs) (*GetLocalDisk
 // A collection of arguments for invoking getLocalDisk.
 type GetLocalDiskArgs struct {
 	// The device node of the local disk to retrieve. For example, `/dev/sdb`.
-	DiskNode interface{}
+	DiskNode pulumi.StringInput `pulumi:"diskNode"`
 	// The device path of the local disk to retrieve. For example, `/dev/xvdb` or `/dev/nvme1n1`.
-	DiskPath interface{}
+	DiskPath pulumi.StringInput `pulumi:"diskPath"`
 	// The Amazon Resource Name (ARN) of the gateway.
-	GatewayArn interface{}
+	GatewayArn pulumi.StringInput `pulumi:"gatewayArn"`
 }
 
 // A collection of values returned by getLocalDisk.
 type GetLocalDiskResult struct {
 	// The disk identifier. e.g. `pci-0000:03:00.0-scsi-0:0:0:0`
-	DiskId interface{}
-	DiskNode interface{}
-	DiskPath interface{}
-	GatewayArn interface{}
+	DiskId string `pulumi:"diskId"`
+	DiskNode string `pulumi:"diskNode"`
+	DiskPath string `pulumi:"diskPath"`
+	GatewayArn string `pulumi:"gatewayArn"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

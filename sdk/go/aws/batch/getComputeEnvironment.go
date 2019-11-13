@@ -36,26 +36,26 @@ func LookupComputeEnvironment(ctx *pulumi.Context, args *GetComputeEnvironmentAr
 // A collection of arguments for invoking getComputeEnvironment.
 type GetComputeEnvironmentArgs struct {
 	// The name of the Batch Compute Environment
-	ComputeEnvironmentName interface{}
+	ComputeEnvironmentName pulumi.StringInput `pulumi:"computeEnvironmentName"`
 }
 
 // A collection of values returned by getComputeEnvironment.
 type GetComputeEnvironmentResult struct {
 	// The ARN of the compute environment.
-	Arn interface{}
-	ComputeEnvironmentName interface{}
+	Arn string `pulumi:"arn"`
+	ComputeEnvironmentName string `pulumi:"computeEnvironmentName"`
 	// The ARN of the underlying Amazon ECS cluster used by the compute environment.
-	EcsClusterArn interface{}
+	EcsClusterArn string `pulumi:"ecsClusterArn"`
 	// The ARN of the IAM role that allows AWS Batch to make calls to other AWS services on your behalf.
-	ServiceRole interface{}
+	ServiceRole string `pulumi:"serviceRole"`
 	// The state of the compute environment (for example, `ENABLED` or `DISABLED`). If the state is `ENABLED`, then the compute environment accepts jobs from a queue and can scale out automatically based on queues.
-	State interface{}
+	State string `pulumi:"state"`
 	// The current status of the compute environment (for example, `CREATING` or `VALID`).
-	Status interface{}
+	Status string `pulumi:"status"`
 	// A short, human-readable string to provide additional details about the current status of the compute environment.
-	StatusReason interface{}
+	StatusReason string `pulumi:"statusReason"`
 	// The type of the compute environment (for example, `MANAGED` or `UNMANAGED`).
-	Type interface{}
+	Type string `pulumi:"type"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

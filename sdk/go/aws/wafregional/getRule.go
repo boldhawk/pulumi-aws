@@ -28,12 +28,12 @@ func LookupRule(ctx *pulumi.Context, args *GetRuleArgs) (*GetRuleResult, error) 
 // A collection of arguments for invoking getRule.
 type GetRuleArgs struct {
 	// The name of the WAF rule.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getRule.
 type GetRuleResult struct {
-	Name interface{}
+	Name string `pulumi:"name"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

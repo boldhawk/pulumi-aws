@@ -38,31 +38,31 @@ func LookupVpcDhcpOptions(ctx *pulumi.Context, args *GetVpcDhcpOptionsArgs) (*Ge
 // A collection of arguments for invoking getVpcDhcpOptions.
 type GetVpcDhcpOptionsArgs struct {
 	// The EC2 DHCP Options ID.
-	DhcpOptionsId interface{}
+	DhcpOptionsId pulumi.StringInput `pulumi:"dhcpOptionsId"`
 	// List of custom filters as described below.
-	Filters interface{}
-	Tags interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpcDhcpOptions.
 type GetVpcDhcpOptionsResult struct {
 	// EC2 DHCP Options ID
-	DhcpOptionsId interface{}
+	DhcpOptionsId string `pulumi:"dhcpOptionsId"`
 	// The suffix domain name to used when resolving non Fully Qualified Domain Names. e.g. the `search` value in the `/etc/resolv.conf` file.
-	DomainName interface{}
+	DomainName string `pulumi:"domainName"`
 	// List of name servers.
-	DomainNameServers interface{}
-	Filters interface{}
+	DomainNameServers []interface{} `pulumi:"domainNameServers"`
+	Filters []interface{} `pulumi:"filters"`
 	// List of NETBIOS name servers.
-	NetbiosNameServers interface{}
+	NetbiosNameServers []interface{} `pulumi:"netbiosNameServers"`
 	// The NetBIOS node type (1, 2, 4, or 8). For more information about these node types, see [RFC 2132](http://www.ietf.org/rfc/rfc2132.txt).
-	NetbiosNodeType interface{}
+	NetbiosNodeType string `pulumi:"netbiosNodeType"`
 	// List of NTP servers.
-	NtpServers interface{}
+	NtpServers []interface{} `pulumi:"ntpServers"`
 	// The ID of the AWS account that owns the DHCP options set.
-	OwnerId interface{}
+	OwnerId string `pulumi:"ownerId"`
 	// A mapping of tags assigned to the resource.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

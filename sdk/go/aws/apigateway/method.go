@@ -12,7 +12,44 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/api_gateway_method.html.markdown.
 type Method struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Specify if the method requires an API key
+	ApiKeyRequired pulumi.BoolOutput `pulumi:"apiKeyRequired"`
+
+	// The type of authorization used for the method (`NONE`, `CUSTOM`, `AWS_IAM`, `COGNITO_USER_POOLS`)
+	Authorization pulumi.StringOutput `pulumi:"authorization"`
+
+	// The authorization scopes used when the authorization is `COGNITO_USER_POOLS`
+	AuthorizationScopes pulumi.ArrayOutput `pulumi:"authorizationScopes"`
+
+	// The authorizer id to be used when the authorization is `CUSTOM` or `COGNITO_USER_POOLS`
+	AuthorizerId pulumi.StringOutput `pulumi:"authorizerId"`
+
+	// The HTTP Method (`GET`, `POST`, `PUT`, `DELETE`, `HEAD`, `OPTIONS`, `ANY`)
+	HttpMethod pulumi.StringOutput `pulumi:"httpMethod"`
+
+	// A map of the API models used for the request's content type
+	// where key is the content type (e.g. `application/json`)
+	// and value is either `Error`, `Empty` (built-in models) or `apigateway.Model`'s `name`.
+	RequestModels pulumi.MapOutput `pulumi:"requestModels"`
+
+	// A map of request parameters (from the path, query string and headers) that should be passed to the integration. The boolean value indicates whether the parameter is required (`true`) or optional (`false`).
+	// For example: `requestParameters = {"method.request.header.X-Some-Header" = true "method.request.querystring.some-query-param" = true}` would define that the header `X-Some-Header` and the query string `some-query-param` must be provided in the request.
+	RequestParameters pulumi.MapOutput `pulumi:"requestParameters"`
+
+	// The ID of a `apigateway.RequestValidator`
+	RequestValidatorId pulumi.StringOutput `pulumi:"requestValidatorId"`
+
+	// The API resource ID
+	ResourceId pulumi.StringOutput `pulumi:"resourceId"`
+
+	// The ID of the associated REST API
+	RestApi pulumi.StringOutput `pulumi:"restApi"`
 }
 
 // NewMethod registers a new resource with the given unique name, arguments, and options.
@@ -30,19 +67,8 @@ func NewMethod(ctx *pulumi.Context,
 	if args == nil || args.RestApi == nil {
 		return nil, errors.New("missing required argument 'RestApi'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["apiKeyRequired"] = nil
-		inputs["authorization"] = nil
-		inputs["authorizationScopes"] = nil
-		inputs["authorizerId"] = nil
-		inputs["httpMethod"] = nil
-		inputs["requestModels"] = nil
-		inputs["requestParameters"] = nil
-		inputs["requestValidatorId"] = nil
-		inputs["resourceId"] = nil
-		inputs["restApi"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["apiKeyRequired"] = args.ApiKeyRequired
 		inputs["authorization"] = args.Authorization
 		inputs["authorizationScopes"] = args.AuthorizationScopes
@@ -54,18 +80,19 @@ func NewMethod(ctx *pulumi.Context,
 		inputs["resourceId"] = args.ResourceId
 		inputs["restApi"] = args.RestApi
 	}
-	s, err := ctx.RegisterResource("aws:apigateway/method:Method", name, true, inputs, opts...)
+	var resource Method
+	err := ctx.RegisterResource("aws:apigateway/method:Method", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Method{s: s}, nil
+	return &resource, nil
 }
 
 // GetMethod gets an existing Method resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetMethod(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *MethodState, opts ...pulumi.ResourceOpt) (*Method, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["apiKeyRequired"] = state.ApiKeyRequired
 		inputs["authorization"] = state.Authorization
@@ -78,126 +105,73 @@ func GetMethod(ctx *pulumi.Context,
 		inputs["resourceId"] = state.ResourceId
 		inputs["restApi"] = state.RestApi
 	}
-	s, err := ctx.ReadResource("aws:apigateway/method:Method", name, id, inputs, opts...)
+	var resource Method
+	err := ctx.ReadResource("aws:apigateway/method:Method", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Method{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Method) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Method) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Method) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Method) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Specify if the method requires an API key
-func (r *Method) ApiKeyRequired() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["apiKeyRequired"])
-}
-
-// The type of authorization used for the method (`NONE`, `CUSTOM`, `AWS_IAM`, `COGNITO_USER_POOLS`)
-func (r *Method) Authorization() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["authorization"])
-}
-
-// The authorization scopes used when the authorization is `COGNITO_USER_POOLS`
-func (r *Method) AuthorizationScopes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["authorizationScopes"])
-}
-
-// The authorizer id to be used when the authorization is `CUSTOM` or `COGNITO_USER_POOLS`
-func (r *Method) AuthorizerId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["authorizerId"])
-}
-
-// The HTTP Method (`GET`, `POST`, `PUT`, `DELETE`, `HEAD`, `OPTIONS`, `ANY`)
-func (r *Method) HttpMethod() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["httpMethod"])
-}
-
-// A map of the API models used for the request's content type
-// where key is the content type (e.g. `application/json`)
-// and value is either `Error`, `Empty` (built-in models) or `apigateway.Model`'s `name`.
-func (r *Method) RequestModels() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["requestModels"])
-}
-
-// A map of request parameters (from the path, query string and headers) that should be passed to the integration. The boolean value indicates whether the parameter is required (`true`) or optional (`false`).
-// For example: `requestParameters = {"method.request.header.X-Some-Header" = true "method.request.querystring.some-query-param" = true}` would define that the header `X-Some-Header` and the query string `some-query-param` must be provided in the request.
-func (r *Method) RequestParameters() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["requestParameters"])
-}
-
-// The ID of a `apigateway.RequestValidator`
-func (r *Method) RequestValidatorId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["requestValidatorId"])
-}
-
-// The API resource ID
-func (r *Method) ResourceId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["resourceId"])
-}
-
-// The ID of the associated REST API
-func (r *Method) RestApi() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["restApi"])
-}
-
 // Input properties used for looking up and filtering Method resources.
 type MethodState struct {
 	// Specify if the method requires an API key
-	ApiKeyRequired interface{}
+	ApiKeyRequired pulumi.BoolInput `pulumi:"apiKeyRequired"`
 	// The type of authorization used for the method (`NONE`, `CUSTOM`, `AWS_IAM`, `COGNITO_USER_POOLS`)
-	Authorization interface{}
+	Authorization pulumi.StringInput `pulumi:"authorization"`
 	// The authorization scopes used when the authorization is `COGNITO_USER_POOLS`
-	AuthorizationScopes interface{}
+	AuthorizationScopes pulumi.ArrayInput `pulumi:"authorizationScopes"`
 	// The authorizer id to be used when the authorization is `CUSTOM` or `COGNITO_USER_POOLS`
-	AuthorizerId interface{}
+	AuthorizerId pulumi.StringInput `pulumi:"authorizerId"`
 	// The HTTP Method (`GET`, `POST`, `PUT`, `DELETE`, `HEAD`, `OPTIONS`, `ANY`)
-	HttpMethod interface{}
+	HttpMethod pulumi.StringInput `pulumi:"httpMethod"`
 	// A map of the API models used for the request's content type
 	// where key is the content type (e.g. `application/json`)
 	// and value is either `Error`, `Empty` (built-in models) or `apigateway.Model`'s `name`.
-	RequestModels interface{}
+	RequestModels pulumi.MapInput `pulumi:"requestModels"`
 	// A map of request parameters (from the path, query string and headers) that should be passed to the integration. The boolean value indicates whether the parameter is required (`true`) or optional (`false`).
 	// For example: `requestParameters = {"method.request.header.X-Some-Header" = true "method.request.querystring.some-query-param" = true}` would define that the header `X-Some-Header` and the query string `some-query-param` must be provided in the request.
-	RequestParameters interface{}
+	RequestParameters pulumi.MapInput `pulumi:"requestParameters"`
 	// The ID of a `apigateway.RequestValidator`
-	RequestValidatorId interface{}
+	RequestValidatorId pulumi.StringInput `pulumi:"requestValidatorId"`
 	// The API resource ID
-	ResourceId interface{}
+	ResourceId pulumi.StringInput `pulumi:"resourceId"`
 	// The ID of the associated REST API
-	RestApi interface{}
+	RestApi pulumi.StringInput `pulumi:"restApi"`
 }
 
 // The set of arguments for constructing a Method resource.
 type MethodArgs struct {
 	// Specify if the method requires an API key
-	ApiKeyRequired interface{}
+	ApiKeyRequired pulumi.BoolInput `pulumi:"apiKeyRequired"`
 	// The type of authorization used for the method (`NONE`, `CUSTOM`, `AWS_IAM`, `COGNITO_USER_POOLS`)
-	Authorization interface{}
+	Authorization pulumi.StringInput `pulumi:"authorization"`
 	// The authorization scopes used when the authorization is `COGNITO_USER_POOLS`
-	AuthorizationScopes interface{}
+	AuthorizationScopes pulumi.ArrayInput `pulumi:"authorizationScopes"`
 	// The authorizer id to be used when the authorization is `CUSTOM` or `COGNITO_USER_POOLS`
-	AuthorizerId interface{}
+	AuthorizerId pulumi.StringInput `pulumi:"authorizerId"`
 	// The HTTP Method (`GET`, `POST`, `PUT`, `DELETE`, `HEAD`, `OPTIONS`, `ANY`)
-	HttpMethod interface{}
+	HttpMethod pulumi.StringInput `pulumi:"httpMethod"`
 	// A map of the API models used for the request's content type
 	// where key is the content type (e.g. `application/json`)
 	// and value is either `Error`, `Empty` (built-in models) or `apigateway.Model`'s `name`.
-	RequestModels interface{}
+	RequestModels pulumi.MapInput `pulumi:"requestModels"`
 	// A map of request parameters (from the path, query string and headers) that should be passed to the integration. The boolean value indicates whether the parameter is required (`true`) or optional (`false`).
 	// For example: `requestParameters = {"method.request.header.X-Some-Header" = true "method.request.querystring.some-query-param" = true}` would define that the header `X-Some-Header` and the query string `some-query-param` must be provided in the request.
-	RequestParameters interface{}
+	RequestParameters pulumi.MapInput `pulumi:"requestParameters"`
 	// The ID of a `apigateway.RequestValidator`
-	RequestValidatorId interface{}
+	RequestValidatorId pulumi.StringInput `pulumi:"requestValidatorId"`
 	// The API resource ID
-	ResourceId interface{}
+	ResourceId pulumi.StringInput `pulumi:"resourceId"`
 	// The ID of the associated REST API
-	RestApi interface{}
+	RestApi pulumi.StringInput `pulumi:"restApi"`
 }

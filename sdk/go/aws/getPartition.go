@@ -24,8 +24,8 @@ func LookupPartition(ctx *pulumi.Context) (*GetPartitionResult, error) {
 
 // A collection of values returned by getPartition.
 type GetPartitionResult struct {
-	DnsSuffix interface{}
-	Partition interface{}
+	DnsSuffix string `pulumi:"dnsSuffix"`
+	Partition string `pulumi:"partition"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

@@ -25,7 +25,7 @@ func LookupCanonicalUserId(ctx *pulumi.Context) (*GetCanonicalUserIdResult, erro
 // A collection of values returned by getCanonicalUserId.
 type GetCanonicalUserIdResult struct {
 	// The human-friendly name linked to the canonical user ID. The bucket owner's display name. **NOTE:** [This value](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTServiceGET.html) is only included in the response in the US East (N. Virginia), US West (N. California), US West (Oregon), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), EU (Ireland), and South America (São Paulo) regions.
-	DisplayName interface{}
+	DisplayName string `pulumi:"displayName"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

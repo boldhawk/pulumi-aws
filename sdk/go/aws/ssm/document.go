@@ -27,7 +27,64 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ssm_document.html.markdown.
 type Document struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The JSON or YAML content of the document.
+	Content pulumi.StringOutput `pulumi:"content"`
+
+	// The date the document was created.
+	CreatedDate pulumi.StringOutput `pulumi:"createdDate"`
+
+	// The default version of the document.
+	DefaultVersion pulumi.StringOutput `pulumi:"defaultVersion"`
+
+	// The description of the document.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The format of the document. Valid document types include: `JSON` and `YAML`
+	DocumentFormat pulumi.StringOutput `pulumi:"documentFormat"`
+
+	// The type of the document. Valid document types include: `Command`, `Policy`, `Automation` and `Session`
+	DocumentType pulumi.StringOutput `pulumi:"documentType"`
+
+	// The sha1 or sha256 of the document content
+	Hash pulumi.StringOutput `pulumi:"hash"`
+
+	// "Sha1" "Sha256". The hashing algorithm used when hashing the content.
+	HashType pulumi.StringOutput `pulumi:"hashType"`
+
+	// The latest version of the document.
+	LatestVersion pulumi.StringOutput `pulumi:"latestVersion"`
+
+	// The name of the document.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The AWS user account of the person who created the document.
+	Owner pulumi.StringOutput `pulumi:"owner"`
+
+	// The parameters that are available to this document.
+	Parameters pulumi.ArrayOutput `pulumi:"parameters"`
+
+	// Additional Permissions to attach to the document. See Permissions below for details.
+	Permissions pulumi.AnyOutput `pulumi:"permissions"`
+
+	// A list of OS platforms compatible with this SSM document, either "Windows" or "Linux".
+	PlatformTypes pulumi.ArrayOutput `pulumi:"platformTypes"`
+
+	// The schema version of the document.
+	SchemaVersion pulumi.StringOutput `pulumi:"schemaVersion"`
+
+	// "Creating", "Active" or "Deleting". The current status of the document.
+	Status pulumi.StringOutput `pulumi:"status"`
+
+	// A mapping of tags to assign to the object.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewDocument registers a new resource with the given unique name, arguments, and options.
@@ -39,15 +96,9 @@ func NewDocument(ctx *pulumi.Context,
 	if args == nil || args.DocumentType == nil {
 		return nil, errors.New("missing required argument 'DocumentType'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["content"] = nil
-		inputs["documentFormat"] = nil
-		inputs["documentType"] = nil
-		inputs["name"] = nil
-		inputs["permissions"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["content"] = args.Content
 		inputs["documentFormat"] = args.DocumentFormat
 		inputs["documentType"] = args.DocumentType
@@ -55,30 +106,19 @@ func NewDocument(ctx *pulumi.Context,
 		inputs["permissions"] = args.Permissions
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	inputs["createdDate"] = nil
-	inputs["defaultVersion"] = nil
-	inputs["description"] = nil
-	inputs["hash"] = nil
-	inputs["hashType"] = nil
-	inputs["latestVersion"] = nil
-	inputs["owner"] = nil
-	inputs["parameters"] = nil
-	inputs["platformTypes"] = nil
-	inputs["schemaVersion"] = nil
-	inputs["status"] = nil
-	s, err := ctx.RegisterResource("aws:ssm/document:Document", name, true, inputs, opts...)
+	var resource Document
+	err := ctx.RegisterResource("aws:ssm/document:Document", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Document{s: s}, nil
+	return &resource, nil
 }
 
 // GetDocument gets an existing Document resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetDocument(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *DocumentState, opts ...pulumi.ResourceOpt) (*Document, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["content"] = state.Content
@@ -99,163 +139,74 @@ func GetDocument(ctx *pulumi.Context,
 		inputs["status"] = state.Status
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:ssm/document:Document", name, id, inputs, opts...)
+	var resource Document
+	err := ctx.ReadResource("aws:ssm/document:Document", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Document{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Document) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Document) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Document) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Document) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-func (r *Document) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The JSON or YAML content of the document.
-func (r *Document) Content() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["content"])
-}
-
-// The date the document was created.
-func (r *Document) CreatedDate() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["createdDate"])
-}
-
-// The default version of the document.
-func (r *Document) DefaultVersion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["defaultVersion"])
-}
-
-// The description of the document.
-func (r *Document) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The format of the document. Valid document types include: `JSON` and `YAML`
-func (r *Document) DocumentFormat() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["documentFormat"])
-}
-
-// The type of the document. Valid document types include: `Command`, `Policy`, `Automation` and `Session`
-func (r *Document) DocumentType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["documentType"])
-}
-
-// The sha1 or sha256 of the document content
-func (r *Document) Hash() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["hash"])
-}
-
-// "Sha1" "Sha256". The hashing algorithm used when hashing the content.
-func (r *Document) HashType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["hashType"])
-}
-
-// The latest version of the document.
-func (r *Document) LatestVersion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["latestVersion"])
-}
-
-// The name of the document.
-func (r *Document) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The AWS user account of the person who created the document.
-func (r *Document) Owner() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["owner"])
-}
-
-// The parameters that are available to this document.
-func (r *Document) Parameters() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["parameters"])
-}
-
-// Additional Permissions to attach to the document. See Permissions below for details.
-func (r *Document) Permissions() *pulumi.Output {
-	return r.s.State["permissions"]
-}
-
-// A list of OS platforms compatible with this SSM document, either "Windows" or "Linux".
-func (r *Document) PlatformTypes() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["platformTypes"])
-}
-
-// The schema version of the document.
-func (r *Document) SchemaVersion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["schemaVersion"])
-}
-
-// "Creating", "Active" or "Deleting". The current status of the document.
-func (r *Document) Status() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["status"])
-}
-
-// A mapping of tags to assign to the object.
-func (r *Document) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering Document resources.
 type DocumentState struct {
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The JSON or YAML content of the document.
-	Content interface{}
+	Content pulumi.StringInput `pulumi:"content"`
 	// The date the document was created.
-	CreatedDate interface{}
+	CreatedDate pulumi.StringInput `pulumi:"createdDate"`
 	// The default version of the document.
-	DefaultVersion interface{}
+	DefaultVersion pulumi.StringInput `pulumi:"defaultVersion"`
 	// The description of the document.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The format of the document. Valid document types include: `JSON` and `YAML`
-	DocumentFormat interface{}
+	DocumentFormat pulumi.StringInput `pulumi:"documentFormat"`
 	// The type of the document. Valid document types include: `Command`, `Policy`, `Automation` and `Session`
-	DocumentType interface{}
+	DocumentType pulumi.StringInput `pulumi:"documentType"`
 	// The sha1 or sha256 of the document content
-	Hash interface{}
+	Hash pulumi.StringInput `pulumi:"hash"`
 	// "Sha1" "Sha256". The hashing algorithm used when hashing the content.
-	HashType interface{}
+	HashType pulumi.StringInput `pulumi:"hashType"`
 	// The latest version of the document.
-	LatestVersion interface{}
+	LatestVersion pulumi.StringInput `pulumi:"latestVersion"`
 	// The name of the document.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The AWS user account of the person who created the document.
-	Owner interface{}
+	Owner pulumi.StringInput `pulumi:"owner"`
 	// The parameters that are available to this document.
-	Parameters interface{}
+	Parameters pulumi.ArrayInput `pulumi:"parameters"`
 	// Additional Permissions to attach to the document. See Permissions below for details.
-	Permissions interface{}
+	Permissions pulumi.AnyInput `pulumi:"permissions"`
 	// A list of OS platforms compatible with this SSM document, either "Windows" or "Linux".
-	PlatformTypes interface{}
+	PlatformTypes pulumi.ArrayInput `pulumi:"platformTypes"`
 	// The schema version of the document.
-	SchemaVersion interface{}
+	SchemaVersion pulumi.StringInput `pulumi:"schemaVersion"`
 	// "Creating", "Active" or "Deleting". The current status of the document.
-	Status interface{}
+	Status pulumi.StringInput `pulumi:"status"`
 	// A mapping of tags to assign to the object.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a Document resource.
 type DocumentArgs struct {
 	// The JSON or YAML content of the document.
-	Content interface{}
+	Content pulumi.StringInput `pulumi:"content"`
 	// The format of the document. Valid document types include: `JSON` and `YAML`
-	DocumentFormat interface{}
+	DocumentFormat pulumi.StringInput `pulumi:"documentFormat"`
 	// The type of the document. Valid document types include: `Command`, `Policy`, `Automation` and `Session`
-	DocumentType interface{}
+	DocumentType pulumi.StringInput `pulumi:"documentType"`
 	// The name of the document.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Additional Permissions to attach to the document. See Permissions below for details.
-	Permissions interface{}
+	Permissions pulumi.AnyInput `pulumi:"permissions"`
 	// A mapping of tags to assign to the object.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

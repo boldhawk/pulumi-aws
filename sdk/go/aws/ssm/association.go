@@ -11,26 +11,55 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ssm_association.html.markdown.
 type Association struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ID of the SSM association.
+	AssociationId pulumi.StringOutput `pulumi:"associationId"`
+
+	// The descriptive name for the association.
+	AssociationName pulumi.StringOutput `pulumi:"associationName"`
+
+	// The compliance severity for the association. Can be one of the following: `UNSPECIFIED`, `LOW`, `MEDIUM`, `HIGH` or `CRITICAL`
+	ComplianceSeverity pulumi.StringOutput `pulumi:"complianceSeverity"`
+
+	// The document version you want to associate with the target(s). Can be a specific version or the default version.
+	DocumentVersion pulumi.StringOutput `pulumi:"documentVersion"`
+
+	// The instance ID to apply an SSM document to. Use `targets` with key `InstanceIds` for document schema versions 2.0 and above.
+	InstanceId pulumi.StringOutput `pulumi:"instanceId"`
+
+	// The maximum number of targets allowed to run the association at the same time. You can specify a number, for example 10, or a percentage of the target set, for example 10%.
+	MaxConcurrency pulumi.StringOutput `pulumi:"maxConcurrency"`
+
+	// The number of errors that are allowed before the system stops sending requests to run the association on additional targets. You can specify a number, for example 10, or a percentage of the target set, for example 10%.
+	MaxErrors pulumi.StringOutput `pulumi:"maxErrors"`
+
+	// The name of the SSM document to apply.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// An output location block. Output Location is documented below.
+	OutputLocation pulumi.AnyOutput `pulumi:"outputLocation"`
+
+	// A block of arbitrary string parameters to pass to the SSM document.
+	Parameters pulumi.MapOutput `pulumi:"parameters"`
+
+	// A cron expression when the association will be applied to the target(s).
+	ScheduleExpression pulumi.StringOutput `pulumi:"scheduleExpression"`
+
+	// A block containing the targets of the SSM association. Targets are documented below. AWS currently supports a maximum of 5 targets.
+	Targets pulumi.ArrayOutput `pulumi:"targets"`
 }
 
 // NewAssociation registers a new resource with the given unique name, arguments, and options.
 func NewAssociation(ctx *pulumi.Context,
 	name string, args *AssociationArgs, opts ...pulumi.ResourceOpt) (*Association, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["associationName"] = nil
-		inputs["complianceSeverity"] = nil
-		inputs["documentVersion"] = nil
-		inputs["instanceId"] = nil
-		inputs["maxConcurrency"] = nil
-		inputs["maxErrors"] = nil
-		inputs["name"] = nil
-		inputs["outputLocation"] = nil
-		inputs["parameters"] = nil
-		inputs["scheduleExpression"] = nil
-		inputs["targets"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["associationName"] = args.AssociationName
 		inputs["complianceSeverity"] = args.ComplianceSeverity
 		inputs["documentVersion"] = args.DocumentVersion
@@ -43,19 +72,19 @@ func NewAssociation(ctx *pulumi.Context,
 		inputs["scheduleExpression"] = args.ScheduleExpression
 		inputs["targets"] = args.Targets
 	}
-	inputs["associationId"] = nil
-	s, err := ctx.RegisterResource("aws:ssm/association:Association", name, true, inputs, opts...)
+	var resource Association
+	err := ctx.RegisterResource("aws:ssm/association:Association", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Association{s: s}, nil
+	return &resource, nil
 }
 
 // GetAssociation gets an existing Association resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAssociation(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AssociationState, opts ...pulumi.ResourceOpt) (*Association, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["associationId"] = state.AssociationId
 		inputs["associationName"] = state.AssociationName
@@ -70,133 +99,73 @@ func GetAssociation(ctx *pulumi.Context,
 		inputs["scheduleExpression"] = state.ScheduleExpression
 		inputs["targets"] = state.Targets
 	}
-	s, err := ctx.ReadResource("aws:ssm/association:Association", name, id, inputs, opts...)
+	var resource Association
+	err := ctx.ReadResource("aws:ssm/association:Association", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Association{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Association) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Association) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Association) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Association) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ID of the SSM association.
-func (r *Association) AssociationId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["associationId"])
-}
-
-// The descriptive name for the association.
-func (r *Association) AssociationName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["associationName"])
-}
-
-// The compliance severity for the association. Can be one of the following: `UNSPECIFIED`, `LOW`, `MEDIUM`, `HIGH` or `CRITICAL`
-func (r *Association) ComplianceSeverity() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["complianceSeverity"])
-}
-
-// The document version you want to associate with the target(s). Can be a specific version or the default version.
-func (r *Association) DocumentVersion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["documentVersion"])
-}
-
-// The instance ID to apply an SSM document to. Use `targets` with key `InstanceIds` for document schema versions 2.0 and above.
-func (r *Association) InstanceId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["instanceId"])
-}
-
-// The maximum number of targets allowed to run the association at the same time. You can specify a number, for example 10, or a percentage of the target set, for example 10%.
-func (r *Association) MaxConcurrency() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["maxConcurrency"])
-}
-
-// The number of errors that are allowed before the system stops sending requests to run the association on additional targets. You can specify a number, for example 10, or a percentage of the target set, for example 10%.
-func (r *Association) MaxErrors() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["maxErrors"])
-}
-
-// The name of the SSM document to apply.
-func (r *Association) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// An output location block. Output Location is documented below.
-func (r *Association) OutputLocation() *pulumi.Output {
-	return r.s.State["outputLocation"]
-}
-
-// A block of arbitrary string parameters to pass to the SSM document.
-func (r *Association) Parameters() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["parameters"])
-}
-
-// A cron expression when the association will be applied to the target(s).
-func (r *Association) ScheduleExpression() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["scheduleExpression"])
-}
-
-// A block containing the targets of the SSM association. Targets are documented below. AWS currently supports a maximum of 5 targets.
-func (r *Association) Targets() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["targets"])
-}
-
 // Input properties used for looking up and filtering Association resources.
 type AssociationState struct {
 	// The ID of the SSM association.
-	AssociationId interface{}
+	AssociationId pulumi.StringInput `pulumi:"associationId"`
 	// The descriptive name for the association.
-	AssociationName interface{}
+	AssociationName pulumi.StringInput `pulumi:"associationName"`
 	// The compliance severity for the association. Can be one of the following: `UNSPECIFIED`, `LOW`, `MEDIUM`, `HIGH` or `CRITICAL`
-	ComplianceSeverity interface{}
+	ComplianceSeverity pulumi.StringInput `pulumi:"complianceSeverity"`
 	// The document version you want to associate with the target(s). Can be a specific version or the default version.
-	DocumentVersion interface{}
+	DocumentVersion pulumi.StringInput `pulumi:"documentVersion"`
 	// The instance ID to apply an SSM document to. Use `targets` with key `InstanceIds` for document schema versions 2.0 and above.
-	InstanceId interface{}
+	InstanceId pulumi.StringInput `pulumi:"instanceId"`
 	// The maximum number of targets allowed to run the association at the same time. You can specify a number, for example 10, or a percentage of the target set, for example 10%.
-	MaxConcurrency interface{}
+	MaxConcurrency pulumi.StringInput `pulumi:"maxConcurrency"`
 	// The number of errors that are allowed before the system stops sending requests to run the association on additional targets. You can specify a number, for example 10, or a percentage of the target set, for example 10%.
-	MaxErrors interface{}
+	MaxErrors pulumi.StringInput `pulumi:"maxErrors"`
 	// The name of the SSM document to apply.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// An output location block. Output Location is documented below.
-	OutputLocation interface{}
+	OutputLocation pulumi.AnyInput `pulumi:"outputLocation"`
 	// A block of arbitrary string parameters to pass to the SSM document.
-	Parameters interface{}
+	Parameters pulumi.MapInput `pulumi:"parameters"`
 	// A cron expression when the association will be applied to the target(s).
-	ScheduleExpression interface{}
+	ScheduleExpression pulumi.StringInput `pulumi:"scheduleExpression"`
 	// A block containing the targets of the SSM association. Targets are documented below. AWS currently supports a maximum of 5 targets.
-	Targets interface{}
+	Targets pulumi.ArrayInput `pulumi:"targets"`
 }
 
 // The set of arguments for constructing a Association resource.
 type AssociationArgs struct {
 	// The descriptive name for the association.
-	AssociationName interface{}
+	AssociationName pulumi.StringInput `pulumi:"associationName"`
 	// The compliance severity for the association. Can be one of the following: `UNSPECIFIED`, `LOW`, `MEDIUM`, `HIGH` or `CRITICAL`
-	ComplianceSeverity interface{}
+	ComplianceSeverity pulumi.StringInput `pulumi:"complianceSeverity"`
 	// The document version you want to associate with the target(s). Can be a specific version or the default version.
-	DocumentVersion interface{}
+	DocumentVersion pulumi.StringInput `pulumi:"documentVersion"`
 	// The instance ID to apply an SSM document to. Use `targets` with key `InstanceIds` for document schema versions 2.0 and above.
-	InstanceId interface{}
+	InstanceId pulumi.StringInput `pulumi:"instanceId"`
 	// The maximum number of targets allowed to run the association at the same time. You can specify a number, for example 10, or a percentage of the target set, for example 10%.
-	MaxConcurrency interface{}
+	MaxConcurrency pulumi.StringInput `pulumi:"maxConcurrency"`
 	// The number of errors that are allowed before the system stops sending requests to run the association on additional targets. You can specify a number, for example 10, or a percentage of the target set, for example 10%.
-	MaxErrors interface{}
+	MaxErrors pulumi.StringInput `pulumi:"maxErrors"`
 	// The name of the SSM document to apply.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// An output location block. Output Location is documented below.
-	OutputLocation interface{}
+	OutputLocation pulumi.AnyInput `pulumi:"outputLocation"`
 	// A block of arbitrary string parameters to pass to the SSM document.
-	Parameters interface{}
+	Parameters pulumi.MapInput `pulumi:"parameters"`
 	// A cron expression when the association will be applied to the target(s).
-	ScheduleExpression interface{}
+	ScheduleExpression pulumi.StringInput `pulumi:"scheduleExpression"`
 	// A block containing the targets of the SSM association. Targets are documented below. AWS currently supports a maximum of 5 targets.
-	Targets interface{}
+	Targets pulumi.ArrayInput `pulumi:"targets"`
 }

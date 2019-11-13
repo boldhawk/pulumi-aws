@@ -11,39 +11,56 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/athena_workgroup.html.markdown.
 type Workgroup struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Amazon Resource Name (ARN) of the workgroup
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Configuration block with various settings for the workgroup. Documented below.
+	Configuration pulumi.AnyOutput `pulumi:"configuration"`
+
+	// Description of the workgroup.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// Name of the workgroup.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// State of the workgroup. Valid values are `DISABLED` or `ENABLED`. Defaults to `ENABLED`.
+	State pulumi.StringOutput `pulumi:"state"`
+
+	// Key-value mapping of resource tags for the workgroup.
+	Tags pulumi.MapOutput `pulumi:"tags"`
 }
 
 // NewWorkgroup registers a new resource with the given unique name, arguments, and options.
 func NewWorkgroup(ctx *pulumi.Context,
 	name string, args *WorkgroupArgs, opts ...pulumi.ResourceOpt) (*Workgroup, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["configuration"] = nil
-		inputs["description"] = nil
-		inputs["name"] = nil
-		inputs["state"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["configuration"] = args.Configuration
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name
 		inputs["state"] = args.State
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:athena/workgroup:Workgroup", name, true, inputs, opts...)
+	var resource Workgroup
+	err := ctx.RegisterResource("aws:athena/workgroup:Workgroup", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Workgroup{s: s}, nil
+	return &resource, nil
 }
 
 // GetWorkgroup gets an existing Workgroup resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetWorkgroup(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *WorkgroupState, opts ...pulumi.ResourceOpt) (*Workgroup, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["configuration"] = state.Configuration
@@ -52,79 +69,49 @@ func GetWorkgroup(ctx *pulumi.Context,
 		inputs["state"] = state.State
 		inputs["tags"] = state.Tags
 	}
-	s, err := ctx.ReadResource("aws:athena/workgroup:Workgroup", name, id, inputs, opts...)
+	var resource Workgroup
+	err := ctx.ReadResource("aws:athena/workgroup:Workgroup", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Workgroup{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Workgroup) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Workgroup) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Workgroup) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Workgroup) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Amazon Resource Name (ARN) of the workgroup
-func (r *Workgroup) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Configuration block with various settings for the workgroup. Documented below.
-func (r *Workgroup) Configuration() *pulumi.Output {
-	return r.s.State["configuration"]
-}
-
-// Description of the workgroup.
-func (r *Workgroup) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// Name of the workgroup.
-func (r *Workgroup) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// State of the workgroup. Valid values are `DISABLED` or `ENABLED`. Defaults to `ENABLED`.
-func (r *Workgroup) State() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["state"])
-}
-
-// Key-value mapping of resource tags for the workgroup.
-func (r *Workgroup) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
 // Input properties used for looking up and filtering Workgroup resources.
 type WorkgroupState struct {
 	// Amazon Resource Name (ARN) of the workgroup
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Configuration block with various settings for the workgroup. Documented below.
-	Configuration interface{}
+	Configuration pulumi.AnyInput `pulumi:"configuration"`
 	// Description of the workgroup.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// Name of the workgroup.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// State of the workgroup. Valid values are `DISABLED` or `ENABLED`. Defaults to `ENABLED`.
-	State interface{}
+	State pulumi.StringInput `pulumi:"state"`
 	// Key-value mapping of resource tags for the workgroup.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // The set of arguments for constructing a Workgroup resource.
 type WorkgroupArgs struct {
 	// Configuration block with various settings for the workgroup. Documented below.
-	Configuration interface{}
+	Configuration pulumi.AnyInput `pulumi:"configuration"`
 	// Description of the workgroup.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// Name of the workgroup.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// State of the workgroup. Valid values are `DISABLED` or `ENABLED`. Defaults to `ENABLED`.
-	State interface{}
+	State pulumi.StringInput `pulumi:"state"`
 	// Key-value mapping of resource tags for the workgroup.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

@@ -36,19 +36,19 @@ func LookupRegion(ctx *pulumi.Context, args *GetRegionArgs) (*GetRegionResult, e
 // A collection of arguments for invoking getRegion.
 type GetRegionArgs struct {
 	// The EC2 endpoint of the region to select.
-	Endpoint interface{}
+	Endpoint pulumi.StringInput `pulumi:"endpoint"`
 	// The full name of the region to select.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getRegion.
 type GetRegionResult struct {
 	// The region's description in this format: "Location (Region name)".
-	Description interface{}
+	Description string `pulumi:"description"`
 	// The EC2 endpoint for the selected region.
-	Endpoint interface{}
+	Endpoint string `pulumi:"endpoint"`
 	// The name of the selected region.
-	Name interface{}
+	Name string `pulumi:"name"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

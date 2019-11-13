@@ -17,7 +17,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/db_instance_role_association.html.markdown.
 type RoleAssociation struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// DB Instance Identifier to associate with the IAM Role.
+	DbInstanceIdentifier pulumi.StringOutput `pulumi:"dbInstanceIdentifier"`
+
+	// Name of the feature for association. This can be found in the AWS documentation relevant to the integration or a full list is available in the `SupportedFeatureNames` list returned by [AWS CLI rds describe-db-engine-versions](https://docs.aws.amazon.com/cli/latest/reference/rds/describe-db-engine-versions.html).
+	FeatureName pulumi.StringOutput `pulumi:"featureName"`
+
+	// Amazon Resource Name (ARN) of the IAM Role to associate with the DB Instance.
+	RoleArn pulumi.StringOutput `pulumi:"roleArn"`
 }
 
 // NewRoleAssociation registers a new resource with the given unique name, arguments, and options.
@@ -32,81 +45,63 @@ func NewRoleAssociation(ctx *pulumi.Context,
 	if args == nil || args.RoleArn == nil {
 		return nil, errors.New("missing required argument 'RoleArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["dbInstanceIdentifier"] = nil
-		inputs["featureName"] = nil
-		inputs["roleArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["dbInstanceIdentifier"] = args.DbInstanceIdentifier
 		inputs["featureName"] = args.FeatureName
 		inputs["roleArn"] = args.RoleArn
 	}
-	s, err := ctx.RegisterResource("aws:rds/roleAssociation:RoleAssociation", name, true, inputs, opts...)
+	var resource RoleAssociation
+	err := ctx.RegisterResource("aws:rds/roleAssociation:RoleAssociation", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RoleAssociation{s: s}, nil
+	return &resource, nil
 }
 
 // GetRoleAssociation gets an existing RoleAssociation resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRoleAssociation(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RoleAssociationState, opts ...pulumi.ResourceOpt) (*RoleAssociation, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["dbInstanceIdentifier"] = state.DbInstanceIdentifier
 		inputs["featureName"] = state.FeatureName
 		inputs["roleArn"] = state.RoleArn
 	}
-	s, err := ctx.ReadResource("aws:rds/roleAssociation:RoleAssociation", name, id, inputs, opts...)
+	var resource RoleAssociation
+	err := ctx.ReadResource("aws:rds/roleAssociation:RoleAssociation", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &RoleAssociation{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *RoleAssociation) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *RoleAssociation) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *RoleAssociation) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *RoleAssociation) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// DB Instance Identifier to associate with the IAM Role.
-func (r *RoleAssociation) DbInstanceIdentifier() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["dbInstanceIdentifier"])
-}
-
-// Name of the feature for association. This can be found in the AWS documentation relevant to the integration or a full list is available in the `SupportedFeatureNames` list returned by [AWS CLI rds describe-db-engine-versions](https://docs.aws.amazon.com/cli/latest/reference/rds/describe-db-engine-versions.html).
-func (r *RoleAssociation) FeatureName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["featureName"])
-}
-
-// Amazon Resource Name (ARN) of the IAM Role to associate with the DB Instance.
-func (r *RoleAssociation) RoleArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["roleArn"])
-}
-
 // Input properties used for looking up and filtering RoleAssociation resources.
 type RoleAssociationState struct {
 	// DB Instance Identifier to associate with the IAM Role.
-	DbInstanceIdentifier interface{}
+	DbInstanceIdentifier pulumi.StringInput `pulumi:"dbInstanceIdentifier"`
 	// Name of the feature for association. This can be found in the AWS documentation relevant to the integration or a full list is available in the `SupportedFeatureNames` list returned by [AWS CLI rds describe-db-engine-versions](https://docs.aws.amazon.com/cli/latest/reference/rds/describe-db-engine-versions.html).
-	FeatureName interface{}
+	FeatureName pulumi.StringInput `pulumi:"featureName"`
 	// Amazon Resource Name (ARN) of the IAM Role to associate with the DB Instance.
-	RoleArn interface{}
+	RoleArn pulumi.StringInput `pulumi:"roleArn"`
 }
 
 // The set of arguments for constructing a RoleAssociation resource.
 type RoleAssociationArgs struct {
 	// DB Instance Identifier to associate with the IAM Role.
-	DbInstanceIdentifier interface{}
+	DbInstanceIdentifier pulumi.StringInput `pulumi:"dbInstanceIdentifier"`
 	// Name of the feature for association. This can be found in the AWS documentation relevant to the integration or a full list is available in the `SupportedFeatureNames` list returned by [AWS CLI rds describe-db-engine-versions](https://docs.aws.amazon.com/cli/latest/reference/rds/describe-db-engine-versions.html).
-	FeatureName interface{}
+	FeatureName pulumi.StringInput `pulumi:"featureName"`
 	// Amazon Resource Name (ARN) of the IAM Role to associate with the DB Instance.
-	RoleArn interface{}
+	RoleArn pulumi.StringInput `pulumi:"roleArn"`
 }

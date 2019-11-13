@@ -32,17 +32,17 @@ func LookupProduct(ctx *pulumi.Context, args *GetProductArgs) (*GetProductResult
 // A collection of arguments for invoking getProduct.
 type GetProductArgs struct {
 	// A list of filters. Passed directly to the API (see GetProducts API reference). These filters must describe a single product, this resource will fail if more than one product is returned by the API.
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// The code of the service. Available service codes can be fetched using the DescribeServices pricing API call.
-	ServiceCode interface{}
+	ServiceCode pulumi.StringInput `pulumi:"serviceCode"`
 }
 
 // A collection of values returned by getProduct.
 type GetProductResult struct {
-	Filters interface{}
+	Filters []interface{} `pulumi:"filters"`
 	// Set to the product returned from the API.
-	Result interface{}
-	ServiceCode interface{}
+	Result string `pulumi:"result"`
+	ServiceCode string `pulumi:"serviceCode"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

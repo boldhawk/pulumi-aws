@@ -54,58 +54,58 @@ func LookupClusterSnapshot(ctx *pulumi.Context, args *GetClusterSnapshotArgs) (*
 // A collection of arguments for invoking getClusterSnapshot.
 type GetClusterSnapshotArgs struct {
 	// Returns the list of snapshots created by the specific db_cluster
-	DbClusterIdentifier interface{}
+	DbClusterIdentifier pulumi.StringInput `pulumi:"dbClusterIdentifier"`
 	// Returns information on a specific snapshot_id.
-	DbClusterSnapshotIdentifier interface{}
+	DbClusterSnapshotIdentifier pulumi.StringInput `pulumi:"dbClusterSnapshotIdentifier"`
 	// Set this value to true to include manual DB Cluster Snapshots that are public and can be
 	// copied or restored by any AWS account, otherwise set this value to false. The default is `false`.
-	IncludePublic interface{}
+	IncludePublic pulumi.BoolInput `pulumi:"includePublic"`
 	// Set this value to true to include shared manual DB Cluster Snapshots from other
 	// AWS accounts that this AWS account has been given permission to copy or restore, otherwise set this value to false.
 	// The default is `false`.
-	IncludeShared interface{}
+	IncludeShared pulumi.BoolInput `pulumi:"includeShared"`
 	// If more than one result is returned, use the most recent Snapshot.
-	MostRecent interface{}
+	MostRecent pulumi.BoolInput `pulumi:"mostRecent"`
 	// The type of snapshots to be returned. If you don't specify a SnapshotType
 	// value, then both automated and manual DB cluster snapshots are returned. Shared and public DB Cluster Snapshots are not
 	// included in the returned results by default. Possible values are, `automated`, `manual`, `shared` and `public`.
-	SnapshotType interface{}
+	SnapshotType pulumi.StringInput `pulumi:"snapshotType"`
 }
 
 // A collection of values returned by getClusterSnapshot.
 type GetClusterSnapshotResult struct {
 	// Specifies the allocated storage size in gigabytes (GB).
-	AllocatedStorage interface{}
+	AllocatedStorage int `pulumi:"allocatedStorage"`
 	// List of EC2 Availability Zones that instances in the DB cluster snapshot can be restored in.
-	AvailabilityZones interface{}
+	AvailabilityZones []interface{} `pulumi:"availabilityZones"`
 	// Specifies the DB cluster identifier of the DB cluster that this DB cluster snapshot was created from.
-	DbClusterIdentifier interface{}
+	DbClusterIdentifier string `pulumi:"dbClusterIdentifier"`
 	// The Amazon Resource Name (ARN) for the DB Cluster Snapshot.
-	DbClusterSnapshotArn interface{}
-	DbClusterSnapshotIdentifier interface{}
+	DbClusterSnapshotArn string `pulumi:"dbClusterSnapshotArn"`
+	DbClusterSnapshotIdentifier string `pulumi:"dbClusterSnapshotIdentifier"`
 	// Specifies the name of the database engine.
-	Engine interface{}
+	Engine string `pulumi:"engine"`
 	// Version of the database engine for this DB cluster snapshot.
-	EngineVersion interface{}
-	IncludePublic interface{}
-	IncludeShared interface{}
+	EngineVersion string `pulumi:"engineVersion"`
+	IncludePublic bool `pulumi:"includePublic"`
+	IncludeShared bool `pulumi:"includeShared"`
 	// If storageEncrypted is true, the AWS KMS key identifier for the encrypted DB cluster snapshot.
-	KmsKeyId interface{}
+	KmsKeyId string `pulumi:"kmsKeyId"`
 	// License model information for the restored DB cluster.
-	LicenseModel interface{}
-	MostRecent interface{}
+	LicenseModel string `pulumi:"licenseModel"`
+	MostRecent bool `pulumi:"mostRecent"`
 	// Port that the DB cluster was listening on at the time of the snapshot.
-	Port interface{}
+	Port int `pulumi:"port"`
 	// Time when the snapshot was taken, in Universal Coordinated Time (UTC).
-	SnapshotCreateTime interface{}
-	SnapshotType interface{}
-	SourceDbClusterSnapshotArn interface{}
+	SnapshotCreateTime string `pulumi:"snapshotCreateTime"`
+	SnapshotType string `pulumi:"snapshotType"`
+	SourceDbClusterSnapshotArn string `pulumi:"sourceDbClusterSnapshotArn"`
 	// The status of this DB Cluster Snapshot.
-	Status interface{}
+	Status string `pulumi:"status"`
 	// Specifies whether the DB cluster snapshot is encrypted.
-	StorageEncrypted interface{}
+	StorageEncrypted bool `pulumi:"storageEncrypted"`
 	// The VPC ID associated with the DB cluster snapshot.
-	VpcId interface{}
+	VpcId string `pulumi:"vpcId"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

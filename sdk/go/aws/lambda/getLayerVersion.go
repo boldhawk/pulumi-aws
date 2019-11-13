@@ -40,35 +40,35 @@ func LookupLayerVersion(ctx *pulumi.Context, args *GetLayerVersionArgs) (*GetLay
 // A collection of arguments for invoking getLayerVersion.
 type GetLayerVersionArgs struct {
 	// Specific runtime the layer version must support. Conflicts with `version`. If specified, the latest available layer version supporting the provided runtime will be used.
-	CompatibleRuntime interface{}
+	CompatibleRuntime pulumi.StringInput `pulumi:"compatibleRuntime"`
 	// Name of the lambda layer.
-	LayerName interface{}
+	LayerName pulumi.StringInput `pulumi:"layerName"`
 	// Specific layer version. Conflicts with `compatibleRuntime`. If omitted, the latest available layer version will be used.
-	Version interface{}
+	Version pulumi.IntInput `pulumi:"version"`
 }
 
 // A collection of values returned by getLayerVersion.
 type GetLayerVersionResult struct {
 	// The Amazon Resource Name (ARN) of the Lambda Layer with version.
-	Arn interface{}
-	CompatibleRuntime interface{}
+	Arn string `pulumi:"arn"`
+	CompatibleRuntime string `pulumi:"compatibleRuntime"`
 	// A list of [Runtimes][1] the specific Lambda Layer version is compatible with.
-	CompatibleRuntimes interface{}
+	CompatibleRuntimes []interface{} `pulumi:"compatibleRuntimes"`
 	// The date this resource was created.
-	CreatedDate interface{}
+	CreatedDate string `pulumi:"createdDate"`
 	// Description of the specific Lambda Layer version.
-	Description interface{}
+	Description string `pulumi:"description"`
 	// The Amazon Resource Name (ARN) of the Lambda Layer without version.
-	LayerArn interface{}
-	LayerName interface{}
+	LayerArn string `pulumi:"layerArn"`
+	LayerName string `pulumi:"layerName"`
 	// License info associated with the specific Lambda Layer version.
-	LicenseInfo interface{}
+	LicenseInfo string `pulumi:"licenseInfo"`
 	// Base64-encoded representation of raw SHA-256 sum of the zip file.
-	SourceCodeHash interface{}
+	SourceCodeHash string `pulumi:"sourceCodeHash"`
 	// The size in bytes of the function .zip file.
-	SourceCodeSize interface{}
+	SourceCodeSize int `pulumi:"sourceCodeSize"`
 	// This Lamba Layer version.
-	Version interface{}
+	Version int `pulumi:"version"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

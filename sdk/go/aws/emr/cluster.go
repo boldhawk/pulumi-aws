@@ -121,7 +121,98 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/emr_cluster.html.markdown.
 type Cluster struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// A JSON string for selecting additional features such as adding proxy information. Note: Currently there is no API to retrieve the value of this argument after EMR cluster creation from provider, therefore this provider cannot detect drift from the actual EMR cluster if its value is changed outside this provider.
+	AdditionalInfo pulumi.StringOutput `pulumi:"additionalInfo"`
+
+	// A list of applications for the cluster. Valid values are: `Flink`, `Hadoop`, `Hive`, `Mahout`, `Pig`, `Spark`, and `JupyterHub` (as of EMR 5.14.0). Case insensitive
+	Applications pulumi.ArrayOutput `pulumi:"applications"`
+
+	// An IAM role for automatic scaling policies. The IAM role provides permissions that the automatic scaling feature requires to launch and terminate EC2 instances in an instance group.
+	AutoscalingRole pulumi.StringOutput `pulumi:"autoscalingRole"`
+
+	// List of bootstrap actions that will be run before Hadoop is started on the cluster nodes. Defined below
+	BootstrapActions pulumi.ArrayOutput `pulumi:"bootstrapActions"`
+
+	ClusterState pulumi.StringOutput `pulumi:"clusterState"`
+
+	// List of configurations supplied for the EMR cluster you are creating
+	Configurations pulumi.StringOutput `pulumi:"configurations"`
+
+	// A JSON string for supplying list of configurations for the EMR cluster.
+	ConfigurationsJson pulumi.StringOutput `pulumi:"configurationsJson"`
+
+	// Use the `coreInstanceGroup` configuration block `instanceCount` argument instead. Number of Amazon EC2 instances used to execute the job flow. EMR will use one node as the cluster's master node and use the remainder of the nodes (`coreInstanceCount`-1) as core nodes. Cannot be specified if `coreInstanceGroup` or `instanceGroup` configuration blocks are set. Default `1`
+	CoreInstanceCount pulumi.IntOutput `pulumi:"coreInstanceCount"`
+
+	// Configuration block to use an [Instance Group](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-group-configuration.html#emr-plan-instance-groups) for the [core node type](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-master-core-task-nodes.html#emr-plan-core). Cannot be specified if `coreInstanceCount` argument, `coreInstanceType` argument, or `instanceGroup` configuration blocks are set. Detailed below.
+	CoreInstanceGroup pulumi.AnyOutput `pulumi:"coreInstanceGroup"`
+
+	// Use the `coreInstanceGroup` configuration block `instanceType` argument instead. The EC2 instance type of the slave nodes. Cannot be specified if `coreInstanceGroup` or `instanceGroup` configuration blocks are set.
+	CoreInstanceType pulumi.StringOutput `pulumi:"coreInstanceType"`
+
+	// A custom Amazon Linux AMI for the cluster (instead of an EMR-owned AMI). Available in Amazon EMR version 5.7.0 and later.
+	CustomAmiId pulumi.StringOutput `pulumi:"customAmiId"`
+
+	// Size in GiB of the EBS root device volume of the Linux AMI that is used for each EC2 instance. Available in Amazon EMR version 4.x and later.
+	EbsRootVolumeSize pulumi.IntOutput `pulumi:"ebsRootVolumeSize"`
+
+	// Attributes for the EC2 instances running the job flow. Defined below
+	Ec2Attributes pulumi.AnyOutput `pulumi:"ec2Attributes"`
+
+	// Use the `masterInstanceGroup` configuration block, `coreInstanceGroup` configuration block and [`emr.InstanceGroup` resource(s)](https://www.terraform.io/docs/providers/aws/r/emr_instance_group.html) instead. A list of `instanceGroup` objects for each instance group in the cluster. Exactly one of `masterInstanceType` and `instanceGroup` must be specified. If `instanceGroup` is set, then it must contain a configuration block for at least the `MASTER` instance group type (as well as any additional instance groups). Cannot be specified if `masterInstanceGroup` or `coreInstanceGroup` configuration blocks are set. Defined below
+	InstanceGroups pulumi.ArrayOutput `pulumi:"instanceGroups"`
+
+	// Switch on/off run cluster with no steps or when all steps are complete (default is on)
+	KeepJobFlowAliveWhenNoSteps pulumi.BoolOutput `pulumi:"keepJobFlowAliveWhenNoSteps"`
+
+	// Kerberos configuration for the cluster. Defined below
+	KerberosAttributes pulumi.AnyOutput `pulumi:"kerberosAttributes"`
+
+	// S3 bucket to write the log files of the job flow. If a value is not provided, logs are not created
+	LogUri pulumi.StringOutput `pulumi:"logUri"`
+
+	// Configuration block to use an [Instance Group](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-group-configuration.html#emr-plan-instance-groups) for the [master node type](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-master-core-task-nodes.html#emr-plan-master). Cannot be specified if `masterInstanceType` argument or `instanceGroup` configuration blocks are set. Detailed below.
+	MasterInstanceGroup pulumi.AnyOutput `pulumi:"masterInstanceGroup"`
+
+	// Use the `masterInstanceGroup` configuration block `instanceType` argument instead. The EC2 instance type of the master node. Cannot be specified if `masterInstanceGroup` or `instanceGroup` configuration blocks are set.
+	MasterInstanceType pulumi.StringOutput `pulumi:"masterInstanceType"`
+
+	// The public DNS name of the master EC2 instance.
+	// * `core_instance_group.0.id` - Core node type Instance Group ID, if using Instance Group for this node type.
+	MasterPublicDns pulumi.StringOutput `pulumi:"masterPublicDns"`
+
+	// The name of the job flow
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The release label for the Amazon EMR release
+	ReleaseLabel pulumi.StringOutput `pulumi:"releaseLabel"`
+
+	// The way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an `instance group` is resized.
+	ScaleDownBehavior pulumi.StringOutput `pulumi:"scaleDownBehavior"`
+
+	// The security configuration name to attach to the EMR cluster. Only valid for EMR clusters with `releaseLabel` 4.8.0 or greater
+	SecurityConfiguration pulumi.StringOutput `pulumi:"securityConfiguration"`
+
+	// IAM role that will be assumed by the Amazon EMR service to access AWS resources
+	ServiceRole pulumi.StringOutput `pulumi:"serviceRole"`
+
+	// List of steps to run when creating the cluster. Defined below. It is highly recommended to utilize the [lifecycle configuration block](https://www.terraform.io/docs/configuration/resources.html) with `ignoreChanges` if other steps are being managed outside of this provider. This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
+	Steps pulumi.ArrayOutput `pulumi:"steps"`
+
+	// list of tags to apply to the EMR Cluster
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// Switch on/off termination protection (default is `false`, except when using multiple master nodes). Before attempting to destroy the resource when termination protection is enabled, this configuration must be applied with its value set to `false`.
+	TerminationProtection pulumi.BoolOutput `pulumi:"terminationProtection"`
+
+	// Whether the job flow is visible to all IAM users of the AWS account associated with the job flow. Default `true`
+	VisibleToAllUsers pulumi.BoolOutput `pulumi:"visibleToAllUsers"`
 }
 
 // NewCluster registers a new resource with the given unique name, arguments, and options.
@@ -133,36 +224,9 @@ func NewCluster(ctx *pulumi.Context,
 	if args == nil || args.ServiceRole == nil {
 		return nil, errors.New("missing required argument 'ServiceRole'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["additionalInfo"] = nil
-		inputs["applications"] = nil
-		inputs["autoscalingRole"] = nil
-		inputs["bootstrapActions"] = nil
-		inputs["configurations"] = nil
-		inputs["configurationsJson"] = nil
-		inputs["coreInstanceCount"] = nil
-		inputs["coreInstanceGroup"] = nil
-		inputs["coreInstanceType"] = nil
-		inputs["customAmiId"] = nil
-		inputs["ebsRootVolumeSize"] = nil
-		inputs["ec2Attributes"] = nil
-		inputs["instanceGroups"] = nil
-		inputs["keepJobFlowAliveWhenNoSteps"] = nil
-		inputs["kerberosAttributes"] = nil
-		inputs["logUri"] = nil
-		inputs["masterInstanceGroup"] = nil
-		inputs["masterInstanceType"] = nil
-		inputs["name"] = nil
-		inputs["releaseLabel"] = nil
-		inputs["scaleDownBehavior"] = nil
-		inputs["securityConfiguration"] = nil
-		inputs["serviceRole"] = nil
-		inputs["steps"] = nil
-		inputs["tags"] = nil
-		inputs["terminationProtection"] = nil
-		inputs["visibleToAllUsers"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["additionalInfo"] = args.AdditionalInfo
 		inputs["applications"] = args.Applications
 		inputs["autoscalingRole"] = args.AutoscalingRole
@@ -191,20 +255,19 @@ func NewCluster(ctx *pulumi.Context,
 		inputs["terminationProtection"] = args.TerminationProtection
 		inputs["visibleToAllUsers"] = args.VisibleToAllUsers
 	}
-	inputs["clusterState"] = nil
-	inputs["masterPublicDns"] = nil
-	s, err := ctx.RegisterResource("aws:emr/cluster:Cluster", name, true, inputs, opts...)
+	var resource Cluster
+	err := ctx.RegisterResource("aws:emr/cluster:Cluster", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Cluster{s: s}, nil
+	return &resource, nil
 }
 
 // GetCluster gets an existing Cluster resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetCluster(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ClusterState, opts ...pulumi.ResourceOpt) (*Cluster, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["additionalInfo"] = state.AdditionalInfo
 		inputs["applications"] = state.Applications
@@ -236,284 +299,139 @@ func GetCluster(ctx *pulumi.Context,
 		inputs["terminationProtection"] = state.TerminationProtection
 		inputs["visibleToAllUsers"] = state.VisibleToAllUsers
 	}
-	s, err := ctx.ReadResource("aws:emr/cluster:Cluster", name, id, inputs, opts...)
+	var resource Cluster
+	err := ctx.ReadResource("aws:emr/cluster:Cluster", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Cluster{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Cluster) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Cluster) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Cluster) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Cluster) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// A JSON string for selecting additional features such as adding proxy information. Note: Currently there is no API to retrieve the value of this argument after EMR cluster creation from provider, therefore this provider cannot detect drift from the actual EMR cluster if its value is changed outside this provider.
-func (r *Cluster) AdditionalInfo() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["additionalInfo"])
-}
-
-// A list of applications for the cluster. Valid values are: `Flink`, `Hadoop`, `Hive`, `Mahout`, `Pig`, `Spark`, and `JupyterHub` (as of EMR 5.14.0). Case insensitive
-func (r *Cluster) Applications() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["applications"])
-}
-
-// An IAM role for automatic scaling policies. The IAM role provides permissions that the automatic scaling feature requires to launch and terminate EC2 instances in an instance group.
-func (r *Cluster) AutoscalingRole() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["autoscalingRole"])
-}
-
-// List of bootstrap actions that will be run before Hadoop is started on the cluster nodes. Defined below
-func (r *Cluster) BootstrapActions() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["bootstrapActions"])
-}
-
-func (r *Cluster) ClusterState() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["clusterState"])
-}
-
-// List of configurations supplied for the EMR cluster you are creating
-func (r *Cluster) Configurations() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["configurations"])
-}
-
-// A JSON string for supplying list of configurations for the EMR cluster.
-func (r *Cluster) ConfigurationsJson() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["configurationsJson"])
-}
-
-// Use the `coreInstanceGroup` configuration block `instanceCount` argument instead. Number of Amazon EC2 instances used to execute the job flow. EMR will use one node as the cluster's master node and use the remainder of the nodes (`coreInstanceCount`-1) as core nodes. Cannot be specified if `coreInstanceGroup` or `instanceGroup` configuration blocks are set. Default `1`
-func (r *Cluster) CoreInstanceCount() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["coreInstanceCount"])
-}
-
-// Configuration block to use an [Instance Group](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-group-configuration.html#emr-plan-instance-groups) for the [core node type](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-master-core-task-nodes.html#emr-plan-core). Cannot be specified if `coreInstanceCount` argument, `coreInstanceType` argument, or `instanceGroup` configuration blocks are set. Detailed below.
-func (r *Cluster) CoreInstanceGroup() *pulumi.Output {
-	return r.s.State["coreInstanceGroup"]
-}
-
-// Use the `coreInstanceGroup` configuration block `instanceType` argument instead. The EC2 instance type of the slave nodes. Cannot be specified if `coreInstanceGroup` or `instanceGroup` configuration blocks are set.
-func (r *Cluster) CoreInstanceType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["coreInstanceType"])
-}
-
-// A custom Amazon Linux AMI for the cluster (instead of an EMR-owned AMI). Available in Amazon EMR version 5.7.0 and later.
-func (r *Cluster) CustomAmiId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["customAmiId"])
-}
-
-// Size in GiB of the EBS root device volume of the Linux AMI that is used for each EC2 instance. Available in Amazon EMR version 4.x and later.
-func (r *Cluster) EbsRootVolumeSize() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["ebsRootVolumeSize"])
-}
-
-// Attributes for the EC2 instances running the job flow. Defined below
-func (r *Cluster) Ec2Attributes() *pulumi.Output {
-	return r.s.State["ec2Attributes"]
-}
-
-// Use the `masterInstanceGroup` configuration block, `coreInstanceGroup` configuration block and [`emr.InstanceGroup` resource(s)](https://www.terraform.io/docs/providers/aws/r/emr_instance_group.html) instead. A list of `instanceGroup` objects for each instance group in the cluster. Exactly one of `masterInstanceType` and `instanceGroup` must be specified. If `instanceGroup` is set, then it must contain a configuration block for at least the `MASTER` instance group type (as well as any additional instance groups). Cannot be specified if `masterInstanceGroup` or `coreInstanceGroup` configuration blocks are set. Defined below
-func (r *Cluster) InstanceGroups() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["instanceGroups"])
-}
-
-// Switch on/off run cluster with no steps or when all steps are complete (default is on)
-func (r *Cluster) KeepJobFlowAliveWhenNoSteps() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["keepJobFlowAliveWhenNoSteps"])
-}
-
-// Kerberos configuration for the cluster. Defined below
-func (r *Cluster) KerberosAttributes() *pulumi.Output {
-	return r.s.State["kerberosAttributes"]
-}
-
-// S3 bucket to write the log files of the job flow. If a value is not provided, logs are not created
-func (r *Cluster) LogUri() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["logUri"])
-}
-
-// Configuration block to use an [Instance Group](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-group-configuration.html#emr-plan-instance-groups) for the [master node type](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-master-core-task-nodes.html#emr-plan-master). Cannot be specified if `masterInstanceType` argument or `instanceGroup` configuration blocks are set. Detailed below.
-func (r *Cluster) MasterInstanceGroup() *pulumi.Output {
-	return r.s.State["masterInstanceGroup"]
-}
-
-// Use the `masterInstanceGroup` configuration block `instanceType` argument instead. The EC2 instance type of the master node. Cannot be specified if `masterInstanceGroup` or `instanceGroup` configuration blocks are set.
-func (r *Cluster) MasterInstanceType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["masterInstanceType"])
-}
-
-// The public DNS name of the master EC2 instance.
-// * `core_instance_group.0.id` - Core node type Instance Group ID, if using Instance Group for this node type.
-func (r *Cluster) MasterPublicDns() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["masterPublicDns"])
-}
-
-// The name of the job flow
-func (r *Cluster) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The release label for the Amazon EMR release
-func (r *Cluster) ReleaseLabel() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["releaseLabel"])
-}
-
-// The way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an `instance group` is resized.
-func (r *Cluster) ScaleDownBehavior() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["scaleDownBehavior"])
-}
-
-// The security configuration name to attach to the EMR cluster. Only valid for EMR clusters with `releaseLabel` 4.8.0 or greater
-func (r *Cluster) SecurityConfiguration() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["securityConfiguration"])
-}
-
-// IAM role that will be assumed by the Amazon EMR service to access AWS resources
-func (r *Cluster) ServiceRole() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["serviceRole"])
-}
-
-// List of steps to run when creating the cluster. Defined below. It is highly recommended to utilize the [lifecycle configuration block](https://www.terraform.io/docs/configuration/resources.html) with `ignoreChanges` if other steps are being managed outside of this provider. This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-func (r *Cluster) Steps() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["steps"])
-}
-
-// list of tags to apply to the EMR Cluster
-func (r *Cluster) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// Switch on/off termination protection (default is `false`, except when using multiple master nodes). Before attempting to destroy the resource when termination protection is enabled, this configuration must be applied with its value set to `false`.
-func (r *Cluster) TerminationProtection() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["terminationProtection"])
-}
-
-// Whether the job flow is visible to all IAM users of the AWS account associated with the job flow. Default `true`
-func (r *Cluster) VisibleToAllUsers() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["visibleToAllUsers"])
-}
-
 // Input properties used for looking up and filtering Cluster resources.
 type ClusterState struct {
 	// A JSON string for selecting additional features such as adding proxy information. Note: Currently there is no API to retrieve the value of this argument after EMR cluster creation from provider, therefore this provider cannot detect drift from the actual EMR cluster if its value is changed outside this provider.
-	AdditionalInfo interface{}
+	AdditionalInfo pulumi.StringInput `pulumi:"additionalInfo"`
 	// A list of applications for the cluster. Valid values are: `Flink`, `Hadoop`, `Hive`, `Mahout`, `Pig`, `Spark`, and `JupyterHub` (as of EMR 5.14.0). Case insensitive
-	Applications interface{}
+	Applications pulumi.ArrayInput `pulumi:"applications"`
 	// An IAM role for automatic scaling policies. The IAM role provides permissions that the automatic scaling feature requires to launch and terminate EC2 instances in an instance group.
-	AutoscalingRole interface{}
+	AutoscalingRole pulumi.StringInput `pulumi:"autoscalingRole"`
 	// List of bootstrap actions that will be run before Hadoop is started on the cluster nodes. Defined below
-	BootstrapActions interface{}
-	ClusterState interface{}
+	BootstrapActions pulumi.ArrayInput `pulumi:"bootstrapActions"`
+	ClusterState pulumi.StringInput `pulumi:"clusterState"`
 	// List of configurations supplied for the EMR cluster you are creating
-	Configurations interface{}
+	Configurations pulumi.StringInput `pulumi:"configurations"`
 	// A JSON string for supplying list of configurations for the EMR cluster.
-	ConfigurationsJson interface{}
+	ConfigurationsJson pulumi.StringInput `pulumi:"configurationsJson"`
 	// Use the `coreInstanceGroup` configuration block `instanceCount` argument instead. Number of Amazon EC2 instances used to execute the job flow. EMR will use one node as the cluster's master node and use the remainder of the nodes (`coreInstanceCount`-1) as core nodes. Cannot be specified if `coreInstanceGroup` or `instanceGroup` configuration blocks are set. Default `1`
-	CoreInstanceCount interface{}
+	CoreInstanceCount pulumi.IntInput `pulumi:"coreInstanceCount"`
 	// Configuration block to use an [Instance Group](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-group-configuration.html#emr-plan-instance-groups) for the [core node type](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-master-core-task-nodes.html#emr-plan-core). Cannot be specified if `coreInstanceCount` argument, `coreInstanceType` argument, or `instanceGroup` configuration blocks are set. Detailed below.
-	CoreInstanceGroup interface{}
+	CoreInstanceGroup pulumi.AnyInput `pulumi:"coreInstanceGroup"`
 	// Use the `coreInstanceGroup` configuration block `instanceType` argument instead. The EC2 instance type of the slave nodes. Cannot be specified if `coreInstanceGroup` or `instanceGroup` configuration blocks are set.
-	CoreInstanceType interface{}
+	CoreInstanceType pulumi.StringInput `pulumi:"coreInstanceType"`
 	// A custom Amazon Linux AMI for the cluster (instead of an EMR-owned AMI). Available in Amazon EMR version 5.7.0 and later.
-	CustomAmiId interface{}
+	CustomAmiId pulumi.StringInput `pulumi:"customAmiId"`
 	// Size in GiB of the EBS root device volume of the Linux AMI that is used for each EC2 instance. Available in Amazon EMR version 4.x and later.
-	EbsRootVolumeSize interface{}
+	EbsRootVolumeSize pulumi.IntInput `pulumi:"ebsRootVolumeSize"`
 	// Attributes for the EC2 instances running the job flow. Defined below
-	Ec2Attributes interface{}
+	Ec2Attributes pulumi.AnyInput `pulumi:"ec2Attributes"`
 	// Use the `masterInstanceGroup` configuration block, `coreInstanceGroup` configuration block and [`emr.InstanceGroup` resource(s)](https://www.terraform.io/docs/providers/aws/r/emr_instance_group.html) instead. A list of `instanceGroup` objects for each instance group in the cluster. Exactly one of `masterInstanceType` and `instanceGroup` must be specified. If `instanceGroup` is set, then it must contain a configuration block for at least the `MASTER` instance group type (as well as any additional instance groups). Cannot be specified if `masterInstanceGroup` or `coreInstanceGroup` configuration blocks are set. Defined below
-	InstanceGroups interface{}
+	InstanceGroups pulumi.ArrayInput `pulumi:"instanceGroups"`
 	// Switch on/off run cluster with no steps or when all steps are complete (default is on)
-	KeepJobFlowAliveWhenNoSteps interface{}
+	KeepJobFlowAliveWhenNoSteps pulumi.BoolInput `pulumi:"keepJobFlowAliveWhenNoSteps"`
 	// Kerberos configuration for the cluster. Defined below
-	KerberosAttributes interface{}
+	KerberosAttributes pulumi.AnyInput `pulumi:"kerberosAttributes"`
 	// S3 bucket to write the log files of the job flow. If a value is not provided, logs are not created
-	LogUri interface{}
+	LogUri pulumi.StringInput `pulumi:"logUri"`
 	// Configuration block to use an [Instance Group](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-group-configuration.html#emr-plan-instance-groups) for the [master node type](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-master-core-task-nodes.html#emr-plan-master). Cannot be specified if `masterInstanceType` argument or `instanceGroup` configuration blocks are set. Detailed below.
-	MasterInstanceGroup interface{}
+	MasterInstanceGroup pulumi.AnyInput `pulumi:"masterInstanceGroup"`
 	// Use the `masterInstanceGroup` configuration block `instanceType` argument instead. The EC2 instance type of the master node. Cannot be specified if `masterInstanceGroup` or `instanceGroup` configuration blocks are set.
-	MasterInstanceType interface{}
+	MasterInstanceType pulumi.StringInput `pulumi:"masterInstanceType"`
 	// The public DNS name of the master EC2 instance.
 	// * `core_instance_group.0.id` - Core node type Instance Group ID, if using Instance Group for this node type.
-	MasterPublicDns interface{}
+	MasterPublicDns pulumi.StringInput `pulumi:"masterPublicDns"`
 	// The name of the job flow
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The release label for the Amazon EMR release
-	ReleaseLabel interface{}
+	ReleaseLabel pulumi.StringInput `pulumi:"releaseLabel"`
 	// The way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an `instance group` is resized.
-	ScaleDownBehavior interface{}
+	ScaleDownBehavior pulumi.StringInput `pulumi:"scaleDownBehavior"`
 	// The security configuration name to attach to the EMR cluster. Only valid for EMR clusters with `releaseLabel` 4.8.0 or greater
-	SecurityConfiguration interface{}
+	SecurityConfiguration pulumi.StringInput `pulumi:"securityConfiguration"`
 	// IAM role that will be assumed by the Amazon EMR service to access AWS resources
-	ServiceRole interface{}
+	ServiceRole pulumi.StringInput `pulumi:"serviceRole"`
 	// List of steps to run when creating the cluster. Defined below. It is highly recommended to utilize the [lifecycle configuration block](https://www.terraform.io/docs/configuration/resources.html) with `ignoreChanges` if other steps are being managed outside of this provider. This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-	Steps interface{}
+	Steps pulumi.ArrayInput `pulumi:"steps"`
 	// list of tags to apply to the EMR Cluster
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Switch on/off termination protection (default is `false`, except when using multiple master nodes). Before attempting to destroy the resource when termination protection is enabled, this configuration must be applied with its value set to `false`.
-	TerminationProtection interface{}
+	TerminationProtection pulumi.BoolInput `pulumi:"terminationProtection"`
 	// Whether the job flow is visible to all IAM users of the AWS account associated with the job flow. Default `true`
-	VisibleToAllUsers interface{}
+	VisibleToAllUsers pulumi.BoolInput `pulumi:"visibleToAllUsers"`
 }
 
 // The set of arguments for constructing a Cluster resource.
 type ClusterArgs struct {
 	// A JSON string for selecting additional features such as adding proxy information. Note: Currently there is no API to retrieve the value of this argument after EMR cluster creation from provider, therefore this provider cannot detect drift from the actual EMR cluster if its value is changed outside this provider.
-	AdditionalInfo interface{}
+	AdditionalInfo pulumi.StringInput `pulumi:"additionalInfo"`
 	// A list of applications for the cluster. Valid values are: `Flink`, `Hadoop`, `Hive`, `Mahout`, `Pig`, `Spark`, and `JupyterHub` (as of EMR 5.14.0). Case insensitive
-	Applications interface{}
+	Applications pulumi.ArrayInput `pulumi:"applications"`
 	// An IAM role for automatic scaling policies. The IAM role provides permissions that the automatic scaling feature requires to launch and terminate EC2 instances in an instance group.
-	AutoscalingRole interface{}
+	AutoscalingRole pulumi.StringInput `pulumi:"autoscalingRole"`
 	// List of bootstrap actions that will be run before Hadoop is started on the cluster nodes. Defined below
-	BootstrapActions interface{}
+	BootstrapActions pulumi.ArrayInput `pulumi:"bootstrapActions"`
 	// List of configurations supplied for the EMR cluster you are creating
-	Configurations interface{}
+	Configurations pulumi.StringInput `pulumi:"configurations"`
 	// A JSON string for supplying list of configurations for the EMR cluster.
-	ConfigurationsJson interface{}
+	ConfigurationsJson pulumi.StringInput `pulumi:"configurationsJson"`
 	// Use the `coreInstanceGroup` configuration block `instanceCount` argument instead. Number of Amazon EC2 instances used to execute the job flow. EMR will use one node as the cluster's master node and use the remainder of the nodes (`coreInstanceCount`-1) as core nodes. Cannot be specified if `coreInstanceGroup` or `instanceGroup` configuration blocks are set. Default `1`
-	CoreInstanceCount interface{}
+	CoreInstanceCount pulumi.IntInput `pulumi:"coreInstanceCount"`
 	// Configuration block to use an [Instance Group](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-group-configuration.html#emr-plan-instance-groups) for the [core node type](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-master-core-task-nodes.html#emr-plan-core). Cannot be specified if `coreInstanceCount` argument, `coreInstanceType` argument, or `instanceGroup` configuration blocks are set. Detailed below.
-	CoreInstanceGroup interface{}
+	CoreInstanceGroup pulumi.AnyInput `pulumi:"coreInstanceGroup"`
 	// Use the `coreInstanceGroup` configuration block `instanceType` argument instead. The EC2 instance type of the slave nodes. Cannot be specified if `coreInstanceGroup` or `instanceGroup` configuration blocks are set.
-	CoreInstanceType interface{}
+	CoreInstanceType pulumi.StringInput `pulumi:"coreInstanceType"`
 	// A custom Amazon Linux AMI for the cluster (instead of an EMR-owned AMI). Available in Amazon EMR version 5.7.0 and later.
-	CustomAmiId interface{}
+	CustomAmiId pulumi.StringInput `pulumi:"customAmiId"`
 	// Size in GiB of the EBS root device volume of the Linux AMI that is used for each EC2 instance. Available in Amazon EMR version 4.x and later.
-	EbsRootVolumeSize interface{}
+	EbsRootVolumeSize pulumi.IntInput `pulumi:"ebsRootVolumeSize"`
 	// Attributes for the EC2 instances running the job flow. Defined below
-	Ec2Attributes interface{}
+	Ec2Attributes pulumi.AnyInput `pulumi:"ec2Attributes"`
 	// Use the `masterInstanceGroup` configuration block, `coreInstanceGroup` configuration block and [`emr.InstanceGroup` resource(s)](https://www.terraform.io/docs/providers/aws/r/emr_instance_group.html) instead. A list of `instanceGroup` objects for each instance group in the cluster. Exactly one of `masterInstanceType` and `instanceGroup` must be specified. If `instanceGroup` is set, then it must contain a configuration block for at least the `MASTER` instance group type (as well as any additional instance groups). Cannot be specified if `masterInstanceGroup` or `coreInstanceGroup` configuration blocks are set. Defined below
-	InstanceGroups interface{}
+	InstanceGroups pulumi.ArrayInput `pulumi:"instanceGroups"`
 	// Switch on/off run cluster with no steps or when all steps are complete (default is on)
-	KeepJobFlowAliveWhenNoSteps interface{}
+	KeepJobFlowAliveWhenNoSteps pulumi.BoolInput `pulumi:"keepJobFlowAliveWhenNoSteps"`
 	// Kerberos configuration for the cluster. Defined below
-	KerberosAttributes interface{}
+	KerberosAttributes pulumi.AnyInput `pulumi:"kerberosAttributes"`
 	// S3 bucket to write the log files of the job flow. If a value is not provided, logs are not created
-	LogUri interface{}
+	LogUri pulumi.StringInput `pulumi:"logUri"`
 	// Configuration block to use an [Instance Group](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-group-configuration.html#emr-plan-instance-groups) for the [master node type](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-master-core-task-nodes.html#emr-plan-master). Cannot be specified if `masterInstanceType` argument or `instanceGroup` configuration blocks are set. Detailed below.
-	MasterInstanceGroup interface{}
+	MasterInstanceGroup pulumi.AnyInput `pulumi:"masterInstanceGroup"`
 	// Use the `masterInstanceGroup` configuration block `instanceType` argument instead. The EC2 instance type of the master node. Cannot be specified if `masterInstanceGroup` or `instanceGroup` configuration blocks are set.
-	MasterInstanceType interface{}
+	MasterInstanceType pulumi.StringInput `pulumi:"masterInstanceType"`
 	// The name of the job flow
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The release label for the Amazon EMR release
-	ReleaseLabel interface{}
+	ReleaseLabel pulumi.StringInput `pulumi:"releaseLabel"`
 	// The way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an `instance group` is resized.
-	ScaleDownBehavior interface{}
+	ScaleDownBehavior pulumi.StringInput `pulumi:"scaleDownBehavior"`
 	// The security configuration name to attach to the EMR cluster. Only valid for EMR clusters with `releaseLabel` 4.8.0 or greater
-	SecurityConfiguration interface{}
+	SecurityConfiguration pulumi.StringInput `pulumi:"securityConfiguration"`
 	// IAM role that will be assumed by the Amazon EMR service to access AWS resources
-	ServiceRole interface{}
+	ServiceRole pulumi.StringInput `pulumi:"serviceRole"`
 	// List of steps to run when creating the cluster. Defined below. It is highly recommended to utilize the [lifecycle configuration block](https://www.terraform.io/docs/configuration/resources.html) with `ignoreChanges` if other steps are being managed outside of this provider. This argument is processed in [attribute-as-blocks mode](https://www.terraform.io/docs/configuration/attr-as-blocks.html).
-	Steps interface{}
+	Steps pulumi.ArrayInput `pulumi:"steps"`
 	// list of tags to apply to the EMR Cluster
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Switch on/off termination protection (default is `false`, except when using multiple master nodes). Before attempting to destroy the resource when termination protection is enabled, this configuration must be applied with its value set to `false`.
-	TerminationProtection interface{}
+	TerminationProtection pulumi.BoolInput `pulumi:"terminationProtection"`
 	// Whether the job flow is visible to all IAM users of the AWS account associated with the job flow. Default `true`
-	VisibleToAllUsers interface{}
+	VisibleToAllUsers pulumi.BoolInput `pulumi:"visibleToAllUsers"`
 }

@@ -12,7 +12,28 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/dms_replication_subnet_group.html.markdown.
 type ReplicationSubnetGroup struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	ReplicationSubnetGroupArn pulumi.StringOutput `pulumi:"replicationSubnetGroupArn"`
+
+	// The description for the subnet group.
+	ReplicationSubnetGroupDescription pulumi.StringOutput `pulumi:"replicationSubnetGroupDescription"`
+
+	// The name for the replication subnet group. This value is stored as a lowercase string.
+	ReplicationSubnetGroupId pulumi.StringOutput `pulumi:"replicationSubnetGroupId"`
+
+	// A list of the EC2 subnet IDs for the subnet group.
+	SubnetIds pulumi.ArrayOutput `pulumi:"subnetIds"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// The ID of the VPC the subnet group is in.
+	VpcId pulumi.StringOutput `pulumi:"vpcId"`
 }
 
 // NewReplicationSubnetGroup registers a new resource with the given unique name, arguments, and options.
@@ -27,32 +48,26 @@ func NewReplicationSubnetGroup(ctx *pulumi.Context,
 	if args == nil || args.SubnetIds == nil {
 		return nil, errors.New("missing required argument 'SubnetIds'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["replicationSubnetGroupDescription"] = nil
-		inputs["replicationSubnetGroupId"] = nil
-		inputs["subnetIds"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["replicationSubnetGroupDescription"] = args.ReplicationSubnetGroupDescription
 		inputs["replicationSubnetGroupId"] = args.ReplicationSubnetGroupId
 		inputs["subnetIds"] = args.SubnetIds
 		inputs["tags"] = args.Tags
 	}
-	inputs["replicationSubnetGroupArn"] = nil
-	inputs["vpcId"] = nil
-	s, err := ctx.RegisterResource("aws:dms/replicationSubnetGroup:ReplicationSubnetGroup", name, true, inputs, opts...)
+	var resource ReplicationSubnetGroup
+	err := ctx.RegisterResource("aws:dms/replicationSubnetGroup:ReplicationSubnetGroup", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ReplicationSubnetGroup{s: s}, nil
+	return &resource, nil
 }
 
 // GetReplicationSubnetGroup gets an existing ReplicationSubnetGroup resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetReplicationSubnetGroup(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ReplicationSubnetGroupState, opts ...pulumi.ResourceOpt) (*ReplicationSubnetGroup, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["replicationSubnetGroupArn"] = state.ReplicationSubnetGroupArn
 		inputs["replicationSubnetGroupDescription"] = state.ReplicationSubnetGroupDescription
@@ -61,75 +76,46 @@ func GetReplicationSubnetGroup(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["vpcId"] = state.VpcId
 	}
-	s, err := ctx.ReadResource("aws:dms/replicationSubnetGroup:ReplicationSubnetGroup", name, id, inputs, opts...)
+	var resource ReplicationSubnetGroup
+	err := ctx.ReadResource("aws:dms/replicationSubnetGroup:ReplicationSubnetGroup", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ReplicationSubnetGroup{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ReplicationSubnetGroup) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ReplicationSubnetGroup) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ReplicationSubnetGroup) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ReplicationSubnetGroup) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-func (r *ReplicationSubnetGroup) ReplicationSubnetGroupArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["replicationSubnetGroupArn"])
-}
-
-// The description for the subnet group.
-func (r *ReplicationSubnetGroup) ReplicationSubnetGroupDescription() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["replicationSubnetGroupDescription"])
-}
-
-// The name for the replication subnet group. This value is stored as a lowercase string.
-func (r *ReplicationSubnetGroup) ReplicationSubnetGroupId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["replicationSubnetGroupId"])
-}
-
-// A list of the EC2 subnet IDs for the subnet group.
-func (r *ReplicationSubnetGroup) SubnetIds() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["subnetIds"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *ReplicationSubnetGroup) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// The ID of the VPC the subnet group is in.
-func (r *ReplicationSubnetGroup) VpcId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpcId"])
-}
-
 // Input properties used for looking up and filtering ReplicationSubnetGroup resources.
 type ReplicationSubnetGroupState struct {
-	ReplicationSubnetGroupArn interface{}
+	ReplicationSubnetGroupArn pulumi.StringInput `pulumi:"replicationSubnetGroupArn"`
 	// The description for the subnet group.
-	ReplicationSubnetGroupDescription interface{}
+	ReplicationSubnetGroupDescription pulumi.StringInput `pulumi:"replicationSubnetGroupDescription"`
 	// The name for the replication subnet group. This value is stored as a lowercase string.
-	ReplicationSubnetGroupId interface{}
+	ReplicationSubnetGroupId pulumi.StringInput `pulumi:"replicationSubnetGroupId"`
 	// A list of the EC2 subnet IDs for the subnet group.
-	SubnetIds interface{}
+	SubnetIds pulumi.ArrayInput `pulumi:"subnetIds"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The ID of the VPC the subnet group is in.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 }
 
 // The set of arguments for constructing a ReplicationSubnetGroup resource.
 type ReplicationSubnetGroupArgs struct {
 	// The description for the subnet group.
-	ReplicationSubnetGroupDescription interface{}
+	ReplicationSubnetGroupDescription pulumi.StringInput `pulumi:"replicationSubnetGroupDescription"`
 	// The name for the replication subnet group. This value is stored as a lowercase string.
-	ReplicationSubnetGroupId interface{}
+	ReplicationSubnetGroupId pulumi.StringInput `pulumi:"replicationSubnetGroupId"`
 	// A list of the EC2 subnet IDs for the subnet group.
-	SubnetIds interface{}
+	SubnetIds pulumi.ArrayInput `pulumi:"subnetIds"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

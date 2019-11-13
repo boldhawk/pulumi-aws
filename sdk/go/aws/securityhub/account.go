@@ -15,47 +15,51 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/securityhub_account.html.markdown.
 type Account struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
 }
 
 // NewAccount registers a new resource with the given unique name, arguments, and options.
 func NewAccount(ctx *pulumi.Context,
 	name string, args *AccountArgs, opts ...pulumi.ResourceOpt) (*Account, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 	}
-	s, err := ctx.RegisterResource("aws:securityhub/account:Account", name, true, inputs, opts...)
+	var resource Account
+	err := ctx.RegisterResource("aws:securityhub/account:Account", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Account{s: s}, nil
+	return &resource, nil
 }
 
 // GetAccount gets an existing Account resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAccount(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AccountState, opts ...pulumi.ResourceOpt) (*Account, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 	}
-	s, err := ctx.ReadResource("aws:securityhub/account:Account", name, id, inputs, opts...)
+	var resource Account
+	err := ctx.ReadResource("aws:securityhub/account:Account", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Account{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Account) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Account) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Account) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Account) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
 // Input properties used for looking up and filtering Account resources.
 type AccountState struct {
 }

@@ -12,7 +12,35 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/appmesh_route.html.markdown.
 type Route struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the route.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The creation date of the route.
+	CreatedDate pulumi.StringOutput `pulumi:"createdDate"`
+
+	// The last update date of the route.
+	LastUpdatedDate pulumi.StringOutput `pulumi:"lastUpdatedDate"`
+
+	// The name of the service mesh in which to create the route.
+	MeshName pulumi.StringOutput `pulumi:"meshName"`
+
+	// The name to use for the route.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The route specification to apply.
+	Spec pulumi.AnyOutput `pulumi:"spec"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// The name of the virtual router in which to create the route.
+	VirtualRouterName pulumi.StringOutput `pulumi:"virtualRouterName"`
 }
 
 // NewRoute registers a new resource with the given unique name, arguments, and options.
@@ -27,35 +55,28 @@ func NewRoute(ctx *pulumi.Context,
 	if args == nil || args.VirtualRouterName == nil {
 		return nil, errors.New("missing required argument 'VirtualRouterName'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["meshName"] = nil
-		inputs["name"] = nil
-		inputs["spec"] = nil
-		inputs["tags"] = nil
-		inputs["virtualRouterName"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["meshName"] = args.MeshName
 		inputs["name"] = args.Name
 		inputs["spec"] = args.Spec
 		inputs["tags"] = args.Tags
 		inputs["virtualRouterName"] = args.VirtualRouterName
 	}
-	inputs["arn"] = nil
-	inputs["createdDate"] = nil
-	inputs["lastUpdatedDate"] = nil
-	s, err := ctx.RegisterResource("aws:appmesh/route:Route", name, true, inputs, opts...)
+	var resource Route
+	err := ctx.RegisterResource("aws:appmesh/route:Route", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Route{s: s}, nil
+	return &resource, nil
 }
 
 // GetRoute gets an existing Route resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRoute(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *RouteState, opts ...pulumi.ResourceOpt) (*Route, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["createdDate"] = state.CreatedDate
@@ -66,93 +87,53 @@ func GetRoute(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["virtualRouterName"] = state.VirtualRouterName
 	}
-	s, err := ctx.ReadResource("aws:appmesh/route:Route", name, id, inputs, opts...)
+	var resource Route
+	err := ctx.ReadResource("aws:appmesh/route:Route", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Route{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Route) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Route) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Route) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Route) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the route.
-func (r *Route) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The creation date of the route.
-func (r *Route) CreatedDate() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["createdDate"])
-}
-
-// The last update date of the route.
-func (r *Route) LastUpdatedDate() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["lastUpdatedDate"])
-}
-
-// The name of the service mesh in which to create the route.
-func (r *Route) MeshName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["meshName"])
-}
-
-// The name to use for the route.
-func (r *Route) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The route specification to apply.
-func (r *Route) Spec() *pulumi.Output {
-	return r.s.State["spec"]
-}
-
-// A mapping of tags to assign to the resource.
-func (r *Route) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// The name of the virtual router in which to create the route.
-func (r *Route) VirtualRouterName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["virtualRouterName"])
-}
-
 // Input properties used for looking up and filtering Route resources.
 type RouteState struct {
 	// The ARN of the route.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The creation date of the route.
-	CreatedDate interface{}
+	CreatedDate pulumi.StringInput `pulumi:"createdDate"`
 	// The last update date of the route.
-	LastUpdatedDate interface{}
+	LastUpdatedDate pulumi.StringInput `pulumi:"lastUpdatedDate"`
 	// The name of the service mesh in which to create the route.
-	MeshName interface{}
+	MeshName pulumi.StringInput `pulumi:"meshName"`
 	// The name to use for the route.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The route specification to apply.
-	Spec interface{}
+	Spec pulumi.AnyInput `pulumi:"spec"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The name of the virtual router in which to create the route.
-	VirtualRouterName interface{}
+	VirtualRouterName pulumi.StringInput `pulumi:"virtualRouterName"`
 }
 
 // The set of arguments for constructing a Route resource.
 type RouteArgs struct {
 	// The name of the service mesh in which to create the route.
-	MeshName interface{}
+	MeshName pulumi.StringInput `pulumi:"meshName"`
 	// The name to use for the route.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The route specification to apply.
-	Spec interface{}
+	Spec pulumi.AnyInput `pulumi:"spec"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The name of the virtual router in which to create the route.
-	VirtualRouterName interface{}
+	VirtualRouterName pulumi.StringInput `pulumi:"virtualRouterName"`
 }

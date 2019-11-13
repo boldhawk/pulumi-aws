@@ -22,7 +22,76 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ami_copy.html.markdown.
 type AmiCopy struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Machine architecture for created instances. Defaults to "x8664".
+	Architecture pulumi.StringOutput `pulumi:"architecture"`
+
+	// A longer, human-readable description for the AMI.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// Nested block describing an EBS block device that should be
+	// attached to created instances. The structure of this block is described below.
+	EbsBlockDevices pulumi.ArrayOutput `pulumi:"ebsBlockDevices"`
+
+	// Specifies whether enhanced networking with ENA is enabled. Defaults to `false`.
+	EnaSupport pulumi.BoolOutput `pulumi:"enaSupport"`
+
+	// Specifies whether the destination snapshots of the copied image should be encrypted. Defaults to `false`
+	Encrypted pulumi.BoolOutput `pulumi:"encrypted"`
+
+	// Nested block describing an ephemeral block device that
+	// should be attached to created instances. The structure of this block is described below.
+	EphemeralBlockDevices pulumi.ArrayOutput `pulumi:"ephemeralBlockDevices"`
+
+	// Path to an S3 object containing an image manifest, e.g. created
+	// by the `ec2-upload-bundle` command in the EC2 command line tools.
+	ImageLocation pulumi.StringOutput `pulumi:"imageLocation"`
+
+	// The id of the kernel image (AKI) that will be used as the paravirtual
+	// kernel in created instances.
+	KernelId pulumi.StringOutput `pulumi:"kernelId"`
+
+	// The full ARN of the KMS Key to use when encrypting the snapshots of an image during a copy operation. If not specified, then the default AWS KMS Key will be used
+	KmsKeyId pulumi.StringOutput `pulumi:"kmsKeyId"`
+
+	ManageEbsSnapshots pulumi.BoolOutput `pulumi:"manageEbsSnapshots"`
+
+	// A region-unique name for the AMI.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The id of an initrd image (ARI) that will be used when booting the
+	// created instances.
+	RamdiskId pulumi.StringOutput `pulumi:"ramdiskId"`
+
+	// The name of the root device (for example, `/dev/sda1`, or `/dev/xvda`).
+	RootDeviceName pulumi.StringOutput `pulumi:"rootDeviceName"`
+
+	RootSnapshotId pulumi.StringOutput `pulumi:"rootSnapshotId"`
+
+	// The id of the AMI to copy. This id must be valid in the region
+	// given by `sourceAmiRegion`.
+	SourceAmiId pulumi.StringOutput `pulumi:"sourceAmiId"`
+
+	// The region from which the AMI will be copied. This may be the
+	// same as the AWS provider region in order to create a copy within the same region.
+	SourceAmiRegion pulumi.StringOutput `pulumi:"sourceAmiRegion"`
+
+	// When set to "simple" (the default), enables enhanced networking
+	// for created instances. No other value is supported at this time.
+	SriovNetSupport pulumi.StringOutput `pulumi:"sriovNetSupport"`
+
+	// A mapping of tags to assign to the resource.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// Keyword to choose what virtualization mode created instances
+	// will use. Can be either "paravirtual" (the default) or "hvm". The choice of virtualization type
+	// changes the set of further arguments that are required, as described below.
+	VirtualizationType pulumi.StringOutput `pulumi:"virtualizationType"`
 }
 
 // NewAmiCopy registers a new resource with the given unique name, arguments, and options.
@@ -34,18 +103,9 @@ func NewAmiCopy(ctx *pulumi.Context,
 	if args == nil || args.SourceAmiRegion == nil {
 		return nil, errors.New("missing required argument 'SourceAmiRegion'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["description"] = nil
-		inputs["ebsBlockDevices"] = nil
-		inputs["encrypted"] = nil
-		inputs["ephemeralBlockDevices"] = nil
-		inputs["kmsKeyId"] = nil
-		inputs["name"] = nil
-		inputs["sourceAmiId"] = nil
-		inputs["sourceAmiRegion"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["ebsBlockDevices"] = args.EbsBlockDevices
 		inputs["encrypted"] = args.Encrypted
@@ -56,28 +116,19 @@ func NewAmiCopy(ctx *pulumi.Context,
 		inputs["sourceAmiRegion"] = args.SourceAmiRegion
 		inputs["tags"] = args.Tags
 	}
-	inputs["architecture"] = nil
-	inputs["enaSupport"] = nil
-	inputs["imageLocation"] = nil
-	inputs["kernelId"] = nil
-	inputs["manageEbsSnapshots"] = nil
-	inputs["ramdiskId"] = nil
-	inputs["rootDeviceName"] = nil
-	inputs["rootSnapshotId"] = nil
-	inputs["sriovNetSupport"] = nil
-	inputs["virtualizationType"] = nil
-	s, err := ctx.RegisterResource("aws:ec2/amiCopy:AmiCopy", name, true, inputs, opts...)
+	var resource AmiCopy
+	err := ctx.RegisterResource("aws:ec2/amiCopy:AmiCopy", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AmiCopy{s: s}, nil
+	return &resource, nil
 }
 
 // GetAmiCopy gets an existing AmiCopy resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAmiCopy(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AmiCopyState, opts ...pulumi.ResourceOpt) (*AmiCopy, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["architecture"] = state.Architecture
 		inputs["description"] = state.Description
@@ -99,198 +150,95 @@ func GetAmiCopy(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["virtualizationType"] = state.VirtualizationType
 	}
-	s, err := ctx.ReadResource("aws:ec2/amiCopy:AmiCopy", name, id, inputs, opts...)
+	var resource AmiCopy
+	err := ctx.ReadResource("aws:ec2/amiCopy:AmiCopy", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AmiCopy{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *AmiCopy) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *AmiCopy) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *AmiCopy) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *AmiCopy) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Machine architecture for created instances. Defaults to "x8664".
-func (r *AmiCopy) Architecture() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["architecture"])
-}
-
-// A longer, human-readable description for the AMI.
-func (r *AmiCopy) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// Nested block describing an EBS block device that should be
-// attached to created instances. The structure of this block is described below.
-func (r *AmiCopy) EbsBlockDevices() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["ebsBlockDevices"])
-}
-
-// Specifies whether enhanced networking with ENA is enabled. Defaults to `false`.
-func (r *AmiCopy) EnaSupport() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["enaSupport"])
-}
-
-// Specifies whether the destination snapshots of the copied image should be encrypted. Defaults to `false`
-func (r *AmiCopy) Encrypted() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["encrypted"])
-}
-
-// Nested block describing an ephemeral block device that
-// should be attached to created instances. The structure of this block is described below.
-func (r *AmiCopy) EphemeralBlockDevices() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["ephemeralBlockDevices"])
-}
-
-// Path to an S3 object containing an image manifest, e.g. created
-// by the `ec2-upload-bundle` command in the EC2 command line tools.
-func (r *AmiCopy) ImageLocation() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["imageLocation"])
-}
-
-// The id of the kernel image (AKI) that will be used as the paravirtual
-// kernel in created instances.
-func (r *AmiCopy) KernelId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["kernelId"])
-}
-
-// The full ARN of the KMS Key to use when encrypting the snapshots of an image during a copy operation. If not specified, then the default AWS KMS Key will be used
-func (r *AmiCopy) KmsKeyId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["kmsKeyId"])
-}
-
-func (r *AmiCopy) ManageEbsSnapshots() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["manageEbsSnapshots"])
-}
-
-// A region-unique name for the AMI.
-func (r *AmiCopy) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The id of an initrd image (ARI) that will be used when booting the
-// created instances.
-func (r *AmiCopy) RamdiskId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ramdiskId"])
-}
-
-// The name of the root device (for example, `/dev/sda1`, or `/dev/xvda`).
-func (r *AmiCopy) RootDeviceName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["rootDeviceName"])
-}
-
-func (r *AmiCopy) RootSnapshotId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["rootSnapshotId"])
-}
-
-// The id of the AMI to copy. This id must be valid in the region
-// given by `sourceAmiRegion`.
-func (r *AmiCopy) SourceAmiId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["sourceAmiId"])
-}
-
-// The region from which the AMI will be copied. This may be the
-// same as the AWS provider region in order to create a copy within the same region.
-func (r *AmiCopy) SourceAmiRegion() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["sourceAmiRegion"])
-}
-
-// When set to "simple" (the default), enables enhanced networking
-// for created instances. No other value is supported at this time.
-func (r *AmiCopy) SriovNetSupport() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["sriovNetSupport"])
-}
-
-// A mapping of tags to assign to the resource.
-func (r *AmiCopy) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// Keyword to choose what virtualization mode created instances
-// will use. Can be either "paravirtual" (the default) or "hvm". The choice of virtualization type
-// changes the set of further arguments that are required, as described below.
-func (r *AmiCopy) VirtualizationType() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["virtualizationType"])
-}
-
 // Input properties used for looking up and filtering AmiCopy resources.
 type AmiCopyState struct {
 	// Machine architecture for created instances. Defaults to "x8664".
-	Architecture interface{}
+	Architecture pulumi.StringInput `pulumi:"architecture"`
 	// A longer, human-readable description for the AMI.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// Nested block describing an EBS block device that should be
 	// attached to created instances. The structure of this block is described below.
-	EbsBlockDevices interface{}
+	EbsBlockDevices pulumi.ArrayInput `pulumi:"ebsBlockDevices"`
 	// Specifies whether enhanced networking with ENA is enabled. Defaults to `false`.
-	EnaSupport interface{}
+	EnaSupport pulumi.BoolInput `pulumi:"enaSupport"`
 	// Specifies whether the destination snapshots of the copied image should be encrypted. Defaults to `false`
-	Encrypted interface{}
+	Encrypted pulumi.BoolInput `pulumi:"encrypted"`
 	// Nested block describing an ephemeral block device that
 	// should be attached to created instances. The structure of this block is described below.
-	EphemeralBlockDevices interface{}
+	EphemeralBlockDevices pulumi.ArrayInput `pulumi:"ephemeralBlockDevices"`
 	// Path to an S3 object containing an image manifest, e.g. created
 	// by the `ec2-upload-bundle` command in the EC2 command line tools.
-	ImageLocation interface{}
+	ImageLocation pulumi.StringInput `pulumi:"imageLocation"`
 	// The id of the kernel image (AKI) that will be used as the paravirtual
 	// kernel in created instances.
-	KernelId interface{}
+	KernelId pulumi.StringInput `pulumi:"kernelId"`
 	// The full ARN of the KMS Key to use when encrypting the snapshots of an image during a copy operation. If not specified, then the default AWS KMS Key will be used
-	KmsKeyId interface{}
-	ManageEbsSnapshots interface{}
+	KmsKeyId pulumi.StringInput `pulumi:"kmsKeyId"`
+	ManageEbsSnapshots pulumi.BoolInput `pulumi:"manageEbsSnapshots"`
 	// A region-unique name for the AMI.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The id of an initrd image (ARI) that will be used when booting the
 	// created instances.
-	RamdiskId interface{}
+	RamdiskId pulumi.StringInput `pulumi:"ramdiskId"`
 	// The name of the root device (for example, `/dev/sda1`, or `/dev/xvda`).
-	RootDeviceName interface{}
-	RootSnapshotId interface{}
+	RootDeviceName pulumi.StringInput `pulumi:"rootDeviceName"`
+	RootSnapshotId pulumi.StringInput `pulumi:"rootSnapshotId"`
 	// The id of the AMI to copy. This id must be valid in the region
 	// given by `sourceAmiRegion`.
-	SourceAmiId interface{}
+	SourceAmiId pulumi.StringInput `pulumi:"sourceAmiId"`
 	// The region from which the AMI will be copied. This may be the
 	// same as the AWS provider region in order to create a copy within the same region.
-	SourceAmiRegion interface{}
+	SourceAmiRegion pulumi.StringInput `pulumi:"sourceAmiRegion"`
 	// When set to "simple" (the default), enables enhanced networking
 	// for created instances. No other value is supported at this time.
-	SriovNetSupport interface{}
+	SriovNetSupport pulumi.StringInput `pulumi:"sriovNetSupport"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Keyword to choose what virtualization mode created instances
 	// will use. Can be either "paravirtual" (the default) or "hvm". The choice of virtualization type
 	// changes the set of further arguments that are required, as described below.
-	VirtualizationType interface{}
+	VirtualizationType pulumi.StringInput `pulumi:"virtualizationType"`
 }
 
 // The set of arguments for constructing a AmiCopy resource.
 type AmiCopyArgs struct {
 	// A longer, human-readable description for the AMI.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// Nested block describing an EBS block device that should be
 	// attached to created instances. The structure of this block is described below.
-	EbsBlockDevices interface{}
+	EbsBlockDevices pulumi.ArrayInput `pulumi:"ebsBlockDevices"`
 	// Specifies whether the destination snapshots of the copied image should be encrypted. Defaults to `false`
-	Encrypted interface{}
+	Encrypted pulumi.BoolInput `pulumi:"encrypted"`
 	// Nested block describing an ephemeral block device that
 	// should be attached to created instances. The structure of this block is described below.
-	EphemeralBlockDevices interface{}
+	EphemeralBlockDevices pulumi.ArrayInput `pulumi:"ephemeralBlockDevices"`
 	// The full ARN of the KMS Key to use when encrypting the snapshots of an image during a copy operation. If not specified, then the default AWS KMS Key will be used
-	KmsKeyId interface{}
+	KmsKeyId pulumi.StringInput `pulumi:"kmsKeyId"`
 	// A region-unique name for the AMI.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The id of the AMI to copy. This id must be valid in the region
 	// given by `sourceAmiRegion`.
-	SourceAmiId interface{}
+	SourceAmiId pulumi.StringInput `pulumi:"sourceAmiId"`
 	// The region from which the AMI will be copied. This may be the
 	// same as the AWS provider region in order to create a copy within the same region.
-	SourceAmiRegion interface{}
+	SourceAmiRegion pulumi.StringInput `pulumi:"sourceAmiRegion"`
 	// A mapping of tags to assign to the resource.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

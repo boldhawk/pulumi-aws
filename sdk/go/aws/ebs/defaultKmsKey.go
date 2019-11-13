@@ -19,7 +19,14 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/ebs_default_kms_key.html.markdown.
 type DefaultKmsKey struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the AWS Key Management Service (AWS KMS) customer master key (CMK) to use to encrypt the EBS volume.
+	KeyArn pulumi.StringOutput `pulumi:"keyArn"`
 }
 
 // NewDefaultKmsKey registers a new resource with the given unique name, arguments, and options.
@@ -28,57 +35,51 @@ func NewDefaultKmsKey(ctx *pulumi.Context,
 	if args == nil || args.KeyArn == nil {
 		return nil, errors.New("missing required argument 'KeyArn'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["keyArn"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["keyArn"] = args.KeyArn
 	}
-	s, err := ctx.RegisterResource("aws:ebs/defaultKmsKey:DefaultKmsKey", name, true, inputs, opts...)
+	var resource DefaultKmsKey
+	err := ctx.RegisterResource("aws:ebs/defaultKmsKey:DefaultKmsKey", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DefaultKmsKey{s: s}, nil
+	return &resource, nil
 }
 
 // GetDefaultKmsKey gets an existing DefaultKmsKey resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetDefaultKmsKey(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *DefaultKmsKeyState, opts ...pulumi.ResourceOpt) (*DefaultKmsKey, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["keyArn"] = state.KeyArn
 	}
-	s, err := ctx.ReadResource("aws:ebs/defaultKmsKey:DefaultKmsKey", name, id, inputs, opts...)
+	var resource DefaultKmsKey
+	err := ctx.ReadResource("aws:ebs/defaultKmsKey:DefaultKmsKey", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &DefaultKmsKey{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *DefaultKmsKey) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *DefaultKmsKey) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *DefaultKmsKey) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *DefaultKmsKey) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the AWS Key Management Service (AWS KMS) customer master key (CMK) to use to encrypt the EBS volume.
-func (r *DefaultKmsKey) KeyArn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["keyArn"])
-}
-
 // Input properties used for looking up and filtering DefaultKmsKey resources.
 type DefaultKmsKeyState struct {
 	// The ARN of the AWS Key Management Service (AWS KMS) customer master key (CMK) to use to encrypt the EBS volume.
-	KeyArn interface{}
+	KeyArn pulumi.StringInput `pulumi:"keyArn"`
 }
 
 // The set of arguments for constructing a DefaultKmsKey resource.
 type DefaultKmsKeyArgs struct {
 	// The ARN of the AWS Key Management Service (AWS KMS) customer master key (CMK) to use to encrypt the EBS volume.
-	KeyArn interface{}
+	KeyArn pulumi.StringInput `pulumi:"keyArn"`
 }

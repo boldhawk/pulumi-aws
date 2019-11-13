@@ -18,87 +18,83 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/dax_parameter_group.html.markdown.
 type ParameterGroup struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// A description of the parameter group.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// The name of the parameter group.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// The parameters of the parameter group.
+	Parameters pulumi.ArrayOutput `pulumi:"parameters"`
 }
 
 // NewParameterGroup registers a new resource with the given unique name, arguments, and options.
 func NewParameterGroup(ctx *pulumi.Context,
 	name string, args *ParameterGroupArgs, opts ...pulumi.ResourceOpt) (*ParameterGroup, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["description"] = nil
-		inputs["name"] = nil
-		inputs["parameters"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name
 		inputs["parameters"] = args.Parameters
 	}
-	s, err := ctx.RegisterResource("aws:dax/parameterGroup:ParameterGroup", name, true, inputs, opts...)
+	var resource ParameterGroup
+	err := ctx.RegisterResource("aws:dax/parameterGroup:ParameterGroup", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ParameterGroup{s: s}, nil
+	return &resource, nil
 }
 
 // GetParameterGroup gets an existing ParameterGroup resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetParameterGroup(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *ParameterGroupState, opts ...pulumi.ResourceOpt) (*ParameterGroup, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["description"] = state.Description
 		inputs["name"] = state.Name
 		inputs["parameters"] = state.Parameters
 	}
-	s, err := ctx.ReadResource("aws:dax/parameterGroup:ParameterGroup", name, id, inputs, opts...)
+	var resource ParameterGroup
+	err := ctx.ReadResource("aws:dax/parameterGroup:ParameterGroup", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &ParameterGroup{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *ParameterGroup) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *ParameterGroup) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *ParameterGroup) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *ParameterGroup) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// A description of the parameter group.
-func (r *ParameterGroup) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// The name of the parameter group.
-func (r *ParameterGroup) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// The parameters of the parameter group.
-func (r *ParameterGroup) Parameters() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["parameters"])
-}
-
 // Input properties used for looking up and filtering ParameterGroup resources.
 type ParameterGroupState struct {
 	// A description of the parameter group.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name of the parameter group.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The parameters of the parameter group.
-	Parameters interface{}
+	Parameters pulumi.ArrayInput `pulumi:"parameters"`
 }
 
 // The set of arguments for constructing a ParameterGroup resource.
 type ParameterGroupArgs struct {
 	// A description of the parameter group.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// The name of the parameter group.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// The parameters of the parameter group.
-	Parameters interface{}
+	Parameters pulumi.ArrayInput `pulumi:"parameters"`
 }

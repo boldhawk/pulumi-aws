@@ -44,37 +44,37 @@ type GetVolumeArgs struct {
 	// One or more name/value pairs to filter off of. There are
 	// several valid keys, for a full reference, check out
 	// [describe-volumes in the AWS CLI reference][1].
-	Filters interface{}
+	Filters pulumi.ArrayInput `pulumi:"filters"`
 	// If more than one result is returned, use the most
 	// recent Volume.
-	MostRecent interface{}
-	Tags interface{}
+	MostRecent pulumi.BoolInput `pulumi:"mostRecent"`
+	Tags pulumi.MapInput `pulumi:"tags"`
 }
 
 // A collection of values returned by getVolume.
 type GetVolumeResult struct {
 	// The volume ARN (e.g. arn:aws:ec2:us-east-1:0123456789012:volume/vol-59fcb34e).
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// The AZ where the EBS volume exists.
-	AvailabilityZone interface{}
+	AvailabilityZone string `pulumi:"availabilityZone"`
 	// Whether the disk is encrypted.
-	Encrypted interface{}
-	Filters interface{}
+	Encrypted bool `pulumi:"encrypted"`
+	Filters []interface{} `pulumi:"filters"`
 	// The amount of IOPS for the disk.
-	Iops interface{}
+	Iops int `pulumi:"iops"`
 	// The ARN for the KMS encryption key.
-	KmsKeyId interface{}
-	MostRecent interface{}
+	KmsKeyId string `pulumi:"kmsKeyId"`
+	MostRecent bool `pulumi:"mostRecent"`
 	// The size of the drive in GiBs.
-	Size interface{}
+	Size int `pulumi:"size"`
 	// The snapshotId the EBS volume is based off.
-	SnapshotId interface{}
+	SnapshotId string `pulumi:"snapshotId"`
 	// A mapping of tags for the resource.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The volume ID (e.g. vol-59fcb34e).
-	VolumeId interface{}
+	VolumeId string `pulumi:"volumeId"`
 	// The type of EBS volume.
-	VolumeType interface{}
+	VolumeType string `pulumi:"volumeType"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

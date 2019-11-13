@@ -14,7 +14,65 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/fsx_windows_file_system.html.markdown.
 type WindowsFileSystem struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ID for an existing Microsoft Active Directory instance that the file system should join when it's created. Cannot be specified with `selfManagedActiveDirectory`.
+	ActiveDirectoryId pulumi.StringOutput `pulumi:"activeDirectoryId"`
+
+	// Amazon Resource Name of the file system.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The number of days to retain automatic backups. Minimum of `0` and maximum of `35`. Defaults to `7`. Set to `0` to disable.
+	AutomaticBackupRetentionDays pulumi.IntOutput `pulumi:"automaticBackupRetentionDays"`
+
+	// A boolean flag indicating whether tags on the file system should be copied to backups. Defaults to `false`.
+	CopyTagsToBackups pulumi.BoolOutput `pulumi:"copyTagsToBackups"`
+
+	// The preferred time (in `HH:MM` format) to take daily automatic backups, in the UTC time zone.
+	DailyAutomaticBackupStartTime pulumi.StringOutput `pulumi:"dailyAutomaticBackupStartTime"`
+
+	// DNS name for the file system, e.g. `fs-12345678.corp.example.com` (domain name matching the Active Directory domain name)
+	DnsName pulumi.StringOutput `pulumi:"dnsName"`
+
+	// ARN for the KMS Key to encrypt the file system at rest. Defaults to an AWS managed KMS Key.
+	KmsKeyId pulumi.StringOutput `pulumi:"kmsKeyId"`
+
+	// Set of Elastic Network Interface identifiers from which the file system is accessible.
+	NetworkInterfaceIds pulumi.ArrayOutput `pulumi:"networkInterfaceIds"`
+
+	// AWS account identifier that created the file system.
+	OwnerId pulumi.StringOutput `pulumi:"ownerId"`
+
+	// A list of IDs for the security groups that apply to the specified network interfaces created for file system access. These security groups will apply to all network interfaces.
+	SecurityGroupIds pulumi.ArrayOutput `pulumi:"securityGroupIds"`
+
+	// Configuration block that Amazon FSx uses to join the Windows File Server instance to your self-managed (including on-premises) Microsoft Active Directory (AD) directory. Cannot be specified with `activeDirectoryId`. Detailed below.
+	SelfManagedActiveDirectory pulumi.AnyOutput `pulumi:"selfManagedActiveDirectory"`
+
+	// When enabled, will skip the default final backup taken when the file system is deleted. This configuration must be applied separately before attempting to delete the resource to have the desired behavior. Defaults to `false`.
+	SkipFinalBackup pulumi.BoolOutput `pulumi:"skipFinalBackup"`
+
+	// Storage capacity (GiB) of the file system. Minimum of 300 and maximum of 65536.
+	StorageCapacity pulumi.IntOutput `pulumi:"storageCapacity"`
+
+	// A list of IDs for the subnets that the file system will be accessible from. File systems support only one subnet. The file server is also launched in that subnet's Availability Zone.
+	SubnetIds pulumi.StringOutput `pulumi:"subnetIds"`
+
+	// A mapping of tags to assign to the file system.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// Throughput (megabytes per second) of the file system in power of 2 increments. Minimum of `8` and maximum of `2048`.
+	ThroughputCapacity pulumi.IntOutput `pulumi:"throughputCapacity"`
+
+	// Identifier of the Virtual Private Cloud for the file system.
+	VpcId pulumi.StringOutput `pulumi:"vpcId"`
+
+	// The preferred start time (in `d:HH:MM` format) to perform weekly maintenance, in the UTC time zone.
+	WeeklyMaintenanceStartTime pulumi.StringOutput `pulumi:"weeklyMaintenanceStartTime"`
 }
 
 // NewWindowsFileSystem registers a new resource with the given unique name, arguments, and options.
@@ -29,22 +87,8 @@ func NewWindowsFileSystem(ctx *pulumi.Context,
 	if args == nil || args.ThroughputCapacity == nil {
 		return nil, errors.New("missing required argument 'ThroughputCapacity'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["activeDirectoryId"] = nil
-		inputs["automaticBackupRetentionDays"] = nil
-		inputs["copyTagsToBackups"] = nil
-		inputs["dailyAutomaticBackupStartTime"] = nil
-		inputs["kmsKeyId"] = nil
-		inputs["securityGroupIds"] = nil
-		inputs["selfManagedActiveDirectory"] = nil
-		inputs["skipFinalBackup"] = nil
-		inputs["storageCapacity"] = nil
-		inputs["subnetIds"] = nil
-		inputs["tags"] = nil
-		inputs["throughputCapacity"] = nil
-		inputs["weeklyMaintenanceStartTime"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	if args != nil {
 		inputs["activeDirectoryId"] = args.ActiveDirectoryId
 		inputs["automaticBackupRetentionDays"] = args.AutomaticBackupRetentionDays
 		inputs["copyTagsToBackups"] = args.CopyTagsToBackups
@@ -59,23 +103,19 @@ func NewWindowsFileSystem(ctx *pulumi.Context,
 		inputs["throughputCapacity"] = args.ThroughputCapacity
 		inputs["weeklyMaintenanceStartTime"] = args.WeeklyMaintenanceStartTime
 	}
-	inputs["arn"] = nil
-	inputs["dnsName"] = nil
-	inputs["networkInterfaceIds"] = nil
-	inputs["ownerId"] = nil
-	inputs["vpcId"] = nil
-	s, err := ctx.RegisterResource("aws:fsx/windowsFileSystem:WindowsFileSystem", name, true, inputs, opts...)
+	var resource WindowsFileSystem
+	err := ctx.RegisterResource("aws:fsx/windowsFileSystem:WindowsFileSystem", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &WindowsFileSystem{s: s}, nil
+	return &resource, nil
 }
 
 // GetWindowsFileSystem gets an existing WindowsFileSystem resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetWindowsFileSystem(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *WindowsFileSystemState, opts ...pulumi.ResourceOpt) (*WindowsFileSystem, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["activeDirectoryId"] = state.ActiveDirectoryId
 		inputs["arn"] = state.Arn
@@ -96,179 +136,89 @@ func GetWindowsFileSystem(ctx *pulumi.Context,
 		inputs["vpcId"] = state.VpcId
 		inputs["weeklyMaintenanceStartTime"] = state.WeeklyMaintenanceStartTime
 	}
-	s, err := ctx.ReadResource("aws:fsx/windowsFileSystem:WindowsFileSystem", name, id, inputs, opts...)
+	var resource WindowsFileSystem
+	err := ctx.ReadResource("aws:fsx/windowsFileSystem:WindowsFileSystem", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &WindowsFileSystem{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *WindowsFileSystem) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *WindowsFileSystem) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *WindowsFileSystem) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *WindowsFileSystem) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ID for an existing Microsoft Active Directory instance that the file system should join when it's created. Cannot be specified with `selfManagedActiveDirectory`.
-func (r *WindowsFileSystem) ActiveDirectoryId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["activeDirectoryId"])
-}
-
-// Amazon Resource Name of the file system.
-func (r *WindowsFileSystem) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The number of days to retain automatic backups. Minimum of `0` and maximum of `35`. Defaults to `7`. Set to `0` to disable.
-func (r *WindowsFileSystem) AutomaticBackupRetentionDays() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["automaticBackupRetentionDays"])
-}
-
-// A boolean flag indicating whether tags on the file system should be copied to backups. Defaults to `false`.
-func (r *WindowsFileSystem) CopyTagsToBackups() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["copyTagsToBackups"])
-}
-
-// The preferred time (in `HH:MM` format) to take daily automatic backups, in the UTC time zone.
-func (r *WindowsFileSystem) DailyAutomaticBackupStartTime() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["dailyAutomaticBackupStartTime"])
-}
-
-// DNS name for the file system, e.g. `fs-12345678.corp.example.com` (domain name matching the Active Directory domain name)
-func (r *WindowsFileSystem) DnsName() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["dnsName"])
-}
-
-// ARN for the KMS Key to encrypt the file system at rest. Defaults to an AWS managed KMS Key.
-func (r *WindowsFileSystem) KmsKeyId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["kmsKeyId"])
-}
-
-// Set of Elastic Network Interface identifiers from which the file system is accessible.
-func (r *WindowsFileSystem) NetworkInterfaceIds() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["networkInterfaceIds"])
-}
-
-// AWS account identifier that created the file system.
-func (r *WindowsFileSystem) OwnerId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["ownerId"])
-}
-
-// A list of IDs for the security groups that apply to the specified network interfaces created for file system access. These security groups will apply to all network interfaces.
-func (r *WindowsFileSystem) SecurityGroupIds() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["securityGroupIds"])
-}
-
-// Configuration block that Amazon FSx uses to join the Windows File Server instance to your self-managed (including on-premises) Microsoft Active Directory (AD) directory. Cannot be specified with `activeDirectoryId`. Detailed below.
-func (r *WindowsFileSystem) SelfManagedActiveDirectory() *pulumi.Output {
-	return r.s.State["selfManagedActiveDirectory"]
-}
-
-// When enabled, will skip the default final backup taken when the file system is deleted. This configuration must be applied separately before attempting to delete the resource to have the desired behavior. Defaults to `false`.
-func (r *WindowsFileSystem) SkipFinalBackup() *pulumi.BoolOutput {
-	return (*pulumi.BoolOutput)(r.s.State["skipFinalBackup"])
-}
-
-// Storage capacity (GiB) of the file system. Minimum of 300 and maximum of 65536.
-func (r *WindowsFileSystem) StorageCapacity() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["storageCapacity"])
-}
-
-// A list of IDs for the subnets that the file system will be accessible from. File systems support only one subnet. The file server is also launched in that subnet's Availability Zone.
-func (r *WindowsFileSystem) SubnetIds() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["subnetIds"])
-}
-
-// A mapping of tags to assign to the file system.
-func (r *WindowsFileSystem) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// Throughput (megabytes per second) of the file system in power of 2 increments. Minimum of `8` and maximum of `2048`.
-func (r *WindowsFileSystem) ThroughputCapacity() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["throughputCapacity"])
-}
-
-// Identifier of the Virtual Private Cloud for the file system.
-func (r *WindowsFileSystem) VpcId() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["vpcId"])
-}
-
-// The preferred start time (in `d:HH:MM` format) to perform weekly maintenance, in the UTC time zone.
-func (r *WindowsFileSystem) WeeklyMaintenanceStartTime() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["weeklyMaintenanceStartTime"])
-}
-
 // Input properties used for looking up and filtering WindowsFileSystem resources.
 type WindowsFileSystemState struct {
 	// The ID for an existing Microsoft Active Directory instance that the file system should join when it's created. Cannot be specified with `selfManagedActiveDirectory`.
-	ActiveDirectoryId interface{}
+	ActiveDirectoryId pulumi.StringInput `pulumi:"activeDirectoryId"`
 	// Amazon Resource Name of the file system.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The number of days to retain automatic backups. Minimum of `0` and maximum of `35`. Defaults to `7`. Set to `0` to disable.
-	AutomaticBackupRetentionDays interface{}
+	AutomaticBackupRetentionDays pulumi.IntInput `pulumi:"automaticBackupRetentionDays"`
 	// A boolean flag indicating whether tags on the file system should be copied to backups. Defaults to `false`.
-	CopyTagsToBackups interface{}
+	CopyTagsToBackups pulumi.BoolInput `pulumi:"copyTagsToBackups"`
 	// The preferred time (in `HH:MM` format) to take daily automatic backups, in the UTC time zone.
-	DailyAutomaticBackupStartTime interface{}
+	DailyAutomaticBackupStartTime pulumi.StringInput `pulumi:"dailyAutomaticBackupStartTime"`
 	// DNS name for the file system, e.g. `fs-12345678.corp.example.com` (domain name matching the Active Directory domain name)
-	DnsName interface{}
+	DnsName pulumi.StringInput `pulumi:"dnsName"`
 	// ARN for the KMS Key to encrypt the file system at rest. Defaults to an AWS managed KMS Key.
-	KmsKeyId interface{}
+	KmsKeyId pulumi.StringInput `pulumi:"kmsKeyId"`
 	// Set of Elastic Network Interface identifiers from which the file system is accessible.
-	NetworkInterfaceIds interface{}
+	NetworkInterfaceIds pulumi.ArrayInput `pulumi:"networkInterfaceIds"`
 	// AWS account identifier that created the file system.
-	OwnerId interface{}
+	OwnerId pulumi.StringInput `pulumi:"ownerId"`
 	// A list of IDs for the security groups that apply to the specified network interfaces created for file system access. These security groups will apply to all network interfaces.
-	SecurityGroupIds interface{}
+	SecurityGroupIds pulumi.ArrayInput `pulumi:"securityGroupIds"`
 	// Configuration block that Amazon FSx uses to join the Windows File Server instance to your self-managed (including on-premises) Microsoft Active Directory (AD) directory. Cannot be specified with `activeDirectoryId`. Detailed below.
-	SelfManagedActiveDirectory interface{}
+	SelfManagedActiveDirectory pulumi.AnyInput `pulumi:"selfManagedActiveDirectory"`
 	// When enabled, will skip the default final backup taken when the file system is deleted. This configuration must be applied separately before attempting to delete the resource to have the desired behavior. Defaults to `false`.
-	SkipFinalBackup interface{}
+	SkipFinalBackup pulumi.BoolInput `pulumi:"skipFinalBackup"`
 	// Storage capacity (GiB) of the file system. Minimum of 300 and maximum of 65536.
-	StorageCapacity interface{}
+	StorageCapacity pulumi.IntInput `pulumi:"storageCapacity"`
 	// A list of IDs for the subnets that the file system will be accessible from. File systems support only one subnet. The file server is also launched in that subnet's Availability Zone.
-	SubnetIds interface{}
+	SubnetIds pulumi.StringInput `pulumi:"subnetIds"`
 	// A mapping of tags to assign to the file system.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Throughput (megabytes per second) of the file system in power of 2 increments. Minimum of `8` and maximum of `2048`.
-	ThroughputCapacity interface{}
+	ThroughputCapacity pulumi.IntInput `pulumi:"throughputCapacity"`
 	// Identifier of the Virtual Private Cloud for the file system.
-	VpcId interface{}
+	VpcId pulumi.StringInput `pulumi:"vpcId"`
 	// The preferred start time (in `d:HH:MM` format) to perform weekly maintenance, in the UTC time zone.
-	WeeklyMaintenanceStartTime interface{}
+	WeeklyMaintenanceStartTime pulumi.StringInput `pulumi:"weeklyMaintenanceStartTime"`
 }
 
 // The set of arguments for constructing a WindowsFileSystem resource.
 type WindowsFileSystemArgs struct {
 	// The ID for an existing Microsoft Active Directory instance that the file system should join when it's created. Cannot be specified with `selfManagedActiveDirectory`.
-	ActiveDirectoryId interface{}
+	ActiveDirectoryId pulumi.StringInput `pulumi:"activeDirectoryId"`
 	// The number of days to retain automatic backups. Minimum of `0` and maximum of `35`. Defaults to `7`. Set to `0` to disable.
-	AutomaticBackupRetentionDays interface{}
+	AutomaticBackupRetentionDays pulumi.IntInput `pulumi:"automaticBackupRetentionDays"`
 	// A boolean flag indicating whether tags on the file system should be copied to backups. Defaults to `false`.
-	CopyTagsToBackups interface{}
+	CopyTagsToBackups pulumi.BoolInput `pulumi:"copyTagsToBackups"`
 	// The preferred time (in `HH:MM` format) to take daily automatic backups, in the UTC time zone.
-	DailyAutomaticBackupStartTime interface{}
+	DailyAutomaticBackupStartTime pulumi.StringInput `pulumi:"dailyAutomaticBackupStartTime"`
 	// ARN for the KMS Key to encrypt the file system at rest. Defaults to an AWS managed KMS Key.
-	KmsKeyId interface{}
+	KmsKeyId pulumi.StringInput `pulumi:"kmsKeyId"`
 	// A list of IDs for the security groups that apply to the specified network interfaces created for file system access. These security groups will apply to all network interfaces.
-	SecurityGroupIds interface{}
+	SecurityGroupIds pulumi.ArrayInput `pulumi:"securityGroupIds"`
 	// Configuration block that Amazon FSx uses to join the Windows File Server instance to your self-managed (including on-premises) Microsoft Active Directory (AD) directory. Cannot be specified with `activeDirectoryId`. Detailed below.
-	SelfManagedActiveDirectory interface{}
+	SelfManagedActiveDirectory pulumi.AnyInput `pulumi:"selfManagedActiveDirectory"`
 	// When enabled, will skip the default final backup taken when the file system is deleted. This configuration must be applied separately before attempting to delete the resource to have the desired behavior. Defaults to `false`.
-	SkipFinalBackup interface{}
+	SkipFinalBackup pulumi.BoolInput `pulumi:"skipFinalBackup"`
 	// Storage capacity (GiB) of the file system. Minimum of 300 and maximum of 65536.
-	StorageCapacity interface{}
+	StorageCapacity pulumi.IntInput `pulumi:"storageCapacity"`
 	// A list of IDs for the subnets that the file system will be accessible from. File systems support only one subnet. The file server is also launched in that subnet's Availability Zone.
-	SubnetIds interface{}
+	SubnetIds pulumi.StringInput `pulumi:"subnetIds"`
 	// A mapping of tags to assign to the file system.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// Throughput (megabytes per second) of the file system in power of 2 increments. Minimum of `8` and maximum of `2048`.
-	ThroughputCapacity interface{}
+	ThroughputCapacity pulumi.IntInput `pulumi:"throughputCapacity"`
 	// The preferred start time (in `d:HH:MM` format) to perform weekly maintenance, in the UTC time zone.
-	WeeklyMaintenanceStartTime interface{}
+	WeeklyMaintenanceStartTime pulumi.StringInput `pulumi:"weeklyMaintenanceStartTime"`
 }

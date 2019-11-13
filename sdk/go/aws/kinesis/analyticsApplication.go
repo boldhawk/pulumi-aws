@@ -14,23 +14,60 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/kinesis_analytics_application.html.markdown.
 type AnalyticsApplication struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// The ARN of the Kinesis Analytics Appliation.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// The CloudWatch log stream options to monitor application errors.
+	// See CloudWatch Logging Options below for more details.
+	CloudwatchLoggingOptions pulumi.AnyOutput `pulumi:"cloudwatchLoggingOptions"`
+
+	// SQL Code to transform input data, and generate output.
+	Code pulumi.StringOutput `pulumi:"code"`
+
+	// The Timestamp when the application version was created.
+	CreateTimestamp pulumi.StringOutput `pulumi:"createTimestamp"`
+
+	// Description of the application.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// Input configuration of the application. See Inputs below for more details.
+	Inputs pulumi.AnyOutput `pulumi:"inputs"`
+
+	// The Timestamp when the application was last updated.
+	LastUpdateTimestamp pulumi.StringOutput `pulumi:"lastUpdateTimestamp"`
+
+	// Name of the Kinesis Analytics Application.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Output destination configuration of the application. See Outputs below for more details.
+	Outputs pulumi.ArrayOutput `pulumi:"outputs"`
+
+	// An S3 Reference Data Source for the application.
+	// See Reference Data Sources below for more details.
+	ReferenceDataSources pulumi.AnyOutput `pulumi:"referenceDataSources"`
+
+	// The Status of the application.
+	Status pulumi.StringOutput `pulumi:"status"`
+
+	// Key-value mapping of tags for the Kinesis Analytics Application.
+	Tags pulumi.MapOutput `pulumi:"tags"`
+
+	// The Version of the application.
+	Version pulumi.IntOutput `pulumi:"version"`
 }
 
 // NewAnalyticsApplication registers a new resource with the given unique name, arguments, and options.
 func NewAnalyticsApplication(ctx *pulumi.Context,
 	name string, args *AnalyticsApplicationArgs, opts ...pulumi.ResourceOpt) (*AnalyticsApplication, error) {
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["cloudwatchLoggingOptions"] = nil
-		inputs["code"] = nil
-		inputs["description"] = nil
-		inputs["inputs"] = nil
-		inputs["name"] = nil
-		inputs["outputs"] = nil
-		inputs["referenceDataSources"] = nil
-		inputs["tags"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["cloudwatchLoggingOptions"] = args.CloudwatchLoggingOptions
 		inputs["code"] = args.Code
 		inputs["description"] = args.Description
@@ -40,23 +77,19 @@ func NewAnalyticsApplication(ctx *pulumi.Context,
 		inputs["referenceDataSources"] = args.ReferenceDataSources
 		inputs["tags"] = args.Tags
 	}
-	inputs["arn"] = nil
-	inputs["createTimestamp"] = nil
-	inputs["lastUpdateTimestamp"] = nil
-	inputs["status"] = nil
-	inputs["version"] = nil
-	s, err := ctx.RegisterResource("aws:kinesis/analyticsApplication:AnalyticsApplication", name, true, inputs, opts...)
+	var resource AnalyticsApplication
+	err := ctx.RegisterResource("aws:kinesis/analyticsApplication:AnalyticsApplication", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AnalyticsApplication{s: s}, nil
+	return &resource, nil
 }
 
 // GetAnalyticsApplication gets an existing AnalyticsApplication resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAnalyticsApplication(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AnalyticsApplicationState, opts ...pulumi.ResourceOpt) (*AnalyticsApplication, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["cloudwatchLoggingOptions"] = state.CloudwatchLoggingOptions
@@ -72,140 +105,73 @@ func GetAnalyticsApplication(ctx *pulumi.Context,
 		inputs["tags"] = state.Tags
 		inputs["version"] = state.Version
 	}
-	s, err := ctx.ReadResource("aws:kinesis/analyticsApplication:AnalyticsApplication", name, id, inputs, opts...)
+	var resource AnalyticsApplication
+	err := ctx.ReadResource("aws:kinesis/analyticsApplication:AnalyticsApplication", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &AnalyticsApplication{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *AnalyticsApplication) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *AnalyticsApplication) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *AnalyticsApplication) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *AnalyticsApplication) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// The ARN of the Kinesis Analytics Appliation.
-func (r *AnalyticsApplication) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// The CloudWatch log stream options to monitor application errors.
-// See CloudWatch Logging Options below for more details.
-func (r *AnalyticsApplication) CloudwatchLoggingOptions() *pulumi.Output {
-	return r.s.State["cloudwatchLoggingOptions"]
-}
-
-// SQL Code to transform input data, and generate output.
-func (r *AnalyticsApplication) Code() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["code"])
-}
-
-// The Timestamp when the application version was created.
-func (r *AnalyticsApplication) CreateTimestamp() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["createTimestamp"])
-}
-
-// Description of the application.
-func (r *AnalyticsApplication) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// Input configuration of the application. See Inputs below for more details.
-func (r *AnalyticsApplication) Inputs() *pulumi.Output {
-	return r.s.State["inputs"]
-}
-
-// The Timestamp when the application was last updated.
-func (r *AnalyticsApplication) LastUpdateTimestamp() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["lastUpdateTimestamp"])
-}
-
-// Name of the Kinesis Analytics Application.
-func (r *AnalyticsApplication) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Output destination configuration of the application. See Outputs below for more details.
-func (r *AnalyticsApplication) Outputs() *pulumi.ArrayOutput {
-	return (*pulumi.ArrayOutput)(r.s.State["outputs"])
-}
-
-// An S3 Reference Data Source for the application.
-// See Reference Data Sources below for more details.
-func (r *AnalyticsApplication) ReferenceDataSources() *pulumi.Output {
-	return r.s.State["referenceDataSources"]
-}
-
-// The Status of the application.
-func (r *AnalyticsApplication) Status() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["status"])
-}
-
-// Key-value mapping of tags for the Kinesis Analytics Application.
-func (r *AnalyticsApplication) Tags() *pulumi.MapOutput {
-	return (*pulumi.MapOutput)(r.s.State["tags"])
-}
-
-// The Version of the application.
-func (r *AnalyticsApplication) Version() *pulumi.IntOutput {
-	return (*pulumi.IntOutput)(r.s.State["version"])
-}
-
 // Input properties used for looking up and filtering AnalyticsApplication resources.
 type AnalyticsApplicationState struct {
 	// The ARN of the Kinesis Analytics Appliation.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The CloudWatch log stream options to monitor application errors.
 	// See CloudWatch Logging Options below for more details.
-	CloudwatchLoggingOptions interface{}
+	CloudwatchLoggingOptions pulumi.AnyInput `pulumi:"cloudwatchLoggingOptions"`
 	// SQL Code to transform input data, and generate output.
-	Code interface{}
+	Code pulumi.StringInput `pulumi:"code"`
 	// The Timestamp when the application version was created.
-	CreateTimestamp interface{}
+	CreateTimestamp pulumi.StringInput `pulumi:"createTimestamp"`
 	// Description of the application.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// Input configuration of the application. See Inputs below for more details.
-	Inputs interface{}
+	Inputs pulumi.AnyInput `pulumi:"inputs"`
 	// The Timestamp when the application was last updated.
-	LastUpdateTimestamp interface{}
+	LastUpdateTimestamp pulumi.StringInput `pulumi:"lastUpdateTimestamp"`
 	// Name of the Kinesis Analytics Application.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Output destination configuration of the application. See Outputs below for more details.
-	Outputs interface{}
+	Outputs pulumi.ArrayInput `pulumi:"outputs"`
 	// An S3 Reference Data Source for the application.
 	// See Reference Data Sources below for more details.
-	ReferenceDataSources interface{}
+	ReferenceDataSources pulumi.AnyInput `pulumi:"referenceDataSources"`
 	// The Status of the application.
-	Status interface{}
+	Status pulumi.StringInput `pulumi:"status"`
 	// Key-value mapping of tags for the Kinesis Analytics Application.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 	// The Version of the application.
-	Version interface{}
+	Version pulumi.IntInput `pulumi:"version"`
 }
 
 // The set of arguments for constructing a AnalyticsApplication resource.
 type AnalyticsApplicationArgs struct {
 	// The CloudWatch log stream options to monitor application errors.
 	// See CloudWatch Logging Options below for more details.
-	CloudwatchLoggingOptions interface{}
+	CloudwatchLoggingOptions pulumi.AnyInput `pulumi:"cloudwatchLoggingOptions"`
 	// SQL Code to transform input data, and generate output.
-	Code interface{}
+	Code pulumi.StringInput `pulumi:"code"`
 	// Description of the application.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// Input configuration of the application. See Inputs below for more details.
-	Inputs interface{}
+	Inputs pulumi.AnyInput `pulumi:"inputs"`
 	// Name of the Kinesis Analytics Application.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Output destination configuration of the application. See Outputs below for more details.
-	Outputs interface{}
+	Outputs pulumi.ArrayInput `pulumi:"outputs"`
 	// An S3 Reference Data Source for the application.
 	// See Reference Data Sources below for more details.
-	ReferenceDataSources interface{}
+	ReferenceDataSources pulumi.AnyInput `pulumi:"referenceDataSources"`
 	// Key-value mapping of tags for the Kinesis Analytics Application.
-	Tags interface{}
+	Tags pulumi.MapInput `pulumi:"tags"`
 }

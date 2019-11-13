@@ -12,7 +12,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/r/gamelift_alias.html.markdown.
 type Alias struct {
-	s *pulumi.ResourceState
+	// URN is this resource's unique name assigned by Pulumi.
+	URN pulumi.URNOutput `pulumi:"urn"`
+
+	// ID is this resource's unique identifier assigned by its provider.
+	ID pulumi.IDOutput `pulumi:"id"`
+
+	// Alias ARN.
+	Arn pulumi.StringOutput `pulumi:"arn"`
+
+	// Description of the alias.
+	Description pulumi.StringOutput `pulumi:"description"`
+
+	// Name of the alias.
+	Name pulumi.StringOutput `pulumi:"name"`
+
+	// Specifies the fleet and/or routing type to use for the alias.
+	RoutingStrategy pulumi.AnyOutput `pulumi:"routingStrategy"`
 }
 
 // NewAlias registers a new resource with the given unique name, arguments, and options.
@@ -21,90 +37,67 @@ func NewAlias(ctx *pulumi.Context,
 	if args == nil || args.RoutingStrategy == nil {
 		return nil, errors.New("missing required argument 'RoutingStrategy'")
 	}
-	inputs := make(map[string]interface{})
-	if args == nil {
-		inputs["description"] = nil
-		inputs["name"] = nil
-		inputs["routingStrategy"] = nil
-	} else {
+	inputs := map[string]pulumi.Input{}
+	inputs["name"] = pulumi.Any()
+	if args != nil {
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name
 		inputs["routingStrategy"] = args.RoutingStrategy
 	}
-	inputs["arn"] = nil
-	s, err := ctx.RegisterResource("aws:gamelift/alias:Alias", name, true, inputs, opts...)
+	var resource Alias
+	err := ctx.RegisterResource("aws:gamelift/alias:Alias", name, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Alias{s: s}, nil
+	return &resource, nil
 }
 
 // GetAlias gets an existing Alias resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetAlias(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *AliasState, opts ...pulumi.ResourceOpt) (*Alias, error) {
-	inputs := make(map[string]interface{})
+	inputs := map[string]pulumi.Input{}
 	if state != nil {
 		inputs["arn"] = state.Arn
 		inputs["description"] = state.Description
 		inputs["name"] = state.Name
 		inputs["routingStrategy"] = state.RoutingStrategy
 	}
-	s, err := ctx.ReadResource("aws:gamelift/alias:Alias", name, id, inputs, opts...)
+	var resource Alias
+	err := ctx.ReadResource("aws:gamelift/alias:Alias", name, id, inputs, &resource, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return &Alias{s: s}, nil
+	return &resource, nil
 }
 
-// URN is this resource's unique name assigned by Pulumi.
-func (r *Alias) URN() *pulumi.URNOutput {
-	return r.s.URN()
+// GetURN returns this resource's unique name assigned by Pulumi.
+func (r *Alias) GetURN() pulumi.URNOutput {
+	return r.URN
 }
 
-// ID is this resource's unique identifier assigned by its provider.
-func (r *Alias) ID() *pulumi.IDOutput {
-	return r.s.ID()
+// GetID returns this resource's unique identifier assigned by its provider.
+func (r *Alias) GetID() pulumi.IDOutput {
+	return r.ID
 }
-
-// Alias ARN.
-func (r *Alias) Arn() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["arn"])
-}
-
-// Description of the alias.
-func (r *Alias) Description() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["description"])
-}
-
-// Name of the alias.
-func (r *Alias) Name() *pulumi.StringOutput {
-	return (*pulumi.StringOutput)(r.s.State["name"])
-}
-
-// Specifies the fleet and/or routing type to use for the alias.
-func (r *Alias) RoutingStrategy() *pulumi.Output {
-	return r.s.State["routingStrategy"]
-}
-
 // Input properties used for looking up and filtering Alias resources.
 type AliasState struct {
 	// Alias ARN.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// Description of the alias.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// Name of the alias.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Specifies the fleet and/or routing type to use for the alias.
-	RoutingStrategy interface{}
+	RoutingStrategy pulumi.AnyInput `pulumi:"routingStrategy"`
 }
 
 // The set of arguments for constructing a Alias resource.
 type AliasArgs struct {
 	// Description of the alias.
-	Description interface{}
+	Description pulumi.StringInput `pulumi:"description"`
 	// Name of the alias.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 	// Specifies the fleet and/or routing type to use for the alias.
-	RoutingStrategy interface{}
+	RoutingStrategy pulumi.AnyInput `pulumi:"routingStrategy"`
 }

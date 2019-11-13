@@ -37,30 +37,30 @@ func LookupSecret(ctx *pulumi.Context, args *GetSecretArgs) (*GetSecretResult, e
 // A collection of arguments for invoking getSecret.
 type GetSecretArgs struct {
 	// The Amazon Resource Name (ARN) of the secret to retrieve.
-	Arn interface{}
+	Arn pulumi.StringInput `pulumi:"arn"`
 	// The name of the secret to retrieve.
-	Name interface{}
+	Name pulumi.StringInput `pulumi:"name"`
 }
 
 // A collection of values returned by getSecret.
 type GetSecretResult struct {
 	// The Amazon Resource Name (ARN) of the secret.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// A description of the secret.
-	Description interface{}
+	Description string `pulumi:"description"`
 	// The Key Management Service (KMS) Customer Master Key (CMK) associated with the secret.
-	KmsKeyId interface{}
-	Name interface{}
+	KmsKeyId string `pulumi:"kmsKeyId"`
+	Name string `pulumi:"name"`
 	// The resource-based policy document that's attached to the secret.
-	Policy interface{}
+	Policy string `pulumi:"policy"`
 	// Whether rotation is enabled or not.
-	RotationEnabled interface{}
+	RotationEnabled bool `pulumi:"rotationEnabled"`
 	// Rotation Lambda function Amazon Resource Name (ARN) if rotation is enabled.
-	RotationLambdaArn interface{}
+	RotationLambdaArn string `pulumi:"rotationLambdaArn"`
 	// Rotation rules if rotation is enabled.
-	RotationRules interface{}
+	RotationRules []interface{} `pulumi:"rotationRules"`
 	// Tags of the secret.
-	Tags interface{}
+	Tags map[string]interface{} `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }

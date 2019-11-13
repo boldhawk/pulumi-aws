@@ -33,18 +33,18 @@ func LookupGroup(ctx *pulumi.Context, args *GetGroupArgs) (*GetGroupResult, erro
 // A collection of arguments for invoking getGroup.
 type GetGroupArgs struct {
 	// The friendly IAM group name to match.
-	GroupName interface{}
+	GroupName pulumi.StringInput `pulumi:"groupName"`
 }
 
 // A collection of values returned by getGroup.
 type GetGroupResult struct {
 	// The Amazon Resource Name (ARN) specifying the group.
-	Arn interface{}
+	Arn string `pulumi:"arn"`
 	// The stable and unique string identifying the group.
-	GroupId interface{}
-	GroupName interface{}
+	GroupId string `pulumi:"groupId"`
+	GroupName string `pulumi:"groupName"`
 	// The path to the group.
-	Path interface{}
+	Path string `pulumi:"path"`
 	// id is the provider-assigned unique ID for this managed resource.
-	Id interface{}
+	Id string `pulumi:"id"`
 }
