@@ -11,34 +11,22 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/glue_script.html.markdown.
 func LookupScript(ctx *pulumi.Context, args *GetScriptArgs) (*GetScriptResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["dagEdges"] = args.DagEdges
-		inputs["dagNodes"] = args.DagNodes
-		inputs["language"] = args.Language
-	}
-	outputs, err := ctx.Invoke("aws:glue/getScript:getScript", inputs)
+var rv GetScriptResult
+	err := ctx.Invoke("aws:glue/getScript:getScript", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetScriptResult{
-		DagEdges: outputs["dagEdges"],
-		DagNodes: outputs["dagNodes"],
-		Language: outputs["language"],
-		PythonScript: outputs["pythonScript"],
-		ScalaCode: outputs["scalaCode"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getScript.
 type GetScriptArgs struct {
 	// A list of the edges in the DAG. Defined below.
-	DagEdges pulumi.ArrayInput `pulumi:"dagEdges"`
+	DagEdges []interface{} `pulumi:"dagEdges"`
 	// A list of the nodes in the DAG. Defined below.
-	DagNodes pulumi.ArrayInput `pulumi:"dagNodes"`
+	DagNodes []interface{} `pulumi:"dagNodes"`
 	// The programming language of the resulting code from the DAG. Defaults to `PYTHON`. Valid values are `PYTHON` and `SCALA`.
-	Language pulumi.StringInput `pulumi:"language"`
+	Language string `pulumi:"language"`
 }
 
 // A collection of values returned by getScript.

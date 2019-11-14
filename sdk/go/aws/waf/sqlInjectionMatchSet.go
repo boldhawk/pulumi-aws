@@ -28,7 +28,6 @@ type SqlInjectionMatchSet struct {
 func NewSqlInjectionMatchSet(ctx *pulumi.Context,
 	name string, args *SqlInjectionMatchSetArgs, opts ...pulumi.ResourceOpt) (*SqlInjectionMatchSet, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["sqlInjectionMatchTuples"] = args.SqlInjectionMatchTuples

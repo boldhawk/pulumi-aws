@@ -8,34 +8,23 @@ import (
 )
 
 func LookupNetworkAcls(ctx *pulumi.Context, args *GetNetworkAclsArgs) (*GetNetworkAclsResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["tags"] = args.Tags
-		inputs["vpcId"] = args.VpcId
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getNetworkAcls:getNetworkAcls", inputs)
+var rv GetNetworkAclsResult
+	err := ctx.Invoke("aws:ec2/getNetworkAcls:getNetworkAcls", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetNetworkAclsResult{
-		Filters: outputs["filters"],
-		Ids: outputs["ids"],
-		Tags: outputs["tags"],
-		VpcId: outputs["vpcId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getNetworkAcls.
 type GetNetworkAclsArgs struct {
 	// Custom filter block as described below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired network ACLs.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The VPC ID that you want to filter from.
-	VpcId pulumi.StringInput `pulumi:"vpcId"`
+	VpcId string `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getNetworkAcls.

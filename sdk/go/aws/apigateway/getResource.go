@@ -12,30 +12,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/api_gateway_resource.html.markdown.
 func LookupResource(ctx *pulumi.Context, args *GetResourceArgs) (*GetResourceResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["path"] = args.Path
-		inputs["restApiId"] = args.RestApiId
-	}
-	outputs, err := ctx.Invoke("aws:apigateway/getResource:getResource", inputs)
+var rv GetResourceResult
+	err := ctx.Invoke("aws:apigateway/getResource:getResource", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetResourceResult{
-		ParentId: outputs["parentId"],
-		Path: outputs["path"],
-		PathPart: outputs["pathPart"],
-		RestApiId: outputs["restApiId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getResource.
 type GetResourceArgs struct {
 	// The full path of the resource.  If no path is found, an error will be returned.
-	Path pulumi.StringInput `pulumi:"path"`
+	Path string `pulumi:"path"`
 	// The REST API id that owns the resource. If no REST API is found, an error will be returned.
-	RestApiId pulumi.StringInput `pulumi:"restApiId"`
+	RestApiId string `pulumi:"restApiId"`
 }
 
 // A collection of values returned by getResource.

@@ -37,7 +37,6 @@ type Vault struct {
 func NewVault(ctx *pulumi.Context,
 	name string, args *VaultArgs, opts ...pulumi.ResourceOpt) (*Vault, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["kmsKeyArn"] = args.KmsKeyArn
 		inputs["name"] = args.Name

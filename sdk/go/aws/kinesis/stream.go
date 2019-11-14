@@ -57,7 +57,6 @@ func NewStream(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'ShardCount'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["arn"] = args.Arn
 		inputs["encryptionType"] = args.EncryptionType

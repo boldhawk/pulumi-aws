@@ -11,25 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iot_endpoint.html.markdown.
 func LookupEndpoint(ctx *pulumi.Context, args *GetEndpointArgs) (*GetEndpointResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["endpointType"] = args.EndpointType
-	}
-	outputs, err := ctx.Invoke("aws:iot/getEndpoint:getEndpoint", inputs)
+var rv GetEndpointResult
+	err := ctx.Invoke("aws:iot/getEndpoint:getEndpoint", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetEndpointResult{
-		EndpointAddress: outputs["endpointAddress"],
-		EndpointType: outputs["endpointType"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getEndpoint.
 type GetEndpointArgs struct {
 	// Endpoint type. Valid values: `iot:CredentialProvider`, `iot:Data`, `iot:Data-ATS`, `iot:Job`.
-	EndpointType pulumi.StringInput `pulumi:"endpointType"`
+	EndpointType string `pulumi:"endpointType"`
 }
 
 // A collection of values returned by getEndpoint.

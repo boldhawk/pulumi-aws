@@ -86,7 +86,6 @@ type Topic struct {
 func NewTopic(ctx *pulumi.Context,
 	name string, args *TopicArgs, opts ...pulumi.ResourceOpt) (*Topic, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["applicationFailureFeedbackRoleArn"] = args.ApplicationFailureFeedbackRoleArn
 		inputs["applicationSuccessFeedbackRoleArn"] = args.ApplicationSuccessFeedbackRoleArn

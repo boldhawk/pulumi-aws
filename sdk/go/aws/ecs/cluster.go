@@ -41,7 +41,6 @@ type Cluster struct {
 func NewCluster(ctx *pulumi.Context,
 	name string, args *ClusterArgs, opts ...pulumi.ResourceOpt) (*Cluster, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["settings"] = args.Settings

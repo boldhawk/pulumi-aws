@@ -11,25 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/servicequotas_service.html.markdown.
 func LookupService(ctx *pulumi.Context, args *GetServiceArgs) (*GetServiceResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["serviceName"] = args.ServiceName
-	}
-	outputs, err := ctx.Invoke("aws:servicequotas/getService:getService", inputs)
+var rv GetServiceResult
+	err := ctx.Invoke("aws:servicequotas/getService:getService", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetServiceResult{
-		ServiceCode: outputs["serviceCode"],
-		ServiceName: outputs["serviceName"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getService.
 type GetServiceArgs struct {
 	// Service name to lookup within Service Quotas. Available values can be found with the [AWS CLI service-quotas list-services command](https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-services.html).
-	ServiceName pulumi.StringInput `pulumi:"serviceName"`
+	ServiceName string `pulumi:"serviceName"`
 }
 
 // A collection of values returned by getService.

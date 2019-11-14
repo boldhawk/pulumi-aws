@@ -47,7 +47,6 @@ type User struct {
 func NewUser(ctx *pulumi.Context,
 	name string, args *UserArgs, opts ...pulumi.ResourceOpt) (*User, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["forceDestroy"] = args.ForceDestroy
 		inputs["name"] = args.Name

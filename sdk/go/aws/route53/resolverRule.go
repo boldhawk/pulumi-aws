@@ -59,7 +59,6 @@ func NewResolverRule(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'RuleType'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["domainName"] = args.DomainName
 		inputs["name"] = args.Name

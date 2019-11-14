@@ -11,33 +11,21 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/customer_gateway.html.markdown.
 func LookupCustomerGateway(ctx *pulumi.Context, args *GetCustomerGatewayArgs) (*GetCustomerGatewayResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["id"] = args.Id
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getCustomerGateway:getCustomerGateway", inputs)
+var rv GetCustomerGatewayResult
+	err := ctx.Invoke("aws:ec2/getCustomerGateway:getCustomerGateway", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetCustomerGatewayResult{
-		BgpAsn: outputs["bgpAsn"],
-		Filters: outputs["filters"],
-		Id: outputs["id"],
-		IpAddress: outputs["ipAddress"],
-		Tags: outputs["tags"],
-		Type: outputs["type"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getCustomerGateway.
 type GetCustomerGatewayArgs struct {
 	// One or more [name-value pairs][dcg-filters] to filter by.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// The ID of the gateway.
-	Id pulumi.StringInput `pulumi:"id"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Id string `pulumi:"id"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getCustomerGateway.

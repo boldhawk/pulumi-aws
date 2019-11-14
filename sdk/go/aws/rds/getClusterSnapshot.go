@@ -14,62 +14,33 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/db_cluster_snapshot.html.markdown.
 func LookupClusterSnapshot(ctx *pulumi.Context, args *GetClusterSnapshotArgs) (*GetClusterSnapshotResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["dbClusterIdentifier"] = args.DbClusterIdentifier
-		inputs["dbClusterSnapshotIdentifier"] = args.DbClusterSnapshotIdentifier
-		inputs["includePublic"] = args.IncludePublic
-		inputs["includeShared"] = args.IncludeShared
-		inputs["mostRecent"] = args.MostRecent
-		inputs["snapshotType"] = args.SnapshotType
-	}
-	outputs, err := ctx.Invoke("aws:rds/getClusterSnapshot:getClusterSnapshot", inputs)
+var rv GetClusterSnapshotResult
+	err := ctx.Invoke("aws:rds/getClusterSnapshot:getClusterSnapshot", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetClusterSnapshotResult{
-		AllocatedStorage: outputs["allocatedStorage"],
-		AvailabilityZones: outputs["availabilityZones"],
-		DbClusterIdentifier: outputs["dbClusterIdentifier"],
-		DbClusterSnapshotArn: outputs["dbClusterSnapshotArn"],
-		DbClusterSnapshotIdentifier: outputs["dbClusterSnapshotIdentifier"],
-		Engine: outputs["engine"],
-		EngineVersion: outputs["engineVersion"],
-		IncludePublic: outputs["includePublic"],
-		IncludeShared: outputs["includeShared"],
-		KmsKeyId: outputs["kmsKeyId"],
-		LicenseModel: outputs["licenseModel"],
-		MostRecent: outputs["mostRecent"],
-		Port: outputs["port"],
-		SnapshotCreateTime: outputs["snapshotCreateTime"],
-		SnapshotType: outputs["snapshotType"],
-		SourceDbClusterSnapshotArn: outputs["sourceDbClusterSnapshotArn"],
-		Status: outputs["status"],
-		StorageEncrypted: outputs["storageEncrypted"],
-		VpcId: outputs["vpcId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getClusterSnapshot.
 type GetClusterSnapshotArgs struct {
 	// Returns the list of snapshots created by the specific db_cluster
-	DbClusterIdentifier pulumi.StringInput `pulumi:"dbClusterIdentifier"`
+	DbClusterIdentifier string `pulumi:"dbClusterIdentifier"`
 	// Returns information on a specific snapshot_id.
-	DbClusterSnapshotIdentifier pulumi.StringInput `pulumi:"dbClusterSnapshotIdentifier"`
+	DbClusterSnapshotIdentifier string `pulumi:"dbClusterSnapshotIdentifier"`
 	// Set this value to true to include manual DB Cluster Snapshots that are public and can be
 	// copied or restored by any AWS account, otherwise set this value to false. The default is `false`.
-	IncludePublic pulumi.BoolInput `pulumi:"includePublic"`
+	IncludePublic bool `pulumi:"includePublic"`
 	// Set this value to true to include shared manual DB Cluster Snapshots from other
 	// AWS accounts that this AWS account has been given permission to copy or restore, otherwise set this value to false.
 	// The default is `false`.
-	IncludeShared pulumi.BoolInput `pulumi:"includeShared"`
+	IncludeShared bool `pulumi:"includeShared"`
 	// If more than one result is returned, use the most recent Snapshot.
-	MostRecent pulumi.BoolInput `pulumi:"mostRecent"`
+	MostRecent bool `pulumi:"mostRecent"`
 	// The type of snapshots to be returned. If you don't specify a SnapshotType
 	// value, then both automated and manual DB cluster snapshots are returned. Shared and public DB Cluster Snapshots are not
 	// included in the returned results by default. Possible values are, `automated`, `manual`, `shared` and `public`.
-	SnapshotType pulumi.StringInput `pulumi:"snapshotType"`
+	SnapshotType string `pulumi:"snapshotType"`
 }
 
 // A collection of values returned by getClusterSnapshot.

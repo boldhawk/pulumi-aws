@@ -11,31 +11,21 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ec2_transit_gateway_vpn_attachment.html.markdown.
 func LookupVpnAttachment(ctx *pulumi.Context, args *GetVpnAttachmentArgs) (*GetVpnAttachmentResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["tags"] = args.Tags
-		inputs["transitGatewayId"] = args.TransitGatewayId
-		inputs["vpnConnectionId"] = args.VpnConnectionId
-	}
-	outputs, err := ctx.Invoke("aws:ec2transitgateway/getVpnAttachment:getVpnAttachment", inputs)
+var rv GetVpnAttachmentResult
+	err := ctx.Invoke("aws:ec2transitgateway/getVpnAttachment:getVpnAttachment", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetVpnAttachmentResult{
-		Tags: outputs["tags"],
-		TransitGatewayId: outputs["transitGatewayId"],
-		VpnConnectionId: outputs["vpnConnectionId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getVpnAttachment.
 type GetVpnAttachmentArgs struct {
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// Identifier of the EC2 Transit Gateway.
-	TransitGatewayId pulumi.StringInput `pulumi:"transitGatewayId"`
+	TransitGatewayId string `pulumi:"transitGatewayId"`
 	// Identifier of the EC2 VPN Connection.
-	VpnConnectionId pulumi.StringInput `pulumi:"vpnConnectionId"`
+	VpnConnectionId string `pulumi:"vpnConnectionId"`
 }
 
 // A collection of values returned by getVpnAttachment.

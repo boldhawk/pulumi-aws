@@ -63,7 +63,6 @@ func NewGrant(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Operations'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["constraints"] = args.Constraints
 		inputs["grantCreationTokens"] = args.GrantCreationTokens

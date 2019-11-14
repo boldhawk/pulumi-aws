@@ -44,7 +44,6 @@ func NewSelection(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'PlanId'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["iamRoleArn"] = args.IamRoleArn
 		inputs["name"] = args.Name

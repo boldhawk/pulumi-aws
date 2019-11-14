@@ -37,7 +37,6 @@ type CatalogDatabase struct {
 func NewCatalogDatabase(ctx *pulumi.Context,
 	name string, args *CatalogDatabaseArgs, opts ...pulumi.ResourceOpt) (*CatalogDatabase, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["catalogId"] = args.CatalogId
 		inputs["description"] = args.Description

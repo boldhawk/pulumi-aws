@@ -38,7 +38,6 @@ func NewSubnetGroup(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'SubnetIds'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name

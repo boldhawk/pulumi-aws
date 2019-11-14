@@ -13,34 +13,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/subnet_ids.html.markdown.
 func LookupSubnetIds(ctx *pulumi.Context, args *GetSubnetIdsArgs) (*GetSubnetIdsResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["tags"] = args.Tags
-		inputs["vpcId"] = args.VpcId
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getSubnetIds:getSubnetIds", inputs)
+var rv GetSubnetIdsResult
+	err := ctx.Invoke("aws:ec2/getSubnetIds:getSubnetIds", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetSubnetIdsResult{
-		Filters: outputs["filters"],
-		Ids: outputs["ids"],
-		Tags: outputs["tags"],
-		VpcId: outputs["vpcId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getSubnetIds.
 type GetSubnetIdsArgs struct {
 	// Custom filter block as described below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired subnets.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The VPC ID that you want to filter from.
-	VpcId pulumi.StringInput `pulumi:"vpcId"`
+	VpcId string `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getSubnetIds.

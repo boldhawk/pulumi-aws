@@ -39,7 +39,6 @@ type Classifier struct {
 func NewClassifier(ctx *pulumi.Context,
 	name string, args *ClassifierArgs, opts ...pulumi.ResourceOpt) (*Classifier, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["csvClassifier"] = args.CsvClassifier
 		inputs["grokClassifier"] = args.GrokClassifier

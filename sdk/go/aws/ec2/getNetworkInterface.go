@@ -11,45 +11,21 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/network_interface.html.markdown.
 func LookupNetworkInterface(ctx *pulumi.Context, args *GetNetworkInterfaceArgs) (*GetNetworkInterfaceResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["id"] = args.Id
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getNetworkInterface:getNetworkInterface", inputs)
+var rv GetNetworkInterfaceResult
+	err := ctx.Invoke("aws:ec2/getNetworkInterface:getNetworkInterface", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetNetworkInterfaceResult{
-		Associations: outputs["associations"],
-		Attachments: outputs["attachments"],
-		AvailabilityZone: outputs["availabilityZone"],
-		Description: outputs["description"],
-		Filters: outputs["filters"],
-		Id: outputs["id"],
-		InterfaceType: outputs["interfaceType"],
-		Ipv6Addresses: outputs["ipv6Addresses"],
-		MacAddress: outputs["macAddress"],
-		OwnerId: outputs["ownerId"],
-		PrivateDnsName: outputs["privateDnsName"],
-		PrivateIp: outputs["privateIp"],
-		PrivateIps: outputs["privateIps"],
-		RequesterId: outputs["requesterId"],
-		SecurityGroups: outputs["securityGroups"],
-		SubnetId: outputs["subnetId"],
-		Tags: outputs["tags"],
-		VpcId: outputs["vpcId"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getNetworkInterface.
 type GetNetworkInterfaceArgs struct {
 	// One or more name/value pairs to filter off of. There are several valid keys, for a full reference, check out [describe-network-interfaces](https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-network-interfaces.html) in the AWS CLI reference.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// The identifier for the network interface.
-	Id pulumi.StringInput `pulumi:"id"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Id string `pulumi:"id"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getNetworkInterface.

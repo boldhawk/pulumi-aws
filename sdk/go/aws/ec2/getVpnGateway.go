@@ -12,48 +12,31 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/vpn_gateway.html.markdown.
 func LookupVpnGateway(ctx *pulumi.Context, args *GetVpnGatewayArgs) (*GetVpnGatewayResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["amazonSideAsn"] = args.AmazonSideAsn
-		inputs["attachedVpcId"] = args.AttachedVpcId
-		inputs["availabilityZone"] = args.AvailabilityZone
-		inputs["filters"] = args.Filters
-		inputs["id"] = args.Id
-		inputs["state"] = args.State
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getVpnGateway:getVpnGateway", inputs)
+var rv GetVpnGatewayResult
+	err := ctx.Invoke("aws:ec2/getVpnGateway:getVpnGateway", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetVpnGatewayResult{
-		AmazonSideAsn: outputs["amazonSideAsn"],
-		AttachedVpcId: outputs["attachedVpcId"],
-		AvailabilityZone: outputs["availabilityZone"],
-		Filters: outputs["filters"],
-		Id: outputs["id"],
-		State: outputs["state"],
-		Tags: outputs["tags"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getVpnGateway.
 type GetVpnGatewayArgs struct {
 	// The Autonomous System Number (ASN) for the Amazon side of the specific VPN Gateway to retrieve.
-	AmazonSideAsn pulumi.StringInput `pulumi:"amazonSideAsn"`
+	AmazonSideAsn string `pulumi:"amazonSideAsn"`
 	// The ID of a VPC attached to the specific VPN Gateway to retrieve.
-	AttachedVpcId pulumi.StringInput `pulumi:"attachedVpcId"`
+	AttachedVpcId string `pulumi:"attachedVpcId"`
 	// The Availability Zone of the specific VPN Gateway to retrieve.
-	AvailabilityZone pulumi.StringInput `pulumi:"availabilityZone"`
+	AvailabilityZone string `pulumi:"availabilityZone"`
 	// Custom filter block as described below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// The ID of the specific VPN Gateway to retrieve.
-	Id pulumi.StringInput `pulumi:"id"`
+	Id string `pulumi:"id"`
 	// The state of the specific VPN Gateway to retrieve.
-	State pulumi.StringInput `pulumi:"state"`
+	State string `pulumi:"state"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired VPN Gateway.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpnGateway.

@@ -52,7 +52,6 @@ type Fleet struct {
 func NewFleet(ctx *pulumi.Context,
 	name string, args *FleetArgs, opts ...pulumi.ResourceOpt) (*Fleet, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["auditStreamArn"] = args.AuditStreamArn
 		inputs["deviceCaCertificate"] = args.DeviceCaCertificate

@@ -11,52 +11,19 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/rds_cluster.html.markdown.
 func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["clusterIdentifier"] = args.ClusterIdentifier
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:rds/getCluster:getCluster", inputs)
+var rv GetClusterResult
+	err := ctx.Invoke("aws:rds/getCluster:getCluster", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetClusterResult{
-		Arn: outputs["arn"],
-		AvailabilityZones: outputs["availabilityZones"],
-		BackupRetentionPeriod: outputs["backupRetentionPeriod"],
-		ClusterIdentifier: outputs["clusterIdentifier"],
-		ClusterMembers: outputs["clusterMembers"],
-		ClusterResourceId: outputs["clusterResourceId"],
-		DatabaseName: outputs["databaseName"],
-		DbClusterParameterGroupName: outputs["dbClusterParameterGroupName"],
-		DbSubnetGroupName: outputs["dbSubnetGroupName"],
-		EnabledCloudwatchLogsExports: outputs["enabledCloudwatchLogsExports"],
-		Endpoint: outputs["endpoint"],
-		Engine: outputs["engine"],
-		EngineVersion: outputs["engineVersion"],
-		FinalSnapshotIdentifier: outputs["finalSnapshotIdentifier"],
-		HostedZoneId: outputs["hostedZoneId"],
-		IamDatabaseAuthenticationEnabled: outputs["iamDatabaseAuthenticationEnabled"],
-		IamRoles: outputs["iamRoles"],
-		KmsKeyId: outputs["kmsKeyId"],
-		MasterUsername: outputs["masterUsername"],
-		Port: outputs["port"],
-		PreferredBackupWindow: outputs["preferredBackupWindow"],
-		PreferredMaintenanceWindow: outputs["preferredMaintenanceWindow"],
-		ReaderEndpoint: outputs["readerEndpoint"],
-		ReplicationSourceIdentifier: outputs["replicationSourceIdentifier"],
-		StorageEncrypted: outputs["storageEncrypted"],
-		Tags: outputs["tags"],
-		VpcSecurityGroupIds: outputs["vpcSecurityGroupIds"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getCluster.
 type GetClusterArgs struct {
 	// The cluster identifier of the RDS cluster.
-	ClusterIdentifier pulumi.StringInput `pulumi:"clusterIdentifier"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	ClusterIdentifier string `pulumi:"clusterIdentifier"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getCluster.

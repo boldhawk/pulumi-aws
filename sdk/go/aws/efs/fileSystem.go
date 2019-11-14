@@ -55,7 +55,6 @@ type FileSystem struct {
 func NewFileSystem(ctx *pulumi.Context,
 	name string, args *FileSystemArgs, opts ...pulumi.ResourceOpt) (*FileSystem, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["creationToken"] = pulumi.Any()
 	if args != nil {
 		inputs["creationToken"] = args.CreationToken
 		inputs["encrypted"] = args.Encrypted

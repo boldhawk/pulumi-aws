@@ -38,7 +38,6 @@ func NewRequestValidator(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'RestApi'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["restApi"] = args.RestApi

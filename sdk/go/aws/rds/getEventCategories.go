@@ -8,25 +8,18 @@ import (
 )
 
 func LookupEventCategories(ctx *pulumi.Context, args *GetEventCategoriesArgs) (*GetEventCategoriesResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["sourceType"] = args.SourceType
-	}
-	outputs, err := ctx.Invoke("aws:rds/getEventCategories:getEventCategories", inputs)
+var rv GetEventCategoriesResult
+	err := ctx.Invoke("aws:rds/getEventCategories:getEventCategories", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetEventCategoriesResult{
-		EventCategories: outputs["eventCategories"],
-		SourceType: outputs["sourceType"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getEventCategories.
 type GetEventCategoriesArgs struct {
 	// The type of source that will be generating the events. Valid options are db-instance, db-security-group, db-parameter-group, db-snapshot, db-cluster or db-cluster-snapshot.
-	SourceType pulumi.StringInput `pulumi:"sourceType"`
+	SourceType string `pulumi:"sourceType"`
 }
 
 // A collection of values returned by getEventCategories.

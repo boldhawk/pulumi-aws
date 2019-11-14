@@ -50,7 +50,6 @@ func NewEventDestination(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'MatchingTypes'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["cloudwatchDestinations"] = args.CloudwatchDestinations
 		inputs["configurationSetName"] = args.ConfigurationSetName

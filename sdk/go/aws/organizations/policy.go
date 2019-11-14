@@ -41,7 +41,6 @@ func NewPolicy(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Content'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["content"] = args.Content
 		inputs["description"] = args.Description

@@ -31,7 +31,6 @@ type IpSet struct {
 func NewIpSet(ctx *pulumi.Context,
 	name string, args *IpSetArgs, opts ...pulumi.ResourceOpt) (*IpSet, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["ipSetDescriptors"] = args.IpSetDescriptors
 		inputs["name"] = args.Name

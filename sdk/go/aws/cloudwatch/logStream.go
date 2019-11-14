@@ -35,7 +35,6 @@ func NewLogStream(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'LogGroupName'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["logGroupName"] = args.LogGroupName
 		inputs["name"] = args.Name

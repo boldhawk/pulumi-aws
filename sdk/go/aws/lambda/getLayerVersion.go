@@ -11,40 +11,22 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/lambda_layer_version.html.markdown.
 func LookupLayerVersion(ctx *pulumi.Context, args *GetLayerVersionArgs) (*GetLayerVersionResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["compatibleRuntime"] = args.CompatibleRuntime
-		inputs["layerName"] = args.LayerName
-		inputs["version"] = args.Version
-	}
-	outputs, err := ctx.Invoke("aws:lambda/getLayerVersion:getLayerVersion", inputs)
+var rv GetLayerVersionResult
+	err := ctx.Invoke("aws:lambda/getLayerVersion:getLayerVersion", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetLayerVersionResult{
-		Arn: outputs["arn"],
-		CompatibleRuntime: outputs["compatibleRuntime"],
-		CompatibleRuntimes: outputs["compatibleRuntimes"],
-		CreatedDate: outputs["createdDate"],
-		Description: outputs["description"],
-		LayerArn: outputs["layerArn"],
-		LayerName: outputs["layerName"],
-		LicenseInfo: outputs["licenseInfo"],
-		SourceCodeHash: outputs["sourceCodeHash"],
-		SourceCodeSize: outputs["sourceCodeSize"],
-		Version: outputs["version"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getLayerVersion.
 type GetLayerVersionArgs struct {
 	// Specific runtime the layer version must support. Conflicts with `version`. If specified, the latest available layer version supporting the provided runtime will be used.
-	CompatibleRuntime pulumi.StringInput `pulumi:"compatibleRuntime"`
+	CompatibleRuntime string `pulumi:"compatibleRuntime"`
 	// Name of the lambda layer.
-	LayerName pulumi.StringInput `pulumi:"layerName"`
+	LayerName string `pulumi:"layerName"`
 	// Specific layer version. Conflicts with `compatibleRuntime`. If omitted, the latest available layer version will be used.
-	Version pulumi.IntInput `pulumi:"version"`
+	Version int `pulumi:"version"`
 }
 
 // A collection of values returned by getLayerVersion.

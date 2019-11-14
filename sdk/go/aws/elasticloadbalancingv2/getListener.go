@@ -17,36 +17,22 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/lb_listener_legacy.html.markdown.
 func LookupListener(ctx *pulumi.Context, args *GetListenerArgs) (*GetListenerResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["arn"] = args.Arn
-		inputs["loadBalancerArn"] = args.LoadBalancerArn
-		inputs["port"] = args.Port
-	}
-	outputs, err := ctx.Invoke("aws:elasticloadbalancingv2/getListener:getListener", inputs)
+var rv GetListenerResult
+	err := ctx.Invoke("aws:elasticloadbalancingv2/getListener:getListener", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetListenerResult{
-		Arn: outputs["arn"],
-		CertificateArn: outputs["certificateArn"],
-		DefaultActions: outputs["defaultActions"],
-		LoadBalancerArn: outputs["loadBalancerArn"],
-		Port: outputs["port"],
-		Protocol: outputs["protocol"],
-		SslPolicy: outputs["sslPolicy"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getListener.
 type GetListenerArgs struct {
 	// The arn of the listener. Required if `loadBalancerArn` and `port` is not set.
-	Arn pulumi.StringInput `pulumi:"arn"`
+	Arn string `pulumi:"arn"`
 	// The arn of the load balancer. Required if `arn` is not set.
-	LoadBalancerArn pulumi.StringInput `pulumi:"loadBalancerArn"`
+	LoadBalancerArn string `pulumi:"loadBalancerArn"`
 	// The port of the listener. Required if `arn` is not set.
-	Port pulumi.IntInput `pulumi:"port"`
+	Port int `pulumi:"port"`
 }
 
 // A collection of values returned by getListener.

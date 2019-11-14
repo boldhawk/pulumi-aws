@@ -15,60 +15,36 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/route.html.markdown.
 func LookupRoute(ctx *pulumi.Context, args *GetRouteArgs) (*GetRouteResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["destinationCidrBlock"] = args.DestinationCidrBlock
-		inputs["destinationIpv6CidrBlock"] = args.DestinationIpv6CidrBlock
-		inputs["egressOnlyGatewayId"] = args.EgressOnlyGatewayId
-		inputs["gatewayId"] = args.GatewayId
-		inputs["instanceId"] = args.InstanceId
-		inputs["natGatewayId"] = args.NatGatewayId
-		inputs["networkInterfaceId"] = args.NetworkInterfaceId
-		inputs["routeTableId"] = args.RouteTableId
-		inputs["transitGatewayId"] = args.TransitGatewayId
-		inputs["vpcPeeringConnectionId"] = args.VpcPeeringConnectionId
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getRoute:getRoute", inputs)
+var rv GetRouteResult
+	err := ctx.Invoke("aws:ec2/getRoute:getRoute", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetRouteResult{
-		DestinationCidrBlock: outputs["destinationCidrBlock"],
-		DestinationIpv6CidrBlock: outputs["destinationIpv6CidrBlock"],
-		EgressOnlyGatewayId: outputs["egressOnlyGatewayId"],
-		GatewayId: outputs["gatewayId"],
-		InstanceId: outputs["instanceId"],
-		NatGatewayId: outputs["natGatewayId"],
-		NetworkInterfaceId: outputs["networkInterfaceId"],
-		RouteTableId: outputs["routeTableId"],
-		TransitGatewayId: outputs["transitGatewayId"],
-		VpcPeeringConnectionId: outputs["vpcPeeringConnectionId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getRoute.
 type GetRouteArgs struct {
 	// The CIDR block of the Route belonging to the Route Table.
-	DestinationCidrBlock pulumi.StringInput `pulumi:"destinationCidrBlock"`
+	DestinationCidrBlock string `pulumi:"destinationCidrBlock"`
 	// The IPv6 CIDR block of the Route belonging to the Route Table.
-	DestinationIpv6CidrBlock pulumi.StringInput `pulumi:"destinationIpv6CidrBlock"`
+	DestinationIpv6CidrBlock string `pulumi:"destinationIpv6CidrBlock"`
 	// The Egress Only Gateway ID of the Route belonging to the Route Table.
-	EgressOnlyGatewayId pulumi.StringInput `pulumi:"egressOnlyGatewayId"`
+	EgressOnlyGatewayId string `pulumi:"egressOnlyGatewayId"`
 	// The Gateway ID of the Route belonging to the Route Table.
-	GatewayId pulumi.StringInput `pulumi:"gatewayId"`
+	GatewayId string `pulumi:"gatewayId"`
 	// The Instance ID of the Route belonging to the Route Table.
-	InstanceId pulumi.StringInput `pulumi:"instanceId"`
+	InstanceId string `pulumi:"instanceId"`
 	// The NAT Gateway ID of the Route belonging to the Route Table.
-	NatGatewayId pulumi.StringInput `pulumi:"natGatewayId"`
+	NatGatewayId string `pulumi:"natGatewayId"`
 	// The Network Interface ID of the Route belonging to the Route Table.
-	NetworkInterfaceId pulumi.StringInput `pulumi:"networkInterfaceId"`
+	NetworkInterfaceId string `pulumi:"networkInterfaceId"`
 	// The id of the specific Route Table containing the Route entry.
-	RouteTableId pulumi.StringInput `pulumi:"routeTableId"`
+	RouteTableId string `pulumi:"routeTableId"`
 	// The EC2 Transit Gateway ID of the Route belonging to the Route Table.
-	TransitGatewayId pulumi.StringInput `pulumi:"transitGatewayId"`
+	TransitGatewayId string `pulumi:"transitGatewayId"`
 	// The VPC Peering Connection ID of the Route belonging to the Route Table.
-	VpcPeeringConnectionId pulumi.StringInput `pulumi:"vpcPeeringConnectionId"`
+	VpcPeeringConnectionId string `pulumi:"vpcPeeringConnectionId"`
 }
 
 // A collection of values returned by getRoute.

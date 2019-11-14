@@ -15,32 +15,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/cur_report_definition.html.markdown.
 func LookupReportDefinition(ctx *pulumi.Context, args *GetReportDefinitionArgs) (*GetReportDefinitionResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["reportName"] = args.ReportName
-	}
-	outputs, err := ctx.Invoke("aws:cur/getReportDefinition:getReportDefinition", inputs)
+var rv GetReportDefinitionResult
+	err := ctx.Invoke("aws:cur/getReportDefinition:getReportDefinition", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetReportDefinitionResult{
-		AdditionalArtifacts: outputs["additionalArtifacts"],
-		AdditionalSchemaElements: outputs["additionalSchemaElements"],
-		Compression: outputs["compression"],
-		Format: outputs["format"],
-		ReportName: outputs["reportName"],
-		S3Bucket: outputs["s3Bucket"],
-		S3Prefix: outputs["s3Prefix"],
-		S3Region: outputs["s3Region"],
-		TimeUnit: outputs["timeUnit"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getReportDefinition.
 type GetReportDefinitionArgs struct {
 	// The name of the report definition to match.
-	ReportName pulumi.StringInput `pulumi:"reportName"`
+	ReportName string `pulumi:"reportName"`
 }
 
 // A collection of values returned by getReportDefinition.

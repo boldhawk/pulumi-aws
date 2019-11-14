@@ -37,7 +37,6 @@ func NewGlobalTable(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Replicas'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["replicas"] = args.Replicas

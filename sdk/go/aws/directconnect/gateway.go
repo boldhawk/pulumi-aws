@@ -35,7 +35,6 @@ func NewGateway(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'AmazonSideAsn'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["amazonSideAsn"] = args.AmazonSideAsn
 		inputs["name"] = args.Name

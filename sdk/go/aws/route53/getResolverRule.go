@@ -11,46 +11,27 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/route53_resolver_rule.html.markdown.
 func LookupResolverRule(ctx *pulumi.Context, args *GetResolverRuleArgs) (*GetResolverRuleResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["domainName"] = args.DomainName
-		inputs["name"] = args.Name
-		inputs["resolverEndpointId"] = args.ResolverEndpointId
-		inputs["resolverRuleId"] = args.ResolverRuleId
-		inputs["ruleType"] = args.RuleType
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:route53/getResolverRule:getResolverRule", inputs)
+var rv GetResolverRuleResult
+	err := ctx.Invoke("aws:route53/getResolverRule:getResolverRule", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetResolverRuleResult{
-		Arn: outputs["arn"],
-		DomainName: outputs["domainName"],
-		Name: outputs["name"],
-		OwnerId: outputs["ownerId"],
-		ResolverEndpointId: outputs["resolverEndpointId"],
-		ResolverRuleId: outputs["resolverRuleId"],
-		RuleType: outputs["ruleType"],
-		ShareStatus: outputs["shareStatus"],
-		Tags: outputs["tags"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getResolverRule.
 type GetResolverRuleArgs struct {
 	// The domain name the desired resolver rule forwards DNS queries for. Conflicts with `resolverRuleId`.
-	DomainName pulumi.StringInput `pulumi:"domainName"`
+	DomainName string `pulumi:"domainName"`
 	// The friendly name of the desired resolver rule. Conflicts with `resolverRuleId`.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 	// The ID of the outbound resolver endpoint of the desired resolver rule. Conflicts with `resolverRuleId`.
-	ResolverEndpointId pulumi.StringInput `pulumi:"resolverEndpointId"`
+	ResolverEndpointId string `pulumi:"resolverEndpointId"`
 	// The ID of the desired resolver rule. Conflicts with `domainName`, `name`, `resolverEndpointId` and `ruleType`.
-	ResolverRuleId pulumi.StringInput `pulumi:"resolverRuleId"`
+	ResolverRuleId string `pulumi:"resolverRuleId"`
 	// The rule type of the desired resolver rule. Valid values are `FORWARD`, `SYSTEM` and `RECURSIVE`. Conflicts with `resolverRuleId`.
-	RuleType pulumi.StringInput `pulumi:"ruleType"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	RuleType string `pulumi:"ruleType"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getResolverRule.

@@ -8,30 +8,21 @@ import (
 )
 
 func LookupNetworkInterfaces(ctx *pulumi.Context, args *GetNetworkInterfacesArgs) (*GetNetworkInterfacesResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getNetworkInterfaces:getNetworkInterfaces", inputs)
+var rv GetNetworkInterfacesResult
+	err := ctx.Invoke("aws:ec2/getNetworkInterfaces:getNetworkInterfaces", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetNetworkInterfacesResult{
-		Filters: outputs["filters"],
-		Ids: outputs["ids"],
-		Tags: outputs["tags"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getNetworkInterfaces.
 type GetNetworkInterfacesArgs struct {
 	// Custom filter block as described below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired network interfaces.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getNetworkInterfaces.

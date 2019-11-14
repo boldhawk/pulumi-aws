@@ -15,43 +15,28 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/security_group.html.markdown.
 func LookupSecurityGroup(ctx *pulumi.Context, args *GetSecurityGroupArgs) (*GetSecurityGroupResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["id"] = args.Id
-		inputs["name"] = args.Name
-		inputs["tags"] = args.Tags
-		inputs["vpcId"] = args.VpcId
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getSecurityGroup:getSecurityGroup", inputs)
+var rv GetSecurityGroupResult
+	err := ctx.Invoke("aws:ec2/getSecurityGroup:getSecurityGroup", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetSecurityGroupResult{
-		Arn: outputs["arn"],
-		Description: outputs["description"],
-		Filters: outputs["filters"],
-		Id: outputs["id"],
-		Name: outputs["name"],
-		Tags: outputs["tags"],
-		VpcId: outputs["vpcId"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getSecurityGroup.
 type GetSecurityGroupArgs struct {
 	// Custom filter block as described below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// The id of the specific security group to retrieve.
-	Id pulumi.StringInput `pulumi:"id"`
+	Id string `pulumi:"id"`
 	// The name of the field to filter by, as defined by
 	// [the underlying AWS API](http://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeSecurityGroups.html).
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired security group.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The id of the VPC that the desired security group belongs to.
-	VpcId pulumi.StringInput `pulumi:"vpcId"`
+	VpcId string `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getSecurityGroup.

@@ -63,7 +63,6 @@ func NewOrganizationManagedRule(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'RuleIdentifier'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["excludedAccounts"] = args.ExcludedAccounts

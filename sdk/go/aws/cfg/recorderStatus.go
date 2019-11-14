@@ -34,7 +34,6 @@ func NewRecorderStatus(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'IsEnabled'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["isEnabled"] = args.IsEnabled
 		inputs["name"] = args.Name

@@ -13,32 +13,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iam_role.html.markdown.
 func LookupRole(ctx *pulumi.Context, args *GetRoleArgs) (*GetRoleResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:iam/getRole:getRole", inputs)
+var rv GetRoleResult
+	err := ctx.Invoke("aws:iam/getRole:getRole", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetRoleResult{
-		Arn: outputs["arn"],
-		AssumeRolePolicy: outputs["assumeRolePolicy"],
-		CreateDate: outputs["createDate"],
-		Description: outputs["description"],
-		MaxSessionDuration: outputs["maxSessionDuration"],
-		Name: outputs["name"],
-		Path: outputs["path"],
-		PermissionsBoundary: outputs["permissionsBoundary"],
-		UniqueId: outputs["uniqueId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getRole.
 type GetRoleArgs struct {
 	// The friendly IAM role name to match.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getRole.

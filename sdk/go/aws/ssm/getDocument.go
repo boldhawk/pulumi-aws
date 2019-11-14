@@ -11,35 +11,22 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ssm_document.html.markdown.
 func LookupDocument(ctx *pulumi.Context, args *GetDocumentArgs) (*GetDocumentResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["documentFormat"] = args.DocumentFormat
-		inputs["documentVersion"] = args.DocumentVersion
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:ssm/getDocument:getDocument", inputs)
+var rv GetDocumentResult
+	err := ctx.Invoke("aws:ssm/getDocument:getDocument", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetDocumentResult{
-		Arn: outputs["arn"],
-		Content: outputs["content"],
-		DocumentFormat: outputs["documentFormat"],
-		DocumentType: outputs["documentType"],
-		DocumentVersion: outputs["documentVersion"],
-		Name: outputs["name"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getDocument.
 type GetDocumentArgs struct {
 	// Returns the document in the specified format. The document format can be either JSON or YAML. JSON is the default format.
-	DocumentFormat pulumi.StringInput `pulumi:"documentFormat"`
+	DocumentFormat string `pulumi:"documentFormat"`
 	// The document version for which you want information.
-	DocumentVersion pulumi.StringInput `pulumi:"documentVersion"`
+	DocumentVersion string `pulumi:"documentVersion"`
 	// The name of the Systems Manager document.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getDocument.

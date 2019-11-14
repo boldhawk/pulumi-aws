@@ -109,7 +109,6 @@ func NewLoadBalancer(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Listeners'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["accessLogs"] = args.AccessLogs
 		inputs["availabilityZones"] = args.AvailabilityZones

@@ -13,25 +13,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/route53_delegation_set.html.markdown.
 func LookupDelegationSet(ctx *pulumi.Context, args *GetDelegationSetArgs) (*GetDelegationSetResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["id"] = args.Id
-	}
-	outputs, err := ctx.Invoke("aws:route53/getDelegationSet:getDelegationSet", inputs)
+var rv GetDelegationSetResult
+	err := ctx.Invoke("aws:route53/getDelegationSet:getDelegationSet", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetDelegationSetResult{
-		CallerReference: outputs["callerReference"],
-		Id: outputs["id"],
-		NameServers: outputs["nameServers"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getDelegationSet.
 type GetDelegationSetArgs struct {
 	// The Hosted Zone id of the desired delegation set.
-	Id pulumi.StringInput `pulumi:"id"`
+	Id string `pulumi:"id"`
 }
 
 // A collection of values returned by getDelegationSet.

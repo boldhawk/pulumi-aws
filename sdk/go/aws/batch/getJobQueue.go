@@ -12,30 +12,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/batch_job_queue.html.markdown.
 func LookupJobQueue(ctx *pulumi.Context, args *GetJobQueueArgs) (*GetJobQueueResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:batch/getJobQueue:getJobQueue", inputs)
+var rv GetJobQueueResult
+	err := ctx.Invoke("aws:batch/getJobQueue:getJobQueue", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetJobQueueResult{
-		Arn: outputs["arn"],
-		ComputeEnvironmentOrders: outputs["computeEnvironmentOrders"],
-		Name: outputs["name"],
-		Priority: outputs["priority"],
-		State: outputs["state"],
-		Status: outputs["status"],
-		StatusReason: outputs["statusReason"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getJobQueue.
 type GetJobQueueArgs struct {
 	// The name of the job queue.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getJobQueue.

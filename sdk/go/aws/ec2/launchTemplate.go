@@ -121,7 +121,6 @@ type LaunchTemplate struct {
 func NewLaunchTemplate(ctx *pulumi.Context,
 	name string, args *LaunchTemplateArgs, opts ...pulumi.ResourceOpt) (*LaunchTemplate, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["blockDeviceMappings"] = args.BlockDeviceMappings
 		inputs["capacityReservationSpecification"] = args.CapacityReservationSpecification

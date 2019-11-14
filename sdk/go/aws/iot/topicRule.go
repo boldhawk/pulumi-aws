@@ -69,7 +69,6 @@ func NewTopicRule(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'SqlVersion'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["cloudwatchAlarm"] = args.CloudwatchAlarm
 		inputs["cloudwatchMetric"] = args.CloudwatchMetric

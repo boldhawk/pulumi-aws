@@ -52,7 +52,6 @@ func NewIPSet(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Location'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["activate"] = args.Activate
 		inputs["detectorId"] = args.DetectorId

@@ -40,7 +40,6 @@ type Thing struct {
 func NewThing(ctx *pulumi.Context,
 	name string, args *ThingArgs, opts ...pulumi.ResourceOpt) (*Thing, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["attributes"] = args.Attributes
 		inputs["name"] = args.Name

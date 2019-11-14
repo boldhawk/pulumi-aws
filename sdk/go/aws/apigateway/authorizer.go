@@ -63,7 +63,6 @@ func NewAuthorizer(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'RestApi'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["authorizerCredentials"] = args.AuthorizerCredentials
 		inputs["authorizerResultTtlInSeconds"] = args.AuthorizerResultTtlInSeconds

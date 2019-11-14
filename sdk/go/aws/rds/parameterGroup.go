@@ -53,7 +53,6 @@ func NewParameterGroup(ctx *pulumi.Context,
 	}
 	inputs := map[string]pulumi.Input{}
 	inputs["description"] = pulumi.Any("Managed by Pulumi")
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["family"] = args.Family

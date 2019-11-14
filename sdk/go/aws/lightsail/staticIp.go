@@ -36,7 +36,6 @@ type StaticIp struct {
 func NewStaticIp(ctx *pulumi.Context,
 	name string, args *StaticIpArgs, opts ...pulumi.ResourceOpt) (*StaticIp, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 	}

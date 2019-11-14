@@ -47,7 +47,6 @@ func NewAssessmentTemplate(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'TargetArn'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["duration"] = args.Duration
 		inputs["name"] = args.Name

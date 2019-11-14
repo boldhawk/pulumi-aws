@@ -62,7 +62,6 @@ func NewMaintenanceWindow(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Schedule'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["allowUnassociatedTargets"] = args.AllowUnassociatedTargets
 		inputs["cutoff"] = args.Cutoff

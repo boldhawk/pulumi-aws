@@ -28,7 +28,6 @@ type RegexPatternSet struct {
 func NewRegexPatternSet(ctx *pulumi.Context,
 	name string, args *RegexPatternSetArgs, opts ...pulumi.ResourceOpt) (*RegexPatternSet, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["regexPatternStrings"] = args.RegexPatternStrings

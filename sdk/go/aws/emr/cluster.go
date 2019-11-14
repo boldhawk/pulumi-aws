@@ -225,7 +225,6 @@ func NewCluster(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'ServiceRole'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["additionalInfo"] = args.AdditionalInfo
 		inputs["applications"] = args.Applications

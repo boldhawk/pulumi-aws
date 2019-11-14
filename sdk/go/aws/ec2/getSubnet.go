@@ -15,67 +15,39 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/subnet.html.markdown.
 func LookupSubnet(ctx *pulumi.Context, args *GetSubnetArgs) (*GetSubnetResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["availabilityZone"] = args.AvailabilityZone
-		inputs["availabilityZoneId"] = args.AvailabilityZoneId
-		inputs["cidrBlock"] = args.CidrBlock
-		inputs["defaultForAz"] = args.DefaultForAz
-		inputs["filters"] = args.Filters
-		inputs["id"] = args.Id
-		inputs["ipv6CidrBlock"] = args.Ipv6CidrBlock
-		inputs["state"] = args.State
-		inputs["tags"] = args.Tags
-		inputs["vpcId"] = args.VpcId
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getSubnet:getSubnet", inputs)
+var rv GetSubnetResult
+	err := ctx.Invoke("aws:ec2/getSubnet:getSubnet", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetSubnetResult{
-		Arn: outputs["arn"],
-		AssignIpv6AddressOnCreation: outputs["assignIpv6AddressOnCreation"],
-		AvailabilityZone: outputs["availabilityZone"],
-		AvailabilityZoneId: outputs["availabilityZoneId"],
-		CidrBlock: outputs["cidrBlock"],
-		DefaultForAz: outputs["defaultForAz"],
-		Filters: outputs["filters"],
-		Id: outputs["id"],
-		Ipv6CidrBlock: outputs["ipv6CidrBlock"],
-		Ipv6CidrBlockAssociationId: outputs["ipv6CidrBlockAssociationId"],
-		MapPublicIpOnLaunch: outputs["mapPublicIpOnLaunch"],
-		OwnerId: outputs["ownerId"],
-		State: outputs["state"],
-		Tags: outputs["tags"],
-		VpcId: outputs["vpcId"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getSubnet.
 type GetSubnetArgs struct {
 	// The availability zone where the
 	// subnet must reside.
-	AvailabilityZone pulumi.StringInput `pulumi:"availabilityZone"`
+	AvailabilityZone string `pulumi:"availabilityZone"`
 	// The ID of the Availability Zone for the subnet.
-	AvailabilityZoneId pulumi.StringInput `pulumi:"availabilityZoneId"`
+	AvailabilityZoneId string `pulumi:"availabilityZoneId"`
 	// The cidr block of the desired subnet.
-	CidrBlock pulumi.StringInput `pulumi:"cidrBlock"`
+	CidrBlock string `pulumi:"cidrBlock"`
 	// Boolean constraint for whether the desired
 	// subnet must be the default subnet for its associated availability zone.
-	DefaultForAz pulumi.BoolInput `pulumi:"defaultForAz"`
+	DefaultForAz bool `pulumi:"defaultForAz"`
 	// Custom filter block as described below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// The id of the specific subnet to retrieve.
-	Id pulumi.StringInput `pulumi:"id"`
+	Id string `pulumi:"id"`
 	// The Ipv6 cidr block of the desired subnet
-	Ipv6CidrBlock pulumi.StringInput `pulumi:"ipv6CidrBlock"`
+	Ipv6CidrBlock string `pulumi:"ipv6CidrBlock"`
 	// The state that the desired subnet must have.
-	State pulumi.StringInput `pulumi:"state"`
+	State string `pulumi:"state"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired subnet.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The id of the VPC that the desired subnet belongs to.
-	VpcId pulumi.StringInput `pulumi:"vpcId"`
+	VpcId string `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getSubnet.

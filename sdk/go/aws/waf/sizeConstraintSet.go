@@ -28,7 +28,6 @@ type SizeConstraintSet struct {
 func NewSizeConstraintSet(ctx *pulumi.Context,
 	name string, args *SizeConstraintSetArgs, opts ...pulumi.ResourceOpt) (*SizeConstraintSet, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["sizeConstraints"] = args.SizeConstraints

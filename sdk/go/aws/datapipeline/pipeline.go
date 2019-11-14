@@ -31,7 +31,6 @@ type Pipeline struct {
 func NewPipeline(ctx *pulumi.Context,
 	name string, args *PipelineArgs, opts ...pulumi.ResourceOpt) (*Pipeline, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name

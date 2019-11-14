@@ -33,7 +33,6 @@ type ThingType struct {
 func NewThingType(ctx *pulumi.Context,
 	name string, args *ThingTypeArgs, opts ...pulumi.ResourceOpt) (*ThingType, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["deprecated"] = args.Deprecated
 		inputs["name"] = args.Name

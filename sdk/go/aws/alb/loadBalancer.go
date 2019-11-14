@@ -86,7 +86,6 @@ type LoadBalancer struct {
 func NewLoadBalancer(ctx *pulumi.Context,
 	name string, args *LoadBalancerArgs, opts ...pulumi.ResourceOpt) (*LoadBalancer, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["accessLogs"] = args.AccessLogs
 		inputs["enableCrossZoneLoadBalancing"] = args.EnableCrossZoneLoadBalancing

@@ -11,29 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/arn.html.markdown.
 func LookupArn(ctx *pulumi.Context, args *GetArnArgs) (*GetArnResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["arn"] = args.Arn
-	}
-	outputs, err := ctx.Invoke("aws:index/getArn:getArn", inputs)
+var rv GetArnResult
+	err := ctx.Invoke("aws:index/getArn:getArn", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetArnResult{
-		Account: outputs["account"],
-		Arn: outputs["arn"],
-		Partition: outputs["partition"],
-		Region: outputs["region"],
-		Resource: outputs["resource"],
-		Service: outputs["service"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getArn.
 type GetArnArgs struct {
 	// The ARN to parse.
-	Arn pulumi.StringInput `pulumi:"arn"`
+	Arn string `pulumi:"arn"`
 }
 
 // A collection of values returned by getArn.

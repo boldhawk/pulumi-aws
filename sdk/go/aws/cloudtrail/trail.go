@@ -86,7 +86,6 @@ func NewTrail(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'S3BucketName'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["cloudWatchLogsGroupArn"] = args.CloudWatchLogsGroupArn
 		inputs["cloudWatchLogsRoleArn"] = args.CloudWatchLogsRoleArn

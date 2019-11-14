@@ -31,7 +31,6 @@ type Activity struct {
 func NewActivity(ctx *pulumi.Context,
 	name string, args *ActivityArgs, opts ...pulumi.ResourceOpt) (*Activity, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["tags"] = args.Tags

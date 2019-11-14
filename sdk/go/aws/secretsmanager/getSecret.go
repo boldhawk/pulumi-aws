@@ -11,35 +11,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/secretsmanager_secret.html.markdown.
 func LookupSecret(ctx *pulumi.Context, args *GetSecretArgs) (*GetSecretResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["arn"] = args.Arn
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:secretsmanager/getSecret:getSecret", inputs)
+var rv GetSecretResult
+	err := ctx.Invoke("aws:secretsmanager/getSecret:getSecret", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetSecretResult{
-		Arn: outputs["arn"],
-		Description: outputs["description"],
-		KmsKeyId: outputs["kmsKeyId"],
-		Name: outputs["name"],
-		Policy: outputs["policy"],
-		RotationEnabled: outputs["rotationEnabled"],
-		RotationLambdaArn: outputs["rotationLambdaArn"],
-		RotationRules: outputs["rotationRules"],
-		Tags: outputs["tags"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getSecret.
 type GetSecretArgs struct {
 	// The Amazon Resource Name (ARN) of the secret to retrieve.
-	Arn pulumi.StringInput `pulumi:"arn"`
+	Arn string `pulumi:"arn"`
 	// The name of the secret to retrieve.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getSecret.

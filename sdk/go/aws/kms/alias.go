@@ -44,7 +44,6 @@ func NewAlias(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'TargetKeyId'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["namePrefix"] = args.NamePrefix

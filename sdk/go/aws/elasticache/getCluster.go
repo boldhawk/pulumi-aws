@@ -11,46 +11,19 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elasticache_cluster.html.markdown.
 func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["clusterId"] = args.ClusterId
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:elasticache/getCluster:getCluster", inputs)
+var rv GetClusterResult
+	err := ctx.Invoke("aws:elasticache/getCluster:getCluster", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetClusterResult{
-		Arn: outputs["arn"],
-		AvailabilityZone: outputs["availabilityZone"],
-		CacheNodes: outputs["cacheNodes"],
-		ClusterAddress: outputs["clusterAddress"],
-		ClusterId: outputs["clusterId"],
-		ConfigurationEndpoint: outputs["configurationEndpoint"],
-		Engine: outputs["engine"],
-		EngineVersion: outputs["engineVersion"],
-		MaintenanceWindow: outputs["maintenanceWindow"],
-		NodeType: outputs["nodeType"],
-		NotificationTopicArn: outputs["notificationTopicArn"],
-		NumCacheNodes: outputs["numCacheNodes"],
-		ParameterGroupName: outputs["parameterGroupName"],
-		Port: outputs["port"],
-		ReplicationGroupId: outputs["replicationGroupId"],
-		SecurityGroupIds: outputs["securityGroupIds"],
-		SecurityGroupNames: outputs["securityGroupNames"],
-		SnapshotRetentionLimit: outputs["snapshotRetentionLimit"],
-		SnapshotWindow: outputs["snapshotWindow"],
-		SubnetGroupName: outputs["subnetGroupName"],
-		Tags: outputs["tags"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getCluster.
 type GetClusterArgs struct {
 	// Group identifier.
-	ClusterId pulumi.StringInput `pulumi:"clusterId"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	ClusterId string `pulumi:"clusterId"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getCluster.

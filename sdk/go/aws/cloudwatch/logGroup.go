@@ -43,7 +43,6 @@ type LogGroup struct {
 func NewLogGroup(ctx *pulumi.Context,
 	name string, args *LogGroupArgs, opts ...pulumi.ResourceOpt) (*LogGroup, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["kmsKeyId"] = args.KmsKeyId
 		inputs["name"] = args.Name

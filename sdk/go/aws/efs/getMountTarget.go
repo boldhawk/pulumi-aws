@@ -11,31 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/efs_mount_target.html.markdown.
 func LookupMountTarget(ctx *pulumi.Context, args *GetMountTargetArgs) (*GetMountTargetResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["mountTargetId"] = args.MountTargetId
-	}
-	outputs, err := ctx.Invoke("aws:efs/getMountTarget:getMountTarget", inputs)
+var rv GetMountTargetResult
+	err := ctx.Invoke("aws:efs/getMountTarget:getMountTarget", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetMountTargetResult{
-		DnsName: outputs["dnsName"],
-		FileSystemArn: outputs["fileSystemArn"],
-		FileSystemId: outputs["fileSystemId"],
-		IpAddress: outputs["ipAddress"],
-		MountTargetId: outputs["mountTargetId"],
-		NetworkInterfaceId: outputs["networkInterfaceId"],
-		SecurityGroups: outputs["securityGroups"],
-		SubnetId: outputs["subnetId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getMountTarget.
 type GetMountTargetArgs struct {
 	// ID of the mount target that you want to have described
-	MountTargetId pulumi.StringInput `pulumi:"mountTargetId"`
+	MountTargetId string `pulumi:"mountTargetId"`
 }
 
 // A collection of values returned by getMountTarget.

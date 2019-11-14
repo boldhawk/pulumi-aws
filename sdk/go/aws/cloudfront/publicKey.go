@@ -41,7 +41,6 @@ func NewPublicKey(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'EncodedKey'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["comment"] = args.Comment
 		inputs["encodedKey"] = args.EncodedKey

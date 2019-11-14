@@ -55,7 +55,6 @@ type Secret struct {
 func NewSecret(ctx *pulumi.Context,
 	name string, args *SecretArgs, opts ...pulumi.ResourceOpt) (*Secret, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["kmsKeyId"] = args.KmsKeyId

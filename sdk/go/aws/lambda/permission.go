@@ -69,7 +69,6 @@ func NewPermission(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Principal'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["statementId"] = pulumi.Any()
 	if args != nil {
 		inputs["action"] = args.Action
 		inputs["eventSourceToken"] = args.EventSourceToken

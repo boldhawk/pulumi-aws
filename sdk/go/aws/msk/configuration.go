@@ -49,7 +49,6 @@ func NewConfiguration(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'ServerProperties'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["kafkaVersions"] = args.KafkaVersions

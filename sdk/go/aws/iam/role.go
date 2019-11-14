@@ -65,7 +65,6 @@ func NewRole(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'AssumeRolePolicy'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["assumeRolePolicy"] = args.AssumeRolePolicy
 		inputs["description"] = args.Description

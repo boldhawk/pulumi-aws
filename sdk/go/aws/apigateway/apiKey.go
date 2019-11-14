@@ -43,7 +43,6 @@ func NewApiKey(ctx *pulumi.Context,
 	name string, args *ApiKeyArgs, opts ...pulumi.ResourceOpt) (*ApiKey, error) {
 	inputs := map[string]pulumi.Input{}
 	inputs["description"] = pulumi.Any("Managed by Pulumi")
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["enabled"] = args.Enabled

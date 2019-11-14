@@ -28,7 +28,6 @@ type ByteMatchSet struct {
 func NewByteMatchSet(ctx *pulumi.Context,
 	name string, args *ByteMatchSetArgs, opts ...pulumi.ResourceOpt) (*ByteMatchSet, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["byteMatchTuples"] = args.ByteMatchTuples
 		inputs["name"] = args.Name

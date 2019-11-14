@@ -67,7 +67,6 @@ func NewCluster(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'VpcConfig'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["enabledClusterLogTypes"] = args.EnabledClusterLogTypes
 		inputs["name"] = args.Name

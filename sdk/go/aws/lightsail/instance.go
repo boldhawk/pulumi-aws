@@ -168,7 +168,6 @@ func NewInstance(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'BundleId'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["availabilityZone"] = args.AvailabilityZone
 		inputs["blueprintId"] = args.BlueprintId

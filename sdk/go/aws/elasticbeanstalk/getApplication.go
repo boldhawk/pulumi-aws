@@ -11,27 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elastic_beanstalk_application.html.markdown.
 func LookupApplication(ctx *pulumi.Context, args *GetApplicationArgs) (*GetApplicationResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:elasticbeanstalk/getApplication:getApplication", inputs)
+var rv GetApplicationResult
+	err := ctx.Invoke("aws:elasticbeanstalk/getApplication:getApplication", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetApplicationResult{
-		AppversionLifecycle: outputs["appversionLifecycle"],
-		Arn: outputs["arn"],
-		Description: outputs["description"],
-		Name: outputs["name"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getApplication.
 type GetApplicationArgs struct {
 	// The name of the application
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getApplication.

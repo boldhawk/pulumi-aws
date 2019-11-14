@@ -12,58 +12,12 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/instance.html.markdown.
 func LookupInstance(ctx *pulumi.Context, args *GetInstanceArgs) (*GetInstanceResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["getPasswordData"] = args.GetPasswordData
-		inputs["getUserData"] = args.GetUserData
-		inputs["instanceId"] = args.InstanceId
-		inputs["instanceTags"] = args.InstanceTags
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getInstance:getInstance", inputs)
+var rv GetInstanceResult
+	err := ctx.Invoke("aws:ec2/getInstance:getInstance", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetInstanceResult{
-		Ami: outputs["ami"],
-		Arn: outputs["arn"],
-		AssociatePublicIpAddress: outputs["associatePublicIpAddress"],
-		AvailabilityZone: outputs["availabilityZone"],
-		CreditSpecifications: outputs["creditSpecifications"],
-		DisableApiTermination: outputs["disableApiTermination"],
-		EbsBlockDevices: outputs["ebsBlockDevices"],
-		EbsOptimized: outputs["ebsOptimized"],
-		EphemeralBlockDevices: outputs["ephemeralBlockDevices"],
-		Filters: outputs["filters"],
-		GetPasswordData: outputs["getPasswordData"],
-		GetUserData: outputs["getUserData"],
-		HostId: outputs["hostId"],
-		IamInstanceProfile: outputs["iamInstanceProfile"],
-		InstanceId: outputs["instanceId"],
-		InstanceState: outputs["instanceState"],
-		InstanceTags: outputs["instanceTags"],
-		InstanceType: outputs["instanceType"],
-		KeyName: outputs["keyName"],
-		Monitoring: outputs["monitoring"],
-		NetworkInterfaceId: outputs["networkInterfaceId"],
-		PasswordData: outputs["passwordData"],
-		PlacementGroup: outputs["placementGroup"],
-		PrivateDns: outputs["privateDns"],
-		PrivateIp: outputs["privateIp"],
-		PublicDns: outputs["publicDns"],
-		PublicIp: outputs["publicIp"],
-		RootBlockDevices: outputs["rootBlockDevices"],
-		SecurityGroups: outputs["securityGroups"],
-		SourceDestCheck: outputs["sourceDestCheck"],
-		SubnetId: outputs["subnetId"],
-		Tags: outputs["tags"],
-		Tenancy: outputs["tenancy"],
-		UserData: outputs["userData"],
-		UserDataBase64: outputs["userDataBase64"],
-		VpcSecurityGroupIds: outputs["vpcSecurityGroupIds"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getInstance.
@@ -71,17 +25,17 @@ type GetInstanceArgs struct {
 	// One or more name/value pairs to use as filters. There are
 	// several valid keys, for a full reference, check out
 	// [describe-instances in the AWS CLI reference][1].
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// If true, wait for password data to become available and retrieve it. Useful for getting the administrator password for instances running Microsoft Windows. The password data is exported to the `passwordData` attribute. See [GetPasswordData](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetPasswordData.html) for more information.
-	GetPasswordData pulumi.BoolInput `pulumi:"getPasswordData"`
+	GetPasswordData bool `pulumi:"getPasswordData"`
 	// Retrieve Base64 encoded User Data contents into the `userDataBase64` attribute. A SHA-1 hash of the User Data contents will always be present in the `userData` attribute. Defaults to `false`.
-	GetUserData pulumi.BoolInput `pulumi:"getUserData"`
+	GetUserData bool `pulumi:"getUserData"`
 	// Specify the exact Instance ID with which to populate the data source.
-	InstanceId pulumi.StringInput `pulumi:"instanceId"`
+	InstanceId string `pulumi:"instanceId"`
 	// A mapping of tags, each pair of which must
 	// exactly match a pair on the desired Instance.
-	InstanceTags pulumi.MapInput `pulumi:"instanceTags"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	InstanceTags map[string]interface{} `pulumi:"instanceTags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getInstance.

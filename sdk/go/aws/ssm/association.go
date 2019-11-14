@@ -58,7 +58,6 @@ type Association struct {
 func NewAssociation(ctx *pulumi.Context,
 	name string, args *AssociationArgs, opts ...pulumi.ResourceOpt) (*Association, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["associationName"] = args.AssociationName
 		inputs["complianceSeverity"] = args.ComplianceSeverity

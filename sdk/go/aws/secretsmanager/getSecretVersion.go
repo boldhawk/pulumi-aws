@@ -11,36 +11,22 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/secretsmanager_secret_version.html.markdown.
 func LookupSecretVersion(ctx *pulumi.Context, args *GetSecretVersionArgs) (*GetSecretVersionResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["secretId"] = args.SecretId
-		inputs["versionId"] = args.VersionId
-		inputs["versionStage"] = args.VersionStage
-	}
-	outputs, err := ctx.Invoke("aws:secretsmanager/getSecretVersion:getSecretVersion", inputs)
+var rv GetSecretVersionResult
+	err := ctx.Invoke("aws:secretsmanager/getSecretVersion:getSecretVersion", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetSecretVersionResult{
-		Arn: outputs["arn"],
-		SecretBinary: outputs["secretBinary"],
-		SecretId: outputs["secretId"],
-		SecretString: outputs["secretString"],
-		VersionId: outputs["versionId"],
-		VersionStage: outputs["versionStage"],
-		VersionStages: outputs["versionStages"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getSecretVersion.
 type GetSecretVersionArgs struct {
 	// Specifies the secret containing the version that you want to retrieve. You can specify either the Amazon Resource Name (ARN) or the friendly name of the secret.
-	SecretId pulumi.StringInput `pulumi:"secretId"`
+	SecretId string `pulumi:"secretId"`
 	// Specifies the unique identifier of the version of the secret that you want to retrieve. Overrides `versionStage`.
-	VersionId pulumi.StringInput `pulumi:"versionId"`
+	VersionId string `pulumi:"versionId"`
 	// Specifies the secret version that you want to retrieve by the staging label attached to the version. Defaults to `AWSCURRENT`.
-	VersionStage pulumi.StringInput `pulumi:"versionStage"`
+	VersionStage string `pulumi:"versionStage"`
 }
 
 // A collection of values returned by getSecretVersion.

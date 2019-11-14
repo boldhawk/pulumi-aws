@@ -40,7 +40,6 @@ type Repository struct {
 func NewRepository(ctx *pulumi.Context,
 	name string, args *RepositoryArgs, opts ...pulumi.ResourceOpt) (*Repository, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["imageTagMutability"] = args.ImageTagMutability
 		inputs["name"] = args.Name

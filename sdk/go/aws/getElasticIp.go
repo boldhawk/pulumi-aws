@@ -11,44 +11,24 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/eip.html.markdown.
 func LookupElasticIp(ctx *pulumi.Context, args *GetElasticIpArgs) (*GetElasticIpResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["id"] = args.Id
-		inputs["publicIp"] = args.PublicIp
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:index/getElasticIp:getElasticIp", inputs)
+var rv GetElasticIpResult
+	err := ctx.Invoke("aws:index/getElasticIp:getElasticIp", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetElasticIpResult{
-		AssociationId: outputs["associationId"],
-		Domain: outputs["domain"],
-		Filters: outputs["filters"],
-		Id: outputs["id"],
-		InstanceId: outputs["instanceId"],
-		NetworkInterfaceId: outputs["networkInterfaceId"],
-		NetworkInterfaceOwnerId: outputs["networkInterfaceOwnerId"],
-		PrivateDns: outputs["privateDns"],
-		PrivateIp: outputs["privateIp"],
-		PublicDns: outputs["publicDns"],
-		PublicIp: outputs["publicIp"],
-		PublicIpv4Pool: outputs["publicIpv4Pool"],
-		Tags: outputs["tags"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getElasticIp.
 type GetElasticIpArgs struct {
 	// One or more name/value pairs to use as filters. There are several valid keys, for a full reference, check out the [EC2 API Reference](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeAddresses.html).
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// The allocation id of the specific VPC EIP to retrieve. If a classic EIP is required, do NOT set `id`, only set `publicIp`
-	Id pulumi.StringInput `pulumi:"id"`
+	Id string `pulumi:"id"`
 	// The public IP of the specific EIP to retrieve.
-	PublicIp pulumi.StringInput `pulumi:"publicIp"`
+	PublicIp string `pulumi:"publicIp"`
 	// A mapping of tags, each pair of which must exactly match a pair on the desired Elastic IP
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getElasticIp.

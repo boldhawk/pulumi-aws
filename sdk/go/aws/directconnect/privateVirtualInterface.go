@@ -81,7 +81,6 @@ func NewPrivateVirtualInterface(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Vlan'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["addressFamily"] = args.AddressFamily
 		inputs["amazonAddress"] = args.AmazonAddress

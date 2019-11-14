@@ -11,45 +11,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/dynamodb_table.html.markdown.
 func LookupTable(ctx *pulumi.Context, args *GetTableArgs) (*GetTableResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-		inputs["serverSideEncryption"] = args.ServerSideEncryption
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:dynamodb/getTable:getTable", inputs)
+var rv GetTableResult
+	err := ctx.Invoke("aws:dynamodb/getTable:getTable", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetTableResult{
-		Arn: outputs["arn"],
-		Attributes: outputs["attributes"],
-		BillingMode: outputs["billingMode"],
-		GlobalSecondaryIndexes: outputs["globalSecondaryIndexes"],
-		HashKey: outputs["hashKey"],
-		LocalSecondaryIndexes: outputs["localSecondaryIndexes"],
-		Name: outputs["name"],
-		PointInTimeRecovery: outputs["pointInTimeRecovery"],
-		RangeKey: outputs["rangeKey"],
-		ReadCapacity: outputs["readCapacity"],
-		ServerSideEncryption: outputs["serverSideEncryption"],
-		StreamArn: outputs["streamArn"],
-		StreamEnabled: outputs["streamEnabled"],
-		StreamLabel: outputs["streamLabel"],
-		StreamViewType: outputs["streamViewType"],
-		Tags: outputs["tags"],
-		Ttl: outputs["ttl"],
-		WriteCapacity: outputs["writeCapacity"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getTable.
 type GetTableArgs struct {
 	// The name of the DynamoDB table.
-	Name pulumi.StringInput `pulumi:"name"`
-	ServerSideEncryption pulumi.AnyInput `pulumi:"serverSideEncryption"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Name string `pulumi:"name"`
+	ServerSideEncryption interface{} `pulumi:"serverSideEncryption"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getTable.

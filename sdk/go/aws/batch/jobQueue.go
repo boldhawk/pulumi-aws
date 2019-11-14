@@ -51,7 +51,6 @@ func NewJobQueue(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'State'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["computeEnvironments"] = args.ComputeEnvironments
 		inputs["name"] = args.Name

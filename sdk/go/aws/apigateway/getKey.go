@@ -12,25 +12,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/api_gateway_api_key.html.markdown.
 func LookupKey(ctx *pulumi.Context, args *GetKeyArgs) (*GetKeyResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["id"] = args.Id
-	}
-	outputs, err := ctx.Invoke("aws:apigateway/getKey:getKey", inputs)
+var rv GetKeyResult
+	err := ctx.Invoke("aws:apigateway/getKey:getKey", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetKeyResult{
-		Id: outputs["id"],
-		Name: outputs["name"],
-		Value: outputs["value"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getKey.
 type GetKeyArgs struct {
 	// The ID of the API Key to look up.
-	Id pulumi.StringInput `pulumi:"id"`
+	Id string `pulumi:"id"`
 }
 
 // A collection of values returned by getKey.

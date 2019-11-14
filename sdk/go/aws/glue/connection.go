@@ -47,7 +47,6 @@ func NewConnection(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'ConnectionProperties'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["catalogId"] = args.CatalogId
 		inputs["connectionProperties"] = args.ConnectionProperties

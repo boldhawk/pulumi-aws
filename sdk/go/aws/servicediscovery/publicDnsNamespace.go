@@ -34,7 +34,6 @@ type PublicDnsNamespace struct {
 func NewPublicDnsNamespace(ctx *pulumi.Context,
 	name string, args *PublicDnsNamespaceArgs, opts ...pulumi.ResourceOpt) (*PublicDnsNamespace, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name

@@ -11,61 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/db_instance.html.markdown.
 func LookupInstance(ctx *pulumi.Context, args *GetInstanceArgs) (*GetInstanceResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["dbInstanceIdentifier"] = args.DbInstanceIdentifier
-	}
-	outputs, err := ctx.Invoke("aws:rds/getInstance:getInstance", inputs)
+var rv GetInstanceResult
+	err := ctx.Invoke("aws:rds/getInstance:getInstance", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetInstanceResult{
-		Address: outputs["address"],
-		AllocatedStorage: outputs["allocatedStorage"],
-		AutoMinorVersionUpgrade: outputs["autoMinorVersionUpgrade"],
-		AvailabilityZone: outputs["availabilityZone"],
-		BackupRetentionPeriod: outputs["backupRetentionPeriod"],
-		CaCertIdentifier: outputs["caCertIdentifier"],
-		DbClusterIdentifier: outputs["dbClusterIdentifier"],
-		DbInstanceArn: outputs["dbInstanceArn"],
-		DbInstanceClass: outputs["dbInstanceClass"],
-		DbInstanceIdentifier: outputs["dbInstanceIdentifier"],
-		DbInstancePort: outputs["dbInstancePort"],
-		DbName: outputs["dbName"],
-		DbParameterGroups: outputs["dbParameterGroups"],
-		DbSecurityGroups: outputs["dbSecurityGroups"],
-		DbSubnetGroup: outputs["dbSubnetGroup"],
-		EnabledCloudwatchLogsExports: outputs["enabledCloudwatchLogsExports"],
-		Endpoint: outputs["endpoint"],
-		Engine: outputs["engine"],
-		EngineVersion: outputs["engineVersion"],
-		HostedZoneId: outputs["hostedZoneId"],
-		Iops: outputs["iops"],
-		KmsKeyId: outputs["kmsKeyId"],
-		LicenseModel: outputs["licenseModel"],
-		MasterUsername: outputs["masterUsername"],
-		MonitoringInterval: outputs["monitoringInterval"],
-		MonitoringRoleArn: outputs["monitoringRoleArn"],
-		MultiAz: outputs["multiAz"],
-		OptionGroupMemberships: outputs["optionGroupMemberships"],
-		Port: outputs["port"],
-		PreferredBackupWindow: outputs["preferredBackupWindow"],
-		PreferredMaintenanceWindow: outputs["preferredMaintenanceWindow"],
-		PubliclyAccessible: outputs["publiclyAccessible"],
-		ReplicateSourceDb: outputs["replicateSourceDb"],
-		ResourceId: outputs["resourceId"],
-		StorageEncrypted: outputs["storageEncrypted"],
-		StorageType: outputs["storageType"],
-		Timezone: outputs["timezone"],
-		VpcSecurityGroups: outputs["vpcSecurityGroups"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getInstance.
 type GetInstanceArgs struct {
 	// The name of the RDS instance
-	DbInstanceIdentifier pulumi.StringInput `pulumi:"dbInstanceIdentifier"`
+	DbInstanceIdentifier string `pulumi:"dbInstanceIdentifier"`
 }
 
 // A collection of values returned by getInstance.

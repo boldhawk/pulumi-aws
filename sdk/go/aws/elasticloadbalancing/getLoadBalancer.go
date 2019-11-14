@@ -17,43 +17,19 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elb_legacy.html.markdown.
 func LookupLoadBalancer(ctx *pulumi.Context, args *GetLoadBalancerArgs) (*GetLoadBalancerResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:elasticloadbalancing/getLoadBalancer:getLoadBalancer", inputs)
+var rv GetLoadBalancerResult
+	err := ctx.Invoke("aws:elasticloadbalancing/getLoadBalancer:getLoadBalancer", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetLoadBalancerResult{
-		AccessLogs: outputs["accessLogs"],
-		AvailabilityZones: outputs["availabilityZones"],
-		ConnectionDraining: outputs["connectionDraining"],
-		ConnectionDrainingTimeout: outputs["connectionDrainingTimeout"],
-		CrossZoneLoadBalancing: outputs["crossZoneLoadBalancing"],
-		DnsName: outputs["dnsName"],
-		HealthCheck: outputs["healthCheck"],
-		IdleTimeout: outputs["idleTimeout"],
-		Instances: outputs["instances"],
-		Internal: outputs["internal"],
-		Listeners: outputs["listeners"],
-		Name: outputs["name"],
-		SecurityGroups: outputs["securityGroups"],
-		SourceSecurityGroup: outputs["sourceSecurityGroup"],
-		SourceSecurityGroupId: outputs["sourceSecurityGroupId"],
-		Subnets: outputs["subnets"],
-		Tags: outputs["tags"],
-		ZoneId: outputs["zoneId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getLoadBalancer.
 type GetLoadBalancerArgs struct {
 	// The unique name of the load balancer.
-	Name pulumi.StringInput `pulumi:"name"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Name string `pulumi:"name"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getLoadBalancer.

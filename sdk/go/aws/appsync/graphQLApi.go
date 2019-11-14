@@ -56,7 +56,6 @@ func NewGraphQLApi(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'AuthenticationType'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["additionalAuthenticationProviders"] = args.AdditionalAuthenticationProviders
 		inputs["authenticationType"] = args.AuthenticationType

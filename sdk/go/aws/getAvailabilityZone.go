@@ -21,35 +21,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/availability_zone.html.markdown.
 func LookupAvailabilityZone(ctx *pulumi.Context, args *GetAvailabilityZoneArgs) (*GetAvailabilityZoneResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-		inputs["state"] = args.State
-		inputs["zoneId"] = args.ZoneId
-	}
-	outputs, err := ctx.Invoke("aws:index/getAvailabilityZone:getAvailabilityZone", inputs)
+var rv GetAvailabilityZoneResult
+	err := ctx.Invoke("aws:index/getAvailabilityZone:getAvailabilityZone", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetAvailabilityZoneResult{
-		Name: outputs["name"],
-		NameSuffix: outputs["nameSuffix"],
-		Region: outputs["region"],
-		State: outputs["state"],
-		ZoneId: outputs["zoneId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getAvailabilityZone.
 type GetAvailabilityZoneArgs struct {
 	// The full name of the availability zone to select.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 	// A specific availability zone state to require. May
 	// be any of `"available"`, `"information"` or `"impaired"`.
-	State pulumi.StringInput `pulumi:"state"`
+	State string `pulumi:"state"`
 	// The zone ID of the availability zone to select.
-	ZoneId pulumi.StringInput `pulumi:"zoneId"`
+	ZoneId string `pulumi:"zoneId"`
 }
 
 // A collection of values returned by getAvailabilityZone.

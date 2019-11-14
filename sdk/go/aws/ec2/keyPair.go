@@ -46,7 +46,6 @@ func NewKeyPair(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'PublicKey'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["keyName"] = pulumi.Any()
 	if args != nil {
 		inputs["keyName"] = args.KeyName
 		inputs["keyNamePrefix"] = args.KeyNamePrefix

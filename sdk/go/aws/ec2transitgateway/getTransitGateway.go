@@ -11,41 +11,21 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ec2_transit_gateway.html.markdown.
 func LookupTransitGateway(ctx *pulumi.Context, args *GetTransitGatewayArgs) (*GetTransitGatewayResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["id"] = args.Id
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ec2transitgateway/getTransitGateway:getTransitGateway", inputs)
+var rv GetTransitGatewayResult
+	err := ctx.Invoke("aws:ec2transitgateway/getTransitGateway:getTransitGateway", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetTransitGatewayResult{
-		AmazonSideAsn: outputs["amazonSideAsn"],
-		Arn: outputs["arn"],
-		AssociationDefaultRouteTableId: outputs["associationDefaultRouteTableId"],
-		AutoAcceptSharedAttachments: outputs["autoAcceptSharedAttachments"],
-		DefaultRouteTableAssociation: outputs["defaultRouteTableAssociation"],
-		DefaultRouteTablePropagation: outputs["defaultRouteTablePropagation"],
-		Description: outputs["description"],
-		DnsSupport: outputs["dnsSupport"],
-		Filters: outputs["filters"],
-		Id: outputs["id"],
-		OwnerId: outputs["ownerId"],
-		PropagationDefaultRouteTableId: outputs["propagationDefaultRouteTableId"],
-		Tags: outputs["tags"],
-		VpnEcmpSupport: outputs["vpnEcmpSupport"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getTransitGateway.
 type GetTransitGatewayArgs struct {
 	// One or more configuration blocks containing name-values filters. Detailed below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// Identifier of the EC2 Transit Gateway.
-	Id pulumi.StringInput `pulumi:"id"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Id string `pulumi:"id"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getTransitGateway.

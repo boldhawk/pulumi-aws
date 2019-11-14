@@ -48,7 +48,6 @@ func NewZone(ctx *pulumi.Context,
 	name string, args *ZoneArgs, opts ...pulumi.ResourceOpt) (*Zone, error) {
 	inputs := map[string]pulumi.Input{}
 	inputs["comment"] = pulumi.Any("Managed by Pulumi")
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["comment"] = args.Comment
 		inputs["delegationSetId"] = args.DelegationSetId

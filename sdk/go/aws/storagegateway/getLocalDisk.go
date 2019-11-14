@@ -11,33 +11,22 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/storagegateway_local_disk.html.markdown.
 func LookupLocalDisk(ctx *pulumi.Context, args *GetLocalDiskArgs) (*GetLocalDiskResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["diskNode"] = args.DiskNode
-		inputs["diskPath"] = args.DiskPath
-		inputs["gatewayArn"] = args.GatewayArn
-	}
-	outputs, err := ctx.Invoke("aws:storagegateway/getLocalDisk:getLocalDisk", inputs)
+var rv GetLocalDiskResult
+	err := ctx.Invoke("aws:storagegateway/getLocalDisk:getLocalDisk", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetLocalDiskResult{
-		DiskId: outputs["diskId"],
-		DiskNode: outputs["diskNode"],
-		DiskPath: outputs["diskPath"],
-		GatewayArn: outputs["gatewayArn"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getLocalDisk.
 type GetLocalDiskArgs struct {
 	// The device node of the local disk to retrieve. For example, `/dev/sdb`.
-	DiskNode pulumi.StringInput `pulumi:"diskNode"`
+	DiskNode string `pulumi:"diskNode"`
 	// The device path of the local disk to retrieve. For example, `/dev/xvdb` or `/dev/nvme1n1`.
-	DiskPath pulumi.StringInput `pulumi:"diskPath"`
+	DiskPath string `pulumi:"diskPath"`
 	// The Amazon Resource Name (ARN) of the gateway.
-	GatewayArn pulumi.StringInput `pulumi:"gatewayArn"`
+	GatewayArn string `pulumi:"gatewayArn"`
 }
 
 // A collection of values returned by getLocalDisk.

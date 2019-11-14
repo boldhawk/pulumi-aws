@@ -38,7 +38,6 @@ func NewEndpoint(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'EndpointConfigName'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["endpointConfigName"] = args.EndpointConfigName
 		inputs["name"] = args.Name

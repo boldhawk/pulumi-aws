@@ -11,30 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/workspaces_bundle.html.markdown.
 func LookupBundle(ctx *pulumi.Context, args *GetBundleArgs) (*GetBundleResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["bundleId"] = args.BundleId
-	}
-	outputs, err := ctx.Invoke("aws:workspaces/getBundle:getBundle", inputs)
+var rv GetBundleResult
+	err := ctx.Invoke("aws:workspaces/getBundle:getBundle", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetBundleResult{
-		BundleId: outputs["bundleId"],
-		ComputeTypes: outputs["computeTypes"],
-		Description: outputs["description"],
-		Name: outputs["name"],
-		Owner: outputs["owner"],
-		RootStorages: outputs["rootStorages"],
-		UserStorages: outputs["userStorages"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getBundle.
 type GetBundleArgs struct {
 	// The ID of the bundle.
-	BundleId pulumi.StringInput `pulumi:"bundleId"`
+	BundleId string `pulumi:"bundleId"`
 }
 
 // A collection of values returned by getBundle.

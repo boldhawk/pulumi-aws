@@ -11,32 +11,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ssm_parameter.html.markdown.
 func LookupParameter(ctx *pulumi.Context, args *GetParameterArgs) (*GetParameterResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-		inputs["withDecryption"] = args.WithDecryption
-	}
-	outputs, err := ctx.Invoke("aws:ssm/getParameter:getParameter", inputs)
+var rv GetParameterResult
+	err := ctx.Invoke("aws:ssm/getParameter:getParameter", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetParameterResult{
-		Arn: outputs["arn"],
-		Name: outputs["name"],
-		Type: outputs["type"],
-		Value: outputs["value"],
-		Version: outputs["version"],
-		WithDecryption: outputs["withDecryption"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getParameter.
 type GetParameterArgs struct {
 	// The name of the parameter.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 	// Whether to return decrypted `SecureString` value. Defaults to `true`.
-	WithDecryption pulumi.BoolInput `pulumi:"withDecryption"`
+	WithDecryption bool `pulumi:"withDecryption"`
 }
 
 // A collection of values returned by getParameter.

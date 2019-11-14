@@ -134,7 +134,6 @@ type Cluster struct {
 func NewCluster(ctx *pulumi.Context,
 	name string, args *ClusterArgs, opts ...pulumi.ResourceOpt) (*Cluster, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["clusterId"] = pulumi.Any()
 	if args != nil {
 		inputs["applyImmediately"] = args.ApplyImmediately
 		inputs["availabilityZone"] = args.AvailabilityZone

@@ -11,35 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elasticache_replication_group.html.markdown.
 func LookupReplicationGroup(ctx *pulumi.Context, args *GetReplicationGroupArgs) (*GetReplicationGroupResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["replicationGroupId"] = args.ReplicationGroupId
-	}
-	outputs, err := ctx.Invoke("aws:elasticache/getReplicationGroup:getReplicationGroup", inputs)
+var rv GetReplicationGroupResult
+	err := ctx.Invoke("aws:elasticache/getReplicationGroup:getReplicationGroup", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetReplicationGroupResult{
-		AuthTokenEnabled: outputs["authTokenEnabled"],
-		AutomaticFailoverEnabled: outputs["automaticFailoverEnabled"],
-		ConfigurationEndpointAddress: outputs["configurationEndpointAddress"],
-		MemberClusters: outputs["memberClusters"],
-		NodeType: outputs["nodeType"],
-		NumberCacheClusters: outputs["numberCacheClusters"],
-		Port: outputs["port"],
-		PrimaryEndpointAddress: outputs["primaryEndpointAddress"],
-		ReplicationGroupDescription: outputs["replicationGroupDescription"],
-		ReplicationGroupId: outputs["replicationGroupId"],
-		SnapshotRetentionLimit: outputs["snapshotRetentionLimit"],
-		SnapshotWindow: outputs["snapshotWindow"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getReplicationGroup.
 type GetReplicationGroupArgs struct {
 	// The identifier for the replication group.
-	ReplicationGroupId pulumi.StringInput `pulumi:"replicationGroupId"`
+	ReplicationGroupId string `pulumi:"replicationGroupId"`
 }
 
 // A collection of values returned by getReplicationGroup.

@@ -44,7 +44,6 @@ func NewSslNegotiationPolicy(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'LoadBalancer'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["attributes"] = args.Attributes
 		inputs["lbPort"] = args.LbPort

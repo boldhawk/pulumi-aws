@@ -97,7 +97,6 @@ func NewDocument(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'DocumentType'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["content"] = args.Content
 		inputs["documentFormat"] = args.DocumentFormat

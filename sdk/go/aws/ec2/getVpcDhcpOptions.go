@@ -11,37 +11,21 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/vpc_dhcp_options.html.markdown.
 func LookupVpcDhcpOptions(ctx *pulumi.Context, args *GetVpcDhcpOptionsArgs) (*GetVpcDhcpOptionsResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["dhcpOptionsId"] = args.DhcpOptionsId
-		inputs["filters"] = args.Filters
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getVpcDhcpOptions:getVpcDhcpOptions", inputs)
+var rv GetVpcDhcpOptionsResult
+	err := ctx.Invoke("aws:ec2/getVpcDhcpOptions:getVpcDhcpOptions", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetVpcDhcpOptionsResult{
-		DhcpOptionsId: outputs["dhcpOptionsId"],
-		DomainName: outputs["domainName"],
-		DomainNameServers: outputs["domainNameServers"],
-		Filters: outputs["filters"],
-		NetbiosNameServers: outputs["netbiosNameServers"],
-		NetbiosNodeType: outputs["netbiosNodeType"],
-		NtpServers: outputs["ntpServers"],
-		OwnerId: outputs["ownerId"],
-		Tags: outputs["tags"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getVpcDhcpOptions.
 type GetVpcDhcpOptionsArgs struct {
 	// The EC2 DHCP Options ID.
-	DhcpOptionsId pulumi.StringInput `pulumi:"dhcpOptionsId"`
+	DhcpOptionsId string `pulumi:"dhcpOptionsId"`
 	// List of custom filters as described below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Filters []interface{} `pulumi:"filters"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpcDhcpOptions.

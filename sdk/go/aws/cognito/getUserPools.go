@@ -11,26 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/cognito_user_pools.html.markdown.
 func LookupUserPools(ctx *pulumi.Context, args *GetUserPoolsArgs) (*GetUserPoolsResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:cognito/getUserPools:getUserPools", inputs)
+var rv GetUserPoolsResult
+	err := ctx.Invoke("aws:cognito/getUserPools:getUserPools", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetUserPoolsResult{
-		Arns: outputs["arns"],
-		Ids: outputs["ids"],
-		Name: outputs["name"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getUserPools.
 type GetUserPoolsArgs struct {
 	// Name of the cognito user pools. Name is not a unique attribute for cognito user pool, so multiple pools might be returned with given name.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getUserPools.

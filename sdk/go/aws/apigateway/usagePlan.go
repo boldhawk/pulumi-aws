@@ -40,7 +40,6 @@ type UsagePlan struct {
 func NewUsagePlan(ctx *pulumi.Context,
 	name string, args *UsagePlanArgs, opts ...pulumi.ResourceOpt) (*UsagePlan, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["apiStages"] = args.ApiStages
 		inputs["description"] = args.Description

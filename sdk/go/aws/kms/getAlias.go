@@ -13,27 +13,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/kms_alias.html.markdown.
 func LookupAlias(ctx *pulumi.Context, args *GetAliasArgs) (*GetAliasResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:kms/getAlias:getAlias", inputs)
+var rv GetAliasResult
+	err := ctx.Invoke("aws:kms/getAlias:getAlias", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetAliasResult{
-		Arn: outputs["arn"],
-		Name: outputs["name"],
-		TargetKeyArn: outputs["targetKeyArn"],
-		TargetKeyId: outputs["targetKeyId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getAlias.
 type GetAliasArgs struct {
 	// The display name of the alias. The name must start with the word "alias" followed by a forward slash (alias/)
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getAlias.

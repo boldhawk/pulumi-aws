@@ -12,31 +12,12 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ebs_volume.html.markdown.
 func LookupVolume(ctx *pulumi.Context, args *GetVolumeArgs) (*GetVolumeResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["mostRecent"] = args.MostRecent
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ebs/getVolume:getVolume", inputs)
+var rv GetVolumeResult
+	err := ctx.Invoke("aws:ebs/getVolume:getVolume", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetVolumeResult{
-		Arn: outputs["arn"],
-		AvailabilityZone: outputs["availabilityZone"],
-		Encrypted: outputs["encrypted"],
-		Filters: outputs["filters"],
-		Iops: outputs["iops"],
-		KmsKeyId: outputs["kmsKeyId"],
-		MostRecent: outputs["mostRecent"],
-		Size: outputs["size"],
-		SnapshotId: outputs["snapshotId"],
-		Tags: outputs["tags"],
-		VolumeId: outputs["volumeId"],
-		VolumeType: outputs["volumeType"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getVolume.
@@ -44,11 +25,11 @@ type GetVolumeArgs struct {
 	// One or more name/value pairs to filter off of. There are
 	// several valid keys, for a full reference, check out
 	// [describe-volumes in the AWS CLI reference][1].
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// If more than one result is returned, use the most
 	// recent Volume.
-	MostRecent pulumi.BoolInput `pulumi:"mostRecent"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	MostRecent bool `pulumi:"mostRecent"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getVolume.

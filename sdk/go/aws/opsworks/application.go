@@ -80,7 +80,6 @@ func NewApplication(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Type'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["appSources"] = args.AppSources
 		inputs["autoBundleOnDeploy"] = args.AutoBundleOnDeploy

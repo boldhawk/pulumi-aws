@@ -11,30 +11,19 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ecr_repository.html.markdown.
 func LookupRepository(ctx *pulumi.Context, args *GetRepositoryArgs) (*GetRepositoryResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ecr/getRepository:getRepository", inputs)
+var rv GetRepositoryResult
+	err := ctx.Invoke("aws:ecr/getRepository:getRepository", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetRepositoryResult{
-		Arn: outputs["arn"],
-		Name: outputs["name"],
-		RegistryId: outputs["registryId"],
-		RepositoryUrl: outputs["repositoryUrl"],
-		Tags: outputs["tags"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getRepository.
 type GetRepositoryArgs struct {
 	// The name of the ECR Repository.
-	Name pulumi.StringInput `pulumi:"name"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Name string `pulumi:"name"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getRepository.

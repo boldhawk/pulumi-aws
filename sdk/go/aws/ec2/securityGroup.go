@@ -66,7 +66,6 @@ func NewSecurityGroup(ctx *pulumi.Context,
 	name string, args *SecurityGroupArgs, opts ...pulumi.ResourceOpt) (*SecurityGroup, error) {
 	inputs := map[string]pulumi.Input{}
 	inputs["description"] = pulumi.Any("Managed by Pulumi")
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["egress"] = args.Egress

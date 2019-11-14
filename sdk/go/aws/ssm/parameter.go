@@ -62,7 +62,6 @@ func NewParameter(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Value'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["allowedPattern"] = args.AllowedPattern
 		inputs["arn"] = args.Arn

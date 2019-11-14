@@ -45,7 +45,6 @@ func NewLoadBalancerCookieStickinessPolicy(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'LoadBalancer'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["cookieExpirationPeriod"] = args.CookieExpirationPeriod
 		inputs["lbPort"] = args.LbPort

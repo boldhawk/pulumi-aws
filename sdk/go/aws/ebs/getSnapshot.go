@@ -11,38 +11,12 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ebs_snapshot.html.markdown.
 func LookupSnapshot(ctx *pulumi.Context, args *GetSnapshotArgs) (*GetSnapshotResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["mostRecent"] = args.MostRecent
-		inputs["owners"] = args.Owners
-		inputs["restorableByUserIds"] = args.RestorableByUserIds
-		inputs["snapshotIds"] = args.SnapshotIds
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ebs/getSnapshot:getSnapshot", inputs)
+var rv GetSnapshotResult
+	err := ctx.Invoke("aws:ebs/getSnapshot:getSnapshot", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetSnapshotResult{
-		DataEncryptionKeyId: outputs["dataEncryptionKeyId"],
-		Description: outputs["description"],
-		Encrypted: outputs["encrypted"],
-		Filters: outputs["filters"],
-		KmsKeyId: outputs["kmsKeyId"],
-		MostRecent: outputs["mostRecent"],
-		OwnerAlias: outputs["ownerAlias"],
-		OwnerId: outputs["ownerId"],
-		Owners: outputs["owners"],
-		RestorableByUserIds: outputs["restorableByUserIds"],
-		SnapshotId: outputs["snapshotId"],
-		SnapshotIds: outputs["snapshotIds"],
-		State: outputs["state"],
-		Tags: outputs["tags"],
-		VolumeId: outputs["volumeId"],
-		VolumeSize: outputs["volumeSize"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getSnapshot.
@@ -50,16 +24,16 @@ type GetSnapshotArgs struct {
 	// One or more name/value pairs to filter off of. There are
 	// several valid keys, for a full reference, check out
 	// [describe-snapshots in the AWS CLI reference][1].
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// If more than one result is returned, use the most recent snapshot.
-	MostRecent pulumi.BoolInput `pulumi:"mostRecent"`
+	MostRecent bool `pulumi:"mostRecent"`
 	// Returns the snapshots owned by the specified owner id. Multiple owners can be specified.
-	Owners pulumi.ArrayInput `pulumi:"owners"`
+	Owners []interface{} `pulumi:"owners"`
 	// One or more AWS accounts IDs that can create volumes from the snapshot.
-	RestorableByUserIds pulumi.ArrayInput `pulumi:"restorableByUserIds"`
+	RestorableByUserIds []interface{} `pulumi:"restorableByUserIds"`
 	// Returns information on a specific snapshot_id.
-	SnapshotIds pulumi.ArrayInput `pulumi:"snapshotIds"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	SnapshotIds []interface{} `pulumi:"snapshotIds"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getSnapshot.

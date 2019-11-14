@@ -11,48 +11,22 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/mq_broker.html.markdown.
 func LookupBroker(ctx *pulumi.Context, args *GetBrokerArgs) (*GetBrokerResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["brokerId"] = args.BrokerId
-		inputs["brokerName"] = args.BrokerName
-		inputs["logs"] = args.Logs
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:mq/getBroker:getBroker", inputs)
+var rv GetBrokerResult
+	err := ctx.Invoke("aws:mq/getBroker:getBroker", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetBrokerResult{
-		Arn: outputs["arn"],
-		AutoMinorVersionUpgrade: outputs["autoMinorVersionUpgrade"],
-		BrokerId: outputs["brokerId"],
-		BrokerName: outputs["brokerName"],
-		Configuration: outputs["configuration"],
-		DeploymentMode: outputs["deploymentMode"],
-		EncryptionOptions: outputs["encryptionOptions"],
-		EngineType: outputs["engineType"],
-		EngineVersion: outputs["engineVersion"],
-		HostInstanceType: outputs["hostInstanceType"],
-		Instances: outputs["instances"],
-		Logs: outputs["logs"],
-		MaintenanceWindowStartTime: outputs["maintenanceWindowStartTime"],
-		PubliclyAccessible: outputs["publiclyAccessible"],
-		SecurityGroups: outputs["securityGroups"],
-		SubnetIds: outputs["subnetIds"],
-		Tags: outputs["tags"],
-		Users: outputs["users"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getBroker.
 type GetBrokerArgs struct {
 	// The unique id of the mq broker.
-	BrokerId pulumi.StringInput `pulumi:"brokerId"`
+	BrokerId string `pulumi:"brokerId"`
 	// The unique name of the mq broker.
-	BrokerName pulumi.StringInput `pulumi:"brokerName"`
-	Logs pulumi.AnyInput `pulumi:"logs"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	BrokerName string `pulumi:"brokerName"`
+	Logs interface{} `pulumi:"logs"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getBroker.

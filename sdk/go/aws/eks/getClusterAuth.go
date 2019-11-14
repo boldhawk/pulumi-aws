@@ -16,25 +16,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/eks_cluster_auth.html.markdown.
 func LookupClusterAuth(ctx *pulumi.Context, args *GetClusterAuthArgs) (*GetClusterAuthResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:eks/getClusterAuth:getClusterAuth", inputs)
+var rv GetClusterAuthResult
+	err := ctx.Invoke("aws:eks/getClusterAuth:getClusterAuth", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetClusterAuthResult{
-		Name: outputs["name"],
-		Token: outputs["token"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getClusterAuth.
 type GetClusterAuthArgs struct {
 	// The name of the cluster
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getClusterAuth.

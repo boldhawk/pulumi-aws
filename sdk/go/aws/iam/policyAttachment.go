@@ -45,7 +45,6 @@ func NewPolicyAttachment(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'PolicyArn'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["groups"] = args.Groups
 		inputs["name"] = args.Name

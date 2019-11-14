@@ -16,29 +16,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/region.html.markdown.
 func LookupRegion(ctx *pulumi.Context, args *GetRegionArgs) (*GetRegionResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["endpoint"] = args.Endpoint
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:index/getRegion:getRegion", inputs)
+var rv GetRegionResult
+	err := ctx.Invoke("aws:index/getRegion:getRegion", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetRegionResult{
-		Description: outputs["description"],
-		Endpoint: outputs["endpoint"],
-		Name: outputs["name"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getRegion.
 type GetRegionArgs struct {
 	// The EC2 endpoint of the region to select.
-	Endpoint pulumi.StringInput `pulumi:"endpoint"`
+	Endpoint string `pulumi:"endpoint"`
 	// The full name of the region to select.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getRegion.

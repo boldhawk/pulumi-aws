@@ -21,7 +21,6 @@ type ConfgurationSet struct {
 func NewConfgurationSet(ctx *pulumi.Context,
 	name string, args *ConfgurationSetArgs, opts ...pulumi.ResourceOpt) (*ConfgurationSet, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 	}

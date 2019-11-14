@@ -12,29 +12,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/pricing_product.html.markdown.
 func LookupProduct(ctx *pulumi.Context, args *GetProductArgs) (*GetProductResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["serviceCode"] = args.ServiceCode
-	}
-	outputs, err := ctx.Invoke("aws:pricing/getProduct:getProduct", inputs)
+var rv GetProductResult
+	err := ctx.Invoke("aws:pricing/getProduct:getProduct", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetProductResult{
-		Filters: outputs["filters"],
-		Result: outputs["result"],
-		ServiceCode: outputs["serviceCode"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getProduct.
 type GetProductArgs struct {
 	// A list of filters. Passed directly to the API (see GetProducts API reference). These filters must describe a single product, this resource will fail if more than one product is returned by the API.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// The code of the service. Available service codes can be fetched using the DescribeServices pricing API call.
-	ServiceCode pulumi.StringInput `pulumi:"serviceCode"`
+	ServiceCode string `pulumi:"serviceCode"`
 }
 
 // A collection of values returned by getProduct.

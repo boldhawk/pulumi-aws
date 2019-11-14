@@ -11,38 +11,22 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/servicequotas_service_quota.html.markdown.
 func LookupServiceQuota(ctx *pulumi.Context, args *GetServiceQuotaArgs) (*GetServiceQuotaResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["quotaCode"] = args.QuotaCode
-		inputs["quotaName"] = args.QuotaName
-		inputs["serviceCode"] = args.ServiceCode
-	}
-	outputs, err := ctx.Invoke("aws:servicequotas/getServiceQuota:getServiceQuota", inputs)
+var rv GetServiceQuotaResult
+	err := ctx.Invoke("aws:servicequotas/getServiceQuota:getServiceQuota", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetServiceQuotaResult{
-		Adjustable: outputs["adjustable"],
-		Arn: outputs["arn"],
-		DefaultValue: outputs["defaultValue"],
-		GlobalQuota: outputs["globalQuota"],
-		QuotaCode: outputs["quotaCode"],
-		QuotaName: outputs["quotaName"],
-		ServiceCode: outputs["serviceCode"],
-		ServiceName: outputs["serviceName"],
-		Value: outputs["value"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getServiceQuota.
 type GetServiceQuotaArgs struct {
 	// Quota code within the service. When configured, the data source directly looks up the service quota. Available values can be found with the [AWS CLI service-quotas list-service-quotas command](https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html).
-	QuotaCode pulumi.StringInput `pulumi:"quotaCode"`
+	QuotaCode string `pulumi:"quotaCode"`
 	// Quota name within the service. When configured, the data source searches through all service quotas to find the matching quota name. Available values can be found with the [AWS CLI service-quotas list-service-quotas command](https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html).
-	QuotaName pulumi.StringInput `pulumi:"quotaName"`
+	QuotaName string `pulumi:"quotaName"`
 	// Service code for the quota. Available values can be found with the [`servicequotas.getService` data source](https://www.terraform.io/docs/providers/aws/d/servicequotas_service.html) or [AWS CLI service-quotas list-services command](https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-services.html).
-	ServiceCode pulumi.StringInput `pulumi:"serviceCode"`
+	ServiceCode string `pulumi:"serviceCode"`
 }
 
 // A collection of values returned by getServiceQuota.

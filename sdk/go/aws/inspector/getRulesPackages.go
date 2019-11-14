@@ -13,14 +13,12 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/inspector_rules_packages.html.markdown.
 func LookupRulesPackages(ctx *pulumi.Context) (*GetRulesPackagesResult, error) {
-	outputs, err := ctx.Invoke("aws:inspector/getRulesPackages:getRulesPackages", nil)
+var rv GetRulesPackagesResult
+	err := ctx.Invoke("aws:inspector/getRulesPackages:getRulesPackages", nil, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetRulesPackagesResult{
-		Arns: outputs["arns"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of values returned by getRulesPackages.

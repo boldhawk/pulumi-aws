@@ -11,14 +11,12 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ebs_default_kms_key.html.markdown.
 func LookupDefaultKmsKey(ctx *pulumi.Context) (*GetDefaultKmsKeyResult, error) {
-	outputs, err := ctx.Invoke("aws:ebs/getDefaultKmsKey:getDefaultKmsKey", nil)
+var rv GetDefaultKmsKeyResult
+	err := ctx.Invoke("aws:ebs/getDefaultKmsKey:getDefaultKmsKey", nil, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetDefaultKmsKeyResult{
-		KeyArn: outputs["keyArn"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of values returned by getDefaultKmsKey.

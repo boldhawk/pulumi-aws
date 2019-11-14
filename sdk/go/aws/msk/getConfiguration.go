@@ -11,29 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/msk_configuration.html.markdown.
 func LookupConfiguration(ctx *pulumi.Context, args *GetConfigurationArgs) (*GetConfigurationResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:msk/getConfiguration:getConfiguration", inputs)
+var rv GetConfigurationResult
+	err := ctx.Invoke("aws:msk/getConfiguration:getConfiguration", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetConfigurationResult{
-		Arn: outputs["arn"],
-		Description: outputs["description"],
-		KafkaVersions: outputs["kafkaVersions"],
-		LatestRevision: outputs["latestRevision"],
-		Name: outputs["name"],
-		ServerProperties: outputs["serverProperties"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getConfiguration.
 type GetConfigurationArgs struct {
 	// Name of the configuration.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getConfiguration.

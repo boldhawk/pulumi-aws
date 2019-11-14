@@ -35,7 +35,6 @@ func NewBucketMetric(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Bucket'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["bucket"] = args.Bucket
 		inputs["filter"] = args.Filter

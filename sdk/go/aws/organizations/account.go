@@ -57,7 +57,6 @@ func NewAccount(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Email'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["email"] = args.Email
 		inputs["iamUserAccessToBilling"] = args.IamUserAccessToBilling

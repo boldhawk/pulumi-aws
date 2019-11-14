@@ -14,25 +14,19 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/api_gateway_vpc_link.html.markdown.
 func LookupVpcLink(ctx *pulumi.Context, args *GetVpcLinkArgs) (*GetVpcLinkResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:apigateway/getVpcLink:getVpcLink", inputs)
+var rv GetVpcLinkResult
+	err := ctx.Invoke("aws:apigateway/getVpcLink:getVpcLink", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetVpcLinkResult{
-		Id: outputs["id"],
-		Name: outputs["name"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getVpcLink.
 type GetVpcLinkArgs struct {
 	// The name of the API Gateway VPC Link to look up. If no API Gateway VPC Link is found with this name, an error will be returned. 
 	// If multiple API Gateway VPC Links are found with this name, an error will be returned.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getVpcLink.

@@ -11,26 +11,12 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ip_ranges.html.markdown.
 func LookupIpRanges(ctx *pulumi.Context, args *GetIpRangesArgs) (*GetIpRangesResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["regions"] = args.Regions
-		inputs["services"] = args.Services
-		inputs["url"] = args.Url
-	}
-	outputs, err := ctx.Invoke("aws:index/getIpRanges:getIpRanges", inputs)
+var rv GetIpRangesResult
+	err := ctx.Invoke("aws:index/getIpRanges:getIpRanges", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetIpRangesResult{
-		CidrBlocks: outputs["cidrBlocks"],
-		CreateDate: outputs["createDate"],
-		Ipv6CidrBlocks: outputs["ipv6CidrBlocks"],
-		Regions: outputs["regions"],
-		Services: outputs["services"],
-		SyncToken: outputs["syncToken"],
-		Url: outputs["url"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getIpRanges.
@@ -38,12 +24,12 @@ type GetIpRangesArgs struct {
 	// Filter IP ranges by regions (or include all regions, if
 	// omitted). Valid items are `global` (for `cloudfront`) as well as all AWS regions
 	// (e.g. `eu-central-1`)
-	Regions pulumi.ArrayInput `pulumi:"regions"`
+	Regions []interface{} `pulumi:"regions"`
 	// Filter IP ranges by services. Valid items are `amazon`
 	// (for amazon.com), `cloudfront`, `codebuild`, `ec2`, `route53`, `route53Healthchecks` and `S3`.
-	Services pulumi.ArrayInput `pulumi:"services"`
+	Services []interface{} `pulumi:"services"`
 	// Custom URL for source JSON file. Syntax must match [AWS IP Address Ranges documention][1]. Defaults to `https://ip-ranges.amazonaws.com/ip-ranges.json`.
-	Url pulumi.StringInput `pulumi:"url"`
+	Url string `pulumi:"url"`
 }
 
 // A collection of values returned by getIpRanges.

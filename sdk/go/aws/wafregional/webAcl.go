@@ -47,7 +47,6 @@ func NewWebAcl(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'MetricName'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["defaultAction"] = args.DefaultAction
 		inputs["loggingConfiguration"] = args.LoggingConfiguration

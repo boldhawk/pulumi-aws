@@ -106,7 +106,6 @@ func NewMetricAlarm(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Threshold'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["actionsEnabled"] = args.ActionsEnabled
 		inputs["alarmActions"] = args.AlarmActions

@@ -9,25 +9,12 @@ import (
 
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/instances.html.markdown.
 func LookupInstances(ctx *pulumi.Context, args *GetInstancesArgs) (*GetInstancesResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["instanceStateNames"] = args.InstanceStateNames
-		inputs["instanceTags"] = args.InstanceTags
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getInstances:getInstances", inputs)
+var rv GetInstancesResult
+	err := ctx.Invoke("aws:ec2/getInstances:getInstances", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetInstancesResult{
-		Filters: outputs["filters"],
-		Ids: outputs["ids"],
-		InstanceStateNames: outputs["instanceStateNames"],
-		InstanceTags: outputs["instanceTags"],
-		PrivateIps: outputs["privateIps"],
-		PublicIps: outputs["publicIps"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getInstances.
@@ -35,12 +22,12 @@ type GetInstancesArgs struct {
 	// One or more name/value pairs to use as filters. There are
 	// several valid keys, for a full reference, check out
 	// [describe-instances in the AWS CLI reference][1].
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// A list of instance states that should be applicable to the desired instances. The permitted values are: `pending, running, shutting-down, stopped, stopping, terminated`. The default value is `running`.
-	InstanceStateNames pulumi.ArrayInput `pulumi:"instanceStateNames"`
+	InstanceStateNames []interface{} `pulumi:"instanceStateNames"`
 	// A mapping of tags, each pair of which must
 	// exactly match a pair on desired instances.
-	InstanceTags pulumi.MapInput `pulumi:"instanceTags"`
+	InstanceTags map[string]interface{} `pulumi:"instanceTags"`
 }
 
 // A collection of values returned by getInstances.

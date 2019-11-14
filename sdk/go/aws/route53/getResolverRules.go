@@ -11,38 +11,25 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/route53_resolver_rules.html.markdown.
 func LookupResolverRules(ctx *pulumi.Context, args *GetResolverRulesArgs) (*GetResolverRulesResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["ownerId"] = args.OwnerId
-		inputs["resolverEndpointId"] = args.ResolverEndpointId
-		inputs["ruleType"] = args.RuleType
-		inputs["shareStatus"] = args.ShareStatus
-	}
-	outputs, err := ctx.Invoke("aws:route53/getResolverRules:getResolverRules", inputs)
+var rv GetResolverRulesResult
+	err := ctx.Invoke("aws:route53/getResolverRules:getResolverRules", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetResolverRulesResult{
-		OwnerId: outputs["ownerId"],
-		ResolverEndpointId: outputs["resolverEndpointId"],
-		ResolverRuleIds: outputs["resolverRuleIds"],
-		RuleType: outputs["ruleType"],
-		ShareStatus: outputs["shareStatus"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getResolverRules.
 type GetResolverRulesArgs struct {
 	// When the desired resolver rules are shared with another AWS account, the account ID of the account that the rules are shared with.
-	OwnerId pulumi.StringInput `pulumi:"ownerId"`
+	OwnerId string `pulumi:"ownerId"`
 	// The ID of the outbound resolver endpoint for the desired resolver rules.
-	ResolverEndpointId pulumi.StringInput `pulumi:"resolverEndpointId"`
+	ResolverEndpointId string `pulumi:"resolverEndpointId"`
 	// The rule type of the desired resolver rules. Valid values are `FORWARD`, `SYSTEM` and `RECURSIVE`.
-	RuleType pulumi.StringInput `pulumi:"ruleType"`
+	RuleType string `pulumi:"ruleType"`
 	// Whether the desired resolver rules are shared and, if so, whether the current account is sharing the rules with another account, or another account is sharing the rules with the current account.
 	// Values are `NOT_SHARED`, `SHARED_BY_ME` or `SHARED_WITH_ME`
-	ShareStatus pulumi.StringInput `pulumi:"shareStatus"`
+	ShareStatus string `pulumi:"shareStatus"`
 }
 
 // A collection of values returned by getResolverRules.

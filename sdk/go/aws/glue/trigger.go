@@ -50,7 +50,6 @@ func NewTrigger(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Type'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["actions"] = args.Actions
 		inputs["description"] = args.Description

@@ -12,26 +12,19 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elb_service_account_legacy.html.markdown.
 func LookupServiceAccount(ctx *pulumi.Context, args *GetServiceAccountArgs) (*GetServiceAccountResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["region"] = args.Region
-	}
-	outputs, err := ctx.Invoke("aws:elasticloadbalancing/getServiceAccount:getServiceAccount", inputs)
+var rv GetServiceAccountResult
+	err := ctx.Invoke("aws:elasticloadbalancing/getServiceAccount:getServiceAccount", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetServiceAccountResult{
-		Arn: outputs["arn"],
-		Region: outputs["region"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getServiceAccount.
 type GetServiceAccountArgs struct {
 	// Name of the region whose AWS ELB account ID is desired.
 	// Defaults to the region from the AWS provider configuration.
-	Region pulumi.StringInput `pulumi:"region"`
+	Region string `pulumi:"region"`
 }
 
 // A collection of values returned by getServiceAccount.

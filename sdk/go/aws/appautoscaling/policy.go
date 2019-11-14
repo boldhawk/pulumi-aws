@@ -82,7 +82,6 @@ func NewPolicy(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'ServiceNamespace'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["alarms"] = args.Alarms
 		inputs["name"] = args.Name

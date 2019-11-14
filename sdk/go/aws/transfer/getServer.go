@@ -12,30 +12,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/transfer_server.html.markdown.
 func LookupServer(ctx *pulumi.Context, args *GetServerArgs) (*GetServerResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["serverId"] = args.ServerId
-	}
-	outputs, err := ctx.Invoke("aws:transfer/getServer:getServer", inputs)
+var rv GetServerResult
+	err := ctx.Invoke("aws:transfer/getServer:getServer", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetServerResult{
-		Arn: outputs["arn"],
-		Endpoint: outputs["endpoint"],
-		IdentityProviderType: outputs["identityProviderType"],
-		InvocationRole: outputs["invocationRole"],
-		LoggingRole: outputs["loggingRole"],
-		ServerId: outputs["serverId"],
-		Url: outputs["url"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getServer.
 type GetServerArgs struct {
 	// ID for an SFTP server.
-	ServerId pulumi.StringInput `pulumi:"serverId"`
+	ServerId string `pulumi:"serverId"`
 }
 
 // A collection of values returned by getServer.

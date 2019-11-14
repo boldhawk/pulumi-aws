@@ -42,7 +42,6 @@ func NewResourceDataSync(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'S3Destination'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["s3Destination"] = args.S3Destination

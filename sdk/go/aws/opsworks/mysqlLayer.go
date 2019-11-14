@@ -90,7 +90,6 @@ func NewMysqlLayer(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'StackId'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["autoAssignElasticIps"] = args.AutoAssignElasticIps
 		inputs["autoAssignPublicIps"] = args.AutoAssignPublicIps

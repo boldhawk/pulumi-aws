@@ -70,7 +70,6 @@ func NewServerCertificate(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'PrivateKey'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["arn"] = args.Arn
 		inputs["certificateBody"] = args.CertificateBody

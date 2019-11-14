@@ -40,7 +40,6 @@ type Workgroup struct {
 func NewWorkgroup(ctx *pulumi.Context,
 	name string, args *WorkgroupArgs, opts ...pulumi.ResourceOpt) (*Workgroup, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["configuration"] = args.Configuration
 		inputs["description"] = args.Description

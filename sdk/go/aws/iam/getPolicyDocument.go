@@ -38,27 +38,12 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iam_policy_document.html.markdown.
 func LookupPolicyDocument(ctx *pulumi.Context, args *GetPolicyDocumentArgs) (*GetPolicyDocumentResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["overrideJson"] = args.OverrideJson
-		inputs["policyId"] = args.PolicyId
-		inputs["sourceJson"] = args.SourceJson
-		inputs["statements"] = args.Statements
-		inputs["version"] = args.Version
-	}
-	outputs, err := ctx.Invoke("aws:iam/getPolicyDocument:getPolicyDocument", inputs)
+var rv GetPolicyDocumentResult
+	err := ctx.Invoke("aws:iam/getPolicyDocument:getPolicyDocument", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetPolicyDocumentResult{
-		Json: outputs["json"],
-		OverrideJson: outputs["overrideJson"],
-		PolicyId: outputs["policyId"],
-		SourceJson: outputs["sourceJson"],
-		Statements: outputs["statements"],
-		Version: outputs["version"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getPolicyDocument.
@@ -67,19 +52,19 @@ type GetPolicyDocumentArgs struct {
 	// current policy document.  Statements with non-blank `sid`s in the override
 	// document will overwrite statements with the same `sid` in the current document.
 	// Statements without an `sid` cannot be overwritten.
-	OverrideJson pulumi.StringInput `pulumi:"overrideJson"`
+	OverrideJson string `pulumi:"overrideJson"`
 	// An ID for the policy document.
-	PolicyId pulumi.StringInput `pulumi:"policyId"`
+	PolicyId string `pulumi:"policyId"`
 	// An IAM policy document to import as a base for the
 	// current policy document.  Statements with non-blank `sid`s in the current
 	// policy document will overwrite statements with the same `sid` in the source
 	// json.  Statements without an `sid` cannot be overwritten.
-	SourceJson pulumi.StringInput `pulumi:"sourceJson"`
+	SourceJson string `pulumi:"sourceJson"`
 	// A nested configuration block (described below)
 	// configuring one *statement* to be included in the policy document.
-	Statements pulumi.ArrayInput `pulumi:"statements"`
+	Statements []interface{} `pulumi:"statements"`
 	// IAM policy document version. Valid values: `2008-10-17`, `2012-10-17`. Defaults to `2012-10-17`. For more information, see the [AWS IAM User Guide](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_version.html).
-	Version pulumi.StringInput `pulumi:"version"`
+	Version string `pulumi:"version"`
 }
 
 // A collection of values returned by getPolicyDocument.

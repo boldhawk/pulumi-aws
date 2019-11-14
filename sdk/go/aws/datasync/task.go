@@ -50,7 +50,6 @@ func NewTask(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'SourceLocationArn'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["cloudwatchLogGroupArn"] = args.CloudwatchLogGroupArn
 		inputs["destinationLocationArn"] = args.DestinationLocationArn

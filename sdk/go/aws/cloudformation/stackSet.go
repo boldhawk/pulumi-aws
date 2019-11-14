@@ -63,7 +63,6 @@ func NewStackSet(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'AdministrationRoleArn'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["administrationRoleArn"] = args.AdministrationRoleArn
 		inputs["capabilities"] = args.Capabilities

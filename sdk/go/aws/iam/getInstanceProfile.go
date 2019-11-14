@@ -13,30 +13,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iam_instance_profile.html.markdown.
 func LookupInstanceProfile(ctx *pulumi.Context, args *GetInstanceProfileArgs) (*GetInstanceProfileResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:iam/getInstanceProfile:getInstanceProfile", inputs)
+var rv GetInstanceProfileResult
+	err := ctx.Invoke("aws:iam/getInstanceProfile:getInstanceProfile", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetInstanceProfileResult{
-		Arn: outputs["arn"],
-		CreateDate: outputs["createDate"],
-		Name: outputs["name"],
-		Path: outputs["path"],
-		RoleArn: outputs["roleArn"],
-		RoleId: outputs["roleId"],
-		RoleName: outputs["roleName"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getInstanceProfile.
 type GetInstanceProfileArgs struct {
 	// The friendly IAM instance profile name to match.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getInstanceProfile.

@@ -212,7 +212,6 @@ func NewGroup(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'MinSize'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["availabilityZones"] = args.AvailabilityZones
 		inputs["defaultCooldown"] = args.DefaultCooldown

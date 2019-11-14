@@ -61,7 +61,6 @@ func NewPipeline(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Role'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["awsKmsKeyArn"] = args.AwsKmsKeyArn
 		inputs["contentConfig"] = args.ContentConfig

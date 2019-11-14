@@ -56,7 +56,6 @@ func NewScheduledAction(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'ServiceNamespace'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["endTime"] = args.EndTime
 		inputs["name"] = args.Name

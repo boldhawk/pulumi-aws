@@ -69,7 +69,6 @@ type Stack struct {
 func NewStack(ctx *pulumi.Context,
 	name string, args *StackArgs, opts ...pulumi.ResourceOpt) (*Stack, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["capabilities"] = args.Capabilities
 		inputs["disableRollback"] = args.DisableRollback

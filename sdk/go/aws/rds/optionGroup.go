@@ -57,7 +57,6 @@ func NewOptionGroup(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'MajorEngineVersion'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	inputs["optionGroupDescription"] = pulumi.Any("Managed by Pulumi")
 	if args != nil {
 		inputs["engineName"] = args.EngineName

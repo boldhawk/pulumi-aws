@@ -73,7 +73,6 @@ func NewCrawler(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Role'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["catalogTargets"] = args.CatalogTargets
 		inputs["classifiers"] = args.Classifiers

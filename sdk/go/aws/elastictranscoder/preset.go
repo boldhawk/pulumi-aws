@@ -57,7 +57,6 @@ func NewPreset(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Container'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["audio"] = args.Audio
 		inputs["audioCodecOptions"] = args.AudioCodecOptions

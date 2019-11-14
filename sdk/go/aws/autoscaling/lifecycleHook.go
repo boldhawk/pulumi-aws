@@ -65,7 +65,6 @@ func NewLifecycleHook(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'LifecycleTransition'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["autoscalingGroupName"] = args.AutoscalingGroupName
 		inputs["defaultResult"] = args.DefaultResult

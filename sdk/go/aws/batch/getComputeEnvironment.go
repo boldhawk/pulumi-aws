@@ -12,31 +12,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/batch_compute_environment.html.markdown.
 func LookupComputeEnvironment(ctx *pulumi.Context, args *GetComputeEnvironmentArgs) (*GetComputeEnvironmentResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["computeEnvironmentName"] = args.ComputeEnvironmentName
-	}
-	outputs, err := ctx.Invoke("aws:batch/getComputeEnvironment:getComputeEnvironment", inputs)
+var rv GetComputeEnvironmentResult
+	err := ctx.Invoke("aws:batch/getComputeEnvironment:getComputeEnvironment", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetComputeEnvironmentResult{
-		Arn: outputs["arn"],
-		ComputeEnvironmentName: outputs["computeEnvironmentName"],
-		EcsClusterArn: outputs["ecsClusterArn"],
-		ServiceRole: outputs["serviceRole"],
-		State: outputs["state"],
-		Status: outputs["status"],
-		StatusReason: outputs["statusReason"],
-		Type: outputs["type"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getComputeEnvironment.
 type GetComputeEnvironmentArgs struct {
 	// The name of the Batch Compute Environment
-	ComputeEnvironmentName pulumi.StringInput `pulumi:"computeEnvironmentName"`
+	ComputeEnvironmentName string `pulumi:"computeEnvironmentName"`
 }
 
 // A collection of values returned by getComputeEnvironment.

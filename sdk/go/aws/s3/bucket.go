@@ -95,7 +95,6 @@ type Bucket struct {
 func NewBucket(ctx *pulumi.Context,
 	name string, args *BucketArgs, opts ...pulumi.ResourceOpt) (*Bucket, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["bucket"] = pulumi.Any()
 	if args != nil {
 		inputs["accelerationStatus"] = args.AccelerationStatus
 		inputs["acl"] = args.Acl

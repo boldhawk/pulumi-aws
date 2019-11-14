@@ -12,36 +12,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ecs_container_definition.html.markdown.
 func LookupContainerDefinition(ctx *pulumi.Context, args *GetContainerDefinitionArgs) (*GetContainerDefinitionResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["containerName"] = args.ContainerName
-		inputs["taskDefinition"] = args.TaskDefinition
-	}
-	outputs, err := ctx.Invoke("aws:ecs/getContainerDefinition:getContainerDefinition", inputs)
+var rv GetContainerDefinitionResult
+	err := ctx.Invoke("aws:ecs/getContainerDefinition:getContainerDefinition", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetContainerDefinitionResult{
-		ContainerName: outputs["containerName"],
-		Cpu: outputs["cpu"],
-		DisableNetworking: outputs["disableNetworking"],
-		DockerLabels: outputs["dockerLabels"],
-		Environment: outputs["environment"],
-		Image: outputs["image"],
-		ImageDigest: outputs["imageDigest"],
-		Memory: outputs["memory"],
-		MemoryReservation: outputs["memoryReservation"],
-		TaskDefinition: outputs["taskDefinition"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getContainerDefinition.
 type GetContainerDefinitionArgs struct {
 	// The name of the container definition
-	ContainerName pulumi.StringInput `pulumi:"containerName"`
+	ContainerName string `pulumi:"containerName"`
 	// The ARN of the task definition which contains the container
-	TaskDefinition pulumi.StringInput `pulumi:"taskDefinition"`
+	TaskDefinition string `pulumi:"taskDefinition"`
 }
 
 // A collection of values returned by getContainerDefinition.

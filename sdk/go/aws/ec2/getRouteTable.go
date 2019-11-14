@@ -15,44 +15,27 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/route_table.html.markdown.
 func LookupRouteTable(ctx *pulumi.Context, args *GetRouteTableArgs) (*GetRouteTableResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["routeTableId"] = args.RouteTableId
-		inputs["subnetId"] = args.SubnetId
-		inputs["tags"] = args.Tags
-		inputs["vpcId"] = args.VpcId
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getRouteTable:getRouteTable", inputs)
+var rv GetRouteTableResult
+	err := ctx.Invoke("aws:ec2/getRouteTable:getRouteTable", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetRouteTableResult{
-		Associations: outputs["associations"],
-		Filters: outputs["filters"],
-		OwnerId: outputs["ownerId"],
-		RouteTableId: outputs["routeTableId"],
-		Routes: outputs["routes"],
-		SubnetId: outputs["subnetId"],
-		Tags: outputs["tags"],
-		VpcId: outputs["vpcId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getRouteTable.
 type GetRouteTableArgs struct {
 	// Custom filter block as described below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// The id of the specific Route Table to retrieve.
-	RouteTableId pulumi.StringInput `pulumi:"routeTableId"`
+	RouteTableId string `pulumi:"routeTableId"`
 	// The id of a Subnet which is connected to the Route Table (not be exported if not given in parameter).
-	SubnetId pulumi.StringInput `pulumi:"subnetId"`
+	SubnetId string `pulumi:"subnetId"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired Route Table.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The id of the VPC that the desired Route Table belongs to.
-	VpcId pulumi.StringInput `pulumi:"vpcId"`
+	VpcId string `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getRouteTable.

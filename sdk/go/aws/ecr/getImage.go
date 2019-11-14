@@ -11,39 +11,24 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ecr_image.html.markdown.
 func LookupImage(ctx *pulumi.Context, args *GetImageArgs) (*GetImageResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["imageDigest"] = args.ImageDigest
-		inputs["imageTag"] = args.ImageTag
-		inputs["registryId"] = args.RegistryId
-		inputs["repositoryName"] = args.RepositoryName
-	}
-	outputs, err := ctx.Invoke("aws:ecr/getImage:getImage", inputs)
+var rv GetImageResult
+	err := ctx.Invoke("aws:ecr/getImage:getImage", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetImageResult{
-		ImageDigest: outputs["imageDigest"],
-		ImagePushedAt: outputs["imagePushedAt"],
-		ImageSizeInBytes: outputs["imageSizeInBytes"],
-		ImageTag: outputs["imageTag"],
-		ImageTags: outputs["imageTags"],
-		RegistryId: outputs["registryId"],
-		RepositoryName: outputs["repositoryName"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getImage.
 type GetImageArgs struct {
 	// The sha256 digest of the image manifest. At least one of `imageDigest` or `imageTag` must be specified.
-	ImageDigest pulumi.StringInput `pulumi:"imageDigest"`
+	ImageDigest string `pulumi:"imageDigest"`
 	// The tag associated with this image. At least one of `imageDigest` or `imageTag` must be specified.
-	ImageTag pulumi.StringInput `pulumi:"imageTag"`
+	ImageTag string `pulumi:"imageTag"`
 	// The ID of the Registry where the repository resides.
-	RegistryId pulumi.StringInput `pulumi:"registryId"`
+	RegistryId string `pulumi:"registryId"`
 	// The name of the ECR Repository.
-	RepositoryName pulumi.StringInput `pulumi:"repositoryName"`
+	RepositoryName string `pulumi:"repositoryName"`
 }
 
 // A collection of values returned by getImage.

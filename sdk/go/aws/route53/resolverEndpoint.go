@@ -56,7 +56,6 @@ func NewResolverEndpoint(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'SecurityGroupIds'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["direction"] = args.Direction
 		inputs["ipAddresses"] = args.IpAddresses

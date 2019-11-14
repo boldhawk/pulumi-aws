@@ -37,7 +37,6 @@ type GameSessionQueue struct {
 func NewGameSessionQueue(ctx *pulumi.Context,
 	name string, args *GameSessionQueueArgs, opts ...pulumi.ResourceOpt) (*GameSessionQueue, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["destinations"] = args.Destinations
 		inputs["name"] = args.Name

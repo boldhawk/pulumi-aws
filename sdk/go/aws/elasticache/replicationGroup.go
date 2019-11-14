@@ -134,7 +134,6 @@ func NewReplicationGroup(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'ReplicationGroupDescription'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["replicationGroupId"] = pulumi.Any()
 	if args != nil {
 		inputs["applyImmediately"] = args.ApplyImmediately
 		inputs["atRestEncryptionEnabled"] = args.AtRestEncryptionEnabled

@@ -11,36 +11,21 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/efs_file_system.html.markdown.
 func LookupFileSystem(ctx *pulumi.Context, args *GetFileSystemArgs) (*GetFileSystemResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["creationToken"] = args.CreationToken
-		inputs["fileSystemId"] = args.FileSystemId
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:efs/getFileSystem:getFileSystem", inputs)
+var rv GetFileSystemResult
+	err := ctx.Invoke("aws:efs/getFileSystem:getFileSystem", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetFileSystemResult{
-		Arn: outputs["arn"],
-		CreationToken: outputs["creationToken"],
-		DnsName: outputs["dnsName"],
-		Encrypted: outputs["encrypted"],
-		FileSystemId: outputs["fileSystemId"],
-		KmsKeyId: outputs["kmsKeyId"],
-		PerformanceMode: outputs["performanceMode"],
-		Tags: outputs["tags"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getFileSystem.
 type GetFileSystemArgs struct {
 	// Restricts the list to the file system with this creation token.
-	CreationToken pulumi.StringInput `pulumi:"creationToken"`
+	CreationToken string `pulumi:"creationToken"`
 	// The ID that identifies the file system (e.g. fs-ccfc0d65).
-	FileSystemId pulumi.StringInput `pulumi:"fileSystemId"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	FileSystemId string `pulumi:"fileSystemId"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getFileSystem.

@@ -11,40 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/launch_configuration.html.markdown.
 func LookupLaunchConfiguration(ctx *pulumi.Context, args *GetLaunchConfigurationArgs) (*GetLaunchConfigurationResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getLaunchConfiguration:getLaunchConfiguration", inputs)
+var rv GetLaunchConfigurationResult
+	err := ctx.Invoke("aws:ec2/getLaunchConfiguration:getLaunchConfiguration", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetLaunchConfigurationResult{
-		AssociatePublicIpAddress: outputs["associatePublicIpAddress"],
-		EbsBlockDevices: outputs["ebsBlockDevices"],
-		EbsOptimized: outputs["ebsOptimized"],
-		EnableMonitoring: outputs["enableMonitoring"],
-		EphemeralBlockDevices: outputs["ephemeralBlockDevices"],
-		IamInstanceProfile: outputs["iamInstanceProfile"],
-		ImageId: outputs["imageId"],
-		InstanceType: outputs["instanceType"],
-		KeyName: outputs["keyName"],
-		Name: outputs["name"],
-		PlacementTenancy: outputs["placementTenancy"],
-		RootBlockDevices: outputs["rootBlockDevices"],
-		SecurityGroups: outputs["securityGroups"],
-		SpotPrice: outputs["spotPrice"],
-		UserData: outputs["userData"],
-		VpcClassicLinkId: outputs["vpcClassicLinkId"],
-		VpcClassicLinkSecurityGroups: outputs["vpcClassicLinkSecurityGroups"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getLaunchConfiguration.
 type GetLaunchConfigurationArgs struct {
 	// The name of the launch configuration.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getLaunchConfiguration.

@@ -102,7 +102,6 @@ func NewBucketObject(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Bucket'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["key"] = pulumi.Any()
 	if args != nil {
 		inputs["acl"] = args.Acl
 		inputs["bucket"] = args.Bucket

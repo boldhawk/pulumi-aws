@@ -11,38 +11,19 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/eks_cluster.html.markdown.
 func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:eks/getCluster:getCluster", inputs)
+var rv GetClusterResult
+	err := ctx.Invoke("aws:eks/getCluster:getCluster", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetClusterResult{
-		Arn: outputs["arn"],
-		CertificateAuthority: outputs["certificateAuthority"],
-		CreatedAt: outputs["createdAt"],
-		EnabledClusterLogTypes: outputs["enabledClusterLogTypes"],
-		Endpoint: outputs["endpoint"],
-		Identities: outputs["identities"],
-		Name: outputs["name"],
-		PlatformVersion: outputs["platformVersion"],
-		RoleArn: outputs["roleArn"],
-		Status: outputs["status"],
-		Tags: outputs["tags"],
-		Version: outputs["version"],
-		VpcConfig: outputs["vpcConfig"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getCluster.
 type GetClusterArgs struct {
 	// The name of the cluster
-	Name pulumi.StringInput `pulumi:"name"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Name string `pulumi:"name"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getCluster.

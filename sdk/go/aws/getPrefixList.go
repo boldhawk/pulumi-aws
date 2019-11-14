@@ -17,29 +17,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/prefix_list.html.markdown.
 func LookupPrefixList(ctx *pulumi.Context, args *GetPrefixListArgs) (*GetPrefixListResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-		inputs["prefixListId"] = args.PrefixListId
-	}
-	outputs, err := ctx.Invoke("aws:index/getPrefixList:getPrefixList", inputs)
+var rv GetPrefixListResult
+	err := ctx.Invoke("aws:index/getPrefixList:getPrefixList", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetPrefixListResult{
-		CidrBlocks: outputs["cidrBlocks"],
-		Name: outputs["name"],
-		PrefixListId: outputs["prefixListId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getPrefixList.
 type GetPrefixListArgs struct {
 	// The name of the prefix list to select.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 	// The ID of the prefix list to select.
-	PrefixListId pulumi.StringInput `pulumi:"prefixListId"`
+	PrefixListId string `pulumi:"prefixListId"`
 }
 
 // A collection of values returned by getPrefixList.

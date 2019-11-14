@@ -74,7 +74,6 @@ type TargetGroup struct {
 func NewTargetGroup(ctx *pulumi.Context,
 	name string, args *TargetGroupArgs, opts ...pulumi.ResourceOpt) (*TargetGroup, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["deregistrationDelay"] = args.DeregistrationDelay
 		inputs["healthCheck"] = args.HealthCheck

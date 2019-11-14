@@ -47,7 +47,6 @@ func NewClusterParameterGroup(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Family'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["family"] = args.Family

@@ -66,7 +66,6 @@ type AnalyticsApplication struct {
 func NewAnalyticsApplication(ctx *pulumi.Context,
 	name string, args *AnalyticsApplicationArgs, opts ...pulumi.ResourceOpt) (*AnalyticsApplication, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["cloudwatchLoggingOptions"] = args.CloudwatchLoggingOptions
 		inputs["code"] = args.Code

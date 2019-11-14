@@ -301,7 +301,6 @@ func NewInstance(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'InstanceClass'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["identifier"] = pulumi.Any()
 	if args != nil {
 		inputs["allocatedStorage"] = args.AllocatedStorage
 		inputs["allowMajorVersionUpgrade"] = args.AllowMajorVersionUpgrade

@@ -13,49 +13,28 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/route53_zone.html.markdown.
 func LookupZone(ctx *pulumi.Context, args *GetZoneArgs) (*GetZoneResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-		inputs["privateZone"] = args.PrivateZone
-		inputs["resourceRecordSetCount"] = args.ResourceRecordSetCount
-		inputs["tags"] = args.Tags
-		inputs["vpcId"] = args.VpcId
-		inputs["zoneId"] = args.ZoneId
-	}
-	outputs, err := ctx.Invoke("aws:route53/getZone:getZone", inputs)
+var rv GetZoneResult
+	err := ctx.Invoke("aws:route53/getZone:getZone", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetZoneResult{
-		CallerReference: outputs["callerReference"],
-		Comment: outputs["comment"],
-		LinkedServiceDescription: outputs["linkedServiceDescription"],
-		LinkedServicePrincipal: outputs["linkedServicePrincipal"],
-		Name: outputs["name"],
-		NameServers: outputs["nameServers"],
-		PrivateZone: outputs["privateZone"],
-		ResourceRecordSetCount: outputs["resourceRecordSetCount"],
-		Tags: outputs["tags"],
-		VpcId: outputs["vpcId"],
-		ZoneId: outputs["zoneId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getZone.
 type GetZoneArgs struct {
 	// The Hosted Zone name of the desired Hosted Zone.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 	// Used with `name` field to get a private Hosted Zone.
-	PrivateZone pulumi.BoolInput `pulumi:"privateZone"`
-	ResourceRecordSetCount pulumi.IntInput `pulumi:"resourceRecordSetCount"`
+	PrivateZone bool `pulumi:"privateZone"`
+	ResourceRecordSetCount int `pulumi:"resourceRecordSetCount"`
 	// Used with `name` field. A mapping of tags, each pair of which must exactly match
 	// a pair on the desired Hosted Zone.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// Used with `name` field to get a private Hosted Zone associated with the vpcId (in this case, privateZone is not mandatory).
-	VpcId pulumi.StringInput `pulumi:"vpcId"`
+	VpcId string `pulumi:"vpcId"`
 	// The Hosted Zone id of the desired Hosted Zone.
-	ZoneId pulumi.StringInput `pulumi:"zoneId"`
+	ZoneId string `pulumi:"zoneId"`
 }
 
 // A collection of values returned by getZone.

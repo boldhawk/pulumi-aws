@@ -39,7 +39,6 @@ func NewSecurityConfiguration(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Configuration'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["configuration"] = args.Configuration
 		inputs["name"] = args.Name

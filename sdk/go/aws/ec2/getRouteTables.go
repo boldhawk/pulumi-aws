@@ -11,34 +11,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/route_tables.html.markdown.
 func LookupRouteTables(ctx *pulumi.Context, args *GetRouteTablesArgs) (*GetRouteTablesResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["tags"] = args.Tags
-		inputs["vpcId"] = args.VpcId
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getRouteTables:getRouteTables", inputs)
+var rv GetRouteTablesResult
+	err := ctx.Invoke("aws:ec2/getRouteTables:getRouteTables", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetRouteTablesResult{
-		Filters: outputs["filters"],
-		Ids: outputs["ids"],
-		Tags: outputs["tags"],
-		VpcId: outputs["vpcId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getRouteTables.
 type GetRouteTablesArgs struct {
 	// Custom filter block as described below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired route tables.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The VPC ID that you want to filter from.
-	VpcId pulumi.StringInput `pulumi:"vpcId"`
+	VpcId string `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getRouteTables.

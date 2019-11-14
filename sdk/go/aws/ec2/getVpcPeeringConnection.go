@@ -12,70 +12,41 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/vpc_peering_connection.html.markdown.
 func LookupVpcPeeringConnection(ctx *pulumi.Context, args *GetVpcPeeringConnectionArgs) (*GetVpcPeeringConnectionResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["cidrBlock"] = args.CidrBlock
-		inputs["filters"] = args.Filters
-		inputs["id"] = args.Id
-		inputs["ownerId"] = args.OwnerId
-		inputs["peerCidrBlock"] = args.PeerCidrBlock
-		inputs["peerOwnerId"] = args.PeerOwnerId
-		inputs["peerRegion"] = args.PeerRegion
-		inputs["peerVpcId"] = args.PeerVpcId
-		inputs["region"] = args.Region
-		inputs["status"] = args.Status
-		inputs["tags"] = args.Tags
-		inputs["vpcId"] = args.VpcId
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getVpcPeeringConnection:getVpcPeeringConnection", inputs)
+var rv GetVpcPeeringConnectionResult
+	err := ctx.Invoke("aws:ec2/getVpcPeeringConnection:getVpcPeeringConnection", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetVpcPeeringConnectionResult{
-		Accepter: outputs["accepter"],
-		CidrBlock: outputs["cidrBlock"],
-		Filters: outputs["filters"],
-		Id: outputs["id"],
-		OwnerId: outputs["ownerId"],
-		PeerCidrBlock: outputs["peerCidrBlock"],
-		PeerOwnerId: outputs["peerOwnerId"],
-		PeerRegion: outputs["peerRegion"],
-		PeerVpcId: outputs["peerVpcId"],
-		Region: outputs["region"],
-		Requester: outputs["requester"],
-		Status: outputs["status"],
-		Tags: outputs["tags"],
-		VpcId: outputs["vpcId"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getVpcPeeringConnection.
 type GetVpcPeeringConnectionArgs struct {
 	// The CIDR block of the requester VPC of the specific VPC Peering Connection to retrieve.
-	CidrBlock pulumi.StringInput `pulumi:"cidrBlock"`
+	CidrBlock string `pulumi:"cidrBlock"`
 	// Custom filter block as described below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// The ID of the specific VPC Peering Connection to retrieve.
-	Id pulumi.StringInput `pulumi:"id"`
+	Id string `pulumi:"id"`
 	// The AWS account ID of the owner of the requester VPC of the specific VPC Peering Connection to retrieve.
-	OwnerId pulumi.StringInput `pulumi:"ownerId"`
+	OwnerId string `pulumi:"ownerId"`
 	// The CIDR block of the accepter VPC of the specific VPC Peering Connection to retrieve.
-	PeerCidrBlock pulumi.StringInput `pulumi:"peerCidrBlock"`
+	PeerCidrBlock string `pulumi:"peerCidrBlock"`
 	// The AWS account ID of the owner of the accepter VPC of the specific VPC Peering Connection to retrieve.
-	PeerOwnerId pulumi.StringInput `pulumi:"peerOwnerId"`
+	PeerOwnerId string `pulumi:"peerOwnerId"`
 	// The region of the accepter VPC of the specific VPC Peering Connection to retrieve.
-	PeerRegion pulumi.StringInput `pulumi:"peerRegion"`
+	PeerRegion string `pulumi:"peerRegion"`
 	// The ID of the accepter VPC of the specific VPC Peering Connection to retrieve.
-	PeerVpcId pulumi.StringInput `pulumi:"peerVpcId"`
+	PeerVpcId string `pulumi:"peerVpcId"`
 	// The region of the requester VPC of the specific VPC Peering Connection to retrieve.
-	Region pulumi.StringInput `pulumi:"region"`
+	Region string `pulumi:"region"`
 	// The status of the specific VPC Peering Connection to retrieve.
-	Status pulumi.StringInput `pulumi:"status"`
+	Status string `pulumi:"status"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired VPC Peering Connection.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The ID of the requester VPC of the specific VPC Peering Connection to retrieve.
-	VpcId pulumi.StringInput `pulumi:"vpcId"`
+	VpcId string `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getVpcPeeringConnection.

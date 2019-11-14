@@ -38,7 +38,6 @@ type ParameterGroup struct {
 func NewParameterGroup(ctx *pulumi.Context,
 	name string, args *ParameterGroupArgs, opts ...pulumi.ResourceOpt) (*ParameterGroup, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name

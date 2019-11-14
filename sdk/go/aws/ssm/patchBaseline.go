@@ -52,7 +52,6 @@ type PatchBaseline struct {
 func NewPatchBaseline(ctx *pulumi.Context,
 	name string, args *PatchBaselineArgs, opts ...pulumi.ResourceOpt) (*PatchBaseline, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["approvalRules"] = args.ApprovalRules
 		inputs["approvedPatches"] = args.ApprovedPatches

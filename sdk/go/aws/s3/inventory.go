@@ -59,7 +59,6 @@ func NewInventory(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Schedule'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["bucket"] = args.Bucket
 		inputs["destination"] = args.Destination

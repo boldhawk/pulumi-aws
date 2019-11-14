@@ -41,7 +41,6 @@ type Application struct {
 func NewApplication(ctx *pulumi.Context,
 	name string, args *ApplicationArgs, opts ...pulumi.ResourceOpt) (*Application, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["appversionLifecycle"] = args.AppversionLifecycle
 		inputs["description"] = args.Description

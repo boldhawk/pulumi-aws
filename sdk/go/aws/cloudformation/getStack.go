@@ -12,34 +12,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/cloudformation_stack.html.markdown.
 func LookupStack(ctx *pulumi.Context, args *GetStackArgs) (*GetStackResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:cloudformation/getStack:getStack", inputs)
+var rv GetStackResult
+	err := ctx.Invoke("aws:cloudformation/getStack:getStack", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetStackResult{
-		Capabilities: outputs["capabilities"],
-		Description: outputs["description"],
-		DisableRollback: outputs["disableRollback"],
-		IamRoleArn: outputs["iamRoleArn"],
-		Name: outputs["name"],
-		NotificationArns: outputs["notificationArns"],
-		Outputs: outputs["outputs"],
-		Parameters: outputs["parameters"],
-		Tags: outputs["tags"],
-		TemplateBody: outputs["templateBody"],
-		TimeoutInMinutes: outputs["timeoutInMinutes"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getStack.
 type GetStackArgs struct {
 	// The name of the stack
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getStack.

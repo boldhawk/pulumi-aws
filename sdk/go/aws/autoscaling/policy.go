@@ -68,7 +68,6 @@ func NewPolicy(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'AutoscalingGroupName'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["adjustmentType"] = args.AdjustmentType
 		inputs["autoscalingGroupName"] = args.AutoscalingGroupName

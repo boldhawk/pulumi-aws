@@ -29,7 +29,6 @@ type RegexMatchSet struct {
 func NewRegexMatchSet(ctx *pulumi.Context,
 	name string, args *RegexMatchSetArgs, opts ...pulumi.ResourceOpt) (*RegexMatchSet, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["regexMatchTuples"] = args.RegexMatchTuples

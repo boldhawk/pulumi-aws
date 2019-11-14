@@ -74,7 +74,6 @@ func NewBudget(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'TimeUnit'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["accountId"] = args.AccountId
 		inputs["budgetType"] = args.BudgetType

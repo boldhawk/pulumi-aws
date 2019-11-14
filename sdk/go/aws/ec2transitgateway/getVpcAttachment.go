@@ -11,36 +11,21 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ec2_transit_gateway_vpc_attachment.html.markdown.
 func LookupVpcAttachment(ctx *pulumi.Context, args *GetVpcAttachmentArgs) (*GetVpcAttachmentResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["id"] = args.Id
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ec2transitgateway/getVpcAttachment:getVpcAttachment", inputs)
+var rv GetVpcAttachmentResult
+	err := ctx.Invoke("aws:ec2transitgateway/getVpcAttachment:getVpcAttachment", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetVpcAttachmentResult{
-		DnsSupport: outputs["dnsSupport"],
-		Filters: outputs["filters"],
-		Id: outputs["id"],
-		Ipv6Support: outputs["ipv6Support"],
-		SubnetIds: outputs["subnetIds"],
-		Tags: outputs["tags"],
-		TransitGatewayId: outputs["transitGatewayId"],
-		VpcId: outputs["vpcId"],
-		VpcOwnerId: outputs["vpcOwnerId"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getVpcAttachment.
 type GetVpcAttachmentArgs struct {
 	// One or more configuration blocks containing name-values filters. Detailed below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// Identifier of the EC2 Transit Gateway VPC Attachment.
-	Id pulumi.StringInput `pulumi:"id"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Id string `pulumi:"id"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpcAttachment.

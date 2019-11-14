@@ -50,7 +50,6 @@ func NewVirtualService(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Spec'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["meshName"] = args.MeshName
 		inputs["name"] = args.Name

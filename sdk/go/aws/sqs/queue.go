@@ -64,7 +64,6 @@ type Queue struct {
 func NewQueue(ctx *pulumi.Context,
 	name string, args *QueueArgs, opts ...pulumi.ResourceOpt) (*Queue, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["contentBasedDeduplication"] = args.ContentBasedDeduplication
 		inputs["delaySeconds"] = args.DelaySeconds

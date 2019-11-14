@@ -38,7 +38,6 @@ type Portfolio struct {
 func NewPortfolio(ctx *pulumi.Context,
 	name string, args *PortfolioArgs, opts ...pulumi.ResourceOpt) (*Portfolio, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name

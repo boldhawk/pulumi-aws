@@ -62,7 +62,6 @@ func NewEventSubscription(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'SnsTopic'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["enabled"] = args.Enabled
 		inputs["eventCategories"] = args.EventCategories

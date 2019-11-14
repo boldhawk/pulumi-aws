@@ -11,55 +11,19 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/redshift_cluster.html.markdown.
 func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["clusterIdentifier"] = args.ClusterIdentifier
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:redshift/getCluster:getCluster", inputs)
+var rv GetClusterResult
+	err := ctx.Invoke("aws:redshift/getCluster:getCluster", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetClusterResult{
-		AllowVersionUpgrade: outputs["allowVersionUpgrade"],
-		AutomatedSnapshotRetentionPeriod: outputs["automatedSnapshotRetentionPeriod"],
-		AvailabilityZone: outputs["availabilityZone"],
-		BucketName: outputs["bucketName"],
-		ClusterIdentifier: outputs["clusterIdentifier"],
-		ClusterParameterGroupName: outputs["clusterParameterGroupName"],
-		ClusterPublicKey: outputs["clusterPublicKey"],
-		ClusterRevisionNumber: outputs["clusterRevisionNumber"],
-		ClusterSecurityGroups: outputs["clusterSecurityGroups"],
-		ClusterSubnetGroupName: outputs["clusterSubnetGroupName"],
-		ClusterType: outputs["clusterType"],
-		ClusterVersion: outputs["clusterVersion"],
-		DatabaseName: outputs["databaseName"],
-		ElasticIp: outputs["elasticIp"],
-		EnableLogging: outputs["enableLogging"],
-		Encrypted: outputs["encrypted"],
-		Endpoint: outputs["endpoint"],
-		EnhancedVpcRouting: outputs["enhancedVpcRouting"],
-		IamRoles: outputs["iamRoles"],
-		KmsKeyId: outputs["kmsKeyId"],
-		MasterUsername: outputs["masterUsername"],
-		NodeType: outputs["nodeType"],
-		NumberOfNodes: outputs["numberOfNodes"],
-		Port: outputs["port"],
-		PreferredMaintenanceWindow: outputs["preferredMaintenanceWindow"],
-		PubliclyAccessible: outputs["publiclyAccessible"],
-		S3KeyPrefix: outputs["s3KeyPrefix"],
-		Tags: outputs["tags"],
-		VpcId: outputs["vpcId"],
-		VpcSecurityGroupIds: outputs["vpcSecurityGroupIds"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getCluster.
 type GetClusterArgs struct {
 	// The cluster identifier
-	ClusterIdentifier pulumi.StringInput `pulumi:"clusterIdentifier"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	ClusterIdentifier string `pulumi:"clusterIdentifier"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getCluster.

@@ -11,35 +11,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/internet_gateway.html.markdown.
 func LookupInternetGateway(ctx *pulumi.Context, args *GetInternetGatewayArgs) (*GetInternetGatewayResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["internetGatewayId"] = args.InternetGatewayId
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getInternetGateway:getInternetGateway", inputs)
+var rv GetInternetGatewayResult
+	err := ctx.Invoke("aws:ec2/getInternetGateway:getInternetGateway", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetInternetGatewayResult{
-		Attachments: outputs["attachments"],
-		Filters: outputs["filters"],
-		InternetGatewayId: outputs["internetGatewayId"],
-		OwnerId: outputs["ownerId"],
-		Tags: outputs["tags"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getInternetGateway.
 type GetInternetGatewayArgs struct {
 	// Custom filter block as described below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// The id of the specific Internet Gateway to retrieve.
-	InternetGatewayId pulumi.StringInput `pulumi:"internetGatewayId"`
+	InternetGatewayId string `pulumi:"internetGatewayId"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired Internet Gateway.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getInternetGateway.

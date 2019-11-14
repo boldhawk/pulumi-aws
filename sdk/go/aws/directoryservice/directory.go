@@ -74,7 +74,6 @@ func NewDirectory(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Password'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["alias"] = args.Alias
 		inputs["connectSettings"] = args.ConnectSettings

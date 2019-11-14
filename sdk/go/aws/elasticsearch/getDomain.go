@@ -11,45 +11,19 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elasticsearch_domain.html.markdown.
 func LookupDomain(ctx *pulumi.Context, args *GetDomainArgs) (*GetDomainResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["domainName"] = args.DomainName
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:elasticsearch/getDomain:getDomain", inputs)
+var rv GetDomainResult
+	err := ctx.Invoke("aws:elasticsearch/getDomain:getDomain", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetDomainResult{
-		AccessPolicies: outputs["accessPolicies"],
-		AdvancedOptions: outputs["advancedOptions"],
-		Arn: outputs["arn"],
-		ClusterConfigs: outputs["clusterConfigs"],
-		CognitoOptions: outputs["cognitoOptions"],
-		Created: outputs["created"],
-		Deleted: outputs["deleted"],
-		DomainId: outputs["domainId"],
-		DomainName: outputs["domainName"],
-		EbsOptions: outputs["ebsOptions"],
-		ElasticsearchVersion: outputs["elasticsearchVersion"],
-		EncryptionAtRests: outputs["encryptionAtRests"],
-		Endpoint: outputs["endpoint"],
-		KibanaEndpoint: outputs["kibanaEndpoint"],
-		LogPublishingOptions: outputs["logPublishingOptions"],
-		NodeToNodeEncryptions: outputs["nodeToNodeEncryptions"],
-		Processing: outputs["processing"],
-		SnapshotOptions: outputs["snapshotOptions"],
-		Tags: outputs["tags"],
-		VpcOptions: outputs["vpcOptions"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getDomain.
 type GetDomainArgs struct {
 	// Name of the domain.
-	DomainName pulumi.StringInput `pulumi:"domainName"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	DomainName string `pulumi:"domainName"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getDomain.

@@ -46,7 +46,6 @@ type App struct {
 func NewApp(ctx *pulumi.Context,
 	name string, args *AppArgs, opts ...pulumi.ResourceOpt) (*App, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["campaignHook"] = args.CampaignHook
 		inputs["limits"] = args.Limits

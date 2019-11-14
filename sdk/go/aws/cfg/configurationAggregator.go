@@ -37,7 +37,6 @@ type ConfigurationAggregator struct {
 func NewConfigurationAggregator(ctx *pulumi.Context,
 	name string, args *ConfigurationAggregatorArgs, opts ...pulumi.ResourceOpt) (*ConfigurationAggregator, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["accountAggregationSource"] = args.AccountAggregationSource
 		inputs["name"] = args.Name

@@ -11,26 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/cloudwatch_log_group.html.markdown.
 func LookupLogGroup(ctx *pulumi.Context, args *GetLogGroupArgs) (*GetLogGroupResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:cloudwatch/getLogGroup:getLogGroup", inputs)
+var rv GetLogGroupResult
+	err := ctx.Invoke("aws:cloudwatch/getLogGroup:getLogGroup", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetLogGroupResult{
-		Arn: outputs["arn"],
-		CreationTime: outputs["creationTime"],
-		Name: outputs["name"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getLogGroup.
 type GetLogGroupArgs struct {
 	// The name of the Cloudwatch log group
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getLogGroup.

@@ -62,7 +62,6 @@ func NewFunction(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'ResponseMappingTemplate'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["apiId"] = args.ApiId
 		inputs["dataSource"] = args.DataSource

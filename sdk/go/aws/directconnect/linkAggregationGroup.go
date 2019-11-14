@@ -55,7 +55,6 @@ func NewLinkAggregationGroup(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Location'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["connectionsBandwidth"] = args.ConnectionsBandwidth
 		inputs["forceDestroy"] = args.ForceDestroy

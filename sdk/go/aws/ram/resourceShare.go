@@ -34,7 +34,6 @@ type ResourceShare struct {
 func NewResourceShare(ctx *pulumi.Context,
 	name string, args *ResourceShareArgs, opts ...pulumi.ResourceOpt) (*ResourceShare, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["allowExternalPrincipals"] = args.AllowExternalPrincipals
 		inputs["name"] = args.Name

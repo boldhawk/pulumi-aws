@@ -57,7 +57,6 @@ type RestApi struct {
 func NewRestApi(ctx *pulumi.Context,
 	name string, args *RestApiArgs, opts ...pulumi.ResourceOpt) (*RestApi, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["apiKeySource"] = args.ApiKeySource
 		inputs["binaryMediaTypes"] = args.BinaryMediaTypes

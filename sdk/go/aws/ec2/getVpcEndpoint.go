@@ -12,50 +12,25 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/vpc_endpoint.html.markdown.
 func LookupVpcEndpoint(ctx *pulumi.Context, args *GetVpcEndpointArgs) (*GetVpcEndpointResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["id"] = args.Id
-		inputs["serviceName"] = args.ServiceName
-		inputs["state"] = args.State
-		inputs["tags"] = args.Tags
-		inputs["vpcId"] = args.VpcId
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getVpcEndpoint:getVpcEndpoint", inputs)
+var rv GetVpcEndpointResult
+	err := ctx.Invoke("aws:ec2/getVpcEndpoint:getVpcEndpoint", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetVpcEndpointResult{
-		CidrBlocks: outputs["cidrBlocks"],
-		DnsEntries: outputs["dnsEntries"],
-		Id: outputs["id"],
-		NetworkInterfaceIds: outputs["networkInterfaceIds"],
-		OwnerId: outputs["ownerId"],
-		Policy: outputs["policy"],
-		PrefixListId: outputs["prefixListId"],
-		PrivateDnsEnabled: outputs["privateDnsEnabled"],
-		RequesterManaged: outputs["requesterManaged"],
-		RouteTableIds: outputs["routeTableIds"],
-		SecurityGroupIds: outputs["securityGroupIds"],
-		ServiceName: outputs["serviceName"],
-		State: outputs["state"],
-		SubnetIds: outputs["subnetIds"],
-		Tags: outputs["tags"],
-		VpcEndpointType: outputs["vpcEndpointType"],
-		VpcId: outputs["vpcId"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getVpcEndpoint.
 type GetVpcEndpointArgs struct {
 	// The ID of the specific VPC Endpoint to retrieve.
-	Id pulumi.StringInput `pulumi:"id"`
+	Id string `pulumi:"id"`
 	// The AWS service name of the specific VPC Endpoint to retrieve.
-	ServiceName pulumi.StringInput `pulumi:"serviceName"`
+	ServiceName string `pulumi:"serviceName"`
 	// The state of the specific VPC Endpoint to retrieve.
-	State pulumi.StringInput `pulumi:"state"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	State string `pulumi:"state"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The ID of the VPC in which the specific VPC Endpoint is used.
-	VpcId pulumi.StringInput `pulumi:"vpcId"`
+	VpcId string `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getVpcEndpoint.

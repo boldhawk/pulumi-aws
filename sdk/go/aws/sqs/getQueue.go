@@ -13,26 +13,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/sqs_queue.html.markdown.
 func LookupQueue(ctx *pulumi.Context, args *GetQueueArgs) (*GetQueueResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:sqs/getQueue:getQueue", inputs)
+var rv GetQueueResult
+	err := ctx.Invoke("aws:sqs/getQueue:getQueue", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetQueueResult{
-		Arn: outputs["arn"],
-		Name: outputs["name"],
-		Url: outputs["url"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getQueue.
 type GetQueueArgs struct {
 	// The name of the queue to match.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getQueue.

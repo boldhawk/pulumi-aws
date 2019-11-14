@@ -12,33 +12,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ecs_service.html.markdown.
 func LookupService(ctx *pulumi.Context, args *GetServiceArgs) (*GetServiceResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["clusterArn"] = args.ClusterArn
-		inputs["serviceName"] = args.ServiceName
-	}
-	outputs, err := ctx.Invoke("aws:ecs/getService:getService", inputs)
+var rv GetServiceResult
+	err := ctx.Invoke("aws:ecs/getService:getService", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetServiceResult{
-		Arn: outputs["arn"],
-		ClusterArn: outputs["clusterArn"],
-		DesiredCount: outputs["desiredCount"],
-		LaunchType: outputs["launchType"],
-		SchedulingStrategy: outputs["schedulingStrategy"],
-		ServiceName: outputs["serviceName"],
-		TaskDefinition: outputs["taskDefinition"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getService.
 type GetServiceArgs struct {
 	// The arn of the ECS Cluster
-	ClusterArn pulumi.StringInput `pulumi:"clusterArn"`
+	ClusterArn string `pulumi:"clusterArn"`
 	// The name of the ECS Service
-	ServiceName pulumi.StringInput `pulumi:"serviceName"`
+	ServiceName string `pulumi:"serviceName"`
 }
 
 // A collection of values returned by getService.

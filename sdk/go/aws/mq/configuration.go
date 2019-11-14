@@ -60,7 +60,6 @@ func NewConfiguration(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'EngineVersion'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["data"] = args.Data
 		inputs["description"] = args.Description

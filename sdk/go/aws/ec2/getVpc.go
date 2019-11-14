@@ -15,59 +15,33 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/vpc.html.markdown.
 func LookupVpc(ctx *pulumi.Context, args *GetVpcArgs) (*GetVpcResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["cidrBlock"] = args.CidrBlock
-		inputs["default"] = args.Default
-		inputs["dhcpOptionsId"] = args.DhcpOptionsId
-		inputs["filters"] = args.Filters
-		inputs["id"] = args.Id
-		inputs["state"] = args.State
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getVpc:getVpc", inputs)
+var rv GetVpcResult
+	err := ctx.Invoke("aws:ec2/getVpc:getVpc", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetVpcResult{
-		Arn: outputs["arn"],
-		CidrBlock: outputs["cidrBlock"],
-		CidrBlockAssociations: outputs["cidrBlockAssociations"],
-		Default: outputs["default"],
-		DhcpOptionsId: outputs["dhcpOptionsId"],
-		EnableDnsHostnames: outputs["enableDnsHostnames"],
-		EnableDnsSupport: outputs["enableDnsSupport"],
-		Filters: outputs["filters"],
-		Id: outputs["id"],
-		InstanceTenancy: outputs["instanceTenancy"],
-		Ipv6AssociationId: outputs["ipv6AssociationId"],
-		Ipv6CidrBlock: outputs["ipv6CidrBlock"],
-		MainRouteTableId: outputs["mainRouteTableId"],
-		OwnerId: outputs["ownerId"],
-		State: outputs["state"],
-		Tags: outputs["tags"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getVpc.
 type GetVpcArgs struct {
 	// The cidr block of the desired VPC.
-	CidrBlock pulumi.StringInput `pulumi:"cidrBlock"`
+	CidrBlock string `pulumi:"cidrBlock"`
 	// Boolean constraint on whether the desired VPC is
 	// the default VPC for the region.
-	Default pulumi.BoolInput `pulumi:"default"`
+	Default bool `pulumi:"default"`
 	// The DHCP options id of the desired VPC.
-	DhcpOptionsId pulumi.StringInput `pulumi:"dhcpOptionsId"`
+	DhcpOptionsId string `pulumi:"dhcpOptionsId"`
 	// Custom filter block as described below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// The id of the specific VPC to retrieve.
-	Id pulumi.StringInput `pulumi:"id"`
+	Id string `pulumi:"id"`
 	// The current state of the desired VPC.
 	// Can be either `"pending"` or `"available"`.
-	State pulumi.StringInput `pulumi:"state"`
+	State string `pulumi:"state"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired VPC.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpc.

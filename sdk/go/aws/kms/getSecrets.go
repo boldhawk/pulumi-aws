@@ -11,25 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/kms_secrets.html.markdown.
 func LookupSecrets(ctx *pulumi.Context, args *GetSecretsArgs) (*GetSecretsResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["secrets"] = args.Secrets
-	}
-	outputs, err := ctx.Invoke("aws:kms/getSecrets:getSecrets", inputs)
+var rv GetSecretsResult
+	err := ctx.Invoke("aws:kms/getSecrets:getSecrets", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetSecretsResult{
-		Plaintext: outputs["plaintext"],
-		Secrets: outputs["secrets"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getSecrets.
 type GetSecretsArgs struct {
 	// One or more encrypted payload definitions from the KMS service. See the Secret Definitions below.
-	Secrets pulumi.ArrayInput `pulumi:"secrets"`
+	Secrets []interface{} `pulumi:"secrets"`
 }
 
 // A collection of values returned by getSecrets.

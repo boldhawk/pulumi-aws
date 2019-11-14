@@ -14,32 +14,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/kinesis_stream.html.markdown.
 func LookupStream(ctx *pulumi.Context, args *GetStreamArgs) (*GetStreamResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:kinesis/getStream:getStream", inputs)
+var rv GetStreamResult
+	err := ctx.Invoke("aws:kinesis/getStream:getStream", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetStreamResult{
-		Arn: outputs["arn"],
-		ClosedShards: outputs["closedShards"],
-		CreationTimestamp: outputs["creationTimestamp"],
-		Name: outputs["name"],
-		OpenShards: outputs["openShards"],
-		RetentionPeriod: outputs["retentionPeriod"],
-		ShardLevelMetrics: outputs["shardLevelMetrics"],
-		Status: outputs["status"],
-		Tags: outputs["tags"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getStream.
 type GetStreamArgs struct {
 	// The name of the Kinesis Stream.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getStream.

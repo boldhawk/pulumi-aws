@@ -61,7 +61,6 @@ func NewLicenseConfiguration(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'LicenseCountingType'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["licenseCount"] = args.LicenseCount

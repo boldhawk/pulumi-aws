@@ -12,74 +12,35 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ami.html.markdown.
 func LookupAmi(ctx *pulumi.Context, args *GetAmiArgs) (*GetAmiResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["executableUsers"] = args.ExecutableUsers
-		inputs["filters"] = args.Filters
-		inputs["mostRecent"] = args.MostRecent
-		inputs["nameRegex"] = args.NameRegex
-		inputs["owners"] = args.Owners
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:index/getAmi:getAmi", inputs)
+var rv GetAmiResult
+	err := ctx.Invoke("aws:index/getAmi:getAmi", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetAmiResult{
-		Architecture: outputs["architecture"],
-		BlockDeviceMappings: outputs["blockDeviceMappings"],
-		CreationDate: outputs["creationDate"],
-		Description: outputs["description"],
-		ExecutableUsers: outputs["executableUsers"],
-		Filters: outputs["filters"],
-		Hypervisor: outputs["hypervisor"],
-		ImageId: outputs["imageId"],
-		ImageLocation: outputs["imageLocation"],
-		ImageOwnerAlias: outputs["imageOwnerAlias"],
-		ImageType: outputs["imageType"],
-		KernelId: outputs["kernelId"],
-		MostRecent: outputs["mostRecent"],
-		Name: outputs["name"],
-		NameRegex: outputs["nameRegex"],
-		OwnerId: outputs["ownerId"],
-		Owners: outputs["owners"],
-		Platform: outputs["platform"],
-		ProductCodes: outputs["productCodes"],
-		Public: outputs["public"],
-		RamdiskId: outputs["ramdiskId"],
-		RootDeviceName: outputs["rootDeviceName"],
-		RootDeviceType: outputs["rootDeviceType"],
-		RootSnapshotId: outputs["rootSnapshotId"],
-		SriovNetSupport: outputs["sriovNetSupport"],
-		State: outputs["state"],
-		StateReason: outputs["stateReason"],
-		Tags: outputs["tags"],
-		VirtualizationType: outputs["virtualizationType"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getAmi.
 type GetAmiArgs struct {
 	// Limit search to users with *explicit* launch permission on
 	// the image. Valid items are the numeric account ID or `self`.
-	ExecutableUsers pulumi.ArrayInput `pulumi:"executableUsers"`
+	ExecutableUsers []interface{} `pulumi:"executableUsers"`
 	// One or more name/value pairs to filter off of. There are
 	// several valid keys, for a full reference, check out
 	// [describe-images in the AWS CLI reference][1].
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// If more than one result is returned, use the most
 	// recent AMI.
-	MostRecent pulumi.BoolInput `pulumi:"mostRecent"`
+	MostRecent bool `pulumi:"mostRecent"`
 	// A regex string to apply to the AMI list returned
 	// by AWS. This allows more advanced filtering not supported from the AWS API. This
 	// filtering is done locally on what AWS returns, and could have a performance
 	// impact if the result is large. It is recommended to combine this with other
 	// options to narrow down the list AWS returns.
-	NameRegex pulumi.StringInput `pulumi:"nameRegex"`
+	NameRegex string `pulumi:"nameRegex"`
 	// List of AMI owners to limit search. At least 1 value must be specified. Valid values: an AWS account ID, `self` (the current account), or an AWS owner alias (e.g. `amazon`, `aws-marketplace`, `microsoft`).
-	Owners pulumi.ArrayInput `pulumi:"owners"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Owners []interface{} `pulumi:"owners"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getAmi.

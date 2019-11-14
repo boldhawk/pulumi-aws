@@ -14,26 +14,19 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/api_gateway_rest_api.html.markdown.
 func LookupRestApi(ctx *pulumi.Context, args *GetRestApiArgs) (*GetRestApiResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:apigateway/getRestApi:getRestApi", inputs)
+var rv GetRestApiResult
+	err := ctx.Invoke("aws:apigateway/getRestApi:getRestApi", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetRestApiResult{
-		Name: outputs["name"],
-		RootResourceId: outputs["rootResourceId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getRestApi.
 type GetRestApiArgs struct {
 	// The name of the REST API to look up. If no REST API is found with this name, an error will be returned. 
 	// If multiple REST APIs are found with this name, an error will be returned.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getRestApi.

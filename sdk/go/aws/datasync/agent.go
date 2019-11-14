@@ -39,7 +39,6 @@ type Agent struct {
 func NewAgent(ctx *pulumi.Context,
 	name string, args *AgentArgs, opts ...pulumi.ResourceOpt) (*Agent, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["activationKey"] = args.ActivationKey
 		inputs["ipAddress"] = args.IpAddress

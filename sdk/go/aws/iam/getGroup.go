@@ -13,27 +13,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iam_group.html.markdown.
 func LookupGroup(ctx *pulumi.Context, args *GetGroupArgs) (*GetGroupResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["groupName"] = args.GroupName
-	}
-	outputs, err := ctx.Invoke("aws:iam/getGroup:getGroup", inputs)
+var rv GetGroupResult
+	err := ctx.Invoke("aws:iam/getGroup:getGroup", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetGroupResult{
-		Arn: outputs["arn"],
-		GroupId: outputs["groupId"],
-		GroupName: outputs["groupName"],
-		Path: outputs["path"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getGroup.
 type GetGroupArgs struct {
 	// The friendly IAM group name to match.
-	GroupName pulumi.StringInput `pulumi:"groupName"`
+	GroupName string `pulumi:"groupName"`
 }
 
 // A collection of values returned by getGroup.

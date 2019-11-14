@@ -11,48 +11,29 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/nat_gateway.html.markdown.
 func LookupNatGateway(ctx *pulumi.Context, args *GetNatGatewayArgs) (*GetNatGatewayResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["id"] = args.Id
-		inputs["state"] = args.State
-		inputs["subnetId"] = args.SubnetId
-		inputs["tags"] = args.Tags
-		inputs["vpcId"] = args.VpcId
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getNatGateway:getNatGateway", inputs)
+var rv GetNatGatewayResult
+	err := ctx.Invoke("aws:ec2/getNatGateway:getNatGateway", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetNatGatewayResult{
-		AllocationId: outputs["allocationId"],
-		Filters: outputs["filters"],
-		Id: outputs["id"],
-		NetworkInterfaceId: outputs["networkInterfaceId"],
-		PrivateIp: outputs["privateIp"],
-		PublicIp: outputs["publicIp"],
-		State: outputs["state"],
-		SubnetId: outputs["subnetId"],
-		Tags: outputs["tags"],
-		VpcId: outputs["vpcId"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getNatGateway.
 type GetNatGatewayArgs struct {
 	// Custom filter block as described below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// The id of the specific Nat Gateway to retrieve.
-	Id pulumi.StringInput `pulumi:"id"`
+	Id string `pulumi:"id"`
 	// The state of the NAT gateway (pending | failed | available | deleting | deleted ).
-	State pulumi.StringInput `pulumi:"state"`
+	State string `pulumi:"state"`
 	// The id of subnet that the Nat Gateway resides in.
-	SubnetId pulumi.StringInput `pulumi:"subnetId"`
+	SubnetId string `pulumi:"subnetId"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired Nat Gateway.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// The id of the VPC that the Nat Gateway resides in.
-	VpcId pulumi.StringInput `pulumi:"vpcId"`
+	VpcId string `pulumi:"vpcId"`
 }
 
 // A collection of values returned by getNatGateway.

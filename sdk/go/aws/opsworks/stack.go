@@ -109,7 +109,6 @@ func NewStack(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'ServiceRoleArn'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["agentVersion"] = args.AgentVersion
 		inputs["berkshelfVersion"] = args.BerkshelfVersion

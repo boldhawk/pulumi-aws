@@ -17,42 +17,21 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/alb_target_group_legacy.html.markdown.
 func LookupTargetGroup(ctx *pulumi.Context, args *GetTargetGroupArgs) (*GetTargetGroupResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["arn"] = args.Arn
-		inputs["name"] = args.Name
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:applicationloadbalancing/getTargetGroup:getTargetGroup", inputs)
+var rv GetTargetGroupResult
+	err := ctx.Invoke("aws:applicationloadbalancing/getTargetGroup:getTargetGroup", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetTargetGroupResult{
-		Arn: outputs["arn"],
-		ArnSuffix: outputs["arnSuffix"],
-		DeregistrationDelay: outputs["deregistrationDelay"],
-		HealthCheck: outputs["healthCheck"],
-		LambdaMultiValueHeadersEnabled: outputs["lambdaMultiValueHeadersEnabled"],
-		Name: outputs["name"],
-		Port: outputs["port"],
-		Protocol: outputs["protocol"],
-		ProxyProtocolV2: outputs["proxyProtocolV2"],
-		SlowStart: outputs["slowStart"],
-		Stickiness: outputs["stickiness"],
-		Tags: outputs["tags"],
-		TargetType: outputs["targetType"],
-		VpcId: outputs["vpcId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getTargetGroup.
 type GetTargetGroupArgs struct {
 	// The full ARN of the target group.
-	Arn pulumi.StringInput `pulumi:"arn"`
+	Arn string `pulumi:"arn"`
 	// The unique name of the target group.
-	Name pulumi.StringInput `pulumi:"name"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Name string `pulumi:"name"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getTargetGroup.

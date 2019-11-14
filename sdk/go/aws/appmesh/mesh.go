@@ -40,7 +40,6 @@ type Mesh struct {
 func NewMesh(ctx *pulumi.Context,
 	name string, args *MeshArgs, opts ...pulumi.ResourceOpt) (*Mesh, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["spec"] = args.Spec

@@ -14,26 +14,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/cloudformation_export.html.markdown.
 func LookupExport(ctx *pulumi.Context, args *GetExportArgs) (*GetExportResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:cloudformation/getExport:getExport", inputs)
+var rv GetExportResult
+	err := ctx.Invoke("aws:cloudformation/getExport:getExport", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetExportResult{
-		ExportingStackId: outputs["exportingStackId"],
-		Name: outputs["name"],
-		Value: outputs["value"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getExport.
 type GetExportArgs struct {
 	// The name of the export as it appears in the console or from [list-exports](http://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-exports.html)
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getExport.

@@ -11,51 +11,21 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/lambda_function.html.markdown.
 func LookupFunction(ctx *pulumi.Context, args *GetFunctionArgs) (*GetFunctionResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["functionName"] = args.FunctionName
-		inputs["qualifier"] = args.Qualifier
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:lambda/getFunction:getFunction", inputs)
+var rv GetFunctionResult
+	err := ctx.Invoke("aws:lambda/getFunction:getFunction", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetFunctionResult{
-		Arn: outputs["arn"],
-		DeadLetterConfig: outputs["deadLetterConfig"],
-		Description: outputs["description"],
-		Environment: outputs["environment"],
-		FunctionName: outputs["functionName"],
-		Handler: outputs["handler"],
-		InvokeArn: outputs["invokeArn"],
-		KmsKeyArn: outputs["kmsKeyArn"],
-		LastModified: outputs["lastModified"],
-		Layers: outputs["layers"],
-		MemorySize: outputs["memorySize"],
-		QualifiedArn: outputs["qualifiedArn"],
-		Qualifier: outputs["qualifier"],
-		ReservedConcurrentExecutions: outputs["reservedConcurrentExecutions"],
-		Role: outputs["role"],
-		Runtime: outputs["runtime"],
-		SourceCodeHash: outputs["sourceCodeHash"],
-		SourceCodeSize: outputs["sourceCodeSize"],
-		Tags: outputs["tags"],
-		Timeout: outputs["timeout"],
-		TracingConfig: outputs["tracingConfig"],
-		Version: outputs["version"],
-		VpcConfig: outputs["vpcConfig"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getFunction.
 type GetFunctionArgs struct {
 	// Name of the lambda function.
-	FunctionName pulumi.StringInput `pulumi:"functionName"`
+	FunctionName string `pulumi:"functionName"`
 	// Alias name or version number of the lambda function. e.g. `$LATEST`, `my-alias`, or `1`
-	Qualifier pulumi.StringInput `pulumi:"qualifier"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Qualifier string `pulumi:"qualifier"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getFunction.

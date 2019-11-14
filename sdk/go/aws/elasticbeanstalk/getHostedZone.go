@@ -11,24 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elastic_beanstalk_hosted_zone.html.markdown.
 func LookupHostedZone(ctx *pulumi.Context, args *GetHostedZoneArgs) (*GetHostedZoneResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["region"] = args.Region
-	}
-	outputs, err := ctx.Invoke("aws:elasticbeanstalk/getHostedZone:getHostedZone", inputs)
+var rv GetHostedZoneResult
+	err := ctx.Invoke("aws:elasticbeanstalk/getHostedZone:getHostedZone", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetHostedZoneResult{
-		Region: outputs["region"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getHostedZone.
 type GetHostedZoneArgs struct {
 	// The region you'd like the zone for. By default, fetches the current region.
-	Region pulumi.StringInput `pulumi:"region"`
+	Region string `pulumi:"region"`
 }
 
 // A collection of values returned by getHostedZone.

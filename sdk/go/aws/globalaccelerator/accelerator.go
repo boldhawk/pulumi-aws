@@ -37,7 +37,6 @@ type Accelerator struct {
 func NewAccelerator(ctx *pulumi.Context,
 	name string, args *AcceleratorArgs, opts ...pulumi.ResourceOpt) (*Accelerator, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["attributes"] = args.Attributes
 		inputs["enabled"] = args.Enabled

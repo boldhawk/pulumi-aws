@@ -38,7 +38,6 @@ func NewRule(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'MetricName'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["metricName"] = args.MetricName
 		inputs["name"] = args.Name

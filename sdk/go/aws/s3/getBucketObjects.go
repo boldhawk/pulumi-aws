@@ -9,51 +9,30 @@ import (
 
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/s3_bucket_objects.html.markdown.
 func LookupBucketObjects(ctx *pulumi.Context, args *GetBucketObjectsArgs) (*GetBucketObjectsResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["bucket"] = args.Bucket
-		inputs["delimiter"] = args.Delimiter
-		inputs["encodingType"] = args.EncodingType
-		inputs["fetchOwner"] = args.FetchOwner
-		inputs["maxKeys"] = args.MaxKeys
-		inputs["prefix"] = args.Prefix
-		inputs["startAfter"] = args.StartAfter
-	}
-	outputs, err := ctx.Invoke("aws:s3/getBucketObjects:getBucketObjects", inputs)
+var rv GetBucketObjectsResult
+	err := ctx.Invoke("aws:s3/getBucketObjects:getBucketObjects", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetBucketObjectsResult{
-		Bucket: outputs["bucket"],
-		CommonPrefixes: outputs["commonPrefixes"],
-		Delimiter: outputs["delimiter"],
-		EncodingType: outputs["encodingType"],
-		FetchOwner: outputs["fetchOwner"],
-		Keys: outputs["keys"],
-		MaxKeys: outputs["maxKeys"],
-		Owners: outputs["owners"],
-		Prefix: outputs["prefix"],
-		StartAfter: outputs["startAfter"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getBucketObjects.
 type GetBucketObjectsArgs struct {
 	// Lists object keys in this S3 bucket
-	Bucket pulumi.StringInput `pulumi:"bucket"`
+	Bucket string `pulumi:"bucket"`
 	// A character used to group keys (Default: none)
-	Delimiter pulumi.StringInput `pulumi:"delimiter"`
+	Delimiter string `pulumi:"delimiter"`
 	// Encodes keys using this method (Default: none; besides none, only "url" can be used)
-	EncodingType pulumi.StringInput `pulumi:"encodingType"`
+	EncodingType string `pulumi:"encodingType"`
 	// Boolean specifying whether to populate the owner list (Default: false)
-	FetchOwner pulumi.BoolInput `pulumi:"fetchOwner"`
+	FetchOwner bool `pulumi:"fetchOwner"`
 	// Maximum object keys to return (Default: 1000)
-	MaxKeys pulumi.IntInput `pulumi:"maxKeys"`
+	MaxKeys int `pulumi:"maxKeys"`
 	// Limits results to object keys with this prefix (Default: none)
-	Prefix pulumi.StringInput `pulumi:"prefix"`
+	Prefix string `pulumi:"prefix"`
 	// Returns key names lexicographically after a specific object key in your bucket (Default: none; S3 lists object keys in UTF-8 character encoding in lexicographical order)
-	StartAfter pulumi.StringInput `pulumi:"startAfter"`
+	StartAfter string `pulumi:"startAfter"`
 }
 
 // A collection of values returned by getBucketObjects.

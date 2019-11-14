@@ -91,7 +91,6 @@ type UserPool struct {
 func NewUserPool(ctx *pulumi.Context,
 	name string, args *UserPoolArgs, opts ...pulumi.ResourceOpt) (*UserPool, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["adminCreateUserConfig"] = args.AdminCreateUserConfig
 		inputs["aliasAttributes"] = args.AliasAttributes

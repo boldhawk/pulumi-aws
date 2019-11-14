@@ -52,7 +52,6 @@ type EventRule struct {
 func NewEventRule(ctx *pulumi.Context,
 	name string, args *EventRuleArgs, opts ...pulumi.ResourceOpt) (*EventRule, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["eventPattern"] = args.EventPattern

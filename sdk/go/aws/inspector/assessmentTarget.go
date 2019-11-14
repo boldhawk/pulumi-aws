@@ -31,7 +31,6 @@ type AssessmentTarget struct {
 func NewAssessmentTarget(ctx *pulumi.Context,
 	name string, args *AssessmentTargetArgs, opts ...pulumi.ResourceOpt) (*AssessmentTarget, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["resourceGroupArn"] = args.ResourceGroupArn

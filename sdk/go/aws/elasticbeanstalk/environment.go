@@ -129,7 +129,6 @@ func NewEnvironment(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Application'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["application"] = args.Application
 		inputs["cnamePrefix"] = args.CnamePrefix

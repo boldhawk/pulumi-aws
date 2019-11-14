@@ -11,23 +11,12 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/organizations_organization.html.markdown.
 func LookupOrganization(ctx *pulumi.Context) (*GetOrganizationResult, error) {
-	outputs, err := ctx.Invoke("aws:organizations/getOrganization:getOrganization", nil)
+var rv GetOrganizationResult
+	err := ctx.Invoke("aws:organizations/getOrganization:getOrganization", nil, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetOrganizationResult{
-		Accounts: outputs["accounts"],
-		Arn: outputs["arn"],
-		AwsServiceAccessPrincipals: outputs["awsServiceAccessPrincipals"],
-		EnabledPolicyTypes: outputs["enabledPolicyTypes"],
-		FeatureSet: outputs["featureSet"],
-		MasterAccountArn: outputs["masterAccountArn"],
-		MasterAccountEmail: outputs["masterAccountEmail"],
-		MasterAccountId: outputs["masterAccountId"],
-		NonMasterAccounts: outputs["nonMasterAccounts"],
-		Roots: outputs["roots"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of values returned by getOrganization.

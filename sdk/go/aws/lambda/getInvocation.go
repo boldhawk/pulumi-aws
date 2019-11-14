@@ -13,35 +13,23 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/lambda_invocation.html.markdown.
 func LookupInvocation(ctx *pulumi.Context, args *GetInvocationArgs) (*GetInvocationResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["functionName"] = args.FunctionName
-		inputs["input"] = args.Input
-		inputs["qualifier"] = args.Qualifier
-	}
-	outputs, err := ctx.Invoke("aws:lambda/getInvocation:getInvocation", inputs)
+var rv GetInvocationResult
+	err := ctx.Invoke("aws:lambda/getInvocation:getInvocation", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetInvocationResult{
-		FunctionName: outputs["functionName"],
-		Input: outputs["input"],
-		Qualifier: outputs["qualifier"],
-		Result: outputs["result"],
-		ResultMap: outputs["resultMap"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getInvocation.
 type GetInvocationArgs struct {
 	// The name of the lambda function.
-	FunctionName pulumi.StringInput `pulumi:"functionName"`
+	FunctionName string `pulumi:"functionName"`
 	// A string in JSON format that is passed as payload to the lambda function.
-	Input pulumi.StringInput `pulumi:"input"`
+	Input string `pulumi:"input"`
 	// The qualifier (a.k.a version) of the lambda function. Defaults
 	// to `$LATEST`.
-	Qualifier pulumi.StringInput `pulumi:"qualifier"`
+	Qualifier string `pulumi:"qualifier"`
 }
 
 // A collection of values returned by getInvocation.

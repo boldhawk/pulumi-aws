@@ -11,31 +11,21 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ec2_transit_gateway_dx_gateway_attachment.html.markdown.
 func LookupDirectConnectGatewayAttachment(ctx *pulumi.Context, args *GetDirectConnectGatewayAttachmentArgs) (*GetDirectConnectGatewayAttachmentResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["dxGatewayId"] = args.DxGatewayId
-		inputs["tags"] = args.Tags
-		inputs["transitGatewayId"] = args.TransitGatewayId
-	}
-	outputs, err := ctx.Invoke("aws:ec2transitgateway/getDirectConnectGatewayAttachment:getDirectConnectGatewayAttachment", inputs)
+var rv GetDirectConnectGatewayAttachmentResult
+	err := ctx.Invoke("aws:ec2transitgateway/getDirectConnectGatewayAttachment:getDirectConnectGatewayAttachment", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetDirectConnectGatewayAttachmentResult{
-		DxGatewayId: outputs["dxGatewayId"],
-		Tags: outputs["tags"],
-		TransitGatewayId: outputs["transitGatewayId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getDirectConnectGatewayAttachment.
 type GetDirectConnectGatewayAttachmentArgs struct {
 	// Identifier of the Direct Connect Gateway.
-	DxGatewayId pulumi.StringInput `pulumi:"dxGatewayId"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	DxGatewayId string `pulumi:"dxGatewayId"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// Identifier of the EC2 Transit Gateway.
-	TransitGatewayId pulumi.StringInput `pulumi:"transitGatewayId"`
+	TransitGatewayId string `pulumi:"transitGatewayId"`
 }
 
 // A collection of values returned by getDirectConnectGatewayAttachment.

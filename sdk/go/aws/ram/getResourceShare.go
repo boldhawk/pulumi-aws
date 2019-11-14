@@ -11,35 +11,22 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ram_resource_share.html.markdown.
 func LookupResourceShare(ctx *pulumi.Context, args *GetResourceShareArgs) (*GetResourceShareResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["name"] = args.Name
-		inputs["resourceOwner"] = args.ResourceOwner
-	}
-	outputs, err := ctx.Invoke("aws:ram/getResourceShare:getResourceShare", inputs)
+var rv GetResourceShareResult
+	err := ctx.Invoke("aws:ram/getResourceShare:getResourceShare", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetResourceShareResult{
-		Arn: outputs["arn"],
-		Filters: outputs["filters"],
-		Id: outputs["id"],
-		Name: outputs["name"],
-		ResourceOwner: outputs["resourceOwner"],
-		Status: outputs["status"],
-		Tags: outputs["tags"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getResourceShare.
 type GetResourceShareArgs struct {
 	// A filter used to scope the list e.g. by tags. See [related docs] (https://docs.aws.amazon.com/ram/latest/APIReference/API_TagFilter.html).
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// The name of the tag key to filter on.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 	// The owner of the resource share. Valid values are SELF or OTHER-ACCOUNTS
-	ResourceOwner pulumi.StringInput `pulumi:"resourceOwner"`
+	ResourceOwner string `pulumi:"resourceOwner"`
 }
 
 // A collection of values returned by getResourceShare.

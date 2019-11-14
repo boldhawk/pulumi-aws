@@ -11,51 +11,19 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/launch_template.html.markdown.
 func LookupLaunchTemplate(ctx *pulumi.Context, args *GetLaunchTemplateArgs) (*GetLaunchTemplateResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getLaunchTemplate:getLaunchTemplate", inputs)
+var rv GetLaunchTemplateResult
+	err := ctx.Invoke("aws:ec2/getLaunchTemplate:getLaunchTemplate", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetLaunchTemplateResult{
-		Arn: outputs["arn"],
-		BlockDeviceMappings: outputs["blockDeviceMappings"],
-		CreditSpecifications: outputs["creditSpecifications"],
-		DefaultVersion: outputs["defaultVersion"],
-		Description: outputs["description"],
-		DisableApiTermination: outputs["disableApiTermination"],
-		EbsOptimized: outputs["ebsOptimized"],
-		ElasticGpuSpecifications: outputs["elasticGpuSpecifications"],
-		IamInstanceProfiles: outputs["iamInstanceProfiles"],
-		ImageId: outputs["imageId"],
-		InstanceInitiatedShutdownBehavior: outputs["instanceInitiatedShutdownBehavior"],
-		InstanceMarketOptions: outputs["instanceMarketOptions"],
-		InstanceType: outputs["instanceType"],
-		KernelId: outputs["kernelId"],
-		KeyName: outputs["keyName"],
-		LatestVersion: outputs["latestVersion"],
-		Monitorings: outputs["monitorings"],
-		Name: outputs["name"],
-		NetworkInterfaces: outputs["networkInterfaces"],
-		Placements: outputs["placements"],
-		RamDiskId: outputs["ramDiskId"],
-		SecurityGroupNames: outputs["securityGroupNames"],
-		TagSpecifications: outputs["tagSpecifications"],
-		Tags: outputs["tags"],
-		UserData: outputs["userData"],
-		VpcSecurityGroupIds: outputs["vpcSecurityGroupIds"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getLaunchTemplate.
 type GetLaunchTemplateArgs struct {
 	// The name of the launch template.
-	Name pulumi.StringInput `pulumi:"name"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Name string `pulumi:"name"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getLaunchTemplate.

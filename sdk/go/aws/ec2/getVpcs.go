@@ -13,30 +13,21 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/vpcs.html.markdown.
 func LookupVpcs(ctx *pulumi.Context, args *GetVpcsArgs) (*GetVpcsResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getVpcs:getVpcs", inputs)
+var rv GetVpcsResult
+	err := ctx.Invoke("aws:ec2/getVpcs:getVpcs", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetVpcsResult{
-		Filters: outputs["filters"],
-		Ids: outputs["ids"],
-		Tags: outputs["tags"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getVpcs.
 type GetVpcsArgs struct {
 	// Custom filter block as described below.
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired vpcs.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpcs.

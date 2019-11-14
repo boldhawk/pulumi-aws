@@ -64,7 +64,6 @@ func NewFleet(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Ec2InstanceType'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["buildId"] = args.BuildId
 		inputs["description"] = args.Description

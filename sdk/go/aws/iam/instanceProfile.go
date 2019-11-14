@@ -49,7 +49,6 @@ type InstanceProfile struct {
 func NewInstanceProfile(ctx *pulumi.Context,
 	name string, args *InstanceProfileArgs, opts ...pulumi.ResourceOpt) (*InstanceProfile, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["namePrefix"] = args.NamePrefix

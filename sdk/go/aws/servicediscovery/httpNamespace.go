@@ -28,7 +28,6 @@ type HttpNamespace struct {
 func NewHttpNamespace(ctx *pulumi.Context,
 	name string, args *HttpNamespaceArgs, opts ...pulumi.ResourceOpt) (*HttpNamespace, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["description"] = args.Description
 		inputs["name"] = args.Name

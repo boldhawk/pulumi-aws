@@ -11,26 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/dx_gateway.html.markdown.
 func LookupGateway(ctx *pulumi.Context, args *GetGatewayArgs) (*GetGatewayResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:directconnect/getGateway:getGateway", inputs)
+var rv GetGatewayResult
+	err := ctx.Invoke("aws:directconnect/getGateway:getGateway", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetGatewayResult{
-		AmazonSideAsn: outputs["amazonSideAsn"],
-		Name: outputs["name"],
-		OwnerAccountId: outputs["ownerAccountId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getGateway.
 type GetGatewayArgs struct {
 	// The name of the gateway to retrieve.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getGateway.

@@ -53,7 +53,6 @@ func NewConnection(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Location'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["bandwidth"] = args.Bandwidth
 		inputs["location"] = args.Location

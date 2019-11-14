@@ -12,14 +12,12 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iam_account_alias.html.markdown.
 func LookupAccountAlias(ctx *pulumi.Context) (*GetAccountAliasResult, error) {
-	outputs, err := ctx.Invoke("aws:iam/getAccountAlias:getAccountAlias", nil)
+var rv GetAccountAliasResult
+	err := ctx.Invoke("aws:iam/getAccountAlias:getAccountAlias", nil, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetAccountAliasResult{
-		AccountAlias: outputs["accountAlias"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of values returned by getAccountAlias.

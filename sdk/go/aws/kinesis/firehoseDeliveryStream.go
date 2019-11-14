@@ -69,7 +69,6 @@ func NewFirehoseDeliveryStream(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Destination'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["arn"] = args.Arn
 		inputs["destination"] = args.Destination

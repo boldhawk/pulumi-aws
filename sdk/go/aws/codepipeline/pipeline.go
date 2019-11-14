@@ -52,7 +52,6 @@ func NewPipeline(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Stages'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["artifactStore"] = args.ArtifactStore
 		inputs["name"] = args.Name

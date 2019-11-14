@@ -13,28 +13,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iam_user.html.markdown.
 func LookupUser(ctx *pulumi.Context, args *GetUserArgs) (*GetUserResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["userName"] = args.UserName
-	}
-	outputs, err := ctx.Invoke("aws:iam/getUser:getUser", inputs)
+var rv GetUserResult
+	err := ctx.Invoke("aws:iam/getUser:getUser", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetUserResult{
-		Arn: outputs["arn"],
-		Path: outputs["path"],
-		PermissionsBoundary: outputs["permissionsBoundary"],
-		UserId: outputs["userId"],
-		UserName: outputs["userName"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getUser.
 type GetUserArgs struct {
 	// The friendly IAM user name to match.
-	UserName pulumi.StringInput `pulumi:"userName"`
+	UserName string `pulumi:"userName"`
 }
 
 // A collection of values returned by getUser.

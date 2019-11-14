@@ -50,7 +50,6 @@ func NewLogSubscriptionFilter(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'LogGroup'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["destinationArn"] = args.DestinationArn
 		inputs["distribution"] = args.Distribution

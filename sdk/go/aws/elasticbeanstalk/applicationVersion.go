@@ -72,7 +72,6 @@ func NewApplicationVersion(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Key'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["application"] = args.Application
 		inputs["bucket"] = args.Bucket

@@ -66,7 +66,6 @@ func NewEventTarget(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Rule'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["targetId"] = pulumi.Any()
 	if args != nil {
 		inputs["arn"] = args.Arn
 		inputs["batchTarget"] = args.BatchTarget

@@ -12,29 +12,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ecs_task_definition.html.markdown.
 func LookupTaskDefinition(ctx *pulumi.Context, args *GetTaskDefinitionArgs) (*GetTaskDefinitionResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["taskDefinition"] = args.TaskDefinition
-	}
-	outputs, err := ctx.Invoke("aws:ecs/getTaskDefinition:getTaskDefinition", inputs)
+var rv GetTaskDefinitionResult
+	err := ctx.Invoke("aws:ecs/getTaskDefinition:getTaskDefinition", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetTaskDefinitionResult{
-		Family: outputs["family"],
-		NetworkMode: outputs["networkMode"],
-		Revision: outputs["revision"],
-		Status: outputs["status"],
-		TaskDefinition: outputs["taskDefinition"],
-		TaskRoleArn: outputs["taskRoleArn"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getTaskDefinition.
 type GetTaskDefinitionArgs struct {
 	// The family for the latest ACTIVE revision, family and revision (family:revision) for a specific revision in the family, the ARN of the task definition to access to.
-	TaskDefinition pulumi.StringInput `pulumi:"taskDefinition"`
+	TaskDefinition string `pulumi:"taskDefinition"`
 }
 
 // A collection of values returned by getTaskDefinition.

@@ -50,7 +50,6 @@ func NewModel(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'ExecutionRoleArn'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["containers"] = args.Containers
 		inputs["enableNetworkIsolation"] = args.EnableNetworkIsolation

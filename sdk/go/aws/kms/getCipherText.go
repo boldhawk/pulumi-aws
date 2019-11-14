@@ -17,33 +17,22 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/kms_ciphertext.html.markdown.
 func LookupCipherText(ctx *pulumi.Context, args *GetCipherTextArgs) (*GetCipherTextResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["context"] = args.Context
-		inputs["keyId"] = args.KeyId
-		inputs["plaintext"] = args.Plaintext
-	}
-	outputs, err := ctx.Invoke("aws:kms/getCipherText:getCipherText", inputs)
+var rv GetCipherTextResult
+	err := ctx.Invoke("aws:kms/getCipherText:getCipherText", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetCipherTextResult{
-		CiphertextBlob: outputs["ciphertextBlob"],
-		Context: outputs["context"],
-		KeyId: outputs["keyId"],
-		Plaintext: outputs["plaintext"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getCipherText.
 type GetCipherTextArgs struct {
 	// An optional mapping that makes up the encryption context.
-	Context pulumi.MapInput `pulumi:"context"`
+	Context map[string]interface{} `pulumi:"context"`
 	// Globally unique key ID for the customer master key.
-	KeyId pulumi.StringInput `pulumi:"keyId"`
+	KeyId string `pulumi:"keyId"`
 	// Data to be encrypted. Note that this may show up in logs, and it will be stored in the state file.
-	Plaintext pulumi.StringInput `pulumi:"plaintext"`
+	Plaintext string `pulumi:"plaintext"`
 }
 
 // A collection of values returned by getCipherText.

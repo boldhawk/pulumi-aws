@@ -59,7 +59,6 @@ func NewWebhook(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'TargetPipeline'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["authentication"] = args.Authentication
 		inputs["authenticationConfiguration"] = args.AuthenticationConfiguration

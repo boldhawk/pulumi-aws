@@ -16,42 +16,24 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iam_server_certificate.html.markdown.
 func LookupServerCertificate(ctx *pulumi.Context, args *GetServerCertificateArgs) (*GetServerCertificateResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["latest"] = args.Latest
-		inputs["name"] = args.Name
-		inputs["namePrefix"] = args.NamePrefix
-		inputs["pathPrefix"] = args.PathPrefix
-	}
-	outputs, err := ctx.Invoke("aws:iam/getServerCertificate:getServerCertificate", inputs)
+var rv GetServerCertificateResult
+	err := ctx.Invoke("aws:iam/getServerCertificate:getServerCertificate", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetServerCertificateResult{
-		Arn: outputs["arn"],
-		CertificateBody: outputs["certificateBody"],
-		CertificateChain: outputs["certificateChain"],
-		ExpirationDate: outputs["expirationDate"],
-		Latest: outputs["latest"],
-		Name: outputs["name"],
-		NamePrefix: outputs["namePrefix"],
-		Path: outputs["path"],
-		PathPrefix: outputs["pathPrefix"],
-		UploadDate: outputs["uploadDate"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getServerCertificate.
 type GetServerCertificateArgs struct {
 	// sort results by expiration date. returns the certificate with expiration date in furthest in the future.
-	Latest pulumi.BoolInput `pulumi:"latest"`
+	Latest bool `pulumi:"latest"`
 	// exact name of the cert to lookup
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 	// prefix of cert to filter by
-	NamePrefix pulumi.StringInput `pulumi:"namePrefix"`
+	NamePrefix string `pulumi:"namePrefix"`
 	// prefix of path to filter by
-	PathPrefix pulumi.StringInput `pulumi:"pathPrefix"`
+	PathPrefix string `pulumi:"pathPrefix"`
 }
 
 // A collection of values returned by getServerCertificate.

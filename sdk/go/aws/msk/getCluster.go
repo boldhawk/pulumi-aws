@@ -11,33 +11,19 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/msk_cluster.html.markdown.
 func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["clusterName"] = args.ClusterName
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:msk/getCluster:getCluster", inputs)
+var rv GetClusterResult
+	err := ctx.Invoke("aws:msk/getCluster:getCluster", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetClusterResult{
-		Arn: outputs["arn"],
-		BootstrapBrokers: outputs["bootstrapBrokers"],
-		BootstrapBrokersTls: outputs["bootstrapBrokersTls"],
-		ClusterName: outputs["clusterName"],
-		KafkaVersion: outputs["kafkaVersion"],
-		NumberOfBrokerNodes: outputs["numberOfBrokerNodes"],
-		Tags: outputs["tags"],
-		ZookeeperConnectString: outputs["zookeeperConnectString"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getCluster.
 type GetClusterArgs struct {
 	// Name of the cluster.
-	ClusterName pulumi.StringInput `pulumi:"clusterName"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	ClusterName string `pulumi:"clusterName"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getCluster.

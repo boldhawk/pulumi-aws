@@ -11,28 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/codecommit_repository.html.markdown.
 func LookupRepository(ctx *pulumi.Context, args *GetRepositoryArgs) (*GetRepositoryResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["repositoryName"] = args.RepositoryName
-	}
-	outputs, err := ctx.Invoke("aws:codecommit/getRepository:getRepository", inputs)
+var rv GetRepositoryResult
+	err := ctx.Invoke("aws:codecommit/getRepository:getRepository", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetRepositoryResult{
-		Arn: outputs["arn"],
-		CloneUrlHttp: outputs["cloneUrlHttp"],
-		CloneUrlSsh: outputs["cloneUrlSsh"],
-		RepositoryId: outputs["repositoryId"],
-		RepositoryName: outputs["repositoryName"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getRepository.
 type GetRepositoryArgs struct {
 	// The name for the repository. This needs to be less than 100 characters.
-	RepositoryName pulumi.StringInput `pulumi:"repositoryName"`
+	RepositoryName string `pulumi:"repositoryName"`
 }
 
 // A collection of values returned by getRepository.

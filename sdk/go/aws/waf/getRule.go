@@ -11,24 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/waf_rule.html.markdown.
 func LookupRule(ctx *pulumi.Context, args *GetRuleArgs) (*GetRuleResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:waf/getRule:getRule", inputs)
+var rv GetRuleResult
+	err := ctx.Invoke("aws:waf/getRule:getRule", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetRuleResult{
-		Name: outputs["name"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getRule.
 type GetRuleArgs struct {
 	// The name of the WAF rule.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getRule.

@@ -46,7 +46,6 @@ func NewLogMetricFilter(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Pattern'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["logGroupName"] = args.LogGroupName
 		inputs["metricTransformation"] = args.MetricTransformation

@@ -14,57 +14,24 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/s3_bucket_object.html.markdown.
 func LookupBucketObject(ctx *pulumi.Context, args *GetBucketObjectArgs) (*GetBucketObjectResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["bucket"] = args.Bucket
-		inputs["key"] = args.Key
-		inputs["range"] = args.Range
-		inputs["tags"] = args.Tags
-		inputs["versionId"] = args.VersionId
-	}
-	outputs, err := ctx.Invoke("aws:s3/getBucketObject:getBucketObject", inputs)
+var rv GetBucketObjectResult
+	err := ctx.Invoke("aws:s3/getBucketObject:getBucketObject", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetBucketObjectResult{
-		Body: outputs["body"],
-		Bucket: outputs["bucket"],
-		CacheControl: outputs["cacheControl"],
-		ContentDisposition: outputs["contentDisposition"],
-		ContentEncoding: outputs["contentEncoding"],
-		ContentLanguage: outputs["contentLanguage"],
-		ContentLength: outputs["contentLength"],
-		ContentType: outputs["contentType"],
-		Etag: outputs["etag"],
-		Expiration: outputs["expiration"],
-		Expires: outputs["expires"],
-		Key: outputs["key"],
-		LastModified: outputs["lastModified"],
-		Metadata: outputs["metadata"],
-		ObjectLockLegalHoldStatus: outputs["objectLockLegalHoldStatus"],
-		ObjectLockMode: outputs["objectLockMode"],
-		ObjectLockRetainUntilDate: outputs["objectLockRetainUntilDate"],
-		Range: outputs["range"],
-		ServerSideEncryption: outputs["serverSideEncryption"],
-		SseKmsKeyId: outputs["sseKmsKeyId"],
-		StorageClass: outputs["storageClass"],
-		Tags: outputs["tags"],
-		VersionId: outputs["versionId"],
-		WebsiteRedirectLocation: outputs["websiteRedirectLocation"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getBucketObject.
 type GetBucketObjectArgs struct {
 	// The name of the bucket to read the object from
-	Bucket pulumi.StringInput `pulumi:"bucket"`
+	Bucket string `pulumi:"bucket"`
 	// The full path to the object inside the bucket
-	Key pulumi.StringInput `pulumi:"key"`
-	Range pulumi.StringInput `pulumi:"range"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Key string `pulumi:"key"`
+	Range string `pulumi:"range"`
+	Tags map[string]interface{} `pulumi:"tags"`
 	// Specific version ID of the object returned (defaults to latest version)
-	VersionId pulumi.StringInput `pulumi:"versionId"`
+	VersionId string `pulumi:"versionId"`
 }
 
 // A collection of values returned by getBucketObject.

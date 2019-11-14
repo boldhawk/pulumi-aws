@@ -12,22 +12,12 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/security_groups.html.markdown.
 func LookupSecurityGroups(ctx *pulumi.Context, args *GetSecurityGroupsArgs) (*GetSecurityGroupsResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["filters"] = args.Filters
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getSecurityGroups:getSecurityGroups", inputs)
+var rv GetSecurityGroupsResult
+	err := ctx.Invoke("aws:ec2/getSecurityGroups:getSecurityGroups", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetSecurityGroupsResult{
-		Filters: outputs["filters"],
-		Ids: outputs["ids"],
-		Tags: outputs["tags"],
-		VpcIds: outputs["vpcIds"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getSecurityGroups.
@@ -35,10 +25,10 @@ type GetSecurityGroupsArgs struct {
 	// One or more name/value pairs to use as filters. There are
 	// several valid keys, for a full reference, check out
 	// [describe-security-groups in the AWS CLI reference][1].
-	Filters pulumi.ArrayInput `pulumi:"filters"`
+	Filters []interface{} `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match for
 	// desired security groups.
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getSecurityGroups.

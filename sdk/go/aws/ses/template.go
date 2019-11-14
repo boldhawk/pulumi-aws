@@ -34,7 +34,6 @@ type Template struct {
 func NewTemplate(ctx *pulumi.Context,
 	name string, args *TemplateArgs, opts ...pulumi.ResourceOpt) (*Template, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["html"] = args.Html
 		inputs["name"] = args.Name

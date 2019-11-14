@@ -11,32 +11,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/cloudhsm_v2_cluster.html.markdown.
 func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["clusterId"] = args.ClusterId
-		inputs["clusterState"] = args.ClusterState
-	}
-	outputs, err := ctx.Invoke("aws:cloudhsmv2/getCluster:getCluster", inputs)
+var rv GetClusterResult
+	err := ctx.Invoke("aws:cloudhsmv2/getCluster:getCluster", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetClusterResult{
-		ClusterCertificates: outputs["clusterCertificates"],
-		ClusterId: outputs["clusterId"],
-		ClusterState: outputs["clusterState"],
-		SecurityGroupId: outputs["securityGroupId"],
-		SubnetIds: outputs["subnetIds"],
-		VpcId: outputs["vpcId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getCluster.
 type GetClusterArgs struct {
 	// The id of Cloud HSM v2 cluster.
-	ClusterId pulumi.StringInput `pulumi:"clusterId"`
+	ClusterId string `pulumi:"clusterId"`
 	// The state of the cluster to be found.
-	ClusterState pulumi.StringInput `pulumi:"clusterState"`
+	ClusterState string `pulumi:"clusterState"`
 }
 
 // A collection of values returned by getCluster.

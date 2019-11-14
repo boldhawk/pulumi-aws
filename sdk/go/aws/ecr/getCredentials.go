@@ -8,26 +8,17 @@ import (
 )
 
 func LookupCredentials(ctx *pulumi.Context, args *GetCredentialsArgs) (*GetCredentialsResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["registryId"] = args.RegistryId
-	}
-	outputs, err := ctx.Invoke("aws:ecr/getCredentials:getCredentials", inputs)
+var rv GetCredentialsResult
+	err := ctx.Invoke("aws:ecr/getCredentials:getCredentials", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetCredentialsResult{
-		AuthorizationToken: outputs["authorizationToken"],
-		ExpiresAt: outputs["expiresAt"],
-		ProxyEndpoint: outputs["proxyEndpoint"],
-		RegistryId: outputs["registryId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getCredentials.
 type GetCredentialsArgs struct {
-	RegistryId pulumi.StringInput `pulumi:"registryId"`
+	RegistryId string `pulumi:"registryId"`
 }
 
 // A collection of values returned by getCredentials.

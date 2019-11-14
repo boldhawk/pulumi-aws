@@ -28,7 +28,6 @@ type XssMatchSet struct {
 func NewXssMatchSet(ctx *pulumi.Context,
 	name string, args *XssMatchSetArgs, opts ...pulumi.ResourceOpt) (*XssMatchSet, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["xssMatchTuples"] = args.XssMatchTuples

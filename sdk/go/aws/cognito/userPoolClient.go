@@ -71,7 +71,6 @@ func NewUserPoolClient(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'UserPoolId'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["allowedOauthFlows"] = args.AllowedOauthFlows
 		inputs["allowedOauthFlowsUserPoolClient"] = args.AllowedOauthFlowsUserPoolClient

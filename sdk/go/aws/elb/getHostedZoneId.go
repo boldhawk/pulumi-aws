@@ -12,25 +12,19 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elb_hosted_zone_id.html.markdown.
 func LookupHostedZoneId(ctx *pulumi.Context, args *GetHostedZoneIdArgs) (*GetHostedZoneIdResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["region"] = args.Region
-	}
-	outputs, err := ctx.Invoke("aws:elb/getHostedZoneId:getHostedZoneId", inputs)
+var rv GetHostedZoneIdResult
+	err := ctx.Invoke("aws:elb/getHostedZoneId:getHostedZoneId", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetHostedZoneIdResult{
-		Region: outputs["region"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getHostedZoneId.
 type GetHostedZoneIdArgs struct {
 	// Name of the region whose AWS ELB HostedZoneId is desired.
 	// Defaults to the region from the AWS provider configuration.
-	Region pulumi.StringInput `pulumi:"region"`
+	Region string `pulumi:"region"`
 }
 
 // A collection of values returned by getHostedZoneId.

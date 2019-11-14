@@ -11,41 +11,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/autoscaling_group.html.markdown.
 func LookupGroup(ctx *pulumi.Context, args *GetGroupArgs) (*GetGroupResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:autoscaling/getGroup:getGroup", inputs)
+var rv GetGroupResult
+	err := ctx.Invoke("aws:autoscaling/getGroup:getGroup", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetGroupResult{
-		Arn: outputs["arn"],
-		AvailabilityZones: outputs["availabilityZones"],
-		DefaultCooldown: outputs["defaultCooldown"],
-		DesiredCapacity: outputs["desiredCapacity"],
-		HealthCheckGracePeriod: outputs["healthCheckGracePeriod"],
-		HealthCheckType: outputs["healthCheckType"],
-		LaunchConfiguration: outputs["launchConfiguration"],
-		LoadBalancers: outputs["loadBalancers"],
-		MaxSize: outputs["maxSize"],
-		MinSize: outputs["minSize"],
-		Name: outputs["name"],
-		NewInstancesProtectedFromScaleIn: outputs["newInstancesProtectedFromScaleIn"],
-		PlacementGroup: outputs["placementGroup"],
-		ServiceLinkedRoleArn: outputs["serviceLinkedRoleArn"],
-		Status: outputs["status"],
-		TargetGroupArns: outputs["targetGroupArns"],
-		TerminationPolicies: outputs["terminationPolicies"],
-		VpcZoneIdentifier: outputs["vpcZoneIdentifier"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getGroup.
 type GetGroupArgs struct {
 	// Specify the exact name of the desired autoscaling group.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getGroup.

@@ -14,31 +14,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/s3_bucket.html.markdown.
 func LookupBucket(ctx *pulumi.Context, args *GetBucketArgs) (*GetBucketResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["bucket"] = args.Bucket
-	}
-	outputs, err := ctx.Invoke("aws:s3/getBucket:getBucket", inputs)
+var rv GetBucketResult
+	err := ctx.Invoke("aws:s3/getBucket:getBucket", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetBucketResult{
-		Arn: outputs["arn"],
-		Bucket: outputs["bucket"],
-		BucketDomainName: outputs["bucketDomainName"],
-		BucketRegionalDomainName: outputs["bucketRegionalDomainName"],
-		HostedZoneId: outputs["hostedZoneId"],
-		Region: outputs["region"],
-		WebsiteDomain: outputs["websiteDomain"],
-		WebsiteEndpoint: outputs["websiteEndpoint"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getBucket.
 type GetBucketArgs struct {
 	// The name of the bucket
-	Bucket pulumi.StringInput `pulumi:"bucket"`
+	Bucket string `pulumi:"bucket"`
 }
 
 // A collection of values returned by getBucket.

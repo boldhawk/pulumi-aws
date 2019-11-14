@@ -75,7 +75,6 @@ func NewRecord(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'ZoneId'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["aliases"] = args.Aliases
 		inputs["allowOverwrite"] = args.AllowOverwrite

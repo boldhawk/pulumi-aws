@@ -13,25 +13,18 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/sns_topic.html.markdown.
 func LookupTopic(ctx *pulumi.Context, args *GetTopicArgs) (*GetTopicResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["name"] = args.Name
-	}
-	outputs, err := ctx.Invoke("aws:sns/getTopic:getTopic", inputs)
+var rv GetTopicResult
+	err := ctx.Invoke("aws:sns/getTopic:getTopic", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetTopicResult{
-		Arn: outputs["arn"],
-		Name: outputs["name"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getTopic.
 type GetTopicArgs struct {
 	// The friendly name of the topic to match.
-	Name pulumi.StringInput `pulumi:"name"`
+	Name string `pulumi:"name"`
 }
 
 // A collection of values returned by getTopic.

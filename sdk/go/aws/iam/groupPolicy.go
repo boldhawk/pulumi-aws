@@ -43,7 +43,6 @@ func NewGroupPolicy(ctx *pulumi.Context,
 		return nil, errors.New("missing required argument 'Policy'")
 	}
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["group"] = args.Group
 		inputs["name"] = args.Name

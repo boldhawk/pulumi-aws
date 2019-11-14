@@ -11,38 +11,20 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/acmpca_certificate_authority.html.markdown.
 func LookupCertificateAuthority(ctx *pulumi.Context, args *GetCertificateAuthorityArgs) (*GetCertificateAuthorityResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["arn"] = args.Arn
-		inputs["revocationConfigurations"] = args.RevocationConfigurations
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:acmpca/getCertificateAuthority:getCertificateAuthority", inputs)
+var rv GetCertificateAuthorityResult
+	err := ctx.Invoke("aws:acmpca/getCertificateAuthority:getCertificateAuthority", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetCertificateAuthorityResult{
-		Arn: outputs["arn"],
-		Certificate: outputs["certificate"],
-		CertificateChain: outputs["certificateChain"],
-		CertificateSigningRequest: outputs["certificateSigningRequest"],
-		NotAfter: outputs["notAfter"],
-		NotBefore: outputs["notBefore"],
-		RevocationConfigurations: outputs["revocationConfigurations"],
-		Serial: outputs["serial"],
-		Status: outputs["status"],
-		Tags: outputs["tags"],
-		Type: outputs["type"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getCertificateAuthority.
 type GetCertificateAuthorityArgs struct {
 	// Amazon Resource Name (ARN) of the certificate authority.
-	Arn pulumi.StringInput `pulumi:"arn"`
-	RevocationConfigurations pulumi.ArrayInput `pulumi:"revocationConfigurations"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	Arn string `pulumi:"arn"`
+	RevocationConfigurations []interface{} `pulumi:"revocationConfigurations"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getCertificateAuthority.

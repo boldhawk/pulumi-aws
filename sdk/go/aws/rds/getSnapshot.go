@@ -14,67 +14,34 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/db_snapshot.html.markdown.
 func LookupSnapshot(ctx *pulumi.Context, args *GetSnapshotArgs) (*GetSnapshotResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["dbInstanceIdentifier"] = args.DbInstanceIdentifier
-		inputs["dbSnapshotIdentifier"] = args.DbSnapshotIdentifier
-		inputs["includePublic"] = args.IncludePublic
-		inputs["includeShared"] = args.IncludeShared
-		inputs["mostRecent"] = args.MostRecent
-		inputs["snapshotType"] = args.SnapshotType
-	}
-	outputs, err := ctx.Invoke("aws:rds/getSnapshot:getSnapshot", inputs)
+var rv GetSnapshotResult
+	err := ctx.Invoke("aws:rds/getSnapshot:getSnapshot", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetSnapshotResult{
-		AllocatedStorage: outputs["allocatedStorage"],
-		AvailabilityZone: outputs["availabilityZone"],
-		DbInstanceIdentifier: outputs["dbInstanceIdentifier"],
-		DbSnapshotArn: outputs["dbSnapshotArn"],
-		DbSnapshotIdentifier: outputs["dbSnapshotIdentifier"],
-		Encrypted: outputs["encrypted"],
-		Engine: outputs["engine"],
-		EngineVersion: outputs["engineVersion"],
-		IncludePublic: outputs["includePublic"],
-		IncludeShared: outputs["includeShared"],
-		Iops: outputs["iops"],
-		KmsKeyId: outputs["kmsKeyId"],
-		LicenseModel: outputs["licenseModel"],
-		MostRecent: outputs["mostRecent"],
-		OptionGroupName: outputs["optionGroupName"],
-		Port: outputs["port"],
-		SnapshotCreateTime: outputs["snapshotCreateTime"],
-		SnapshotType: outputs["snapshotType"],
-		SourceDbSnapshotIdentifier: outputs["sourceDbSnapshotIdentifier"],
-		SourceRegion: outputs["sourceRegion"],
-		Status: outputs["status"],
-		StorageType: outputs["storageType"],
-		VpcId: outputs["vpcId"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getSnapshot.
 type GetSnapshotArgs struct {
 	// Returns the list of snapshots created by the specific db_instance
-	DbInstanceIdentifier pulumi.StringInput `pulumi:"dbInstanceIdentifier"`
+	DbInstanceIdentifier string `pulumi:"dbInstanceIdentifier"`
 	// Returns information on a specific snapshot_id.
-	DbSnapshotIdentifier pulumi.StringInput `pulumi:"dbSnapshotIdentifier"`
+	DbSnapshotIdentifier string `pulumi:"dbSnapshotIdentifier"`
 	// Set this value to true to include manual DB snapshots that are public and can be
 	// copied or restored by any AWS account, otherwise set this value to false. The default is `false`.
-	IncludePublic pulumi.BoolInput `pulumi:"includePublic"`
+	IncludePublic bool `pulumi:"includePublic"`
 	// Set this value to true to include shared manual DB snapshots from other
 	// AWS accounts that this AWS account has been given permission to copy or restore, otherwise set this value to false.
 	// The default is `false`.
-	IncludeShared pulumi.BoolInput `pulumi:"includeShared"`
+	IncludeShared bool `pulumi:"includeShared"`
 	// If more than one result is returned, use the most
 	// recent Snapshot.
-	MostRecent pulumi.BoolInput `pulumi:"mostRecent"`
+	MostRecent bool `pulumi:"mostRecent"`
 	// The type of snapshots to be returned. If you don't specify a SnapshotType
 	// value, then both automated and manual snapshots are returned. Shared and public DB snapshots are not
 	// included in the returned results by default. Possible values are, `automated`, `manual`, `shared` and `public`.
-	SnapshotType pulumi.StringInput `pulumi:"snapshotType"`
+	SnapshotType string `pulumi:"snapshotType"`
 }
 
 // A collection of values returned by getSnapshot.

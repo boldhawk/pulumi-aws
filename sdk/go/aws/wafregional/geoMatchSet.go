@@ -28,7 +28,6 @@ type GeoMatchSet struct {
 func NewGeoMatchSet(ctx *pulumi.Context,
 	name string, args *GeoMatchSetArgs, opts ...pulumi.ResourceOpt) (*GeoMatchSet, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["geoMatchConstraints"] = args.GeoMatchConstraints
 		inputs["name"] = args.Name

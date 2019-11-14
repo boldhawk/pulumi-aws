@@ -12,40 +12,21 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/vpc_endpoint_service.html.markdown.
 func LookupVpcEndpointService(ctx *pulumi.Context, args *GetVpcEndpointServiceArgs) (*GetVpcEndpointServiceResult, error) {
-	inputs := make(map[string]interface{})
-	if args != nil {
-		inputs["service"] = args.Service
-		inputs["serviceName"] = args.ServiceName
-		inputs["tags"] = args.Tags
-	}
-	outputs, err := ctx.Invoke("aws:ec2/getVpcEndpointService:getVpcEndpointService", inputs)
+var rv GetVpcEndpointServiceResult
+	err := ctx.Invoke("aws:ec2/getVpcEndpointService:getVpcEndpointService", args, &rv)
 	if err != nil {
 		return nil, err
 	}
-	return &GetVpcEndpointServiceResult{
-		AcceptanceRequired: outputs["acceptanceRequired"],
-		AvailabilityZones: outputs["availabilityZones"],
-		BaseEndpointDnsNames: outputs["baseEndpointDnsNames"],
-		ManagesVpcEndpoints: outputs["managesVpcEndpoints"],
-		Owner: outputs["owner"],
-		PrivateDnsName: outputs["privateDnsName"],
-		Service: outputs["service"],
-		ServiceId: outputs["serviceId"],
-		ServiceName: outputs["serviceName"],
-		ServiceType: outputs["serviceType"],
-		Tags: outputs["tags"],
-		VpcEndpointPolicySupported: outputs["vpcEndpointPolicySupported"],
-		Id: outputs["id"],
-	}, nil
+	return &rv, nil
 }
 
 // A collection of arguments for invoking getVpcEndpointService.
 type GetVpcEndpointServiceArgs struct {
 	// The common name of an AWS service (e.g. `s3`).
-	Service pulumi.StringInput `pulumi:"service"`
+	Service string `pulumi:"service"`
 	// The service name that can be specified when creating a VPC endpoint.
-	ServiceName pulumi.StringInput `pulumi:"serviceName"`
-	Tags pulumi.MapInput `pulumi:"tags"`
+	ServiceName string `pulumi:"serviceName"`
+	Tags map[string]interface{} `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpcEndpointService.

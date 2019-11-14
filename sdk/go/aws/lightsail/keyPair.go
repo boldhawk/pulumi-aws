@@ -59,7 +59,6 @@ type KeyPair struct {
 func NewKeyPair(ctx *pulumi.Context,
 	name string, args *KeyPairArgs, opts ...pulumi.ResourceOpt) (*KeyPair, error) {
 	inputs := map[string]pulumi.Input{}
-	inputs["name"] = pulumi.Any()
 	if args != nil {
 		inputs["name"] = args.Name
 		inputs["namePrefix"] = args.NamePrefix
