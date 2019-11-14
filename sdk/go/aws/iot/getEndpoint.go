@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iot_endpoint.html.markdown.
 func LookupEndpoint(ctx *pulumi.Context, args *GetEndpointArgs) (*GetEndpointResult, error) {
-var rv GetEndpointResult
+	var rv GetEndpointResult
 	err := ctx.Invoke("aws:iot/getEndpoint:getEndpoint", args, &rv)
 	if err != nil {
 		return nil, err

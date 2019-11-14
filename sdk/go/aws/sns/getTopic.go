@@ -13,7 +13,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/sns_topic.html.markdown.
 func LookupTopic(ctx *pulumi.Context, args *GetTopicArgs) (*GetTopicResult, error) {
-var rv GetTopicResult
+	var rv GetTopicResult
 	err := ctx.Invoke("aws:sns/getTopic:getTopic", args, &rv)
 	if err != nil {
 		return nil, err

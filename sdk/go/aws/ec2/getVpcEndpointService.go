@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/vpc_endpoint_service.html.markdown.
 func LookupVpcEndpointService(ctx *pulumi.Context, args *GetVpcEndpointServiceArgs) (*GetVpcEndpointServiceResult, error) {
-var rv GetVpcEndpointServiceResult
+	var rv GetVpcEndpointServiceResult
 	err := ctx.Invoke("aws:ec2/getVpcEndpointService:getVpcEndpointService", args, &rv)
 	if err != nil {
 		return nil, err
@@ -26,7 +26,7 @@ type GetVpcEndpointServiceArgs struct {
 	Service string `pulumi:"service"`
 	// The service name that can be specified when creating a VPC endpoint.
 	ServiceName string `pulumi:"serviceName"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpcEndpointService.
@@ -34,9 +34,9 @@ type GetVpcEndpointServiceResult struct {
 	// Whether or not VPC endpoint connection requests to the service must be accepted by the service owner - `true` or `false`.
 	AcceptanceRequired bool `pulumi:"acceptanceRequired"`
 	// The Availability Zones in which the service is available.
-	AvailabilityZones []interface{} `pulumi:"availabilityZones"`
+	AvailabilityZones []string `pulumi:"availabilityZones"`
 	// The DNS names for the service.
-	BaseEndpointDnsNames []interface{} `pulumi:"baseEndpointDnsNames"`
+	BaseEndpointDnsNames []string `pulumi:"baseEndpointDnsNames"`
 	// Whether or not the service manages its VPC endpoints - `true` or `false`.
 	ManagesVpcEndpoints bool `pulumi:"managesVpcEndpoints"`
 	// The AWS account ID of the service owner or `amazon`.
@@ -50,7 +50,7 @@ type GetVpcEndpointServiceResult struct {
 	// The service type, `Gateway` or `Interface`.
 	ServiceType string `pulumi:"serviceType"`
 	// A mapping of tags assigned to the resource.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// Whether or not the service supports endpoint policies - `true` or `false`.
 	VpcEndpointPolicySupported bool `pulumi:"vpcEndpointPolicySupported"`
 	// id is the provider-assigned unique ID for this managed resource.

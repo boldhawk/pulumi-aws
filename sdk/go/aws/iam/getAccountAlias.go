@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iam_account_alias.html.markdown.
 func LookupAccountAlias(ctx *pulumi.Context) (*GetAccountAliasResult, error) {
-var rv GetAccountAliasResult
+	var rv GetAccountAliasResult
 	err := ctx.Invoke("aws:iam/getAccountAlias:getAccountAlias", nil, &rv)
 	if err != nil {
 		return nil, err

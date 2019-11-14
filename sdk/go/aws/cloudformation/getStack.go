@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/cloudformation_stack.html.markdown.
 func LookupStack(ctx *pulumi.Context, args *GetStackArgs) (*GetStackResult, error) {
-var rv GetStackResult
+	var rv GetStackResult
 	err := ctx.Invoke("aws:cloudformation/getStack:getStack", args, &rv)
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ type GetStackArgs struct {
 // A collection of values returned by getStack.
 type GetStackResult struct {
 	// A list of capabilities
-	Capabilities []interface{} `pulumi:"capabilities"`
+	Capabilities []string `pulumi:"capabilities"`
 	// Description of the stack
 	Description string `pulumi:"description"`
 	// Whether the rollback of the stack is disabled when stack creation fails
@@ -38,13 +38,13 @@ type GetStackResult struct {
 	IamRoleArn string `pulumi:"iamRoleArn"`
 	Name string `pulumi:"name"`
 	// A list of SNS topic ARNs to publish stack related events
-	NotificationArns []interface{} `pulumi:"notificationArns"`
+	NotificationArns []string `pulumi:"notificationArns"`
 	// A map of outputs from the stack.
-	Outputs map[string]interface{} `pulumi:"outputs"`
+	Outputs map[string]string `pulumi:"outputs"`
 	// A map of parameters that specify input parameters for the stack.
-	Parameters map[string]interface{} `pulumi:"parameters"`
+	Parameters map[string]string `pulumi:"parameters"`
 	// A map of tags associated with this stack.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// Structure containing the template body.
 	TemplateBody string `pulumi:"templateBody"`
 	// The amount of time that can pass before the stack status becomes `CREATE_FAILED`

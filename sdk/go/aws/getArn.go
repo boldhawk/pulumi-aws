@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/arn.html.markdown.
 func LookupArn(ctx *pulumi.Context, args *GetArnArgs) (*GetArnResult, error) {
-var rv GetArnResult
+	var rv GetArnResult
 	err := ctx.Invoke("aws:index/getArn:getArn", args, &rv)
 	if err != nil {
 		return nil, err

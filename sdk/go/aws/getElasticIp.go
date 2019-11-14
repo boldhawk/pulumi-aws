@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/eip.html.markdown.
 func LookupElasticIp(ctx *pulumi.Context, args *GetElasticIpArgs) (*GetElasticIpResult, error) {
-var rv GetElasticIpResult
+	var rv GetElasticIpResult
 	err := ctx.Invoke("aws:index/getElasticIp:getElasticIp", args, &rv)
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ type GetElasticIpArgs struct {
 	// The public IP of the specific EIP to retrieve.
 	PublicIp string `pulumi:"publicIp"`
 	// A mapping of tags, each pair of which must exactly match a pair on the desired Elastic IP
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getElasticIp.
@@ -57,5 +57,5 @@ type GetElasticIpResult struct {
 	// The ID of an address pool.
 	PublicIpv4Pool string `pulumi:"publicIpv4Pool"`
 	// Key-value map of tags associated with Elastic IP.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }

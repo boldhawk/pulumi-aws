@@ -8,7 +8,7 @@ import (
 )
 
 func LookupNetworkInterfaces(ctx *pulumi.Context, args *GetNetworkInterfacesArgs) (*GetNetworkInterfacesResult, error) {
-var rv GetNetworkInterfacesResult
+	var rv GetNetworkInterfacesResult
 	err := ctx.Invoke("aws:ec2/getNetworkInterfaces:getNetworkInterfaces", args, &rv)
 	if err != nil {
 		return nil, err
@@ -22,15 +22,15 @@ type GetNetworkInterfacesArgs struct {
 	Filters []interface{} `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired network interfaces.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getNetworkInterfaces.
 type GetNetworkInterfacesResult struct {
 	Filters []interface{} `pulumi:"filters"`
 	// A list of all the network interface ids found. This data source will fail if none are found.
-	Ids []interface{} `pulumi:"ids"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Ids []string `pulumi:"ids"`
+	Tags map[string]string `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

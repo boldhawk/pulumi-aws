@@ -14,7 +14,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/kinesis_stream.html.markdown.
 func LookupStream(ctx *pulumi.Context, args *GetStreamArgs) (*GetStreamResult, error) {
-var rv GetStreamResult
+	var rv GetStreamResult
 	err := ctx.Invoke("aws:kinesis/getStream:getStream", args, &rv)
 	if err != nil {
 		return nil, err
@@ -33,21 +33,21 @@ type GetStreamResult struct {
 	// The Amazon Resource Name (ARN) of the Kinesis Stream (same as id).
 	Arn string `pulumi:"arn"`
 	// The list of shard ids in the CLOSED state. See [Shard State][2] for more.
-	ClosedShards []interface{} `pulumi:"closedShards"`
+	ClosedShards []string `pulumi:"closedShards"`
 	// The approximate UNIX timestamp that the stream was created.
 	CreationTimestamp int `pulumi:"creationTimestamp"`
 	// The name of the Kinesis Stream.
 	Name string `pulumi:"name"`
 	// The list of shard ids in the OPEN state. See [Shard State][2] for more.
-	OpenShards []interface{} `pulumi:"openShards"`
+	OpenShards []string `pulumi:"openShards"`
 	// Length of time (in hours) data records are accessible after they are added to the stream.
 	RetentionPeriod int `pulumi:"retentionPeriod"`
 	// A list of shard-level CloudWatch metrics which are enabled for the stream. See [Monitoring with CloudWatch][3] for more.
-	ShardLevelMetrics []interface{} `pulumi:"shardLevelMetrics"`
+	ShardLevelMetrics []string `pulumi:"shardLevelMetrics"`
 	// The current status of the stream. The stream status is one of CREATING, DELETING, ACTIVE, or UPDATING.
 	Status string `pulumi:"status"`
 	// A mapping of tags to assigned to the stream.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ec2_transit_gateway_dx_gateway_attachment.html.markdown.
 func LookupDirectConnectGatewayAttachment(ctx *pulumi.Context, args *GetDirectConnectGatewayAttachmentArgs) (*GetDirectConnectGatewayAttachmentResult, error) {
-var rv GetDirectConnectGatewayAttachmentResult
+	var rv GetDirectConnectGatewayAttachmentResult
 	err := ctx.Invoke("aws:ec2transitgateway/getDirectConnectGatewayAttachment:getDirectConnectGatewayAttachment", args, &rv)
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ var rv GetDirectConnectGatewayAttachmentResult
 type GetDirectConnectGatewayAttachmentArgs struct {
 	// Identifier of the Direct Connect Gateway.
 	DxGatewayId string `pulumi:"dxGatewayId"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// Identifier of the EC2 Transit Gateway.
 	TransitGatewayId string `pulumi:"transitGatewayId"`
 }
@@ -32,7 +32,7 @@ type GetDirectConnectGatewayAttachmentArgs struct {
 type GetDirectConnectGatewayAttachmentResult struct {
 	DxGatewayId string `pulumi:"dxGatewayId"`
 	// Key-value tags for the EC2 Transit Gateway Attachment
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	TransitGatewayId string `pulumi:"transitGatewayId"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`

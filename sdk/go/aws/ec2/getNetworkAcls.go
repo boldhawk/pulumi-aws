@@ -8,7 +8,7 @@ import (
 )
 
 func LookupNetworkAcls(ctx *pulumi.Context, args *GetNetworkAclsArgs) (*GetNetworkAclsResult, error) {
-var rv GetNetworkAclsResult
+	var rv GetNetworkAclsResult
 	err := ctx.Invoke("aws:ec2/getNetworkAcls:getNetworkAcls", args, &rv)
 	if err != nil {
 		return nil, err
@@ -22,7 +22,7 @@ type GetNetworkAclsArgs struct {
 	Filters []interface{} `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired network ACLs.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The VPC ID that you want to filter from.
 	VpcId string `pulumi:"vpcId"`
 }
@@ -31,8 +31,8 @@ type GetNetworkAclsArgs struct {
 type GetNetworkAclsResult struct {
 	Filters []interface{} `pulumi:"filters"`
 	// A list of all the network ACL ids found. This data source will fail if none are found.
-	Ids []interface{} `pulumi:"ids"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Ids []string `pulumi:"ids"`
+	Tags map[string]string `pulumi:"tags"`
 	VpcId string `pulumi:"vpcId"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`

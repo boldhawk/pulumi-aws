@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/dynamodb_table.html.markdown.
 func LookupTable(ctx *pulumi.Context, args *GetTableArgs) (*GetTableResult, error) {
-var rv GetTableResult
+	var rv GetTableResult
 	err := ctx.Invoke("aws:dynamodb/getTable:getTable", args, &rv)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ type GetTableArgs struct {
 	// The name of the DynamoDB table.
 	Name string `pulumi:"name"`
 	ServerSideEncryption interface{} `pulumi:"serverSideEncryption"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getTable.
@@ -44,7 +44,7 @@ type GetTableResult struct {
 	StreamEnabled bool `pulumi:"streamEnabled"`
 	StreamLabel string `pulumi:"streamLabel"`
 	StreamViewType string `pulumi:"streamViewType"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	Ttl interface{} `pulumi:"ttl"`
 	WriteCapacity int `pulumi:"writeCapacity"`
 	// id is the provider-assigned unique ID for this managed resource.

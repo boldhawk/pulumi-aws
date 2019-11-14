@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elasticsearch_domain.html.markdown.
 func LookupDomain(ctx *pulumi.Context, args *GetDomainArgs) (*GetDomainResult, error) {
-var rv GetDomainResult
+	var rv GetDomainResult
 	err := ctx.Invoke("aws:elasticsearch/getDomain:getDomain", args, &rv)
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ var rv GetDomainResult
 type GetDomainArgs struct {
 	// Name of the domain.
 	DomainName string `pulumi:"domainName"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getDomain.
@@ -31,7 +31,7 @@ type GetDomainResult struct {
 	// The policy document attached to the domain.
 	AccessPolicies string `pulumi:"accessPolicies"`
 	// Key-value string pairs to specify advanced configuration options.
-	AdvancedOptions map[string]interface{} `pulumi:"advancedOptions"`
+	AdvancedOptions map[string]string `pulumi:"advancedOptions"`
 	// The Amazon Resource Name (ARN) of the domain.
 	Arn string `pulumi:"arn"`
 	// Cluster configuration of the domain.
@@ -64,7 +64,7 @@ type GetDomainResult struct {
 	Processing string `pulumi:"processing"`
 	SnapshotOptions []interface{} `pulumi:"snapshotOptions"`
 	// The tags assigned to the domain.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// VPC Options for private Elasticsearch domains.
 	VpcOptions []interface{} `pulumi:"vpcOptions"`
 	// id is the provider-assigned unique ID for this managed resource.

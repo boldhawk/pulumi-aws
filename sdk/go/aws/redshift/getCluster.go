@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/redshift_cluster.html.markdown.
 func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult, error) {
-var rv GetClusterResult
+	var rv GetClusterResult
 	err := ctx.Invoke("aws:redshift/getCluster:getCluster", args, &rv)
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ var rv GetClusterResult
 type GetClusterArgs struct {
 	// The cluster identifier
 	ClusterIdentifier string `pulumi:"clusterIdentifier"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getCluster.
@@ -45,7 +45,7 @@ type GetClusterResult struct {
 	// The cluster revision number
 	ClusterRevisionNumber string `pulumi:"clusterRevisionNumber"`
 	// The security groups associated with the cluster
-	ClusterSecurityGroups []interface{} `pulumi:"clusterSecurityGroups"`
+	ClusterSecurityGroups []string `pulumi:"clusterSecurityGroups"`
 	// The name of a cluster subnet group to be associated with this cluster
 	ClusterSubnetGroupName string `pulumi:"clusterSubnetGroupName"`
 	// The cluster type
@@ -64,7 +64,7 @@ type GetClusterResult struct {
 	// Whether enhanced VPC routing is enabled
 	EnhancedVpcRouting bool `pulumi:"enhancedVpcRouting"`
 	// The IAM roles associated to the cluster
-	IamRoles []interface{} `pulumi:"iamRoles"`
+	IamRoles []string `pulumi:"iamRoles"`
 	// The KMS encryption key associated to the cluster
 	KmsKeyId string `pulumi:"kmsKeyId"`
 	// Username for the master DB user
@@ -82,11 +82,11 @@ type GetClusterResult struct {
 	// The folder inside the S3 bucket where the log files are stored
 	S3KeyPrefix string `pulumi:"s3KeyPrefix"`
 	// The tags associated to the cluster
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The VPC Id associated with the cluster
 	VpcId string `pulumi:"vpcId"`
 	// The VPC security group Ids associated with the cluster
-	VpcSecurityGroupIds []interface{} `pulumi:"vpcSecurityGroupIds"`
+	VpcSecurityGroupIds []string `pulumi:"vpcSecurityGroupIds"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

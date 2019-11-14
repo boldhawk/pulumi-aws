@@ -17,7 +17,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/alb_listener_legacy.html.markdown.
 func LookupListener(ctx *pulumi.Context, args *GetListenerArgs) (*GetListenerResult, error) {
-var rv GetListenerResult
+	var rv GetListenerResult
 	err := ctx.Invoke("aws:applicationloadbalancing/getListener:getListener", args, &rv)
 	if err != nil {
 		return nil, err

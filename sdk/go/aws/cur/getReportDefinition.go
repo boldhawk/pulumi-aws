@@ -15,7 +15,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/cur_report_definition.html.markdown.
 func LookupReportDefinition(ctx *pulumi.Context, args *GetReportDefinitionArgs) (*GetReportDefinitionResult, error) {
-var rv GetReportDefinitionResult
+	var rv GetReportDefinitionResult
 	err := ctx.Invoke("aws:cur/getReportDefinition:getReportDefinition", args, &rv)
 	if err != nil {
 		return nil, err
@@ -32,9 +32,9 @@ type GetReportDefinitionArgs struct {
 // A collection of values returned by getReportDefinition.
 type GetReportDefinitionResult struct {
 	// A list of additional artifacts.
-	AdditionalArtifacts []interface{} `pulumi:"additionalArtifacts"`
+	AdditionalArtifacts []string `pulumi:"additionalArtifacts"`
 	// A list of schema elements.
-	AdditionalSchemaElements []interface{} `pulumi:"additionalSchemaElements"`
+	AdditionalSchemaElements []string `pulumi:"additionalSchemaElements"`
 	// Preferred format for report.
 	Compression string `pulumi:"compression"`
 	// Preferred compression format for report.

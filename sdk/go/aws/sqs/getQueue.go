@@ -13,7 +13,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/sqs_queue.html.markdown.
 func LookupQueue(ctx *pulumi.Context, args *GetQueueArgs) (*GetQueueResult, error) {
-var rv GetQueueResult
+	var rv GetQueueResult
 	err := ctx.Invoke("aws:sqs/getQueue:getQueue", args, &rv)
 	if err != nil {
 		return nil, err

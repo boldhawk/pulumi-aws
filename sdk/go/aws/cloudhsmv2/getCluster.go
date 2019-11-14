@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/cloudhsm_v2_cluster.html.markdown.
 func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult, error) {
-var rv GetClusterResult
+	var rv GetClusterResult
 	err := ctx.Invoke("aws:cloudhsmv2/getCluster:getCluster", args, &rv)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ type GetClusterResult struct {
 	// The ID of the security group associated with the CloudHSM cluster.
 	SecurityGroupId string `pulumi:"securityGroupId"`
 	// The IDs of subnets in which cluster operates.
-	SubnetIds []interface{} `pulumi:"subnetIds"`
+	SubnetIds []string `pulumi:"subnetIds"`
 	// The id of the VPC that the CloudHSM cluster resides in.
 	VpcId string `pulumi:"vpcId"`
 	// id is the provider-assigned unique ID for this managed resource.

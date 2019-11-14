@@ -13,7 +13,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/kms_alias.html.markdown.
 func LookupAlias(ctx *pulumi.Context, args *GetAliasArgs) (*GetAliasResult, error) {
-var rv GetAliasResult
+	var rv GetAliasResult
 	err := ctx.Invoke("aws:kms/getAlias:getAlias", args, &rv)
 	if err != nil {
 		return nil, err

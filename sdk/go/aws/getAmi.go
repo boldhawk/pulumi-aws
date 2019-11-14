@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ami.html.markdown.
 func LookupAmi(ctx *pulumi.Context, args *GetAmiArgs) (*GetAmiResult, error) {
-var rv GetAmiResult
+	var rv GetAmiResult
 	err := ctx.Invoke("aws:index/getAmi:getAmi", args, &rv)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ var rv GetAmiResult
 type GetAmiArgs struct {
 	// Limit search to users with *explicit* launch permission on
 	// the image. Valid items are the numeric account ID or `self`.
-	ExecutableUsers []interface{} `pulumi:"executableUsers"`
+	ExecutableUsers []string `pulumi:"executableUsers"`
 	// One or more name/value pairs to filter off of. There are
 	// several valid keys, for a full reference, check out
 	// [describe-images in the AWS CLI reference][1].
@@ -39,8 +39,8 @@ type GetAmiArgs struct {
 	// options to narrow down the list AWS returns.
 	NameRegex string `pulumi:"nameRegex"`
 	// List of AMI owners to limit search. At least 1 value must be specified. Valid values: an AWS account ID, `self` (the current account), or an AWS owner alias (e.g. `amazon`, `aws-marketplace`, `microsoft`).
-	Owners []interface{} `pulumi:"owners"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Owners []string `pulumi:"owners"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getAmi.
@@ -68,7 +68,7 @@ type GetAmiResult struct {
 	// The description of the AMI that was provided during image
 	// creation.
 	Description string `pulumi:"description"`
-	ExecutableUsers []interface{} `pulumi:"executableUsers"`
+	ExecutableUsers []string `pulumi:"executableUsers"`
 	Filters []interface{} `pulumi:"filters"`
 	// The hypervisor type of the image.
 	Hypervisor string `pulumi:"hypervisor"`
@@ -90,7 +90,7 @@ type GetAmiResult struct {
 	NameRegex string `pulumi:"nameRegex"`
 	// The AWS account ID of the image owner.
 	OwnerId string `pulumi:"ownerId"`
-	Owners []interface{} `pulumi:"owners"`
+	Owners []string `pulumi:"owners"`
 	// The value is Windows for `Windows` AMIs; otherwise blank.
 	Platform string `pulumi:"platform"`
 	// Any product codes associated with the AMI.
@@ -117,11 +117,11 @@ type GetAmiResult struct {
 	// Describes a state change. Fields are `UNSET` if not available.
 	// * `state_reason.code` - The reason code for the state change.
 	// * `state_reason.message` - The message for the state change.
-	StateReason map[string]interface{} `pulumi:"stateReason"`
+	StateReason map[string]string `pulumi:"stateReason"`
 	// Any tags assigned to the image.
 	// * `tags.#.key` - The key name of the tag.
 	// * `tags.#.value` - The value of the tag.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The type of virtualization of the AMI (ie: `hvm` or
 	// `paravirtual`).
 	VirtualizationType string `pulumi:"virtualizationType"`

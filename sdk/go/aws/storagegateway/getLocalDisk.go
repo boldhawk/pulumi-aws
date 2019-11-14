@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/storagegateway_local_disk.html.markdown.
 func LookupLocalDisk(ctx *pulumi.Context, args *GetLocalDiskArgs) (*GetLocalDiskResult, error) {
-var rv GetLocalDiskResult
+	var rv GetLocalDiskResult
 	err := ctx.Invoke("aws:storagegateway/getLocalDisk:getLocalDisk", args, &rv)
 	if err != nil {
 		return nil, err

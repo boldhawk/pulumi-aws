@@ -14,7 +14,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/api_gateway_rest_api.html.markdown.
 func LookupRestApi(ctx *pulumi.Context, args *GetRestApiArgs) (*GetRestApiResult, error) {
-var rv GetRestApiResult
+	var rv GetRestApiResult
 	err := ctx.Invoke("aws:apigateway/getRestApi:getRestApi", args, &rv)
 	if err != nil {
 		return nil, err

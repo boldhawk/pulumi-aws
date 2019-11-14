@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iam_policy.html.markdown.
 func LookupPolicy(ctx *pulumi.Context, args *GetPolicyArgs) (*GetPolicyResult, error) {
-var rv GetPolicyResult
+	var rv GetPolicyResult
 	err := ctx.Invoke("aws:iam/getPolicy:getPolicy", args, &rv)
 	if err != nil {
 		return nil, err

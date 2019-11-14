@@ -17,7 +17,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/kms_ciphertext.html.markdown.
 func LookupCipherText(ctx *pulumi.Context, args *GetCipherTextArgs) (*GetCipherTextResult, error) {
-var rv GetCipherTextResult
+	var rv GetCipherTextResult
 	err := ctx.Invoke("aws:kms/getCipherText:getCipherText", args, &rv)
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ var rv GetCipherTextResult
 // A collection of arguments for invoking getCipherText.
 type GetCipherTextArgs struct {
 	// An optional mapping that makes up the encryption context.
-	Context map[string]interface{} `pulumi:"context"`
+	Context map[string]string `pulumi:"context"`
 	// Globally unique key ID for the customer master key.
 	KeyId string `pulumi:"keyId"`
 	// Data to be encrypted. Note that this may show up in logs, and it will be stored in the state file.
@@ -39,7 +39,7 @@ type GetCipherTextArgs struct {
 type GetCipherTextResult struct {
 	// Base64 encoded ciphertext
 	CiphertextBlob string `pulumi:"ciphertextBlob"`
-	Context map[string]interface{} `pulumi:"context"`
+	Context map[string]string `pulumi:"context"`
 	KeyId string `pulumi:"keyId"`
 	Plaintext string `pulumi:"plaintext"`
 	// id is the provider-assigned unique ID for this managed resource.

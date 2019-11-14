@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/lambda_layer_version.html.markdown.
 func LookupLayerVersion(ctx *pulumi.Context, args *GetLayerVersionArgs) (*GetLayerVersionResult, error) {
-var rv GetLayerVersionResult
+	var rv GetLayerVersionResult
 	err := ctx.Invoke("aws:lambda/getLayerVersion:getLayerVersion", args, &rv)
 	if err != nil {
 		return nil, err
@@ -35,7 +35,7 @@ type GetLayerVersionResult struct {
 	Arn string `pulumi:"arn"`
 	CompatibleRuntime string `pulumi:"compatibleRuntime"`
 	// A list of [Runtimes][1] the specific Lambda Layer version is compatible with.
-	CompatibleRuntimes []interface{} `pulumi:"compatibleRuntimes"`
+	CompatibleRuntimes []string `pulumi:"compatibleRuntimes"`
 	// The date this resource was created.
 	CreatedDate string `pulumi:"createdDate"`
 	// Description of the specific Lambda Layer version.

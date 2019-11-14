@@ -38,7 +38,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iam_policy_document.html.markdown.
 func LookupPolicyDocument(ctx *pulumi.Context, args *GetPolicyDocumentArgs) (*GetPolicyDocumentResult, error) {
-var rv GetPolicyDocumentResult
+	var rv GetPolicyDocumentResult
 	err := ctx.Invoke("aws:iam/getPolicyDocument:getPolicyDocument", args, &rv)
 	if err != nil {
 		return nil, err

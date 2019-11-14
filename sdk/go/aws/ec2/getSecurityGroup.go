@@ -15,7 +15,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/security_group.html.markdown.
 func LookupSecurityGroup(ctx *pulumi.Context, args *GetSecurityGroupArgs) (*GetSecurityGroupResult, error) {
-var rv GetSecurityGroupResult
+	var rv GetSecurityGroupResult
 	err := ctx.Invoke("aws:ec2/getSecurityGroup:getSecurityGroup", args, &rv)
 	if err != nil {
 		return nil, err
@@ -34,7 +34,7 @@ type GetSecurityGroupArgs struct {
 	Name string `pulumi:"name"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired security group.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The id of the VPC that the desired security group belongs to.
 	VpcId string `pulumi:"vpcId"`
 }
@@ -48,6 +48,6 @@ type GetSecurityGroupResult struct {
 	Filters []interface{} `pulumi:"filters"`
 	Id string `pulumi:"id"`
 	Name string `pulumi:"name"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	VpcId string `pulumi:"vpcId"`
 }

@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elastic_beanstalk_application.html.markdown.
 func LookupApplication(ctx *pulumi.Context, args *GetApplicationArgs) (*GetApplicationResult, error) {
-var rv GetApplicationResult
+	var rv GetApplicationResult
 	err := ctx.Invoke("aws:elasticbeanstalk/getApplication:getApplication", args, &rv)
 	if err != nil {
 		return nil, err

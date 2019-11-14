@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/secretsmanager_secret_version.html.markdown.
 func LookupSecretVersion(ctx *pulumi.Context, args *GetSecretVersionArgs) (*GetSecretVersionResult, error) {
-var rv GetSecretVersionResult
+	var rv GetSecretVersionResult
 	err := ctx.Invoke("aws:secretsmanager/getSecretVersion:getSecretVersion", args, &rv)
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ type GetSecretVersionResult struct {
 	// The unique identifier of this version of the secret.
 	VersionId string `pulumi:"versionId"`
 	VersionStage string `pulumi:"versionStage"`
-	VersionStages []interface{} `pulumi:"versionStages"`
+	VersionStages []string `pulumi:"versionStages"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

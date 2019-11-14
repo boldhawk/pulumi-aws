@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elastic_beanstalk_hosted_zone.html.markdown.
 func LookupHostedZone(ctx *pulumi.Context, args *GetHostedZoneArgs) (*GetHostedZoneResult, error) {
-var rv GetHostedZoneResult
+	var rv GetHostedZoneResult
 	err := ctx.Invoke("aws:elasticbeanstalk/getHostedZone:getHostedZone", args, &rv)
 	if err != nil {
 		return nil, err

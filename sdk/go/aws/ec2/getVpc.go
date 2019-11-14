@@ -15,7 +15,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/vpc.html.markdown.
 func LookupVpc(ctx *pulumi.Context, args *GetVpcArgs) (*GetVpcResult, error) {
-var rv GetVpcResult
+	var rv GetVpcResult
 	err := ctx.Invoke("aws:ec2/getVpc:getVpc", args, &rv)
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ type GetVpcArgs struct {
 	State string `pulumi:"state"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired VPC.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpc.
@@ -72,5 +72,5 @@ type GetVpcResult struct {
 	OwnerId string `pulumi:"ownerId"`
 	// The State of the association.
 	State string `pulumi:"state"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }

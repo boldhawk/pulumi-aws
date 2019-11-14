@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ecs_cluster.html.markdown.
 func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult, error) {
-var rv GetClusterResult
+	var rv GetClusterResult
 	err := ctx.Invoke("aws:ecs/getCluster:getCluster", args, &rv)
 	if err != nil {
 		return nil, err

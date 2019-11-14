@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elasticache_cluster.html.markdown.
 func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult, error) {
-var rv GetClusterResult
+	var rv GetClusterResult
 	err := ctx.Invoke("aws:elasticache/getCluster:getCluster", args, &rv)
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ var rv GetClusterResult
 type GetClusterArgs struct {
 	// Group identifier.
 	ClusterId string `pulumi:"clusterId"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getCluster.
@@ -61,9 +61,9 @@ type GetClusterResult struct {
 	// The replication group to which this cache cluster belongs.
 	ReplicationGroupId string `pulumi:"replicationGroupId"`
 	// List VPC security groups associated with the cache cluster.
-	SecurityGroupIds []interface{} `pulumi:"securityGroupIds"`
+	SecurityGroupIds []string `pulumi:"securityGroupIds"`
 	// List of security group names associated with this cache cluster.
-	SecurityGroupNames []interface{} `pulumi:"securityGroupNames"`
+	SecurityGroupNames []string `pulumi:"securityGroupNames"`
 	// The number of days for which ElastiCache will
 	// retain automatic cache cluster snapshots before deleting them.
 	SnapshotRetentionLimit int `pulumi:"snapshotRetentionLimit"`
@@ -73,7 +73,7 @@ type GetClusterResult struct {
 	// Name of the subnet group associated to the cache cluster.
 	SubnetGroupName string `pulumi:"subnetGroupName"`
 	// The tags assigned to the resource
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

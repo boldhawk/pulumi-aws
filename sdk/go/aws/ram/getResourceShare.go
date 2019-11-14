@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ram_resource_share.html.markdown.
 func LookupResourceShare(ctx *pulumi.Context, args *GetResourceShareArgs) (*GetResourceShareResult, error) {
-var rv GetResourceShareResult
+	var rv GetResourceShareResult
 	err := ctx.Invoke("aws:ram/getResourceShare:getResourceShare", args, &rv)
 	if err != nil {
 		return nil, err
@@ -41,5 +41,5 @@ type GetResourceShareResult struct {
 	// The Status of the RAM share.
 	Status string `pulumi:"status"`
 	// The Tags attached to the RAM share
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }

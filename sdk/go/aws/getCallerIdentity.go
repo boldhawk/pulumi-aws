@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/caller_identity.html.markdown.
 func LookupCallerIdentity(ctx *pulumi.Context) (*GetCallerIdentityResult, error) {
-var rv GetCallerIdentityResult
+	var rv GetCallerIdentityResult
 	err := ctx.Invoke("aws:index/getCallerIdentity:getCallerIdentity", nil, &rv)
 	if err != nil {
 		return nil, err

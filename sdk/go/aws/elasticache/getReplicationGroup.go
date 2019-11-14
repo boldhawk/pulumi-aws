@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elasticache_replication_group.html.markdown.
 func LookupReplicationGroup(ctx *pulumi.Context, args *GetReplicationGroupArgs) (*GetReplicationGroupResult, error) {
-var rv GetReplicationGroupResult
+	var rv GetReplicationGroupResult
 	err := ctx.Invoke("aws:elasticache/getReplicationGroup:getReplicationGroup", args, &rv)
 	if err != nil {
 		return nil, err
@@ -34,7 +34,7 @@ type GetReplicationGroupResult struct {
 	// The configuration endpoint address to allow host discovery.
 	ConfigurationEndpointAddress string `pulumi:"configurationEndpointAddress"`
 	// The identifiers of all the nodes that are part of this replication group.
-	MemberClusters []interface{} `pulumi:"memberClusters"`
+	MemberClusters []string `pulumi:"memberClusters"`
 	// The cluster node type.
 	NodeType string `pulumi:"nodeType"`
 	// The number of cache clusters that the replication group has.

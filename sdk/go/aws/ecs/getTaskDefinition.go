@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ecs_task_definition.html.markdown.
 func LookupTaskDefinition(ctx *pulumi.Context, args *GetTaskDefinitionArgs) (*GetTaskDefinitionResult, error) {
-var rv GetTaskDefinitionResult
+	var rv GetTaskDefinitionResult
 	err := ctx.Invoke("aws:ecs/getTaskDefinition:getTaskDefinition", args, &rv)
 	if err != nil {
 		return nil, err

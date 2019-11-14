@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/dx_gateway.html.markdown.
 func LookupGateway(ctx *pulumi.Context, args *GetGatewayArgs) (*GetGatewayResult, error) {
-var rv GetGatewayResult
+	var rv GetGatewayResult
 	err := ctx.Invoke("aws:directconnect/getGateway:getGateway", args, &rv)
 	if err != nil {
 		return nil, err

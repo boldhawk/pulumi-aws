@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ssm_parameter.html.markdown.
 func LookupParameter(ctx *pulumi.Context, args *GetParameterArgs) (*GetParameterResult, error) {
-var rv GetParameterResult
+	var rv GetParameterResult
 	err := ctx.Invoke("aws:ssm/getParameter:getParameter", args, &rv)
 	if err != nil {
 		return nil, err

@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/internet_gateway.html.markdown.
 func LookupInternetGateway(ctx *pulumi.Context, args *GetInternetGatewayArgs) (*GetInternetGatewayResult, error) {
-var rv GetInternetGatewayResult
+	var rv GetInternetGatewayResult
 	err := ctx.Invoke("aws:ec2/getInternetGateway:getInternetGateway", args, &rv)
 	if err != nil {
 		return nil, err
@@ -27,7 +27,7 @@ type GetInternetGatewayArgs struct {
 	InternetGatewayId string `pulumi:"internetGatewayId"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired Internet Gateway.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getInternetGateway.
@@ -37,7 +37,7 @@ type GetInternetGatewayResult struct {
 	InternetGatewayId string `pulumi:"internetGatewayId"`
 	// The ID of the AWS account that owns the internet gateway.
 	OwnerId string `pulumi:"ownerId"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

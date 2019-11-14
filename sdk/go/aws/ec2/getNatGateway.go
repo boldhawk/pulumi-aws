@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/nat_gateway.html.markdown.
 func LookupNatGateway(ctx *pulumi.Context, args *GetNatGatewayArgs) (*GetNatGatewayResult, error) {
-var rv GetNatGatewayResult
+	var rv GetNatGatewayResult
 	err := ctx.Invoke("aws:ec2/getNatGateway:getNatGateway", args, &rv)
 	if err != nil {
 		return nil, err
@@ -31,7 +31,7 @@ type GetNatGatewayArgs struct {
 	SubnetId string `pulumi:"subnetId"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired Nat Gateway.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The id of the VPC that the Nat Gateway resides in.
 	VpcId string `pulumi:"vpcId"`
 }
@@ -50,6 +50,6 @@ type GetNatGatewayResult struct {
 	PublicIp string `pulumi:"publicIp"`
 	State string `pulumi:"state"`
 	SubnetId string `pulumi:"subnetId"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	VpcId string `pulumi:"vpcId"`
 }

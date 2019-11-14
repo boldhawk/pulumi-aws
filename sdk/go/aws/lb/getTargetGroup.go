@@ -17,7 +17,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/lb_target_group.html.markdown.
 func LookupTargetGroup(ctx *pulumi.Context, args *GetTargetGroupArgs) (*GetTargetGroupResult, error) {
-var rv GetTargetGroupResult
+	var rv GetTargetGroupResult
 	err := ctx.Invoke("aws:lb/getTargetGroup:getTargetGroup", args, &rv)
 	if err != nil {
 		return nil, err
@@ -31,7 +31,7 @@ type GetTargetGroupArgs struct {
 	Arn string `pulumi:"arn"`
 	// The unique name of the target group.
 	Name string `pulumi:"name"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getTargetGroup.
@@ -47,7 +47,7 @@ type GetTargetGroupResult struct {
 	ProxyProtocolV2 bool `pulumi:"proxyProtocolV2"`
 	SlowStart int `pulumi:"slowStart"`
 	Stickiness interface{} `pulumi:"stickiness"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	TargetType string `pulumi:"targetType"`
 	VpcId string `pulumi:"vpcId"`
 	// id is the provider-assigned unique ID for this managed resource.

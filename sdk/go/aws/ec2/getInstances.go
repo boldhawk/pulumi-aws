@@ -9,7 +9,7 @@ import (
 
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/instances.html.markdown.
 func LookupInstances(ctx *pulumi.Context, args *GetInstancesArgs) (*GetInstancesResult, error) {
-var rv GetInstancesResult
+	var rv GetInstancesResult
 	err := ctx.Invoke("aws:ec2/getInstances:getInstances", args, &rv)
 	if err != nil {
 		return nil, err
@@ -24,23 +24,23 @@ type GetInstancesArgs struct {
 	// [describe-instances in the AWS CLI reference][1].
 	Filters []interface{} `pulumi:"filters"`
 	// A list of instance states that should be applicable to the desired instances. The permitted values are: `pending, running, shutting-down, stopped, stopping, terminated`. The default value is `running`.
-	InstanceStateNames []interface{} `pulumi:"instanceStateNames"`
+	InstanceStateNames []string `pulumi:"instanceStateNames"`
 	// A mapping of tags, each pair of which must
 	// exactly match a pair on desired instances.
-	InstanceTags map[string]interface{} `pulumi:"instanceTags"`
+	InstanceTags map[string]string `pulumi:"instanceTags"`
 }
 
 // A collection of values returned by getInstances.
 type GetInstancesResult struct {
 	Filters []interface{} `pulumi:"filters"`
 	// IDs of instances found through the filter
-	Ids []interface{} `pulumi:"ids"`
-	InstanceStateNames []interface{} `pulumi:"instanceStateNames"`
-	InstanceTags map[string]interface{} `pulumi:"instanceTags"`
+	Ids []string `pulumi:"ids"`
+	InstanceStateNames []string `pulumi:"instanceStateNames"`
+	InstanceTags map[string]string `pulumi:"instanceTags"`
 	// Private IP addresses of instances found through the filter
-	PrivateIps []interface{} `pulumi:"privateIps"`
+	PrivateIps []string `pulumi:"privateIps"`
 	// Public IP addresses of instances found through the filter
-	PublicIps []interface{} `pulumi:"publicIps"`
+	PublicIps []string `pulumi:"publicIps"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

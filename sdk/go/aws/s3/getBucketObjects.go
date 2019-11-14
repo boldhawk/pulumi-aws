@@ -9,7 +9,7 @@ import (
 
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/s3_bucket_objects.html.markdown.
 func LookupBucketObjects(ctx *pulumi.Context, args *GetBucketObjectsArgs) (*GetBucketObjectsResult, error) {
-var rv GetBucketObjectsResult
+	var rv GetBucketObjectsResult
 	err := ctx.Invoke("aws:s3/getBucketObjects:getBucketObjects", args, &rv)
 	if err != nil {
 		return nil, err
@@ -39,15 +39,15 @@ type GetBucketObjectsArgs struct {
 type GetBucketObjectsResult struct {
 	Bucket string `pulumi:"bucket"`
 	// List of any keys between `prefix` and the next occurrence of `delimiter` (i.e., similar to subdirectories of the `prefix` "directory"); the list is only returned when you specify `delimiter`
-	CommonPrefixes []interface{} `pulumi:"commonPrefixes"`
+	CommonPrefixes []string `pulumi:"commonPrefixes"`
 	Delimiter string `pulumi:"delimiter"`
 	EncodingType string `pulumi:"encodingType"`
 	FetchOwner bool `pulumi:"fetchOwner"`
 	// List of strings representing object keys
-	Keys []interface{} `pulumi:"keys"`
+	Keys []string `pulumi:"keys"`
 	MaxKeys int `pulumi:"maxKeys"`
 	// List of strings representing object owner IDs (see `fetchOwner` above)
-	Owners []interface{} `pulumi:"owners"`
+	Owners []string `pulumi:"owners"`
 	Prefix string `pulumi:"prefix"`
 	StartAfter string `pulumi:"startAfter"`
 	// id is the provider-assigned unique ID for this managed resource.

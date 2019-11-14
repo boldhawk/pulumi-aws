@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ecr_image.html.markdown.
 func LookupImage(ctx *pulumi.Context, args *GetImageArgs) (*GetImageResult, error) {
-var rv GetImageResult
+	var rv GetImageResult
 	err := ctx.Invoke("aws:ecr/getImage:getImage", args, &rv)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ type GetImageResult struct {
 	ImageSizeInBytes int `pulumi:"imageSizeInBytes"`
 	ImageTag string `pulumi:"imageTag"`
 	// The list of tags associated with this image.
-	ImageTags []interface{} `pulumi:"imageTags"`
+	ImageTags []string `pulumi:"imageTags"`
 	RegistryId string `pulumi:"registryId"`
 	RepositoryName string `pulumi:"repositoryName"`
 	// id is the provider-assigned unique ID for this managed resource.

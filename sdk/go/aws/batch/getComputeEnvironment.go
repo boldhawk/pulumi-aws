@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/batch_compute_environment.html.markdown.
 func LookupComputeEnvironment(ctx *pulumi.Context, args *GetComputeEnvironmentArgs) (*GetComputeEnvironmentResult, error) {
-var rv GetComputeEnvironmentResult
+	var rv GetComputeEnvironmentResult
 	err := ctx.Invoke("aws:batch/getComputeEnvironment:getComputeEnvironment", args, &rv)
 	if err != nil {
 		return nil, err

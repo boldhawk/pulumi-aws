@@ -13,7 +13,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/vpcs.html.markdown.
 func LookupVpcs(ctx *pulumi.Context, args *GetVpcsArgs) (*GetVpcsResult, error) {
-var rv GetVpcsResult
+	var rv GetVpcsResult
 	err := ctx.Invoke("aws:ec2/getVpcs:getVpcs", args, &rv)
 	if err != nil {
 		return nil, err
@@ -27,15 +27,15 @@ type GetVpcsArgs struct {
 	Filters []interface{} `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired vpcs.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpcs.
 type GetVpcsResult struct {
 	Filters []interface{} `pulumi:"filters"`
 	// A list of all the VPC Ids found. This data source will fail if none are found.
-	Ids []interface{} `pulumi:"ids"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Ids []string `pulumi:"ids"`
+	Tags map[string]string `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

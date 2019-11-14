@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/servicequotas_service.html.markdown.
 func LookupService(ctx *pulumi.Context, args *GetServiceArgs) (*GetServiceResult, error) {
-var rv GetServiceResult
+	var rv GetServiceResult
 	err := ctx.Invoke("aws:servicequotas/getService:getService", args, &rv)
 	if err != nil {
 		return nil, err

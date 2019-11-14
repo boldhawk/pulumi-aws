@@ -15,7 +15,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/subnet.html.markdown.
 func LookupSubnet(ctx *pulumi.Context, args *GetSubnetArgs) (*GetSubnetResult, error) {
-var rv GetSubnetResult
+	var rv GetSubnetResult
 	err := ctx.Invoke("aws:ec2/getSubnet:getSubnet", args, &rv)
 	if err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ type GetSubnetArgs struct {
 	State string `pulumi:"state"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired subnet.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The id of the VPC that the desired subnet belongs to.
 	VpcId string `pulumi:"vpcId"`
 }
@@ -67,6 +67,6 @@ type GetSubnetResult struct {
 	// The ID of the AWS account that owns the subnet.
 	OwnerId string `pulumi:"ownerId"`
 	State string `pulumi:"state"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	VpcId string `pulumi:"vpcId"`
 }

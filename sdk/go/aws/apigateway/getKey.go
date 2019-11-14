@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/api_gateway_api_key.html.markdown.
 func LookupKey(ctx *pulumi.Context, args *GetKeyArgs) (*GetKeyResult, error) {
-var rv GetKeyResult
+	var rv GetKeyResult
 	err := ctx.Invoke("aws:apigateway/getKey:getKey", args, &rv)
 	if err != nil {
 		return nil, err

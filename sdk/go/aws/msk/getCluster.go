@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/msk_cluster.html.markdown.
 func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult, error) {
-var rv GetClusterResult
+	var rv GetClusterResult
 	err := ctx.Invoke("aws:msk/getCluster:getCluster", args, &rv)
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ var rv GetClusterResult
 type GetClusterArgs struct {
 	// Name of the cluster.
 	ClusterName string `pulumi:"clusterName"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getCluster.
@@ -40,7 +40,7 @@ type GetClusterResult struct {
 	// Number of broker nodes in the cluster.
 	NumberOfBrokerNodes int `pulumi:"numberOfBrokerNodes"`
 	// Map of key-value pairs assigned to the cluster.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// A comma separated list of one or more IP:port pairs to use to connect to the Apache Zookeeper cluster.
 	ZookeeperConnectString string `pulumi:"zookeeperConnectString"`
 	// id is the provider-assigned unique ID for this managed resource.

@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/api_gateway_resource.html.markdown.
 func LookupResource(ctx *pulumi.Context, args *GetResourceArgs) (*GetResourceResult, error) {
-var rv GetResourceResult
+	var rv GetResourceResult
 	err := ctx.Invoke("aws:apigateway/getResource:getResource", args, &rv)
 	if err != nil {
 		return nil, err

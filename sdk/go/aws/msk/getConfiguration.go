@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/msk_configuration.html.markdown.
 func LookupConfiguration(ctx *pulumi.Context, args *GetConfigurationArgs) (*GetConfigurationResult, error) {
-var rv GetConfigurationResult
+	var rv GetConfigurationResult
 	err := ctx.Invoke("aws:msk/getConfiguration:getConfiguration", args, &rv)
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ type GetConfigurationResult struct {
 	// Description of the configuration.
 	Description string `pulumi:"description"`
 	// List of Apache Kafka versions which can use this configuration.
-	KafkaVersions []interface{} `pulumi:"kafkaVersions"`
+	KafkaVersions []string `pulumi:"kafkaVersions"`
 	// Latest revision of the configuration.
 	LatestRevision int `pulumi:"latestRevision"`
 	Name string `pulumi:"name"`

@@ -13,7 +13,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iam_role.html.markdown.
 func LookupRole(ctx *pulumi.Context, args *GetRoleArgs) (*GetRoleResult, error) {
-var rv GetRoleResult
+	var rv GetRoleResult
 	err := ctx.Invoke("aws:iam/getRole:getRole", args, &rv)
 	if err != nil {
 		return nil, err

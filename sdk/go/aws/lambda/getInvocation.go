@@ -13,7 +13,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/lambda_invocation.html.markdown.
 func LookupInvocation(ctx *pulumi.Context, args *GetInvocationArgs) (*GetInvocationResult, error) {
-var rv GetInvocationResult
+	var rv GetInvocationResult
 	err := ctx.Invoke("aws:lambda/getInvocation:getInvocation", args, &rv)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ type GetInvocationResult struct {
 	// String result of the lambda function invocation.
 	Result string `pulumi:"result"`
 	// This field is set only if result is a map of primitive types, where the map is string keys and string values.
-	ResultMap map[string]interface{} `pulumi:"resultMap"`
+	ResultMap map[string]string `pulumi:"resultMap"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

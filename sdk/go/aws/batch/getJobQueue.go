@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/batch_job_queue.html.markdown.
 func LookupJobQueue(ctx *pulumi.Context, args *GetJobQueueArgs) (*GetJobQueueResult, error) {
-var rv GetJobQueueResult
+	var rv GetJobQueueResult
 	err := ctx.Invoke("aws:batch/getJobQueue:getJobQueue", args, &rv)
 	if err != nil {
 		return nil, err

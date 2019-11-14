@@ -16,7 +16,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/eks_cluster_auth.html.markdown.
 func LookupClusterAuth(ctx *pulumi.Context, args *GetClusterAuthArgs) (*GetClusterAuthResult, error) {
-var rv GetClusterAuthResult
+	var rv GetClusterAuthResult
 	err := ctx.Invoke("aws:eks/getClusterAuth:getClusterAuth", args, &rv)
 	if err != nil {
 		return nil, err

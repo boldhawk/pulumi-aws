@@ -14,7 +14,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/s3_bucket_object.html.markdown.
 func LookupBucketObject(ctx *pulumi.Context, args *GetBucketObjectArgs) (*GetBucketObjectResult, error) {
-var rv GetBucketObjectResult
+	var rv GetBucketObjectResult
 	err := ctx.Invoke("aws:s3/getBucketObject:getBucketObject", args, &rv)
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ type GetBucketObjectArgs struct {
 	// The full path to the object inside the bucket
 	Key string `pulumi:"key"`
 	Range string `pulumi:"range"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// Specific version ID of the object returned (defaults to latest version)
 	VersionId string `pulumi:"versionId"`
 }
@@ -61,7 +61,7 @@ type GetBucketObjectResult struct {
 	// Last modified date of the object in RFC1123 format (e.g. `Mon, 02 Jan 2006 15:04:05 MST`)
 	LastModified string `pulumi:"lastModified"`
 	// A map of metadata stored with the object in S3
-	Metadata map[string]interface{} `pulumi:"metadata"`
+	Metadata map[string]string `pulumi:"metadata"`
 	// Indicates whether this object has an active [legal hold](https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock-overview.html#object-lock-legal-holds). This field is only returned if you have permission to view an object's legal hold status.
 	ObjectLockLegalHoldStatus string `pulumi:"objectLockLegalHoldStatus"`
 	// The object lock [retention mode](https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock-overview.html#object-lock-retention-modes) currently in place for this object.
@@ -76,7 +76,7 @@ type GetBucketObjectResult struct {
 	// [Storage class](http://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html) information of the object. Available for all objects except for `Standard` storage class objects.
 	StorageClass string `pulumi:"storageClass"`
 	// A mapping of tags assigned to the object.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The latest version ID of the object returned.
 	VersionId string `pulumi:"versionId"`
 	// If the bucket is configured as a website, redirects requests for this object to another object in the same bucket or to an external URL. Amazon S3 stores the value of this header in the object metadata.

@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/autoscaling_groups.html.markdown.
 func LookupAutoscalingGroups(ctx *pulumi.Context, args *GetAutoscalingGroupsArgs) (*GetAutoscalingGroupsResult, error) {
-var rv GetAutoscalingGroupsResult
+	var rv GetAutoscalingGroupsResult
 	err := ctx.Invoke("aws:index/getAutoscalingGroups:getAutoscalingGroups", args, &rv)
 	if err != nil {
 		return nil, err
@@ -29,10 +29,10 @@ type GetAutoscalingGroupsArgs struct {
 // A collection of values returned by getAutoscalingGroups.
 type GetAutoscalingGroupsResult struct {
 	// A list of the Autoscaling Groups Arns in the current region.
-	Arns []interface{} `pulumi:"arns"`
+	Arns []string `pulumi:"arns"`
 	Filters []interface{} `pulumi:"filters"`
 	// A list of the Autoscaling Groups in the current region.
-	Names []interface{} `pulumi:"names"`
+	Names []string `pulumi:"names"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

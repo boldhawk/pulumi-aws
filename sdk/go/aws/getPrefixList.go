@@ -17,7 +17,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/prefix_list.html.markdown.
 func LookupPrefixList(ctx *pulumi.Context, args *GetPrefixListArgs) (*GetPrefixListResult, error) {
-var rv GetPrefixListResult
+	var rv GetPrefixListResult
 	err := ctx.Invoke("aws:index/getPrefixList:getPrefixList", args, &rv)
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ type GetPrefixListArgs struct {
 type GetPrefixListResult struct {
 	// The list of CIDR blocks for the AWS service associated
 	// with the prefix list.
-	CidrBlocks []interface{} `pulumi:"cidrBlocks"`
+	CidrBlocks []string `pulumi:"cidrBlocks"`
 	// The name of the selected prefix list.
 	Name string `pulumi:"name"`
 	PrefixListId string `pulumi:"prefixListId"`

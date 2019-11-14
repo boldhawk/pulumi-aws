@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/pricing_product.html.markdown.
 func LookupProduct(ctx *pulumi.Context, args *GetProductArgs) (*GetProductResult, error) {
-var rv GetProductResult
+	var rv GetProductResult
 	err := ctx.Invoke("aws:pricing/getProduct:getProduct", args, &rv)
 	if err != nil {
 		return nil, err

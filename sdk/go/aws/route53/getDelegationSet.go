@@ -13,7 +13,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/route53_delegation_set.html.markdown.
 func LookupDelegationSet(ctx *pulumi.Context, args *GetDelegationSetArgs) (*GetDelegationSetResult, error) {
-var rv GetDelegationSetResult
+	var rv GetDelegationSetResult
 	err := ctx.Invoke("aws:route53/getDelegationSet:getDelegationSet", args, &rv)
 	if err != nil {
 		return nil, err
@@ -31,5 +31,5 @@ type GetDelegationSetArgs struct {
 type GetDelegationSetResult struct {
 	CallerReference string `pulumi:"callerReference"`
 	Id string `pulumi:"id"`
-	NameServers []interface{} `pulumi:"nameServers"`
+	NameServers []string `pulumi:"nameServers"`
 }

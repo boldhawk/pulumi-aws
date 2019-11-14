@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/security_groups.html.markdown.
 func LookupSecurityGroups(ctx *pulumi.Context, args *GetSecurityGroupsArgs) (*GetSecurityGroupsResult, error) {
-var rv GetSecurityGroupsResult
+	var rv GetSecurityGroupsResult
 	err := ctx.Invoke("aws:ec2/getSecurityGroups:getSecurityGroups", args, &rv)
 	if err != nil {
 		return nil, err
@@ -28,18 +28,18 @@ type GetSecurityGroupsArgs struct {
 	Filters []interface{} `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match for
 	// desired security groups.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getSecurityGroups.
 type GetSecurityGroupsResult struct {
 	Filters []interface{} `pulumi:"filters"`
 	// IDs of the matches security groups.
-	Ids []interface{} `pulumi:"ids"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Ids []string `pulumi:"ids"`
+	Tags map[string]string `pulumi:"tags"`
 	// The VPC IDs of the matched security groups. The data source's tag or filter *will span VPCs*
 	// unless the `vpc-id` filter is also used.
-	VpcIds []interface{} `pulumi:"vpcIds"`
+	VpcIds []string `pulumi:"vpcIds"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

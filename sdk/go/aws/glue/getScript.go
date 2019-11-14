@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/glue_script.html.markdown.
 func LookupScript(ctx *pulumi.Context, args *GetScriptArgs) (*GetScriptResult, error) {
-var rv GetScriptResult
+	var rv GetScriptResult
 	err := ctx.Invoke("aws:glue/getScript:getScript", args, &rv)
 	if err != nil {
 		return nil, err

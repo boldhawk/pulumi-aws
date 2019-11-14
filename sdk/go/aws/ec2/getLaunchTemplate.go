@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/launch_template.html.markdown.
 func LookupLaunchTemplate(ctx *pulumi.Context, args *GetLaunchTemplateArgs) (*GetLaunchTemplateResult, error) {
-var rv GetLaunchTemplateResult
+	var rv GetLaunchTemplateResult
 	err := ctx.Invoke("aws:ec2/getLaunchTemplate:getLaunchTemplate", args, &rv)
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ var rv GetLaunchTemplateResult
 type GetLaunchTemplateArgs struct {
 	// The name of the launch template.
 	Name string `pulumi:"name"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getLaunchTemplate.
@@ -78,15 +78,15 @@ type GetLaunchTemplateResult struct {
 	RamDiskId string `pulumi:"ramDiskId"`
 	// A list of security group names to associate with. If you are creating Instances in a VPC, use
 	// `vpcSecurityGroupIds` instead.
-	SecurityGroupNames []interface{} `pulumi:"securityGroupNames"`
+	SecurityGroupNames []string `pulumi:"securityGroupNames"`
 	// The tags to apply to the resources during launch.
 	TagSpecifications []interface{} `pulumi:"tagSpecifications"`
 	// (Optional) A mapping of tags to assign to the launch template.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The Base64-encoded user data to provide when launching the instance.
 	UserData string `pulumi:"userData"`
 	// A list of security group IDs to associate with.
-	VpcSecurityGroupIds []interface{} `pulumi:"vpcSecurityGroupIds"`
+	VpcSecurityGroupIds []string `pulumi:"vpcSecurityGroupIds"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

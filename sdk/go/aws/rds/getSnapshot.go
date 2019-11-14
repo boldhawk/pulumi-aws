@@ -14,7 +14,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/db_snapshot.html.markdown.
 func LookupSnapshot(ctx *pulumi.Context, args *GetSnapshotArgs) (*GetSnapshotResult, error) {
-var rv GetSnapshotResult
+	var rv GetSnapshotResult
 	err := ctx.Invoke("aws:rds/getSnapshot:getSnapshot", args, &rv)
 	if err != nil {
 		return nil, err

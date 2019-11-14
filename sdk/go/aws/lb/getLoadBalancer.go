@@ -17,7 +17,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/lb.html.markdown.
 func LookupLoadBalancer(ctx *pulumi.Context, args *GetLoadBalancerArgs) (*GetLoadBalancerResult, error) {
-var rv GetLoadBalancerResult
+	var rv GetLoadBalancerResult
 	err := ctx.Invoke("aws:lb/getLoadBalancer:getLoadBalancer", args, &rv)
 	if err != nil {
 		return nil, err
@@ -31,7 +31,7 @@ type GetLoadBalancerArgs struct {
 	Arn string `pulumi:"arn"`
 	// The unique name of the load balancer.
 	Name string `pulumi:"name"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getLoadBalancer.
@@ -45,10 +45,10 @@ type GetLoadBalancerResult struct {
 	Internal bool `pulumi:"internal"`
 	LoadBalancerType string `pulumi:"loadBalancerType"`
 	Name string `pulumi:"name"`
-	SecurityGroups []interface{} `pulumi:"securityGroups"`
+	SecurityGroups []string `pulumi:"securityGroups"`
 	SubnetMappings []interface{} `pulumi:"subnetMappings"`
-	Subnets []interface{} `pulumi:"subnets"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Subnets []string `pulumi:"subnets"`
+	Tags map[string]string `pulumi:"tags"`
 	VpcId string `pulumi:"vpcId"`
 	ZoneId string `pulumi:"zoneId"`
 	// id is the provider-assigned unique ID for this managed resource.

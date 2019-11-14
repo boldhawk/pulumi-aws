@@ -15,7 +15,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/route_table.html.markdown.
 func LookupRouteTable(ctx *pulumi.Context, args *GetRouteTableArgs) (*GetRouteTableResult, error) {
-var rv GetRouteTableResult
+	var rv GetRouteTableResult
 	err := ctx.Invoke("aws:ec2/getRouteTable:getRouteTable", args, &rv)
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ type GetRouteTableArgs struct {
 	SubnetId string `pulumi:"subnetId"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired Route Table.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The id of the VPC that the desired Route Table belongs to.
 	VpcId string `pulumi:"vpcId"`
 }
@@ -49,7 +49,7 @@ type GetRouteTableResult struct {
 	Routes []interface{} `pulumi:"routes"`
 	// The Subnet ID.
 	SubnetId string `pulumi:"subnetId"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	VpcId string `pulumi:"vpcId"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`

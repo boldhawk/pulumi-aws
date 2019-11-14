@@ -8,7 +8,7 @@ import (
 )
 
 func LookupCredentials(ctx *pulumi.Context, args *GetCredentialsArgs) (*GetCredentialsResult, error) {
-var rv GetCredentialsResult
+	var rv GetCredentialsResult
 	err := ctx.Invoke("aws:ecr/getCredentials:getCredentials", args, &rv)
 	if err != nil {
 		return nil, err

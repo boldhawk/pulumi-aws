@@ -13,7 +13,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iam_group.html.markdown.
 func LookupGroup(ctx *pulumi.Context, args *GetGroupArgs) (*GetGroupResult, error) {
-var rv GetGroupResult
+	var rv GetGroupResult
 	err := ctx.Invoke("aws:iam/getGroup:getGroup", args, &rv)
 	if err != nil {
 		return nil, err

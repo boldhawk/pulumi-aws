@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/eks_cluster.html.markdown.
 func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult, error) {
-var rv GetClusterResult
+	var rv GetClusterResult
 	err := ctx.Invoke("aws:eks/getCluster:getCluster", args, &rv)
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ var rv GetClusterResult
 type GetClusterArgs struct {
 	// The name of the cluster
 	Name string `pulumi:"name"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getCluster.
@@ -35,7 +35,7 @@ type GetClusterResult struct {
 	// The Unix epoch time stamp in seconds for when the cluster was created.
 	CreatedAt string `pulumi:"createdAt"`
 	// The enabled control plane logs.
-	EnabledClusterLogTypes []interface{} `pulumi:"enabledClusterLogTypes"`
+	EnabledClusterLogTypes []string `pulumi:"enabledClusterLogTypes"`
 	// The endpoint for your Kubernetes API server.
 	Endpoint string `pulumi:"endpoint"`
 	// Nested attribute containing identity provider information for your cluster. Only available on Kubernetes version 1.13 and 1.14 clusters created or upgraded on or after September 3, 2019. For an example using this information to enable IAM Roles for Service Accounts, see the [`eks.Cluster` resource documentation](https://www.terraform.io/docs/providers/aws/r/eks_cluster.html).
@@ -48,7 +48,7 @@ type GetClusterResult struct {
 	// The status of the EKS cluster. One of `CREATING`, `ACTIVE`, `DELETING`, `FAILED`.
 	Status string `pulumi:"status"`
 	// Key-value mapping of resource tags.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The Kubernetes server version for the cluster.
 	Version string `pulumi:"version"`
 	// Nested attribute containing VPC configuration for the cluster.

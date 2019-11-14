@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ebs_snapshot.html.markdown.
 func LookupSnapshot(ctx *pulumi.Context, args *GetSnapshotArgs) (*GetSnapshotResult, error) {
-var rv GetSnapshotResult
+	var rv GetSnapshotResult
 	err := ctx.Invoke("aws:ebs/getSnapshot:getSnapshot", args, &rv)
 	if err != nil {
 		return nil, err
@@ -28,12 +28,12 @@ type GetSnapshotArgs struct {
 	// If more than one result is returned, use the most recent snapshot.
 	MostRecent bool `pulumi:"mostRecent"`
 	// Returns the snapshots owned by the specified owner id. Multiple owners can be specified.
-	Owners []interface{} `pulumi:"owners"`
+	Owners []string `pulumi:"owners"`
 	// One or more AWS accounts IDs that can create volumes from the snapshot.
-	RestorableByUserIds []interface{} `pulumi:"restorableByUserIds"`
+	RestorableByUserIds []string `pulumi:"restorableByUserIds"`
 	// Returns information on a specific snapshot_id.
-	SnapshotIds []interface{} `pulumi:"snapshotIds"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	SnapshotIds []string `pulumi:"snapshotIds"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getSnapshot.
@@ -52,15 +52,15 @@ type GetSnapshotResult struct {
 	OwnerAlias string `pulumi:"ownerAlias"`
 	// The AWS account ID of the EBS snapshot owner.
 	OwnerId string `pulumi:"ownerId"`
-	Owners []interface{} `pulumi:"owners"`
-	RestorableByUserIds []interface{} `pulumi:"restorableByUserIds"`
+	Owners []string `pulumi:"owners"`
+	RestorableByUserIds []string `pulumi:"restorableByUserIds"`
 	// The snapshot ID (e.g. snap-59fcb34e).
 	SnapshotId string `pulumi:"snapshotId"`
-	SnapshotIds []interface{} `pulumi:"snapshotIds"`
+	SnapshotIds []string `pulumi:"snapshotIds"`
 	// The snapshot state.
 	State string `pulumi:"state"`
 	// A mapping of tags for the resource.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The volume ID (e.g. vol-59fcb34e).
 	VolumeId string `pulumi:"volumeId"`
 	// The size of the drive in GiBs.

@@ -14,7 +14,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/cloudformation_export.html.markdown.
 func LookupExport(ctx *pulumi.Context, args *GetExportArgs) (*GetExportResult, error) {
-var rv GetExportResult
+	var rv GetExportResult
 	err := ctx.Invoke("aws:cloudformation/getExport:getExport", args, &rv)
 	if err != nil {
 		return nil, err

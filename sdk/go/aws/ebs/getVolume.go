@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ebs_volume.html.markdown.
 func LookupVolume(ctx *pulumi.Context, args *GetVolumeArgs) (*GetVolumeResult, error) {
-var rv GetVolumeResult
+	var rv GetVolumeResult
 	err := ctx.Invoke("aws:ebs/getVolume:getVolume", args, &rv)
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ type GetVolumeArgs struct {
 	// If more than one result is returned, use the most
 	// recent Volume.
 	MostRecent bool `pulumi:"mostRecent"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getVolume.
@@ -51,7 +51,7 @@ type GetVolumeResult struct {
 	// The snapshotId the EBS volume is based off.
 	SnapshotId string `pulumi:"snapshotId"`
 	// A mapping of tags for the resource.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The volume ID (e.g. vol-59fcb34e).
 	VolumeId string `pulumi:"volumeId"`
 	// The type of EBS volume.

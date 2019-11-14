@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/vpn_gateway.html.markdown.
 func LookupVpnGateway(ctx *pulumi.Context, args *GetVpnGatewayArgs) (*GetVpnGatewayResult, error) {
-var rv GetVpnGatewayResult
+	var rv GetVpnGatewayResult
 	err := ctx.Invoke("aws:ec2/getVpnGateway:getVpnGateway", args, &rv)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ type GetVpnGatewayArgs struct {
 	State string `pulumi:"state"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired VPN Gateway.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpnGateway.
@@ -47,5 +47,5 @@ type GetVpnGatewayResult struct {
 	Filters []interface{} `pulumi:"filters"`
 	Id string `pulumi:"id"`
 	State string `pulumi:"state"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }

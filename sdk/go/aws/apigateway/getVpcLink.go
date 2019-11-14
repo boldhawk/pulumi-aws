@@ -14,7 +14,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/api_gateway_vpc_link.html.markdown.
 func LookupVpcLink(ctx *pulumi.Context, args *GetVpcLinkArgs) (*GetVpcLinkResult, error) {
-var rv GetVpcLinkResult
+	var rv GetVpcLinkResult
 	err := ctx.Invoke("aws:apigateway/getVpcLink:getVpcLink", args, &rv)
 	if err != nil {
 		return nil, err

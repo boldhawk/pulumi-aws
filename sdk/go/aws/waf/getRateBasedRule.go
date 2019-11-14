@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/waf_rate_based_rule.html.markdown.
 func LookupRateBasedRule(ctx *pulumi.Context, args *GetRateBasedRuleArgs) (*GetRateBasedRuleResult, error) {
-var rv GetRateBasedRuleResult
+	var rv GetRateBasedRuleResult
 	err := ctx.Invoke("aws:waf/getRateBasedRule:getRateBasedRule", args, &rv)
 	if err != nil {
 		return nil, err

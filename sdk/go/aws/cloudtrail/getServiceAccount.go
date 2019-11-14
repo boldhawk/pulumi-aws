@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/cloudtrail_service_account.html.markdown.
 func LookupServiceAccount(ctx *pulumi.Context, args *GetServiceAccountArgs) (*GetServiceAccountResult, error) {
-var rv GetServiceAccountResult
+	var rv GetServiceAccountResult
 	err := ctx.Invoke("aws:cloudtrail/getServiceAccount:getServiceAccount", args, &rv)
 	if err != nil {
 		return nil, err

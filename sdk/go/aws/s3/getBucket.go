@@ -14,7 +14,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/s3_bucket.html.markdown.
 func LookupBucket(ctx *pulumi.Context, args *GetBucketArgs) (*GetBucketResult, error) {
-var rv GetBucketResult
+	var rv GetBucketResult
 	err := ctx.Invoke("aws:s3/getBucket:getBucket", args, &rv)
 	if err != nil {
 		return nil, err

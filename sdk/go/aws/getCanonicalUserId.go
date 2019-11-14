@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/canonical_user_id.html.markdown.
 func LookupCanonicalUserId(ctx *pulumi.Context) (*GetCanonicalUserIdResult, error) {
-var rv GetCanonicalUserIdResult
+	var rv GetCanonicalUserIdResult
 	err := ctx.Invoke("aws:index/getCanonicalUserId:getCanonicalUserId", nil, &rv)
 	if err != nil {
 		return nil, err

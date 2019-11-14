@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/wafregional_rate_based_rule.html.markdown.
 func LookupRateBasedMod(ctx *pulumi.Context, args *GetRateBasedModArgs) (*GetRateBasedModResult, error) {
-var rv GetRateBasedModResult
+	var rv GetRateBasedModResult
 	err := ctx.Invoke("aws:wafregional/getRateBasedMod:getRateBasedMod", args, &rv)
 	if err != nil {
 		return nil, err

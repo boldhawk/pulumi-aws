@@ -13,7 +13,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iam_user.html.markdown.
 func LookupUser(ctx *pulumi.Context, args *GetUserArgs) (*GetUserResult, error) {
-var rv GetUserResult
+	var rv GetUserResult
 	err := ctx.Invoke("aws:iam/getUser:getUser", args, &rv)
 	if err != nil {
 		return nil, err

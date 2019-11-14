@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/transfer_server.html.markdown.
 func LookupServer(ctx *pulumi.Context, args *GetServerArgs) (*GetServerResult, error) {
-var rv GetServerResult
+	var rv GetServerResult
 	err := ctx.Invoke("aws:transfer/getServer:getServer", args, &rv)
 	if err != nil {
 		return nil, err

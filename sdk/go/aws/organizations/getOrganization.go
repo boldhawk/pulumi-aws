@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/organizations_organization.html.markdown.
 func LookupOrganization(ctx *pulumi.Context) (*GetOrganizationResult, error) {
-var rv GetOrganizationResult
+	var rv GetOrganizationResult
 	err := ctx.Invoke("aws:organizations/getOrganization:getOrganization", nil, &rv)
 	if err != nil {
 		return nil, err
@@ -26,9 +26,9 @@ type GetOrganizationResult struct {
 	// ARN of the root
 	Arn string `pulumi:"arn"`
 	// A list of AWS service principal names that have integration enabled with your organization. Organization must have `featureSet` set to `ALL`. For additional information, see the [AWS Organizations User Guide](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_integrate_services.html).
-	AwsServiceAccessPrincipals []interface{} `pulumi:"awsServiceAccessPrincipals"`
+	AwsServiceAccessPrincipals []string `pulumi:"awsServiceAccessPrincipals"`
 	// A list of Organizations policy types that are enabled in the Organization Root. Organization must have `featureSet` set to `ALL`. For additional information about valid policy types (e.g. `SERVICE_CONTROL_POLICY`), see the [AWS Organizations API Reference](https://docs.aws.amazon.com/organizations/latest/APIReference/API_EnablePolicyType.html).
-	EnabledPolicyTypes []interface{} `pulumi:"enabledPolicyTypes"`
+	EnabledPolicyTypes []string `pulumi:"enabledPolicyTypes"`
 	// The FeatureSet of the organization.
 	FeatureSet string `pulumi:"featureSet"`
 	// The Amazon Resource Name (ARN) of the account that is designated as the master account for the organization.

@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/db_instance.html.markdown.
 func LookupInstance(ctx *pulumi.Context, args *GetInstanceArgs) (*GetInstanceResult, error) {
-var rv GetInstanceResult
+	var rv GetInstanceResult
 	err := ctx.Invoke("aws:rds/getInstance:getInstance", args, &rv)
 	if err != nil {
 		return nil, err
@@ -51,13 +51,13 @@ type GetInstanceResult struct {
 	// Contains the name of the initial database of this instance that was provided at create time, if one was specified when the DB instance was created. This same name is returned for the life of the DB instance.
 	DbName string `pulumi:"dbName"`
 	// Provides the list of DB parameter groups applied to this DB instance.
-	DbParameterGroups []interface{} `pulumi:"dbParameterGroups"`
+	DbParameterGroups []string `pulumi:"dbParameterGroups"`
 	// Provides List of DB security groups associated to this DB instance.
-	DbSecurityGroups []interface{} `pulumi:"dbSecurityGroups"`
+	DbSecurityGroups []string `pulumi:"dbSecurityGroups"`
 	// Specifies the name of the subnet group associated with the DB instance.
 	DbSubnetGroup string `pulumi:"dbSubnetGroup"`
 	// List of log types to export to cloudwatch.
-	EnabledCloudwatchLogsExports []interface{} `pulumi:"enabledCloudwatchLogsExports"`
+	EnabledCloudwatchLogsExports []string `pulumi:"enabledCloudwatchLogsExports"`
 	// The connection endpoint in `address:port` format.
 	Endpoint string `pulumi:"endpoint"`
 	// Provides the name of the database engine to be used for this DB instance.
@@ -81,7 +81,7 @@ type GetInstanceResult struct {
 	// Specifies if the DB instance is a Multi-AZ deployment.
 	MultiAz bool `pulumi:"multiAz"`
 	// Provides the list of option group memberships for this DB instance.
-	OptionGroupMemberships []interface{} `pulumi:"optionGroupMemberships"`
+	OptionGroupMemberships []string `pulumi:"optionGroupMemberships"`
 	// The database port.
 	Port int `pulumi:"port"`
 	// Specifies the daily time range during which automated backups are created.
@@ -101,7 +101,7 @@ type GetInstanceResult struct {
 	// The time zone of the DB instance.
 	Timezone string `pulumi:"timezone"`
 	// Provides a list of VPC security group elements that the DB instance belongs to.
-	VpcSecurityGroups []interface{} `pulumi:"vpcSecurityGroups"`
+	VpcSecurityGroups []string `pulumi:"vpcSecurityGroups"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

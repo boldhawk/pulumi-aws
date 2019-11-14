@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elastic_beanstalk_solution_stack.html.markdown.
 func LookupSolutionStack(ctx *pulumi.Context, args *GetSolutionStackArgs) (*GetSolutionStackResult, error) {
-var rv GetSolutionStackResult
+	var rv GetSolutionStackResult
 	err := ctx.Invoke("aws:elasticbeanstalk/getSolutionStack:getSolutionStack", args, &rv)
 	if err != nil {
 		return nil, err

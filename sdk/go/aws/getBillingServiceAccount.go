@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/billing_service_account.html.markdown.
 func LookupBillingServiceAccount(ctx *pulumi.Context) (*GetBillingServiceAccountResult, error) {
-var rv GetBillingServiceAccountResult
+	var rv GetBillingServiceAccountResult
 	err := ctx.Invoke("aws:index/getBillingServiceAccount:getBillingServiceAccount", nil, &rv)
 	if err != nil {
 		return nil, err

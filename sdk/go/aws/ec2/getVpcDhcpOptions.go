@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/vpc_dhcp_options.html.markdown.
 func LookupVpcDhcpOptions(ctx *pulumi.Context, args *GetVpcDhcpOptionsArgs) (*GetVpcDhcpOptionsResult, error) {
-var rv GetVpcDhcpOptionsResult
+	var rv GetVpcDhcpOptionsResult
 	err := ctx.Invoke("aws:ec2/getVpcDhcpOptions:getVpcDhcpOptions", args, &rv)
 	if err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ type GetVpcDhcpOptionsArgs struct {
 	DhcpOptionsId string `pulumi:"dhcpOptionsId"`
 	// List of custom filters as described below.
 	Filters []interface{} `pulumi:"filters"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getVpcDhcpOptions.
@@ -35,18 +35,18 @@ type GetVpcDhcpOptionsResult struct {
 	// The suffix domain name to used when resolving non Fully Qualified Domain Names. e.g. the `search` value in the `/etc/resolv.conf` file.
 	DomainName string `pulumi:"domainName"`
 	// List of name servers.
-	DomainNameServers []interface{} `pulumi:"domainNameServers"`
+	DomainNameServers []string `pulumi:"domainNameServers"`
 	Filters []interface{} `pulumi:"filters"`
 	// List of NETBIOS name servers.
-	NetbiosNameServers []interface{} `pulumi:"netbiosNameServers"`
+	NetbiosNameServers []string `pulumi:"netbiosNameServers"`
 	// The NetBIOS node type (1, 2, 4, or 8). For more information about these node types, see [RFC 2132](http://www.ietf.org/rfc/rfc2132.txt).
 	NetbiosNodeType string `pulumi:"netbiosNodeType"`
 	// List of NTP servers.
-	NtpServers []interface{} `pulumi:"ntpServers"`
+	NtpServers []string `pulumi:"ntpServers"`
 	// The ID of the AWS account that owns the DHCP options set.
 	OwnerId string `pulumi:"ownerId"`
 	// A mapping of tags assigned to the resource.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

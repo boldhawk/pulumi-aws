@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/acmpca_certificate_authority.html.markdown.
 func LookupCertificateAuthority(ctx *pulumi.Context, args *GetCertificateAuthorityArgs) (*GetCertificateAuthorityResult, error) {
-var rv GetCertificateAuthorityResult
+	var rv GetCertificateAuthorityResult
 	err := ctx.Invoke("aws:acmpca/getCertificateAuthority:getCertificateAuthority", args, &rv)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ type GetCertificateAuthorityArgs struct {
 	// Amazon Resource Name (ARN) of the certificate authority.
 	Arn string `pulumi:"arn"`
 	RevocationConfigurations []interface{} `pulumi:"revocationConfigurations"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getCertificateAuthority.
@@ -52,7 +52,7 @@ type GetCertificateAuthorityResult struct {
 	// Status of the certificate authority.
 	Status string `pulumi:"status"`
 	// Specifies a key-value map of user-defined tags that are attached to the certificate authority.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The type of the certificate authority.
 	Type string `pulumi:"type"`
 	// id is the provider-assigned unique ID for this managed resource.

@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/autoscaling_group.html.markdown.
 func LookupGroup(ctx *pulumi.Context, args *GetGroupArgs) (*GetGroupResult, error) {
-var rv GetGroupResult
+	var rv GetGroupResult
 	err := ctx.Invoke("aws:autoscaling/getGroup:getGroup", args, &rv)
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ type GetGroupResult struct {
 	// The Amazon Resource Name (ARN) of the Auto Scaling group.
 	Arn string `pulumi:"arn"`
 	// One or more Availability Zones for the group.
-	AvailabilityZones []interface{} `pulumi:"availabilityZones"`
+	AvailabilityZones []string `pulumi:"availabilityZones"`
 	DefaultCooldown int `pulumi:"defaultCooldown"`
 	// The desired size of the group.
 	DesiredCapacity int `pulumi:"desiredCapacity"`
@@ -41,7 +41,7 @@ type GetGroupResult struct {
 	// The name of the associated launch configuration.
 	LaunchConfiguration string `pulumi:"launchConfiguration"`
 	// One or more load balancers associated with the group.
-	LoadBalancers []interface{} `pulumi:"loadBalancers"`
+	LoadBalancers []string `pulumi:"loadBalancers"`
 	// The maximum size of the group.
 	MaxSize int `pulumi:"maxSize"`
 	// The minimum size of the group.
@@ -56,9 +56,9 @@ type GetGroupResult struct {
 	// The current state of the group when DeleteAutoScalingGroup is in progress.
 	Status string `pulumi:"status"`
 	// The Amazon Resource Names (ARN) of the target groups for your load balancer.
-	TargetGroupArns []interface{} `pulumi:"targetGroupArns"`
+	TargetGroupArns []string `pulumi:"targetGroupArns"`
 	// The termination policies for the group.
-	TerminationPolicies []interface{} `pulumi:"terminationPolicies"`
+	TerminationPolicies []string `pulumi:"terminationPolicies"`
 	// VPC ID for the group.
 	VpcZoneIdentifier string `pulumi:"vpcZoneIdentifier"`
 	// id is the provider-assigned unique ID for this managed resource.

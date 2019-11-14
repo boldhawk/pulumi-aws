@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/route53_resolver_rules.html.markdown.
 func LookupResolverRules(ctx *pulumi.Context, args *GetResolverRulesArgs) (*GetResolverRulesResult, error) {
-var rv GetResolverRulesResult
+	var rv GetResolverRulesResult
 	err := ctx.Invoke("aws:route53/getResolverRules:getResolverRules", args, &rv)
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ type GetResolverRulesResult struct {
 	OwnerId string `pulumi:"ownerId"`
 	ResolverEndpointId string `pulumi:"resolverEndpointId"`
 	// The IDs of the matched resolver rules.
-	ResolverRuleIds []interface{} `pulumi:"resolverRuleIds"`
+	ResolverRuleIds []string `pulumi:"resolverRuleIds"`
 	RuleType string `pulumi:"ruleType"`
 	ShareStatus string `pulumi:"shareStatus"`
 	// id is the provider-assigned unique ID for this managed resource.

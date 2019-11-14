@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/instance.html.markdown.
 func LookupInstance(ctx *pulumi.Context, args *GetInstanceArgs) (*GetInstanceResult, error) {
-var rv GetInstanceResult
+	var rv GetInstanceResult
 	err := ctx.Invoke("aws:ec2/getInstance:getInstance", args, &rv)
 	if err != nil {
 		return nil, err
@@ -34,8 +34,8 @@ type GetInstanceArgs struct {
 	InstanceId string `pulumi:"instanceId"`
 	// A mapping of tags, each pair of which must
 	// exactly match a pair on the desired Instance.
-	InstanceTags map[string]interface{} `pulumi:"instanceTags"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	InstanceTags map[string]string `pulumi:"instanceTags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getInstance.
@@ -67,7 +67,7 @@ type GetInstanceResult struct {
 	InstanceId string `pulumi:"instanceId"`
 	// The state of the instance. One of: `pending`, `running`, `shutting-down`, `terminated`, `stopping`, `stopped`. See [Instance Lifecycle](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html) for more information.
 	InstanceState string `pulumi:"instanceState"`
-	InstanceTags map[string]interface{} `pulumi:"instanceTags"`
+	InstanceTags map[string]string `pulumi:"instanceTags"`
 	// The type of the Instance.
 	InstanceType string `pulumi:"instanceType"`
 	// The key name of the Instance.
@@ -97,13 +97,13 @@ type GetInstanceResult struct {
 	// The root block device mappings of the Instance
 	RootBlockDevices []interface{} `pulumi:"rootBlockDevices"`
 	// The associated security groups.
-	SecurityGroups []interface{} `pulumi:"securityGroups"`
+	SecurityGroups []string `pulumi:"securityGroups"`
 	// Whether the network interface performs source/destination checking (Boolean).
 	SourceDestCheck bool `pulumi:"sourceDestCheck"`
 	// The VPC subnet ID.
 	SubnetId string `pulumi:"subnetId"`
 	// A mapping of tags assigned to the Instance.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The tenancy of the instance: `dedicated`, `default`, `host`.
 	Tenancy string `pulumi:"tenancy"`
 	// SHA-1 hash of User Data supplied to the Instance.
@@ -111,7 +111,7 @@ type GetInstanceResult struct {
 	// Base64 encoded contents of User Data supplied to the Instance. Valid UTF-8 contents can be decoded with the [`base64decode` function](https://www.terraform.io/docs/configuration/functions/base64decode.html). This attribute is only exported if `getUserData` is true.
 	UserDataBase64 string `pulumi:"userDataBase64"`
 	// The associated security groups in a non-default VPC.
-	VpcSecurityGroupIds []interface{} `pulumi:"vpcSecurityGroupIds"`
+	VpcSecurityGroupIds []string `pulumi:"vpcSecurityGroupIds"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

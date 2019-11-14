@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/waf_ipset.html.markdown.
 func LookupIpset(ctx *pulumi.Context, args *GetIpsetArgs) (*GetIpsetResult, error) {
-var rv GetIpsetResult
+	var rv GetIpsetResult
 	err := ctx.Invoke("aws:waf/getIpset:getIpset", args, &rv)
 	if err != nil {
 		return nil, err

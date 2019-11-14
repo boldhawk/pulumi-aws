@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/route_tables.html.markdown.
 func LookupRouteTables(ctx *pulumi.Context, args *GetRouteTablesArgs) (*GetRouteTablesResult, error) {
-var rv GetRouteTablesResult
+	var rv GetRouteTablesResult
 	err := ctx.Invoke("aws:ec2/getRouteTables:getRouteTables", args, &rv)
 	if err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ type GetRouteTablesArgs struct {
 	Filters []interface{} `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired route tables.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The VPC ID that you want to filter from.
 	VpcId string `pulumi:"vpcId"`
 }
@@ -34,8 +34,8 @@ type GetRouteTablesArgs struct {
 type GetRouteTablesResult struct {
 	Filters []interface{} `pulumi:"filters"`
 	// A list of all the route table ids found. This data source will fail if none are found.
-	Ids []interface{} `pulumi:"ids"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Ids []string `pulumi:"ids"`
+	Tags map[string]string `pulumi:"tags"`
 	VpcId string `pulumi:"vpcId"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`

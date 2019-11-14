@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/lambda_function.html.markdown.
 func LookupFunction(ctx *pulumi.Context, args *GetFunctionArgs) (*GetFunctionResult, error) {
-var rv GetFunctionResult
+	var rv GetFunctionResult
 	err := ctx.Invoke("aws:lambda/getFunction:getFunction", args, &rv)
 	if err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ type GetFunctionArgs struct {
 	FunctionName string `pulumi:"functionName"`
 	// Alias name or version number of the lambda function. e.g. `$LATEST`, `my-alias`, or `1`
 	Qualifier string `pulumi:"qualifier"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getFunction.
@@ -48,7 +48,7 @@ type GetFunctionResult struct {
 	// The date this resource was last modified.
 	LastModified string `pulumi:"lastModified"`
 	// A list of Lambda Layer ARNs attached to your Lambda Function.
-	Layers []interface{} `pulumi:"layers"`
+	Layers []string `pulumi:"layers"`
 	// Amount of memory in MB your Lambda Function can use at runtime.
 	MemorySize int `pulumi:"memorySize"`
 	// Qualified (`:QUALIFIER` or `:VERSION` suffix) Amazon Resource Name (ARN) identifying your Lambda Function. See also `arn`.
@@ -64,7 +64,7 @@ type GetFunctionResult struct {
 	SourceCodeHash string `pulumi:"sourceCodeHash"`
 	// The size in bytes of the function .zip file.
 	SourceCodeSize int `pulumi:"sourceCodeSize"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The function execution time at which Lambda should terminate the function.
 	Timeout int `pulumi:"timeout"`
 	// Tracing settings of the function.

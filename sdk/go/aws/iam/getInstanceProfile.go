@@ -13,7 +13,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/iam_instance_profile.html.markdown.
 func LookupInstanceProfile(ctx *pulumi.Context, args *GetInstanceProfileArgs) (*GetInstanceProfileResult, error) {
-var rv GetInstanceProfileResult
+	var rv GetInstanceProfileResult
 	err := ctx.Invoke("aws:iam/getInstanceProfile:getInstanceProfile", args, &rv)
 	if err != nil {
 		return nil, err

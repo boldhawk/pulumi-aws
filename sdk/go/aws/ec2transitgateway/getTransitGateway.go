@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ec2_transit_gateway.html.markdown.
 func LookupTransitGateway(ctx *pulumi.Context, args *GetTransitGatewayArgs) (*GetTransitGatewayResult, error) {
-var rv GetTransitGatewayResult
+	var rv GetTransitGatewayResult
 	err := ctx.Invoke("aws:ec2transitgateway/getTransitGateway:getTransitGateway", args, &rv)
 	if err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ type GetTransitGatewayArgs struct {
 	Filters []interface{} `pulumi:"filters"`
 	// Identifier of the EC2 Transit Gateway.
 	Id string `pulumi:"id"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getTransitGateway.
@@ -54,7 +54,7 @@ type GetTransitGatewayResult struct {
 	// Identifier of the default propagation route table.
 	PropagationDefaultRouteTableId string `pulumi:"propagationDefaultRouteTableId"`
 	// Key-value tags for the EC2 Transit Gateway
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// Whether VPN Equal Cost Multipath Protocol support is enabled.
 	VpnEcmpSupport string `pulumi:"vpnEcmpSupport"`
 }

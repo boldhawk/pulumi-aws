@@ -13,7 +13,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/subnet_ids.html.markdown.
 func LookupSubnetIds(ctx *pulumi.Context, args *GetSubnetIdsArgs) (*GetSubnetIdsResult, error) {
-var rv GetSubnetIdsResult
+	var rv GetSubnetIdsResult
 	err := ctx.Invoke("aws:ec2/getSubnetIds:getSubnetIds", args, &rv)
 	if err != nil {
 		return nil, err
@@ -27,7 +27,7 @@ type GetSubnetIdsArgs struct {
 	Filters []interface{} `pulumi:"filters"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired subnets.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The VPC ID that you want to filter from.
 	VpcId string `pulumi:"vpcId"`
 }
@@ -36,8 +36,8 @@ type GetSubnetIdsArgs struct {
 type GetSubnetIdsResult struct {
 	Filters []interface{} `pulumi:"filters"`
 	// A set of all the subnet ids found. This data source will fail if none are found.
-	Ids []interface{} `pulumi:"ids"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Ids []string `pulumi:"ids"`
+	Tags map[string]string `pulumi:"tags"`
 	VpcId string `pulumi:"vpcId"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`

@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/network_interface.html.markdown.
 func LookupNetworkInterface(ctx *pulumi.Context, args *GetNetworkInterfaceArgs) (*GetNetworkInterfaceResult, error) {
-var rv GetNetworkInterfaceResult
+	var rv GetNetworkInterfaceResult
 	err := ctx.Invoke("aws:ec2/getNetworkInterface:getNetworkInterface", args, &rv)
 	if err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ type GetNetworkInterfaceArgs struct {
 	Filters []interface{} `pulumi:"filters"`
 	// The identifier for the network interface.
 	Id string `pulumi:"id"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getNetworkInterface.
@@ -42,7 +42,7 @@ type GetNetworkInterfaceResult struct {
 	// The type of interface.
 	InterfaceType string `pulumi:"interfaceType"`
 	// List of IPv6 addresses to assign to the ENI.
-	Ipv6Addresses []interface{} `pulumi:"ipv6Addresses"`
+	Ipv6Addresses []string `pulumi:"ipv6Addresses"`
 	// The MAC address.
 	MacAddress string `pulumi:"macAddress"`
 	// The AWS account ID of the owner of the network interface.
@@ -52,15 +52,15 @@ type GetNetworkInterfaceResult struct {
 	// The private IPv4 address of the network interface within the subnet.
 	PrivateIp string `pulumi:"privateIp"`
 	// The private IPv4 addresses associated with the network interface.
-	PrivateIps []interface{} `pulumi:"privateIps"`
+	PrivateIps []string `pulumi:"privateIps"`
 	// The ID of the entity that launched the instance on your behalf.
 	RequesterId string `pulumi:"requesterId"`
 	// The list of security groups for the network interface.
-	SecurityGroups []interface{} `pulumi:"securityGroups"`
+	SecurityGroups []string `pulumi:"securityGroups"`
 	// The ID of the subnet.
 	SubnetId string `pulumi:"subnetId"`
 	// Any tags assigned to the network interface.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The ID of the VPC.
 	VpcId string `pulumi:"vpcId"`
 }

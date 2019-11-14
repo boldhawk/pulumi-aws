@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/codecommit_repository.html.markdown.
 func LookupRepository(ctx *pulumi.Context, args *GetRepositoryArgs) (*GetRepositoryResult, error) {
-var rv GetRepositoryResult
+	var rv GetRepositoryResult
 	err := ctx.Invoke("aws:codecommit/getRepository:getRepository", args, &rv)
 	if err != nil {
 		return nil, err

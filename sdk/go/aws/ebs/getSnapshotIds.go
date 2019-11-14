@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ebs_snapshot_ids.html.markdown.
 func LookupSnapshotIds(ctx *pulumi.Context, args *GetSnapshotIdsArgs) (*GetSnapshotIdsResult, error) {
-var rv GetSnapshotIdsResult
+	var rv GetSnapshotIdsResult
 	err := ctx.Invoke("aws:ebs/getSnapshotIds:getSnapshotIds", args, &rv)
 	if err != nil {
 		return nil, err
@@ -27,17 +27,17 @@ type GetSnapshotIdsArgs struct {
 	// [describe-volumes in the AWS CLI reference][1].
 	Filters []interface{} `pulumi:"filters"`
 	// Returns the snapshots owned by the specified owner id. Multiple owners can be specified.
-	Owners []interface{} `pulumi:"owners"`
+	Owners []string `pulumi:"owners"`
 	// One or more AWS accounts IDs that can create volumes from the snapshot.
-	RestorableByUserIds []interface{} `pulumi:"restorableByUserIds"`
+	RestorableByUserIds []string `pulumi:"restorableByUserIds"`
 }
 
 // A collection of values returned by getSnapshotIds.
 type GetSnapshotIdsResult struct {
 	Filters []interface{} `pulumi:"filters"`
-	Ids []interface{} `pulumi:"ids"`
-	Owners []interface{} `pulumi:"owners"`
-	RestorableByUserIds []interface{} `pulumi:"restorableByUserIds"`
+	Ids []string `pulumi:"ids"`
+	Owners []string `pulumi:"owners"`
+	RestorableByUserIds []string `pulumi:"restorableByUserIds"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/kms_secrets.html.markdown.
 func LookupSecrets(ctx *pulumi.Context, args *GetSecretsArgs) (*GetSecretsResult, error) {
-var rv GetSecretsResult
+	var rv GetSecretsResult
 	err := ctx.Invoke("aws:kms/getSecrets:getSecrets", args, &rv)
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ type GetSecretsArgs struct {
 // A collection of values returned by getSecrets.
 type GetSecretsResult struct {
 	// Map containing each `secret` `name` as the key with its decrypted plaintext value
-	Plaintext map[string]interface{} `pulumi:"plaintext"`
+	Plaintext map[string]string `pulumi:"plaintext"`
 	Secrets []interface{} `pulumi:"secrets"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`

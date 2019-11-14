@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/mq_broker.html.markdown.
 func LookupBroker(ctx *pulumi.Context, args *GetBrokerArgs) (*GetBrokerResult, error) {
-var rv GetBrokerResult
+	var rv GetBrokerResult
 	err := ctx.Invoke("aws:mq/getBroker:getBroker", args, &rv)
 	if err != nil {
 		return nil, err
@@ -26,7 +26,7 @@ type GetBrokerArgs struct {
 	// The unique name of the mq broker.
 	BrokerName string `pulumi:"brokerName"`
 	Logs interface{} `pulumi:"logs"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getBroker.
@@ -45,9 +45,9 @@ type GetBrokerResult struct {
 	Logs interface{} `pulumi:"logs"`
 	MaintenanceWindowStartTime interface{} `pulumi:"maintenanceWindowStartTime"`
 	PubliclyAccessible bool `pulumi:"publiclyAccessible"`
-	SecurityGroups []interface{} `pulumi:"securityGroups"`
-	SubnetIds []interface{} `pulumi:"subnetIds"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	SecurityGroups []string `pulumi:"securityGroups"`
+	SubnetIds []string `pulumi:"subnetIds"`
+	Tags map[string]string `pulumi:"tags"`
 	Users []interface{} `pulumi:"users"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`

@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/kms_secret.html.markdown.
 func LookupSecret(ctx *pulumi.Context, args *GetSecretArgs) (*GetSecretResult, error) {
-var rv GetSecretResult
+	var rv GetSecretResult
 	err := ctx.Invoke("aws:kms/getSecret:getSecret", args, &rv)
 	if err != nil {
 		return nil, err

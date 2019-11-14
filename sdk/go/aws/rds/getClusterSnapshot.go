@@ -14,7 +14,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/db_cluster_snapshot.html.markdown.
 func LookupClusterSnapshot(ctx *pulumi.Context, args *GetClusterSnapshotArgs) (*GetClusterSnapshotResult, error) {
-var rv GetClusterSnapshotResult
+	var rv GetClusterSnapshotResult
 	err := ctx.Invoke("aws:rds/getClusterSnapshot:getClusterSnapshot", args, &rv)
 	if err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ type GetClusterSnapshotResult struct {
 	// Specifies the allocated storage size in gigabytes (GB).
 	AllocatedStorage int `pulumi:"allocatedStorage"`
 	// List of EC2 Availability Zones that instances in the DB cluster snapshot can be restored in.
-	AvailabilityZones []interface{} `pulumi:"availabilityZones"`
+	AvailabilityZones []string `pulumi:"availabilityZones"`
 	// Specifies the DB cluster identifier of the DB cluster that this DB cluster snapshot was created from.
 	DbClusterIdentifier string `pulumi:"dbClusterIdentifier"`
 	// The Amazon Resource Name (ARN) for the DB Cluster Snapshot.

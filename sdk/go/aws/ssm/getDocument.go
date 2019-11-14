@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ssm_document.html.markdown.
 func LookupDocument(ctx *pulumi.Context, args *GetDocumentArgs) (*GetDocumentResult, error) {
-var rv GetDocumentResult
+	var rv GetDocumentResult
 	err := ctx.Invoke("aws:ssm/getDocument:getDocument", args, &rv)
 	if err != nil {
 		return nil, err

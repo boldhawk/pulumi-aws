@@ -15,7 +15,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/route.html.markdown.
 func LookupRoute(ctx *pulumi.Context, args *GetRouteArgs) (*GetRouteResult, error) {
-var rv GetRouteResult
+	var rv GetRouteResult
 	err := ctx.Invoke("aws:ec2/getRoute:getRoute", args, &rv)
 	if err != nil {
 		return nil, err

@@ -21,7 +21,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/availability_zone.html.markdown.
 func LookupAvailabilityZone(ctx *pulumi.Context, args *GetAvailabilityZoneArgs) (*GetAvailabilityZoneResult, error) {
-var rv GetAvailabilityZoneResult
+	var rv GetAvailabilityZoneResult
 	err := ctx.Invoke("aws:index/getAvailabilityZone:getAvailabilityZone", args, &rv)
 	if err != nil {
 		return nil, err

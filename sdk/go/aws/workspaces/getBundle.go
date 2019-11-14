@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/workspaces_bundle.html.markdown.
 func LookupBundle(ctx *pulumi.Context, args *GetBundleArgs) (*GetBundleResult, error) {
-var rv GetBundleResult
+	var rv GetBundleResult
 	err := ctx.Invoke("aws:workspaces/getBundle:getBundle", args, &rv)
 	if err != nil {
 		return nil, err

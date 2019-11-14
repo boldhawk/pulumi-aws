@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elb_hosted_zone_id.html.markdown.
 func LookupHostedZoneId(ctx *pulumi.Context, args *GetHostedZoneIdArgs) (*GetHostedZoneIdResult, error) {
-var rv GetHostedZoneIdResult
+	var rv GetHostedZoneIdResult
 	err := ctx.Invoke("aws:elb/getHostedZoneId:getHostedZoneId", args, &rv)
 	if err != nil {
 		return nil, err

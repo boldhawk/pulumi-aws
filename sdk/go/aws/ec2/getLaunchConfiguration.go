@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/launch_configuration.html.markdown.
 func LookupLaunchConfiguration(ctx *pulumi.Context, args *GetLaunchConfigurationArgs) (*GetLaunchConfigurationResult, error) {
-var rv GetLaunchConfigurationResult
+	var rv GetLaunchConfigurationResult
 	err := ctx.Invoke("aws:ec2/getLaunchConfiguration:getLaunchConfiguration", args, &rv)
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ type GetLaunchConfigurationResult struct {
 	// The Root Block Device of the instance.
 	RootBlockDevices []interface{} `pulumi:"rootBlockDevices"`
 	// A list of associated Security Group IDS.
-	SecurityGroups []interface{} `pulumi:"securityGroups"`
+	SecurityGroups []string `pulumi:"securityGroups"`
 	// The Price to use for reserving Spot instances.
 	SpotPrice string `pulumi:"spotPrice"`
 	// The User Data of the instance.
@@ -60,7 +60,7 @@ type GetLaunchConfigurationResult struct {
 	// The ID of a ClassicLink-enabled VPC.
 	VpcClassicLinkId string `pulumi:"vpcClassicLinkId"`
 	// The IDs of one or more Security Groups for the specified ClassicLink-enabled VPC.
-	VpcClassicLinkSecurityGroups []interface{} `pulumi:"vpcClassicLinkSecurityGroups"`
+	VpcClassicLinkSecurityGroups []string `pulumi:"vpcClassicLinkSecurityGroups"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

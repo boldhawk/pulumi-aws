@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/secretsmanager_secret.html.markdown.
 func LookupSecret(ctx *pulumi.Context, args *GetSecretArgs) (*GetSecretResult, error) {
-var rv GetSecretResult
+	var rv GetSecretResult
 	err := ctx.Invoke("aws:secretsmanager/getSecret:getSecret", args, &rv)
 	if err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ type GetSecretResult struct {
 	// Rotation rules if rotation is enabled.
 	RotationRules []interface{} `pulumi:"rotationRules"`
 	// Tags of the secret.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/efs_mount_target.html.markdown.
 func LookupMountTarget(ctx *pulumi.Context, args *GetMountTargetArgs) (*GetMountTargetResult, error) {
-var rv GetMountTargetResult
+	var rv GetMountTargetResult
 	err := ctx.Invoke("aws:efs/getMountTarget:getMountTarget", args, &rv)
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ type GetMountTargetResult struct {
 	// The ID of the network interface that Amazon EFS created when it created the mount target.
 	NetworkInterfaceId string `pulumi:"networkInterfaceId"`
 	// List of VPC security group IDs attached to the mount target.
-	SecurityGroups []interface{} `pulumi:"securityGroups"`
+	SecurityGroups []string `pulumi:"securityGroups"`
 	// ID of the mount target's subnet.
 	SubnetId string `pulumi:"subnetId"`
 	// id is the provider-assigned unique ID for this managed resource.

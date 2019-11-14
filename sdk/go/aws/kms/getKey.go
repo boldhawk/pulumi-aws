@@ -14,7 +14,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/kms_key.html.markdown.
 func LookupKey(ctx *pulumi.Context, args *GetKeyArgs) (*GetKeyResult, error) {
-var rv GetKeyResult
+	var rv GetKeyResult
 	err := ctx.Invoke("aws:kms/getKey:getKey", args, &rv)
 	if err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ var rv GetKeyResult
 // A collection of arguments for invoking getKey.
 type GetKeyArgs struct {
 	// List of grant tokens
-	GrantTokens []interface{} `pulumi:"grantTokens"`
+	GrantTokens []string `pulumi:"grantTokens"`
 	// Key identifier which can be one of the following format:
 	// * Key ID. E.g: `1234abcd-12ab-34cd-56ef-1234567890ab`
 	// * Key ARN. E.g.: `arn:aws:kms:us-east-1:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab`
@@ -43,7 +43,7 @@ type GetKeyResult struct {
 	Description string `pulumi:"description"`
 	Enabled bool `pulumi:"enabled"`
 	ExpirationModel string `pulumi:"expirationModel"`
-	GrantTokens []interface{} `pulumi:"grantTokens"`
+	GrantTokens []string `pulumi:"grantTokens"`
 	KeyId string `pulumi:"keyId"`
 	KeyManager string `pulumi:"keyManager"`
 	KeyState string `pulumi:"keyState"`

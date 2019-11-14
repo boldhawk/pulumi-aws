@@ -17,7 +17,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/elb.html.markdown.
 func LookupLoadBalancer(ctx *pulumi.Context, args *GetLoadBalancerArgs) (*GetLoadBalancerResult, error) {
-var rv GetLoadBalancerResult
+	var rv GetLoadBalancerResult
 	err := ctx.Invoke("aws:elb/getLoadBalancer:getLoadBalancer", args, &rv)
 	if err != nil {
 		return nil, err
@@ -29,28 +29,28 @@ var rv GetLoadBalancerResult
 type GetLoadBalancerArgs struct {
 	// The unique name of the load balancer.
 	Name string `pulumi:"name"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getLoadBalancer.
 type GetLoadBalancerResult struct {
 	AccessLogs interface{} `pulumi:"accessLogs"`
-	AvailabilityZones []interface{} `pulumi:"availabilityZones"`
+	AvailabilityZones []string `pulumi:"availabilityZones"`
 	ConnectionDraining bool `pulumi:"connectionDraining"`
 	ConnectionDrainingTimeout int `pulumi:"connectionDrainingTimeout"`
 	CrossZoneLoadBalancing bool `pulumi:"crossZoneLoadBalancing"`
 	DnsName string `pulumi:"dnsName"`
 	HealthCheck interface{} `pulumi:"healthCheck"`
 	IdleTimeout int `pulumi:"idleTimeout"`
-	Instances []interface{} `pulumi:"instances"`
+	Instances []string `pulumi:"instances"`
 	Internal bool `pulumi:"internal"`
 	Listeners []interface{} `pulumi:"listeners"`
 	Name string `pulumi:"name"`
-	SecurityGroups []interface{} `pulumi:"securityGroups"`
+	SecurityGroups []string `pulumi:"securityGroups"`
 	SourceSecurityGroup string `pulumi:"sourceSecurityGroup"`
 	SourceSecurityGroupId string `pulumi:"sourceSecurityGroupId"`
-	Subnets []interface{} `pulumi:"subnets"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Subnets []string `pulumi:"subnets"`
+	Tags map[string]string `pulumi:"tags"`
 	ZoneId string `pulumi:"zoneId"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`

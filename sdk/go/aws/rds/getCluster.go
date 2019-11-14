@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/rds_cluster.html.markdown.
 func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult, error) {
-var rv GetClusterResult
+	var rv GetClusterResult
 	err := ctx.Invoke("aws:rds/getCluster:getCluster", args, &rv)
 	if err != nil {
 		return nil, err
@@ -23,28 +23,28 @@ var rv GetClusterResult
 type GetClusterArgs struct {
 	// The cluster identifier of the RDS cluster.
 	ClusterIdentifier string `pulumi:"clusterIdentifier"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getCluster.
 type GetClusterResult struct {
 	Arn string `pulumi:"arn"`
-	AvailabilityZones []interface{} `pulumi:"availabilityZones"`
+	AvailabilityZones []string `pulumi:"availabilityZones"`
 	BackupRetentionPeriod int `pulumi:"backupRetentionPeriod"`
 	ClusterIdentifier string `pulumi:"clusterIdentifier"`
-	ClusterMembers []interface{} `pulumi:"clusterMembers"`
+	ClusterMembers []string `pulumi:"clusterMembers"`
 	ClusterResourceId string `pulumi:"clusterResourceId"`
 	DatabaseName string `pulumi:"databaseName"`
 	DbClusterParameterGroupName string `pulumi:"dbClusterParameterGroupName"`
 	DbSubnetGroupName string `pulumi:"dbSubnetGroupName"`
-	EnabledCloudwatchLogsExports []interface{} `pulumi:"enabledCloudwatchLogsExports"`
+	EnabledCloudwatchLogsExports []string `pulumi:"enabledCloudwatchLogsExports"`
 	Endpoint string `pulumi:"endpoint"`
 	Engine string `pulumi:"engine"`
 	EngineVersion string `pulumi:"engineVersion"`
 	FinalSnapshotIdentifier string `pulumi:"finalSnapshotIdentifier"`
 	HostedZoneId string `pulumi:"hostedZoneId"`
 	IamDatabaseAuthenticationEnabled bool `pulumi:"iamDatabaseAuthenticationEnabled"`
-	IamRoles []interface{} `pulumi:"iamRoles"`
+	IamRoles []string `pulumi:"iamRoles"`
 	KmsKeyId string `pulumi:"kmsKeyId"`
 	MasterUsername string `pulumi:"masterUsername"`
 	Port int `pulumi:"port"`
@@ -53,8 +53,8 @@ type GetClusterResult struct {
 	ReaderEndpoint string `pulumi:"readerEndpoint"`
 	ReplicationSourceIdentifier string `pulumi:"replicationSourceIdentifier"`
 	StorageEncrypted bool `pulumi:"storageEncrypted"`
-	Tags map[string]interface{} `pulumi:"tags"`
-	VpcSecurityGroupIds []interface{} `pulumi:"vpcSecurityGroupIds"`
+	Tags map[string]string `pulumi:"tags"`
+	VpcSecurityGroupIds []string `pulumi:"vpcSecurityGroupIds"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

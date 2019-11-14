@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/waf_rule.html.markdown.
 func LookupRule(ctx *pulumi.Context, args *GetRuleArgs) (*GetRuleResult, error) {
-var rv GetRuleResult
+	var rv GetRuleResult
 	err := ctx.Invoke("aws:waf/getRule:getRule", args, &rv)
 	if err != nil {
 		return nil, err

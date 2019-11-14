@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/vpc_peering_connection.html.markdown.
 func LookupVpcPeeringConnection(ctx *pulumi.Context, args *GetVpcPeeringConnectionArgs) (*GetVpcPeeringConnectionResult, error) {
-var rv GetVpcPeeringConnectionResult
+	var rv GetVpcPeeringConnectionResult
 	err := ctx.Invoke("aws:ec2/getVpcPeeringConnection:getVpcPeeringConnection", args, &rv)
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ type GetVpcPeeringConnectionArgs struct {
 	Status string `pulumi:"status"`
 	// A mapping of tags, each pair of which must exactly match
 	// a pair on the desired VPC Peering Connection.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// The ID of the requester VPC of the specific VPC Peering Connection to retrieve.
 	VpcId string `pulumi:"vpcId"`
 }
@@ -53,7 +53,7 @@ type GetVpcPeeringConnectionArgs struct {
 type GetVpcPeeringConnectionResult struct {
 	// A configuration block that describes [VPC Peering Connection]
 	// (http://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide) options set for the accepter VPC.
-	Accepter map[string]interface{} `pulumi:"accepter"`
+	Accepter map[string]bool `pulumi:"accepter"`
 	CidrBlock string `pulumi:"cidrBlock"`
 	Filters []interface{} `pulumi:"filters"`
 	Id string `pulumi:"id"`
@@ -65,8 +65,8 @@ type GetVpcPeeringConnectionResult struct {
 	Region string `pulumi:"region"`
 	// A configuration block that describes [VPC Peering Connection]
 	// (http://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide) options set for the requester VPC.
-	Requester map[string]interface{} `pulumi:"requester"`
+	Requester map[string]bool `pulumi:"requester"`
 	Status string `pulumi:"status"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	VpcId string `pulumi:"vpcId"`
 }

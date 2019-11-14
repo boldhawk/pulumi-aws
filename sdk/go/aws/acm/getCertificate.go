@@ -13,7 +13,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/acm_certificate.html.markdown.
 func LookupCertificate(ctx *pulumi.Context, args *GetCertificateArgs) (*GetCertificateResult, error) {
-var rv GetCertificateResult
+	var rv GetCertificateResult
 	err := ctx.Invoke("aws:acm/getCertificate:getCertificate", args, &rv)
 	if err != nil {
 		return nil, err
@@ -26,15 +26,15 @@ type GetCertificateArgs struct {
 	// The domain of the certificate to look up. If no certificate is found with this name, an error will be returned.
 	Domain string `pulumi:"domain"`
 	// A list of key algorithms to filter certificates. By default, ACM does not return all certificate types when searching. Valid values are `RSA_1024`, `RSA_2048`, `RSA_4096`, `EC_prime256v1`, `EC_secp384r1`, and `EC_secp521r1`.
-	KeyTypes []interface{} `pulumi:"keyTypes"`
+	KeyTypes []string `pulumi:"keyTypes"`
 	// If set to true, it sorts the certificates matched by previous criteria by the NotBefore field, returning only the most recent one. If set to false, it returns an error if more than one certificate is found. Defaults to false.
 	MostRecent bool `pulumi:"mostRecent"`
 	// A list of statuses on which to filter the returned list. Valid values are `PENDING_VALIDATION`, `ISSUED`,
 	// `INACTIVE`, `EXPIRED`, `VALIDATION_TIMED_OUT`, `REVOKED` and `FAILED`. If no value is specified, only certificates in the `ISSUED` state
 	// are returned.
-	Statuses []interface{} `pulumi:"statuses"`
+	Statuses []string `pulumi:"statuses"`
 	// A list of types on which to filter the returned list. Valid values are `AMAZON_ISSUED` and `IMPORTED`.
-	Types []interface{} `pulumi:"types"`
+	Types []string `pulumi:"types"`
 }
 
 // A collection of values returned by getCertificate.
@@ -42,10 +42,10 @@ type GetCertificateResult struct {
 	// Set to the ARN of the found certificate, suitable for referencing in other resources that support ACM certificates.
 	Arn string `pulumi:"arn"`
 	Domain string `pulumi:"domain"`
-	KeyTypes []interface{} `pulumi:"keyTypes"`
+	KeyTypes []string `pulumi:"keyTypes"`
 	MostRecent bool `pulumi:"mostRecent"`
-	Statuses []interface{} `pulumi:"statuses"`
-	Types []interface{} `pulumi:"types"`
+	Statuses []string `pulumi:"statuses"`
+	Types []string `pulumi:"types"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

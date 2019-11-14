@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/route53_resolver_rule.html.markdown.
 func LookupResolverRule(ctx *pulumi.Context, args *GetResolverRuleArgs) (*GetResolverRuleResult, error) {
-var rv GetResolverRuleResult
+	var rv GetResolverRuleResult
 	err := ctx.Invoke("aws:route53/getResolverRule:getResolverRule", args, &rv)
 	if err != nil {
 		return nil, err
@@ -31,7 +31,7 @@ type GetResolverRuleArgs struct {
 	ResolverRuleId string `pulumi:"resolverRuleId"`
 	// The rule type of the desired resolver rule. Valid values are `FORWARD`, `SYSTEM` and `RECURSIVE`. Conflicts with `resolverRuleId`.
 	RuleType string `pulumi:"ruleType"`
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 }
 
 // A collection of values returned by getResolverRule.
@@ -49,7 +49,7 @@ type GetResolverRuleResult struct {
 	// Values are `NOT_SHARED`, `SHARED_BY_ME` or `SHARED_WITH_ME`
 	ShareStatus string `pulumi:"shareStatus"`
 	// A mapping of tags assigned to the resolver rule.
-	Tags map[string]interface{} `pulumi:"tags"`
+	Tags map[string]string `pulumi:"tags"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`
 }

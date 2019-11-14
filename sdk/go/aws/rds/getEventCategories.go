@@ -8,7 +8,7 @@ import (
 )
 
 func LookupEventCategories(ctx *pulumi.Context, args *GetEventCategoriesArgs) (*GetEventCategoriesResult, error) {
-var rv GetEventCategoriesResult
+	var rv GetEventCategoriesResult
 	err := ctx.Invoke("aws:rds/getEventCategories:getEventCategories", args, &rv)
 	if err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ type GetEventCategoriesArgs struct {
 // A collection of values returned by getEventCategories.
 type GetEventCategoriesResult struct {
 	// A list of the event categories.
-	EventCategories []interface{} `pulumi:"eventCategories"`
+	EventCategories []string `pulumi:"eventCategories"`
 	SourceType string `pulumi:"sourceType"`
 	// id is the provider-assigned unique ID for this managed resource.
 	Id string `pulumi:"id"`

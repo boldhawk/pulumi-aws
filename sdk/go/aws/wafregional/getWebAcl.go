@@ -11,7 +11,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/wafregional_web_acl.html.markdown.
 func LookupWebAcl(ctx *pulumi.Context, args *GetWebAclArgs) (*GetWebAclResult, error) {
-var rv GetWebAclResult
+	var rv GetWebAclResult
 	err := ctx.Invoke("aws:wafregional/getWebAcl:getWebAcl", args, &rv)
 	if err != nil {
 		return nil, err

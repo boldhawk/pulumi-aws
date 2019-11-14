@@ -12,7 +12,7 @@ import (
 //
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-aws/blob/master/website/docs/d/ecs_container_definition.html.markdown.
 func LookupContainerDefinition(ctx *pulumi.Context, args *GetContainerDefinitionArgs) (*GetContainerDefinitionResult, error) {
-var rv GetContainerDefinitionResult
+	var rv GetContainerDefinitionResult
 	err := ctx.Invoke("aws:ecs/getContainerDefinition:getContainerDefinition", args, &rv)
 	if err != nil {
 		return nil, err
@@ -36,9 +36,9 @@ type GetContainerDefinitionResult struct {
 	// Indicator if networking is disabled
 	DisableNetworking bool `pulumi:"disableNetworking"`
 	// Set docker labels
-	DockerLabels map[string]interface{} `pulumi:"dockerLabels"`
+	DockerLabels map[string]string `pulumi:"dockerLabels"`
 	// The environment in use
-	Environment map[string]interface{} `pulumi:"environment"`
+	Environment map[string]string `pulumi:"environment"`
 	// The docker image in use, including the digest
 	Image string `pulumi:"image"`
 	// The digest of the docker image in use
